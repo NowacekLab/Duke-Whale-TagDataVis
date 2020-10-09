@@ -1,0 +1,8 @@
+library(rmatio)
+library(ggplot2)
+library(dplyr)
+
+m <- read.mat('Data/Pm19_136aprh.mat')
+roll <- m[9]
+
+plot(seq(0, 26051, length.out = 1302588), roll[[1]])
