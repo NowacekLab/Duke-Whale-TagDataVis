@@ -5,7 +5,7 @@
 ## High level overview
 - Electron provides for the desktop app functionality, acting as a pseudo-browser of sorts
 - React is a JavaScript library that helps accelerate frontend development with reusability/modularity
-- To combine the two in a fast, timely manner **react-electronb-boilerplate (open source)** was used, so that is why there is a 'license' (the standard MIT license that says it is open source and can be used anywhere and everywhere)
+- To combine the two in a fast, timely manner **react-electron-boilerplate (open source)** was used, so that is why there is a 'license' (the standard MIT license that says it is open source and can be used anywhere and everywhere)
 
 ## Keep in mind...
 - This is not a packaged version of the app so it is not executable like a normal desktop app
