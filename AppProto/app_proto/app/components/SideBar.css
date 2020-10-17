@@ -1,0 +1,14 @@
+.sidebarLink {
+    display: "block";
+    padding: "16px 16px";
+    color: "white";
+    text-decoration: "none";
+}
+
+.sidebarLink.active {
+    border-left: "3px solid white";
+}
+
+.content {
+   height: "100%";
+}

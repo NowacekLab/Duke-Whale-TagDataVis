@@ -1,0 +1,17 @@
+-react
+-electron
+-blueprint (by Palantir)  -- add TYPE DEPENDENCIES for typescript as on docs
+-react-dom
+-semantic-ui-react, semantic-ui-css 
+
+-@types/react -- extra type dependencies 
+
+-react-sidebar
+-@types/react-sidebar 
+
+-@material-ui/core
+-@material-ui/icons
+
+-react-plotly.js
+-@types/react-plotly.js
+-plotly.js 
