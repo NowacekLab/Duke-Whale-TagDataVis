@@ -7,19 +7,32 @@ import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GraphicEqIcon from '@material-ui/icons/GraphicEq';
 import MultilineChartIcon from '@material-ui/icons/MultilineChart';
 import Typography from '@material-ui/core/Typography';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import BackupIcon from '@material-ui/icons/Backup';
+
+// import { withStyles, makeStyles } from '@material-ui/core/styles';
+// import Table from '@material-ui/core/Table';
+// import TableBody from '@material-ui/core/TableBody';
+// import TableCell from '@material-ui/core/TableCell';
+// import TableContainer from '@material-ui/core/TableContainer';
+// import TableHead from '@material-ui/core/TableHead';
+// import TableRow from '@material-ui/core/TableRow';
+// import Paper from '@material-ui/core/Paper';
 
 const styles = {
   root: {
     fontFamily: "HelveticaNeue-Light",
     height: "100%",
+    display: "grid",
+    gridTemplateRows: "10% 90%",
+    gridTemplateColumns: "100%",
+    gridTemplateAreas:`
+    'header'
+    'main'`,
+},
+  body: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     color: "black",
@@ -54,9 +67,9 @@ const styles = {
   text: {
     color: "black",
     textAlign: "center",
-    fontSize: "10px",
-    //fontWeight: 200,
-  },
+    fontSize: "20px",
+    fontWeight: 200,
+},
   containerStyle: {
     fontFamily: "HelveticaNeue-Light",
     height: "100%",
@@ -74,56 +87,137 @@ const styles = {
     color: "black",
     textAlign: "left",
     fontSize: "10px",
+  },
+  upload: {
+    color: "rgba(1,33,105)",
+    fontSize: "10em",
+    cursor: "pointer",
+  },
+  upload_hover: {
+    color: 'rgba(1,33,105)',
+    fontSize: "10em",
+    cursor: "pointer",
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    transition: 'all 0.5s ease',
   }
 
 };
 
 
+// app: {
+//   color: "rgba(1,33,105)",
+//   fontSize: "10em",
+//   cursor: "pointer",
+// },
+// app_hover: {
+//   color: "rgba(1,33,105)",
+//   fontSize: "11em",
+//   cursor: "pointer",
+//   backgroundColor: "rgba(0,0,0,0.1)",
+//   transition: "all 0.5s ease",
+// },
 
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
+// const StyledTableCell = withStyles((theme) => ({
+//   head: {
+//     backgroundColor: theme.palette.common.black,
+//     color: theme.palette.common.white,
+//   },
+//   body: {
+//     fontSize: 14,
+//   },
+// }))(TableCell);
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
+// const StyledTableRow = withStyles((theme) => ({
+//   root: {
+//     '&:nth-of-type(odd)': {
+//       backgroundColor: theme.palette.action.hover,
+//     },
+//   },
+// }))(TableRow);
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-  },
-});
+// const useStyles = makeStyles({
+//   table: {
+//     minWidth: 700,
+//   },
+// });
 
 const Home = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
 
-  const [files, setFiles] = useState([{ name: "Upload and display below" }])
+  // const [files, setFiles] = useState([{ name: "Upload and display below" }])
 
-  const addFile = (e) => {
+  // const addFile = (e) => {
 
-    setFiles([...files, e.target.files[0]]);
-    console.log(files[0].name)
+  //   setFiles([...files, e.target.files[0]]);
+  // }
+
+  // //table
+  // const classes = useStyles();
+
+  const { dialog } = require('electron');
+
+  const [hoverUpload, setHoverUpload] = useState(false);
+  const [fileUpload, setFileUpload] = useState(false);
+  const [file, setFile] = useState('');
+
+  function toggleHoverUpload() {
+    setHoverUpload(!hoverUpload);
   }
 
-  //table
-  const classes = useStyles();
+  function handleFileUpload() {
+
+    setFileUpload(!fileUpload);
+    if (fileUpload) {
+      var upload = document.getElementById('file-upload');
+      if (upload != null) {
+        upload.click(); 
+      }
+      setFileUpload(false);
+    }
+  }
 
   return (
     <Container fluid style={rootStyle} textAlign="center">
       <p style={styles.header}>Home</p>
-      <p style={styles.header2}>Recently Opened</p>
+      <div style={styles.body}>
+        <div>
+          <input type="file" id="file-upload" style={{display: 'none'}}>
+          </input>
+            <BackupIcon style={hoverUpload ? styles.upload_hover : styles.upload} onClick={handleFileUpload} onMouseEnter={toggleHoverUpload} onMouseLeave={toggleHoverUpload}>
+            </BackupIcon>
+          <Typography style={styles.text}>
+            File Upload
+          </Typography>
+        </div>
+      </div>
+
+
+      {/* <TrendingUpIcon style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D}>
+                            <Link to={routes.GRAPH2D} />
+                        </TrendingUpIcon>
+                        <Typography style={styles.text}>
+                                2D Graph
+                        </Typography> */}
+    </Container>  
+  );
+
+
+  
+};
+
+Home.propTypes = {
+  style: PropTypes.object,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  children: PropTypes.object
+};
+
+export default Home;
+
+
+
+      {/* <p style={styles.header2}>Recently Opened</p>
       <div>
         <input type="file" name="file" onChange={addFile} />
 
@@ -178,17 +272,4 @@ const Home = props => {
             Mixed
                         </Typography>
         </Link>
-      </div>
-
-
-    </Container>
-  );
-};
-
-Home.propTypes = {
-  style: PropTypes.object,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  children: PropTypes.object
-};
-
-export default Home;
+      </div> */}
