@@ -7,6 +7,7 @@ import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GraphicEqIcon from '@material-ui/icons/GraphicEq';
 import MultilineChartIcon from '@material-ui/icons/MultilineChart';
 import Typography from '@material-ui/core/Typography';
+
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,10 +21,22 @@ import IconButton from '@material-ui/core/IconButton';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { MiniCssExtractPlugin } from 'mini-css-extract-plugin';
+
 const styles = {
   root: {
     fontFamily: "HelveticaNeue-Light",
     height: "100%",
+    display: "grid",
+    gridTemplateRows: "10% 90%",
+    gridTemplateColumns: "100%",
+    gridTemplateAreas:`
+    'header'
+    'main'`,
+},
+  body: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     color: "black",
@@ -58,9 +71,9 @@ const styles = {
   text: {
     color: "black",
     textAlign: "center",
-    fontSize: "10px",
-    //fontWeight: 200,
-  },
+    fontSize: "20px",
+    fontWeight: 200,
+},
   containerStyle: {
     fontFamily: "HelveticaNeue-Light",
     height: "100%",
@@ -80,6 +93,7 @@ const styles = {
     textAlign: "left",
     fontSize: "10px",
   },
+
   button:{
     opacity: "0",
   position: "absolute",
@@ -96,10 +110,24 @@ const styles = {
     color: "white",
     fontSize:'20px',
     backgroundColor:"rgba(1,33,105)"
+
   }
 
 };
 
+
+// app: {
+//   color: "rgba(1,33,105)",
+//   fontSize: "10em",
+//   cursor: "pointer",
+// },
+// app_hover: {
+//   color: "rgba(1,33,105)",
+//   fontSize: "11em",
+//   cursor: "pointer",
+//   backgroundColor: "rgba(0,0,0,0.1)",
+//   transition: "all 0.5s ease",
+// },
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -112,13 +140,15 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
+
+// const StyledTableRow = withStyles((theme) => ({
+//   root: {
+//     '&:nth-of-type(odd)': {
+//       backgroundColor: theme.palette.action.hover,
+//     },
+//   },
+// }))(TableRow);
+
 
 const useStyles = makeStyles({
   table: {
@@ -158,14 +188,18 @@ const color_theme = createMuiTheme({
 
 
 
+
 const Home = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
+
 //{ name: "Upload and display below" }
   const [files, setFiles] = useState([])
 
-  const addFile = (e) => {
+
+  const { dialog } = require('electron');
+
 
     setFiles([...files, e.target.files[0]]);
     console.log(e.target.files[0])
@@ -251,6 +285,7 @@ const Home = props => {
             Mixed
                         </Typography>
         </Link>
+
       </div>
 
 
@@ -274,3 +309,4 @@ export default Home;
          <label style={styles.label}> Upload </label>
       </div>
 */
+
