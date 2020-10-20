@@ -21,7 +21,7 @@ const styles = {
 const img_path = path.join(__dirname, '../resources/');
 
 const SideBarComp = props => {
-    const rootStyle = styles 
+    const rootStyle = styles
     ? {...styles.root, ...props.style}
     : {}
 
@@ -34,7 +34,7 @@ const SideBarComp = props => {
 };
 
 SideBarComp.propTypes = {
-    style: PropTypes.object, 
+    style: PropTypes.object,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     children: PropTypes.object
 };

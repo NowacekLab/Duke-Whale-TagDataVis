@@ -15,7 +15,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import { createStyles, Theme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MiniCssExtractPlugin } from 'mini-css-extract-plugin';
 const styles = {
   root: {
     fontFamily: "HelveticaNeue-Light",
@@ -30,16 +34,16 @@ const styles = {
   },
   header2: {
     color: "black",
-    marginLeft: "auto",
+    marginLeft: "1rem",
     marginRight: "auto",
     textAlign: "left",
     fontSize: "30px",
+
   },
   header3: {
     color: "grey",
-    marginLeft: "auto",
-    marginRight: "auto",
-    textAlign: "center",
+    marginLeft: "10rem",
+    textAlign: "left",
     fontSize: "25px",
   },
   link: {
@@ -69,11 +73,29 @@ const styles = {
   dock: {
     display: "flex",
     justifyContent: "left",
+    margin:"2rem"
   },
   listItem: {
     color: "black",
     textAlign: "left",
     fontSize: "10px",
+  },
+  button:{
+    opacity: "0",
+  position: "absolute",
+  width: "100px",
+  height: "50px",
+  //margin consistent
+  marginLeft:"2rem"
+  },
+  label:{
+    //button on label
+    width: "100px",
+    height: "50px",
+    marginLeft: "2rem",
+    color: "white",
+    fontSize:'20px',
+    backgroundColor:"rgba(1,33,105)"
   }
 
 };
@@ -82,7 +104,7 @@ const styles = {
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: "rgba(1,33,105)",
     color: theme.palette.common.white,
   },
   body: {
@@ -100,55 +122,106 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 700,
+
+    minWidth: 400,
+    maxWidth:600
+
+  },
+  container:{
+    //margin for the container
+    margin: '2rem',
+    overflow:"hidden",
+    maxWidth:600
+  }
+});
+//button
+const useStyles_button = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: '2rem',
+    },
+  },
+  input: {
+    display: 'none',
+    backgroundColor: 'rgba(1,33,105)',
+
+  },
+}));
+const color_theme = createMuiTheme({
+  palette: {
+    primary: {
+      // add color
+      main: '#012069',
+    },
   },
 });
+
+
 
 const Home = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
-
-  const [files, setFiles] = useState([{ name: "Upload and display below" }])
+//{ name: "Upload and display below" }
+  const [files, setFiles] = useState([])
 
   const addFile = (e) => {
 
     setFiles([...files, e.target.files[0]]);
-    console.log(files[0].name)
+    console.log(e.target.files[0])
   }
 
   //table
   const classes = useStyles();
-
+ //button
+ const classes_button = useStyles_button();
   return (
     <Container fluid style={rootStyle} textAlign="center">
       <p style={styles.header}>Home</p>
       <p style={styles.header2}>Recently Opened</p>
+
+      <MuiThemeProvider theme={color_theme}>
+      <div className={classes_button.root}>
+      <input
+        accept=".mat,.pdf"
+        className={classes_button.input}
+        id="contained-button-file"
+        multiple
+        onChange={addFile}
+        type="file"
+      />
+      <label htmlFor="contained-button-file">
+        <Button variant="contained" color="primary" component="span">
+          Upload
+        </Button>
+      </label>
+    </div>
+      </MuiThemeProvider>
+
+
+
       <div>
-        <input type="file" name="file" onChange={addFile} />
 
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="customized table">
+
+        <TableContainer component={Paper} className={classes.container} >
+          <Table className={classes.table} >
             <TableHead>
-              <TableRow>
+              <TableRow className={classes.container}>
                 <StyledTableCell>File Name</StyledTableCell>
-                <StyledTableCell align="right">File Path</StyledTableCell>
-                <StyledTableCell align="right">File size</StyledTableCell>
                 <StyledTableCell align="right">file type</StyledTableCell>
-
+                <StyledTableCell align="right">Data Last Modified</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {files.map((file) => (
+            { files.slice(Math.max(files.length - 3, 0)).map((file) => (
                 <StyledTableRow key={file.name}>
                   <StyledTableCell component="th" scope="row">
                     {file.name}
                   </StyledTableCell>
-                  <StyledTableCell align="right">{file.path}</StyledTableCell>
-                  <StyledTableCell align="right">{file.size}</StyledTableCell>
                   <StyledTableCell align="right">{file.type}</StyledTableCell>
+                  <StyledTableCell align="right">{file.lastModifiedDate.toDateString()}</StyledTableCell>
                 </StyledTableRow>
-              ))}
+              )) }
             </TableBody>
           </Table>
         </TableContainer>
@@ -192,3 +265,12 @@ Home.propTypes = {
 };
 
 export default Home;
+
+
+
+/*
+    <div>
+         <input type="file" name="file" onChange={addFile} style={styles.button} />
+         <label style={styles.label}> Upload </label>
+      </div>
+*/
