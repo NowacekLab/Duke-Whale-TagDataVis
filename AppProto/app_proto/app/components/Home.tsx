@@ -47,10 +47,11 @@ const styles = {
   },
   header2: {
     color: "black",
-    marginLeft: "1rem",
-    marginRight: "auto",
+    margin: "1rem",
+
     textAlign: "left",
     fontSize: "30px",
+    height: "50px"
 
   },
   header3: {
@@ -200,7 +201,7 @@ const Home = props => {
 
   const { dialog } = require('electron');
 
-
+  const addFile=(e)=>{
     setFiles([...files, e.target.files[0]]);
     console.log(e.target.files[0])
   }
@@ -211,31 +212,29 @@ const Home = props => {
  const classes_button = useStyles_button();
   return (
     <Container fluid style={rootStyle} textAlign="center">
+
       <p style={styles.header}>Home</p>
       <p style={styles.header2}>Recently Opened</p>
 
-      <MuiThemeProvider theme={color_theme}>
-      <div className={classes_button.root}>
-      <input
-        accept=".mat,.pdf"
-        className={classes_button.input}
-        id="contained-button-file"
-        multiple
-        onChange={addFile}
-        type="file"
-      />
-      <label htmlFor="contained-button-file">
-        <Button variant="contained" color="primary" component="span">
-          Upload
-        </Button>
-      </label>
-    </div>
-      </MuiThemeProvider>
-
-
 
       <div>
-
+      <MuiThemeProvider theme={color_theme}>
+          <div className={classes_button.root}>
+          <input
+            accept=".mat,.pdf"
+            className={classes_button.input}
+            id="contained-button-file"
+            multiple
+            onChange={addFile}
+            type="file"
+          />
+          <label htmlFor="contained-button-file">
+            <Button variant="contained" color="primary" component="span">
+              Upload
+            </Button>
+          </label>
+          </div>
+          </MuiThemeProvider>
 
         <TableContainer component={Paper} className={classes.container} >
           <Table className={classes.table} >
@@ -262,8 +261,10 @@ const Home = props => {
 
 
       </div>
+
       <p style={styles.header2}>Quick Access</p>
       <p style={styles.header3}>Apps</p>
+
       <div style={styles.dock}>
         <Link to={routes.GRAPH2D} style={styles.link}>
           <TrendingUpIcon style={styles.app}>
