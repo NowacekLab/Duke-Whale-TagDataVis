@@ -1575,6 +1575,17 @@
   dependencies:
     "@babel/runtime" "^7.4.4"
 
+"@material-ui/lab@^4.0.0-alpha.56":
+  version "4.0.0-alpha.56"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.56.tgz#ff63080949b55b40625e056bbda05e130d216d34"
+  integrity sha512-xPlkK+z/6y/24ka4gVJgwPfoCF4RCh8dXb1BNE7MtF9bXEBLN/lBxNTK8VAa0qm3V2oinA6xtUIdcRh0aeRtVw==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@material-ui/utils" "^4.10.2"
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+    react-is "^16.8.0"
+
 "@material-ui/styles@^4.10.0":
   version "4.10.0"
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.10.0.tgz#2406dc23aa358217aa8cc772e6237bd7f0544071"
@@ -2032,6 +2043,13 @@
   version "1.50.21"
   resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-1.50.21.tgz#8fa2bd42a3b91c6ac8d387134ddbc81de342488b"
   integrity sha512-pO3V9nUJlCsZHvZwPIqtemiTujLLULEX+T/nX+uTVrSUxdUkrUMGsVjY1zDG0cnAGj3Z5O9NqOwBI8gcjh9jyQ==
+  dependencies:
+    "@types/d3" "^3"
+
+"@types/plotly.js@^1.50.22":
+  version "1.50.22"
+  resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-1.50.22.tgz#a90386c413375c11bc44132a9467974a4272ffda"
+  integrity sha512-C0Wql73oZXE1/6zM5EeNlsZH5yjdk2QjKAzhBKk+Q3Wku/lMOGtISusuUlri+6Mm8iSE7WM1Tn6jDwDdnrYDMA==
   dependencies:
     "@types/d3" "^3"
 
@@ -13726,6 +13744,11 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-loading@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-2.0.3.tgz#e8138fb0c3e4674e481b320802ac7048ae14ffb9"
+  integrity sha512-Vdqy79zq+bpeWJqC+xjltUjuGApyoItPgL0vgVfcJHhqwU7bAMKzysfGW/ADu6i0z0JiOCRJjo+IkFNkRNbA3A==
 
 react-plotly.js@^2.5.0:
   version "2.5.0"

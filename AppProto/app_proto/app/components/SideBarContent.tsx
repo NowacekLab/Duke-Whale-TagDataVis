@@ -10,6 +10,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import AppsIcon from '@material-ui/icons/Apps';
+import FolderIcon from '@material-ui/icons/Folder';
 import { Typography } from '@material-ui/core';
 
 const styles = {
@@ -75,6 +76,20 @@ const SideBarContent = props => {
                     </ListItem>
 
                 </NavLink>
+
+                <NavLink to={routes.FILES} exact style={styles.sidebarLink} activeStyle={styles.active_link}>
+                    <ListItem>
+                        <ListItemIcon>
+                            <FolderIcon style={{color:"white"}} fontSize="large"/>
+                        </ListItemIcon>
+                        <ListItemText 
+                            disableTypography 
+                            primary={<Typography style={styles.text}>{"Files"}</Typography>}
+                        />
+                    </ListItem>
+
+                </NavLink>
+
             </div>
         </SideBarComp>
     )

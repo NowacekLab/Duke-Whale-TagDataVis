@@ -20,6 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { createStyles, Theme } from '@material-ui/core/styles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { MiniCssExtractPlugin } from 'mini-css-extract-plugin';
+
 const styles = {
   root: {
     fontFamily: "HelveticaNeue-Light",
@@ -147,6 +148,7 @@ const useStyles_button = makeStyles((theme) => ({
 
   },
 }));
+
 const color_theme = createMuiTheme({
   palette: {
     primary: {
@@ -156,8 +158,8 @@ const color_theme = createMuiTheme({
   },
 });
 
-
-
+  const { dialog } = require('electron');
+  
 const Home = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
@@ -197,8 +199,6 @@ const Home = props => {
       </label>
     </div>
       </MuiThemeProvider>
-
-
 
       <div>
 
