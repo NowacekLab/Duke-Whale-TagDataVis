@@ -5,7 +5,6 @@ import routes from './constants/routes.json';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
 import AppsPage from "./containers/AppsPage";
-import FilesPage from "./containers/FilesPage";
 import Base from './containers/Base';
 import Page2D from "./containers/Page2D";
 import Page3D from "./containers/Page3D";
@@ -35,16 +34,6 @@ export default function Routes() {
         render={() => {
           return <Base Page={PageMIX} />
         }} />
-
-        <Route path={routes.FILES}
-        render={() => {
-          return <Base Page={FilesPage} />
-        }} /> 
-
-
-
-
-        
 
         <Route path={routes.HOME}
         render={() => {

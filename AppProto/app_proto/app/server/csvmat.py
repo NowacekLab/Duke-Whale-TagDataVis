@@ -3,12 +3,15 @@ MAT --> CSV converter module (FOR DEVELOPMENT ATM)
 - files.json MUST exist 
 - module does not do much error checking 
 """
-import helper_json
 import os 
 import pandas as pd
 from scipy.io import loadmat
 import sys 
 import time 
+
+# CUSTOM
+import helper_json
+import updates 
 
 BASE_DIR = os.path.dirname(__file__)
 FILE_DIR = os.path.join(BASE_DIR, 'user_files')
@@ -32,23 +35,10 @@ def convert(file_path: str, file_: str) -> str:
         new_path = os.path.join(FILE_DIR, new_name)
         df.to_csv(new_path, index = False)
         
-        return new_path  
+        return (new_path, new_name)
 
     except Exception as e:
-        print(e)  
-        return 
-
-
-def files_exist(info: dict) -> bool: 
-    """
-    Checks whether all files in files.json exist 
-    """
-
-    for file_ in info: 
-        file_path = os.path.join(FILE_DIR, file_)
-        if not os.path.exists(file_path):
-            return False 
-    return True 
+        return e 
 
 def main() -> str:
     """
@@ -62,47 +52,35 @@ def main() -> str:
     try: 
         info = helper_json.read(file_info)
         if not info: 
-            # raise Exception("Failed to read files.json.")
             info = dict() 
-
-        # if not files_exist(info): raise Exception("File(s) in files.json do not exist in user_files dir.")
-
-
-        # for file_ in info: 
-        #     if info[file_] == None or info[file_] == 'None':
-        #         conversion = convert(file_)
-        #         if conversion != None:
-        #             info[file_] = conversion
-        #         else: 
-        #             print(f"Failed converting {file_}")
 
         new_info = dict() 
 
         if file_.endswith('.csv'): 
             new_info['orig_path'] = file_path 
-            conversion = file_path
-            new_info['csv_path'] = conversion 
-            info[file_] = new_info
-
+            conversion_path = file_path
+            new_info['csv_path'] = conversion_path 
+            new_info['converted_name'] = file_
         elif file_.endswith('.mat'):
             new_info['orig_path'] = file_path 
-            conversion = convert(file_path, file_)
-            new_info['csv_path'] = conversion 
-            if conversion != None: 
-                info[file_] = new_info  
-            else: 
-                raise Exception() 
-
+            conversion_path, conversion = convert(file_path, file_)
+            if conversion_path == None: raise Exception("Failed in converting file.")
+            new_info['csv_path'] = conversion_path
+            new_info['converted_name'] = conversion
         else: 
             raise Exception("Unknown file format.")
+
+        info[file_] = new_info 
 
         if not helper_json.create(file_info, info): 
             raise Exception("Failed in final creation of new files.json file.")
 
+        updates.main() 
+
         timeout = 60 # 1 minute until time out -- arbitrary
         timeout_start = time.time() 
         while time.time() < timeout_start + timeout: 
-            if os.path.exists(conversion):
+            if os.path.exists(conversion_path):
                 return "True"
 
         # 'Timeout' LIKELY is due to taking over a minute to process the file 
@@ -110,14 +88,8 @@ def main() -> str:
 
     except Exception as e: 
         # print(e) -- enable for dev
-        print(e) 
-        return "False" 
-
-def test():
-
-    arg = sys.argv[1]
-    print(arg)
-    sys.stdout.flush() 
+        return e 
+        # return False 
 
 if __name__ == "__main__":
     print(main())

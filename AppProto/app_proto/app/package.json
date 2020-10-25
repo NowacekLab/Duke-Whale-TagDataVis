@@ -15,6 +15,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "jquery": "^3.5.1"
+    "jquery": "^3.5.1",
+    "react-keyed-file-browser": "^1.10.0"
   }
 }

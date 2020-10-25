@@ -36,7 +36,6 @@ const Test = props => {
     const [data, setData] = useState([]);
     const [layout, setLayout] = useState({});
 
-
     Plotly.d3.csv(props.file, function(err,rows) {
         function unpack(rows, key) {
             return rows.map(function(row)
@@ -47,7 +46,7 @@ const Test = props => {
             mode: 'markers',
             marker: {
                 color: 'rgb(127, 127, 127)',
-                size: 12,
+                size: 4,
                 symbol: 'circle',
                 line: {
                 color: 'rgb(204, 204, 204)',
@@ -75,6 +74,10 @@ const Test = props => {
 
     });
 
+    const testing = (e) => {
+        console.log(e);
+    }
+
     return (
         <Container fluid style={styles.root} textAlign="center">
             <p style={styles.header}>Mixed Graph</p>
@@ -82,6 +85,7 @@ const Test = props => {
                 data={data}
                 layout={layout}
                 style={styles.plot}
+                onClick={testing}
             />
         </Container>
     );
