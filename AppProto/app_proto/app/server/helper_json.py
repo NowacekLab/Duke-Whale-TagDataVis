@@ -28,7 +28,7 @@ def create(file_path: str, info: dict) -> bool:
     """
     try: 
         with open(file_path, 'w') as f: 
-            f.write(json.dumps(info))
+            f.write(json.dumps(info, indent=4))
         return True 
     except Exception: 
         return False 

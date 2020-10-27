@@ -75,6 +75,7 @@ const SideBarContent = props => {
                     </ListItem>
 
                 </NavLink>
+
             </div>
         </SideBarComp>
     )
