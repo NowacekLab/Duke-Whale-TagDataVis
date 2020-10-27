@@ -18,7 +18,7 @@ from ipywidgets import widgets
 
 def plot2D(filename):
     # Pull in Data
-    matData = loadmat('Pm19_136aprh.mat')
+    matData = loadmat(filename)
 
     fs = [x[0] for x in matData['fs']]
     fs = fs[0]
@@ -88,7 +88,7 @@ def plot2D(filename):
     #               fig])
     fig.show()
 
-    fig.write_html('.'.join(filename.split('.')[0:-1]) + '.html')
+    fig.write_html('.'.join(filename.split('.')[0:-1]) + '_demoPlot2D.html')
 
 if __name__ == '__main__':
-    plot2D('../Data/Pm19_136aprh.mat')
+    plot2D('../Pm19_136aprh.mat')
