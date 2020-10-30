@@ -6,16 +6,13 @@ import { Container } from "semantic-ui-react";
 import Typography from '@material-ui/core/Typography';
 import BackupIcon from '@material-ui/icons/Backup';
 import Alert from '@material-ui/lab/Alert';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
 import ReactLoading from 'react-loading';
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/Icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
+import DeleteIcon from '@material-ui/Icons/Delete';
 
 const styles = {
   banner: {
@@ -84,8 +81,8 @@ const FileActions = props => {
   const files = path.resolve(path.join(server_path, 'files.json'));
   const script_path = path.resolve(path.join(server_path, 'csvmat.py'));
   const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
+  const generate_script_path = path.resolve(path.join(server_path, 'graphs.py'));
   const spawn = require("child_process").spawn; 
-
 
   const upload = React.useRef(null);
   const save = React.useRef(null);
@@ -115,7 +112,7 @@ const FileActions = props => {
 
     const args = new Array(action_script_path, chosenFile, action);
 
-    const pythonProcess = spawn('python', args);
+    const pythonProcess = spawn('python3', args);
 
     pythonProcess.stdout.on('data', (data) => {
       let resp = data.toString().trim();
@@ -179,23 +176,25 @@ const FileActions = props => {
 
     const file_path = e.target.files[0].path;
     const file_name = e.target.files[0].name; 
+
     e.target.value = '';
-    const pythonProcess = spawn('python', [script_path, file_path, file_name]);
+    const pythonProcess = spawn('python3', [script_path, file_path, file_name]);
 
     const loader = document.getElementById('loader');
     loader.style.display = 'flex';
 
     pythonProcess.stdout.on('data', (data) => {
-        let resp = data.toString().trim(); 
-        if (resp === "True") { 
+        let resp = JSON.parse(data.toString());
+        
+        if (resp['status'] === "True") { 
             setSuccessMessage(`${file_name} processed as CSV.`);
             showSuccess();
 
             props.updater();
 
             // console.log('true');
-        } else if (resp === "Timeout") {
-            setErrorMessage("File unable to be processed.");
+        } else if (resp['status'] === "False") {
+            setErrorMessage(resp['reason']);
             showError();
             // console.log('timeout');
         } else {
@@ -204,6 +203,18 @@ const FileActions = props => {
             // console.log('else');
         }
         loader.style.display='none';
+    });
+  }
+
+  const processNewFile = (new_file, new_path) => {
+    console.log('HI')
+    console.log(new_file.toString());
+    console.log(new_path.toString());
+
+    const newpythonProcess = spawn('python', [generate_script_path, new_file.toString(), new_path.toString(), 'generate']);
+    newpythonProcess.stdout.on('data', (data) => {
+      console.log('hi');
+      console.log(data.toString());
     });
   }
 

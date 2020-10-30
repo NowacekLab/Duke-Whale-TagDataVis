@@ -1,0 +1,83 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import routes from '../constants/routes.json';
+import PropTypes from "prop-types";
+import Paper from '@material-ui/core/Paper';
+import Button from "@material-ui/core/Button";
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+
+import FileTable from "./FileTable";
+
+const styles = {
+  root: {
+    fontFamily: "HelveticaNeue-Light",
+    height: "100%",
+    display: "grid",
+    gridTemplateRows: "20% 80%",
+    gridTemplateColumns: "100%",
+    gridTemplateAreas:`
+    'header'
+    'main'`,
+  },
+  header: {
+    color: "white",
+    marginLeft: "auto",
+    marginRight: "auto",
+    textAlign: "center",
+    fontSize: "36px",
+  },
+  mainContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
+  },
+  container: {
+    maxHeight: 440,
+  },
+  selectButton: {
+      marginTop: "20px",
+      backgroundColor: "#012069",
+      color: "white"
+  }
+};
+  
+const AppsTable = props => {
+  const rootStyle = props.style
+    ? { ...styles.root, ...props.style }
+    : { ...styles.root }
+
+const [update, setUpdate] = useState(false);
+const [fileSelection, setFileSelection] = useState(props.file ? props.file : "");
+
+  const handleClick = () => {
+      props.fileSelector ? props.fileSelector(fileSelection) : "";
+      props.closeModal();
+  };
+
+  return (
+
+    <div style={styles.mainContainer}>
+        <p style={styles.header}>Select a File</p>
+
+        <FileTable selectedFile={fileSelection} selection={setFileSelection}/>
+
+        <Button
+                variant="contained"
+                onClick={handleClick}
+                style={styles.selectButton}
+            >
+                Confirm
+        </Button>
+    </div>
+  );
+};
+
+AppsTable.propTypes = {
+  style: PropTypes.object,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  children: PropTypes.object
+};
+
+export default AppsTable;
+

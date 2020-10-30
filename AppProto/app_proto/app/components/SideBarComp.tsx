@@ -8,6 +8,8 @@ const styles = {
     root: {
         fontFamily: "HelveticaNeue-Light",
         fontWeight: 300,
+        position: "relative",
+        height: "100%",
     },
     logo: {
         width: "12em",
