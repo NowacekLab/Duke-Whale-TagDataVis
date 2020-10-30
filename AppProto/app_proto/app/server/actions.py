@@ -17,7 +17,7 @@ def get_path(file_: str):
     """
     try: 
         info = helper_json.read(file_info)
-        filtered = filter(lambda key : key == file_ or info[key]["converted_name"] == file_, info)
+        filtered = filter(lambda key : key == file_, info)
         file_path = info[next(filtered)]["csv_path"]
         if os.path.isfile(file_path):
             return file_path 

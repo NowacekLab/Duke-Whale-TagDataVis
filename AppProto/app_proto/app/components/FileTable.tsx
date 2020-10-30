@@ -76,12 +76,12 @@ const FileTable = props => {
     }, new Array(props.toUpdate))
 
     const [rows, setRows] = useState([]);
-    const [choice, setChoice] = useState("");
+    const [choice, setChoice] = useState(props.selectedFile ? props.selectedFile : "");
   
-const fs = window.require('fs');
-const path = require('path');
-const server_path = path.resolve(path.join(__dirname, 'server'))
-const files = path.resolve(path.join(server_path, 'files.json'));
+    const fs = window.require('fs');
+    const path = require('path');
+    const server_path = path.resolve(path.join(__dirname, 'server'))
+    const files = path.resolve(path.join(server_path, 'files.json'));
 
 function createData(file, size, modified) {
   return { file, size, modified };
@@ -94,7 +94,7 @@ function createData(file, size, modified) {
     
       const realRows = new Array(); 
       for (var key in testing) {
-        realRows.push(createData(testing[key]['converted_name'], testing[key]["size"], testing[key]["modified"]));
+        realRows.push(createData(key, testing[key]["size"], testing[key]["modified"]));
       }
       setRows(realRows);
       props.fileNum ? props.fileNum(realRows.length) : "";

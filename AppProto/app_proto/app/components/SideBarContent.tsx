@@ -11,12 +11,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import AppsIcon from '@material-ui/icons/Apps';
 import { Typography } from '@material-ui/core';
+import SettingsIcon from '@material-ui/icons/Settings';
+import IconButton from '@material-ui/core/IconButton';
+import HelpIcon from '@material-ui/icons/Help';
 
 const styles = {
-    sidebar: {
-        width: 200, 
-        height: "100%",
-    },
     sidebarLink: {
         display: "block",
         padding: "16px 16px",
@@ -34,15 +33,19 @@ const styles = {
         fontFamily: "HelveticaNeue-Light",
         color: "#fff",
     },
+    bottomBtnCont: {
+        position: "absolute",
+        bottom: "0px",
+        display: "flex",
+        width: "100%",
+        justifyContent: "space-between"
+    },
 };
 
 const SideBarContent = props => {
-    const style = props.style 
-    ? {...styles.sidebar, ...props.style}
-    : styles.sidebar;
 
     return(
-        <SideBarComp title="Duke">
+        <SideBarComp>
             <div style={styles.content}>
                 <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link}>
                     <ListItem>
@@ -77,6 +80,16 @@ const SideBarContent = props => {
                 </NavLink>
 
             </div>
+
+            <div style={styles.bottomBtnCont}>
+                <IconButton>
+                    <SettingsIcon style={{color: "white"}} fontSize="large" />
+                </IconButton>
+                <IconButton>
+                    <HelpIcon style={{color: "white"}} fontSize="large" />
+                </IconButton>
+            </div>
+
         </SideBarComp>
     )
 
