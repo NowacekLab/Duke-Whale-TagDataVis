@@ -9,7 +9,8 @@ A slider is positioned between the subplots to dictate the range of time
 '''
 
 
-from scipy.io import loadmat# pip installed scipy
+# from scipy.io import loadmat# pip installed scipy
+import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 # pip install ipywidgets
@@ -18,15 +19,14 @@ from ipywidgets import widgets
 
 def plot2D(filename):
     # Pull in Data
-    matData = loadmat(filename)
+    data = pd.read_csv(filename)
 
-    fs = [x[0] for x in matData['fs']]
-    fs = fs[0]
-    head = [x[0] for x in matData['head']]
-    p = [x[0] for x in matData['p']]
-    roll = [x[0]*np.pi/180 for x in matData['roll']]
-    pitch = [x[0] for x in matData['pitch']]
-
+    # Pull Specific Variables
+    fs = data['fs'].tolist()[0]
+    head = data['head'].tolist()
+    p = data['p'].tolist()
+    roll = data['roll'].tolist()
+    pitch = data['pitch'].tolist()
     # Calculate time 
     numData = len(p)
     t = [x/fs for x in range(numData)]
@@ -45,10 +45,10 @@ def plot2D(filename):
         )
 
     # Create traces for the data and add to figure
-    fig.add_trace(go.Scatter(x = t_hr, y = p, mode = "lines", name = "Depth"), row = 1, col = 1) 
-    fig.add_trace(go.Scatter(x = t_hr, y = head, mode = "lines", name = "Head"), row = 2, col = 1)
-    fig.add_trace(go.Scatter(x = t_hr, y = pitch, mode = "lines", name = "Pitch"), row = 2, col = 1)
-    fig.add_trace(go.Scatter(x = t_hr, y = roll, mode = "lines", name = "Roll" ), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = t_hr, y = p, mode = "lines", name = "Depth"), row = 1, col = 1) 
+    fig.add_trace(go.Scattergl(x = t_hr, y = head, mode = "lines", name = "Head"), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = t_hr, y = pitch, mode = "lines", name = "Pitch"), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = t_hr, y = roll, mode = "lines", name = "Roll" ), row = 2, col = 1)
 
     # Update x-axis
     fig.update_xaxes(title = "Time (hr)", rangeslider = dict(visible = True), row = 2, col = 1)
@@ -91,4 +91,4 @@ def plot2D(filename):
     fig.write_html('.'.join(filename.split('.')[0:-1]) + '_demoPlot2D.html')
 
 if __name__ == '__main__':
-    plot2D('../Pm19_136aprh.mat')
+    plot2D('../Pm19_136aprh.csv')

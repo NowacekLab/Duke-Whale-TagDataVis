@@ -4,22 +4,24 @@ Points of Interest Figure
 Allows the user to select a point to display with a closer view in the subplots
 '''
 
-from scipy.io import loadmat# pip installed scipy
+# from scipy.io import loadmat# pip installed scipy
+import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 # pip install ipywidgets
 from plotly.subplots import make_subplots
 
 
-def plotPOI(filename)
-    # Load in the Data
-    matData = loadmat(filename)
+def plotPOI(filename):
+    # Pull in Data
+    data = pd.read_csv(filename)
 
-    fs = [x[0] for x in matData['fs']]
-    fs = fs[0]
-    head = [x[0] for x in matData['head']]
-    p = [x[0] for x in matData['p']]
-    roll = [x[0]*np.pi/180 for x in matData['roll']]
+    # Pull Specific Variables
+    fs = data['fs'].tolist()[0]
+    head = data['head'].tolist()
+    p = data['p'].tolist()
+    roll = data['roll'].tolist()
+    pitch = data['pitch'].tolist()
 
     # Calculate time 
     numData = len(p)
@@ -75,9 +77,9 @@ def plotPOI(filename)
         )
 
     # Add traces to Figure
-    trace = go.Scatter(x=t_hr, y=p, mode='lines', name = "Depth")
+    trace = go.Scattergl(x=t_hr, y=p, mode='lines', name = "Depth")
     fig.add_trace(trace, row = 1, col = 1)
-    fig.add_trace(go.Scatter(x = xPOI, y = yPOI, mode = 'markers', 
+    fig.add_trace(go.Scattergl(x = xPOI, y = yPOI, mode = 'markers', 
                             marker = dict(color = 'green', symbol = 'square', size = 10),
                             name = "Points of Interest"), row = 1, col = 1)
     
@@ -87,9 +89,9 @@ def plotPOI(filename)
         # Polar Plot
         fig.add_trace(go.Scatterpolar(r = [1, 0.25, 0.25, 0.25, 0.25, 1], theta = zoomR[k][0], mode = "lines", visible = False), row = 1, col = 2)
         # Zoomed Depth Plot
-        fig.add_trace(go.Scatter(x = zoomT[k], y = zoomP[k], mode = "lines", visible = False, name = nameK), row = 2, col = 2)
+        fig.add_trace(go.Scattergl(x = zoomT[k], y = zoomP[k], mode = "lines", visible = False, name = nameK), row = 2, col = 2)
         # Third Trace is for animation purposes 
-        fig.add_trace(go.Scatter(x= [], y = [], mode = 'markers', marker = dict(color="red", size = 10), visible = False), row = 2, col = 2)
+        fig.add_trace(go.Scattergl(x= [], y = [], mode = 'markers', marker = dict(color="red", size = 10), visible = False), row = 2, col = 2)
 
     '''
     Update the layout of subplots
@@ -175,4 +177,4 @@ def plotPOI(filename)
     fig.write_html('.'.join(filename.split('.')[0:-1]) + '_plotPOI.html')
 
 if __name__ == '__main__':
-    plotPOI('../Pm19_136aprh.mat')
+    plotPOI('../Pm19_136aprh.csv')
