@@ -115,7 +115,7 @@ const Apps = props => {
     ? {...styles.root, ...props.style}
     : {...styles.root}
 
-    const [file, setFile] = useState("");
+    const [file, setFile] = useState(localStorage.getItem('file') || "");
 
     useEffect(() => {
         if (!(file === "")) {
@@ -170,8 +170,6 @@ const Apps = props => {
         fs.readFile(files, function(err, data) {
             const info = JSON.parse(data);
 
-            console.log(info);
-
             if (!(info.hasOwnProperty(file))) {
                 return;
             }
@@ -180,9 +178,6 @@ const Apps = props => {
             // check if graphsMixed is right name 
             // graphs2D, graphs3D
             for (let key in graphs) {
-                console.log(graphs[key]);
-                console.log(info[file]);
-
                 if (info[file].hasOwnProperty(graphs[key])) {
                     setters[key](info[file][graphs[key]]);
                 }
@@ -194,19 +189,6 @@ const Apps = props => {
     const objEmpty = (obj) => {
         return Object.keys(obj).length === 0 && obj.constructor === Object;
     }
-
-    const createBrowserWindow = () => {
-        const remote = require('electron').remote;
-        const BrowserWindow = remote.BrowserWindow; 
-        const win = new BrowserWindow({
-            height: 600,
-            width: 800
-        });
-
-        win.loadURL('<url>');
-    }
-
-
 
     return (
             <Container fluid style={rootStyle} textAlign="center">

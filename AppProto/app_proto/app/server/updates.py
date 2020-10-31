@@ -4,8 +4,12 @@ import time
 
 import helper_json
 
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(BASE_DIR, 'user_files')
+GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
+GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
+GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
+
 file_info = os.path.join(BASE_DIR, 'files.json')
 
 def humansize(nbytes):
@@ -99,10 +103,32 @@ def all_updates(info: dict) -> bool:
         helper_json.create(file_info, info)
     return changes 
 
-def main():
+def html_deleted(info: dict) -> bool: 
+    """
+    Updates info for deleted html file
+    """
+    changes = False 
+    for file_ in info: 
+        for graph_type in ('graphs2D', 'graphs3D'):
+            if graph_type in info[file_]:
+                modified = info[file_][graph_type].copy()
+                for graph in info[file_][graph_type]:
+                    graph_path = info[file_][graph_type][graph]
+                    if (not os.path.isfile(os.path.join(GRAPHS_2D_DIR, graph_path)) or not os.path.isfile(os.path.join(GRAPHS_3D_DIR, graph_path))):
+                        modified.pop(graph)
+                        changes = True
+                info[file_][graph_type] = modified 
+    helper_json.create(file_info, info)
+    return changes 
+
+def main(html_=False): # html_ TRUE .html file-related update 
     info = helper_json.read(file_info)
-    return all_updates(info) # update/validate files in files.json
+    if html_: 
+        return html_deleted(info)
+    else: 
+        return all_updates(info) # update/validate files in files.json
 
 if __name__ == "__main__":
-    print(main())
-    sys.stdout.flush()
+    # print(main())
+    # sys.stdout.flush()
+    print('hi')

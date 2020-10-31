@@ -14,15 +14,10 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 # pip install ipywidgets
-<<<<<<< HEAD
 from plotly.offline import plot
 from plotly.subplots import make_subplots
 from ipywidgets import widgets
 from datetime import datetime
-=======
-from plotly.subplots import make_subplots
-from ipywidgets import widgets
->>>>>>> 71fc11c7d782b57a0d9a95f832b64f9125465651
 
 def plot2D(filename):
     # Pull in Data

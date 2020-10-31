@@ -42,16 +42,7 @@ class CompMIX extends React.Component {
 
     render() {
         return (
-            <Container fluid style={styles.root} textAlign="center">
-                <p style={styles.header}>Mixed Graph</p>
-                <Plot
-                    data={this.state.data}
-                    layout={this.state.layout}
-                    frames={this.state.frames}
-                    config={this.state.config}
-                    style={styles.plot}
-                />
-            </Container>
+            <div></div>
         );
     }
 }

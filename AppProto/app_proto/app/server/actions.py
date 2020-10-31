@@ -1,3 +1,8 @@
+"""
+This module works for both
+regular files and HTML files (except 'edit' action)
+"""
+
 import os 
 import sys
 import subprocess 
@@ -5,9 +10,11 @@ import platform
 import webbrowser 
 import shutil
 
+import graphs 
+
 import helper_json, updates
 
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(BASE_DIR, 'user_files')
 file_info = os.path.join(BASE_DIR, 'files.json')
 
@@ -15,6 +22,7 @@ def get_path(file_: str):
     """
     Helper, gets path for given file_ 
     """
+
     try: 
         info = helper_json.read(file_info)
         filtered = filter(lambda key : key == file_, info)
@@ -28,7 +36,10 @@ def get_path(file_: str):
         return None 
 
 def get_download_path():
-    """Returns the default downloads path for linux or windows"""
+    """
+    Returns the default downloads path for linux or windows
+    """
+
     if os.name == 'nt':
         import winreg
         sub_key = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
@@ -40,17 +51,31 @@ def get_download_path():
         return os.path.join(os.path.expanduser('~'), 'downloads')
 
 def save(path_: str, file_: str):
-    downloads_dir = get_download_path() 
-    proper_dir = os.path.join(downloads_dir, 'data_visualization')
-    if not os.path.exists(proper_dir):
-        os.mkdir(proper_dir)
-    file_path = os.path.join(proper_dir, file_)
-    shutil.copyfile(path_, file_path)
+    """
+    Saves the file located at the path_ parameter
+    to the downloads directory
 
-    return True 
+    ** For now it is hard-coded to Downloads/data_visualization, 
+    should be changed to allow for user settings ** 
+    """
+    try: 
+        downloads_dir = get_download_path() 
+        proper_dir = os.path.join(downloads_dir, 'data_visualization')
+        if not os.path.exists(proper_dir):
+            os.mkdir(proper_dir)
+        file_path = os.path.join(proper_dir, file_)
+        shutil.copyfile(path_, file_path)
 
-def edit(path_: str):
-    # os.startfile(path_)
+        return True 
+    except: 
+        return False 
+
+def edit(path_: str, _):
+    """
+    Opens the file located at the path_ parameter
+    with the default application for the file 
+    """
+
     if platform.system() == "Windows":
         os.startfile(path_)
     elif platform.system() == "Darwin":
@@ -59,38 +84,57 @@ def edit(path_: str):
         subprocess.Popen(['xdg-open', path_])
     return True 
 
-def delete(path_: str):
+def delete(path_: str, html_):
     """
-    Finds and deletes file_ param
+    Finds and deletes file located at path_ parameter 
     """
-    os.remove(path_)
-    updates.main()
-    return True 
+    try: 
+        os.remove(path_)
+        updates.main(html_)
+        return True 
+    except: 
+        return False 
+
+def regenerate(file_path: str, file_: str):
+    """
+    Regenerates graph for a .csv file
+    """
+    try: 
+        graphs.main(file_=file_, file_path=file_path, action='generate')
+        return True 
+    except: 
+        return False 
 
 def main() -> str:
     """
     Main handler
     'True' IF successful ELSE 'False'
     """
-
-    file_ = sys.argv[1]
-    action = sys.argv[2]
-
-    available = {
-        'delete': delete,
-        'edit': edit,
-        'save': save,
-    }
-
-    func = available.get(action, None)
-    path = get_path(file_)
-
     try: 
+        file_ = sys.argv[1]
+        action = sys.argv[2]
+
+        html_ = False
+        if len(sys.argv) > 3: # for graphs
+            path = sys.argv[3]
+            html_ = True
+        else: # for regular files 
+            path = get_path(file_)
+
+        available = {
+            'delete': delete,
+            'edit': edit,
+            'save': save,
+            'regenerate': regenerate,
+        }
+
+        func = available.get(action, None)
+
         if func == None or path == None: 
-            raise Exception("Not a valid action.")
-        if action in set(('delete', 'edit')): 
-            result = func(path) 
-        else: 
+            raise Exception("Not a valid action or file not found.")
+        if action in set(('delete', 'edit')): # delete, edit
+            result = func(path, html_) 
+        else: # save
             result = func(path, file_)
         if result: 
             return "True"
@@ -103,7 +147,7 @@ def main() -> str:
 
 def test() -> str:
     """
-    Main handler
+    Main handler -- TEST 
     'True' IF successful ELSE 'False'
     """
 
@@ -136,3 +180,4 @@ if __name__ == "__main__":
     print(main())
     sys.stdout.flush()
     # print(test())
+    # print('hi')

@@ -9,6 +9,8 @@ import Base from './containers/Base';
 import Page2D from "./containers/Page2D";
 import Page3D from "./containers/Page3D";
 import PageMIX from "./containers/PageMIX";
+import SettingsPage from "./containers/SettingsPage";
+import InfoPage from "./containers/InfoPage";
 
 export default function Routes() {
   return (
@@ -33,6 +35,16 @@ export default function Routes() {
         <Route path={routes.GRAPHMIX}
         render={() => {
           return <Base Page={PageMIX} />
+        }} />
+
+        <Route path={routes.SETTINGS}
+        render={() => {
+          return <Base Page={SettingsPage} />
+        }} />
+
+        <Route path={routes.INFO}
+        render={() => {
+          return <Base Page={InfoPage} />
         }} />
 
         <Route path={routes.HOME}

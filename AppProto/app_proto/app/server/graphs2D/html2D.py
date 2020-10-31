@@ -16,7 +16,7 @@ import json
 from .graphers2D import * 
 import helper_json
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
 GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
 GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
@@ -100,5 +100,8 @@ def main(file_: str, file_path: str) -> Tuple[bool, List[str]]:
         return (False, [])
 
 if __name__ == "__main__":
-    print(main('mn17_005aprh25.mat.csv', 'mn17_005aprh25.mat.csv'))
-    sys.stdout.flush()
+    # this is only testing -- this module is only really called via the 'main()' function 
+    # print(main('mn17_005aprh25.mat.csv', 'mn17_005aprh25.mat.csv'))
+    # sys.stdout.flush()
+
+    print(BASE_DIR)

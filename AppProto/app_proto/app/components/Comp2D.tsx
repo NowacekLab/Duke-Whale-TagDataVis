@@ -105,12 +105,75 @@ const Comp2D = props => {
     const server_path = path.resolve(path.join(__dirname, 'server'))
     const files = path.resolve(path.join(server_path, 'files.json'));
     const file = localStorage.getItem('file');
+    const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
+    const spawn = require("child_process").spawn; 
 
     const [graphs2D, setGraphs2D] = useState([]);
 
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const [update, setUpdater] = useState(false);
+
     useEffect(() => {
         getGraphs();
-      }, [])
+      }, new Array(update))
+    
+    function handleAction(action, obj) {
+
+        const FILE = obj['name'];
+        const PATH = obj['path'];
+
+        const args = new Array(action_script_path, FILE, action, PATH);
+
+        const pythonProcess = spawn('python3', args);
+
+        pythonProcess.stdout.on('data', (data) => {
+
+            let resp = data.toString().trim();
+
+            console.log(resp);
+
+            if (resp === "True") {
+                if (action === 'delete') {
+                    setSuccessMessage(`${FILE} deleted.`);
+                } else if (action === 'save') {
+                    setSuccessMessage(`Saved in 'data _visualization' folder in Downloads!`)
+                }
+                showSuccess();
+
+                setUpdater(!update);
+
+            } else if (resp === 'False') {
+                if (action === 'delete') {
+                    setErrorMessage("File could not be deleted.")
+                } else if (action === 'edit') {
+                    setErrorMessage("File could not be opened.")
+                }
+
+                showError();
+            } else {
+
+                setErrorMessage("Error. Please contact developers.");
+                showError();
+            }
+
+        })
+    }
+
+    function handleDelete(obj) {
+
+        console.log("DELETE");
+
+        handleAction('delete', obj);
+    }
+    function handleSave(obj) {
+
+        console.log("SAVE");
+
+        handleAction('save', obj);
+    }
+
 
     const getGraphs = () => {
         fs.readFile(files, function(err, data) {
@@ -129,9 +192,6 @@ const Comp2D = props => {
                     graphs.push(graph2D);
                 }
                 setGraphs2D(graphs);
-
-                console.log("TESTING")
-                console.log(graphs);
             }
         })
     }
@@ -142,8 +202,8 @@ const Comp2D = props => {
         const remote = require('electron').remote;
         const BrowserWindow = remote.BrowserWindow; 
         const win = new BrowserWindow({
-            height: 600,
-            width: 800,
+            height: 800,
+            width: 1000,
             title: name,
         });
     
@@ -169,12 +229,14 @@ const Comp2D = props => {
 
     const handleClick = () => {
         if (selected.length === 0) {
+            setErrorMessage("No graphs have been selected.");
             showError();
             return;
         }
         selected.forEach((obj, i) => {
             createBrowserWindow(obj['name'], obj['path']);
         });
+        setSuccessMessage(`${selected.length} graphs have been generated.`);
         showSuccess();
     }
 
@@ -215,10 +277,10 @@ const Comp2D = props => {
                                     </ListItemIcon>
                                     <ListItemText style={{color: "black"}} id={obj['name']} primary={obj['name']} />
                                     <ListItemSecondaryAction>
-                                        <IconButton>
-                                            <SaveIcon />
+                                        <IconButton onClick={() => handleSave(obj)}>
+                                            <SaveIcon/>
                                         </IconButton>
-                                        <IconButton edge="end">
+                                        <IconButton edge="end" onClick={() => handleDelete(obj)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </ListItemSecondaryAction>
@@ -240,14 +302,14 @@ const Comp2D = props => {
                 <div style={styles.bannerSuperCont}>
                     <div id="success-notif-cont" style={styles.bannerCont}>
                     <Alert variant="filled" severity="success" style={styles.banner}>
-                            {`${selected.length} graphs generated.`}
+                            {successMessage === "" ? "Success!" : successMessage}
                     </Alert>
                     </div>
                 </div>
                 <div style={styles.bannerSuperCont}>
                     <div id="error-notif-cont" style={styles.bannerErrorCont}>
                     <Alert variant="filled" severity="error" style={styles.banner}>
-                            {"No graphs have been selected."}
+                            {errorMessage === "" ? "Error." : errorMessage}
                     </Alert>
                     </div>
                 </div>

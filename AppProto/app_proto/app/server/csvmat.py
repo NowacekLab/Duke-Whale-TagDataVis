@@ -16,7 +16,7 @@ import updates
 
 import graphs 
 
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(BASE_DIR, 'user_files')
 file_info = os.path.join(BASE_DIR, 'files.json')
 
@@ -107,24 +107,13 @@ def main() -> str:
 
             graphs.main(file_=conversion, file_path=conversion_path, action='generate')
 
-            return json.dumps({
-                    'status': "True",
-                    'new_file': conversion, 
-                    'new_path': conversion_path,
-            })
+            return "True"
 
-        return json.dumps({
-            'status': "False",
-            'reason': "Failed conversion or otherwise."
-        })
+        return "False"
 
     except Exception as e: 
         # print(e) -- enable for dev
-        return json.dumps({
-            'status': "False",
-            'reason': e,
-        })
-        # return False 
+        return "False"
 
 def tester():
 

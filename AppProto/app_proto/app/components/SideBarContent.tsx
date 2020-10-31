@@ -22,8 +22,12 @@ const styles = {
         color: "white",
         textDecoration: "none",
     },
-    active_link: {
+    active_link_side: {
         borderLeft: "3px solid white",
+        opacity: 1,
+    },
+    active_link_bottom: {
+        borderBottom: "3px solid white",
         opacity: 1,
     },
     content: {
@@ -47,7 +51,7 @@ const SideBarContent = props => {
     return(
         <SideBarComp>
             <div style={styles.content}>
-                <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link}>
+                <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link_side}>
                     <ListItem>
                         <ListItemIcon>
                             <HomeIcon style={{color:"white"}} fontSize="large"/>
@@ -66,7 +70,7 @@ const SideBarContent = props => {
                     Home
                 </a> */}
 
-                <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link}>
+                <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link_side}>
                     <ListItem>
                         <ListItemIcon>
                             <AppsIcon style={{color:"white"}} fontSize="large"/>
@@ -82,12 +86,16 @@ const SideBarContent = props => {
             </div>
 
             <div style={styles.bottomBtnCont}>
-                <IconButton>
-                    <SettingsIcon style={{color: "white"}} fontSize="large" />
-                </IconButton>
-                <IconButton>
-                    <HelpIcon style={{color: "white"}} fontSize="large" />
-                </IconButton>
+                <NavLink to={routes.SETTINGS} exact activeStyle={styles.active_link_bottom}>
+                    <IconButton>
+                        <SettingsIcon style={{color: "white"}} fontSize="large" />
+                    </IconButton>
+                </NavLink>
+                <NavLink to={routes.INFO} exact activeStyle={styles.active_link_bottom}>
+                    <IconButton>
+                        <HelpIcon style={{color: "white"}} fontSize="large" />
+                    </IconButton>
+                </NavLink>
             </div>
 
         </SideBarComp>

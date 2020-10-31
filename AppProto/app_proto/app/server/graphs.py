@@ -11,8 +11,9 @@ from actions import get_path
 
 # Want from graphs3D once those modules are done as well
 from graphs2D import html2D
+from graphs3D import html3D
 
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
 GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
 GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
@@ -58,7 +59,8 @@ def generate_graphs(file_: str, file_path: str) -> bool:
         # ... 
 
     success2D, unsaved2D = html2D.main(file_, file_path)
-    if not success2D: 
+    success3D, unsaved3D = html3D.main(file_, file_path)
+    if not success2D or not success3D: 
         return False 
     return True 
 
@@ -93,11 +95,18 @@ def main(file_=None, file_path=None, action=None) -> bool:
         return e
 
 def test():
-    return "spawned"
+    """
+    This test() is super important // it's the only way to test the graphers/html .py 
+    """
+
+    return html3D.test('eg01_207aprh.csv', "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/server/user_files/eg01_207aprh.csv")
 
 if __name__ == "__main__":
     print(main())
-    # print(test())
     sys.stdout.flush()
+
+    # test()
+
+    #"/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/server/user_files/eg01_207aprh.csv"
 
     # python3 graphs.py eg01_207aprh.csv /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/server/user_files/eg01_207aprh.csv generate

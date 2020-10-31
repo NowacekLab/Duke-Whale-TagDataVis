@@ -4,7 +4,7 @@ import routes from '../constants/routes.json';
 import PropTypes from "prop-types";
 import { Container } from "semantic-ui-react";
 import Typography from '@material-ui/core/Typography';
-import BackupIcon from '@material-ui/icons/Backup';
+import Popover from '@material-ui/core/Popover';
 import Alert from '@material-ui/lab/Alert';
 import ReactLoading from 'react-loading';
 import Button from "@material-ui/core/Button";
@@ -13,6 +13,7 @@ import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/Icons/Delete';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 
 const styles = {
   banner: {
@@ -55,18 +56,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     },
-
-    tableUploadButton: {
-    marginTop: "15px",
-    marginLeft: "5px",
-    height: "50px",
-    },
-
-    tableDeleteButton: {
-      marginTop: "15px",
-      height: "50px",
-      display: "none"
-    }
 };
 
 const FileActions = props => {
@@ -81,77 +70,26 @@ const FileActions = props => {
   const files = path.resolve(path.join(server_path, 'files.json'));
   const script_path = path.resolve(path.join(server_path, 'csvmat.py'));
   const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
-  const generate_script_path = path.resolve(path.join(server_path, 'graphs.py'));
   const spawn = require("child_process").spawn; 
 
+  // Unrelated to above 
   const upload = React.useRef(null);
-  const save = React.useRef(null);
-
   const [chosenFile, setChosenFile] = useState("");
 
+  const color = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#012069"
+        }
+    },
+  });
 
+  // Executes whenever props.selection changes (interact with table)
   useEffect(() => {
     setChosenFile(props.selection);
   }, new Array(props.selection))
 
-  function handleShowDeleteEdit() {
-    setChosenFile(props.selection);
-  }
-
-  function handleEdit() {
-    handleAction('edit');
-  }
-  function handleDelete() {
-    handleAction('delete');
-  }
-  function handleSave() {
-    handleAction('save');
-  }
-
-  function handleAction(action) {
-
-    const args = new Array(action_script_path, chosenFile, action);
-
-    const pythonProcess = spawn('python3', args);
-
-    pythonProcess.stdout.on('data', (data) => {
-      let resp = data.toString().trim();
-
-      console.log(resp);
-
-      if (resp === "True") {
-        if (action === 'delete') {
-          setSuccessMessage(`${chosenFile} deleted.`);
-          setChosenFile("");
-        } else if (action === 'edit') {
-          setSuccessMessage(`Successfully opened ${chosenFile}`)
-        } else if (action === 'save') {
-          setSuccessMessage(`Saved in 'data _visualization' folder in Downloads!`)
-        }
-        showSuccess();
-
-        props.updater();
-      } else if (resp === 'False') {
-        if (action === 'delete') {
-          setErrorMessage("File could not be deleted.")
-        } else if (action === 'edit') {
-          setErrorMessage("File could not be opened.")
-        }
-
-        showError();
-      } else {
-
-        setErrorMessage("Error. Please contact developers.");
-        showError();
-      }
-
-    })
-  }
-
-  function handleFileUpload() {
-      upload.current.click();
-  }
-
+  // Success, Error -- related to messages below
   function showSuccess() {
     const notif = document.getElementById('success-notif-cont');
     notif.style.display='flex';
@@ -168,9 +106,80 @@ const FileActions = props => {
       }, 5000);
   }
 
+  // Messages for actions 
+  const messages = {
+    'True': {
+      'func': showSuccess,
+      'upload': 'Successfully uploaded and processed.',
+      'regenerate': 'Successfully regenerated graphs.',
+      'delete': `${chosenFile} deleted.`,
+      'edit': `Successfully opened ${chosenFile}`,
+      'save': 'Saved in data_visualization folder in Downloads!'
+    },
+    'False': {
+      'func': showError,
+      'upload': 'Failed to upload and/or process.',
+      'regenerate': 'Failed to regenerate graphs.',
+      'delete': 'File could not be deleted.',
+      'edit': 'File could not be opened.',
+      'save': 'File could not be saved.'
+    }
+  }
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Handles the message based on response and action taken 
+  function handleResponse(resp, action) {
+    if (!(messages.hasOwnProperty(resp))) {
+      setMessage("Error. Please contact developers.");
+      showError();
+    } else {
+      setMessage(messages[resp][action]);
+      const func = messages[resp]['func'];
+      func();
+    }
+  } 
+
+  // Handlers attached to buttons 
+  function handleRegenerate() {
+    handleAction('regenerate');
+  }
+  function handleEdit() {
+    handleAction('edit');
+  }
+  function handleDelete() {
+    handleAction('delete');
+  }
+  function handleSave() {
+    handleAction('save');
+  }
+  function handleFileUpload() {
+    upload.current.click();
+}
+
+  // Actual executors...
+  function handleAction(action) {
+
+    const args = new Array(action_script_path, chosenFile, action);
+
+    const pythonProcess = spawn('python3', args);
+
+    const loader = document.getElementById('loader');
+
+    if (action === 'regenerate') {
+      loader.style.display = 'flex';
+    }
+
+    pythonProcess.stdout.on('data', (data) => {
+      let resp = data.toString().trim();
+
+      handleResponse(resp, action);
+
+      if (action === 'regenerate') {
+        loader.style.display='none';
+      }
+    })
+  }
 
   const handleUpload = e => {
 
@@ -184,47 +193,15 @@ const FileActions = props => {
     loader.style.display = 'flex';
 
     pythonProcess.stdout.on('data', (data) => {
-        let resp = JSON.parse(data.toString());
-        
-        if (resp['status'] === "True") { 
-            setSuccessMessage(`${file_name} processed as CSV.`);
-            showSuccess();
+        let resp = data.toString().trim();
 
-            props.updater();
+        const action = 'upload';
 
-            // console.log('true');
-        } else if (resp['status'] === "False") {
-            setErrorMessage(resp['reason']);
-            showError();
-            // console.log('timeout');
-        } else {
-            setErrorMessage("Error. Please contact developers.");
-            showError();
-            // console.log('else');
-        }
+        handleResponse(resp, action);
+      
         loader.style.display='none';
     });
   }
-
-  const processNewFile = (new_file, new_path) => {
-    console.log('HI')
-    console.log(new_file.toString());
-    console.log(new_path.toString());
-
-    const newpythonProcess = spawn('python', [generate_script_path, new_file.toString(), new_path.toString(), 'generate']);
-    newpythonProcess.stdout.on('data', (data) => {
-      console.log('hi');
-      console.log(data.toString());
-    });
-  }
-
-  const color = createMuiTheme({
-    palette: {
-        primary: {
-            main: "#012069"
-        }
-    },
-  });
 
   return (
 
@@ -233,12 +210,29 @@ const FileActions = props => {
             <ReactLoading />
           </div>
           <div>
+
+          {/* CAN PROBABLY REFACTOR THE BELOW WITH OBJ/DICT AND MAPPING */}
+
+          <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AssessmentIcon />}
+                style={{
+                  marginTop: "15px",
+                  height: "50px",
+                  display: chosenFile === "" ? "none" : "inline",
+                }}
+                onClick={handleRegenerate}
+            >
+                Reprocess
+          </Button>
           <Button
                 variant="contained"
                 color="primary"
                 startIcon={<SaveIcon />}
                 style={{
                   marginTop: "15px",
+                  marginLeft: "5px",
                   height: "50px",
                   display: chosenFile === "" ? "none" : "inline",
                 }}
@@ -278,24 +272,30 @@ const FileActions = props => {
                 variant="contained"
                 color="primary"
                 startIcon={<CloudUploadIcon />}
-                style={styles.tableUploadButton}
+                style={{
+                  marginTop: "15px",
+                  marginLeft: "5px",
+                  height: "50px",
+                }}
                 onClick={handleFileUpload}
             >
                 Upload
             </Button>
           </div>
+
           <input type="file" id="file-upload" style={{display:"none"}} onChange={handleUpload} ref={upload} accept=".mat, .csv"></input>
+
           <div style={styles.bannerSuperCont}>
             <div id="success-notif-cont" style={styles.bannerCont}>
               <Alert variant="filled" severity="success" style={styles.banner}>
-                      {successMessage ? successMessage : "Successfully Executed."}
+                      {message ? message : "Successfully Executed."}
               </Alert>
             </div>
           </div>
           <div style={styles.bannerSuperCont}>
             <div id="error-notif-cont" style={styles.bannerErrorCont}>
               <Alert variant="filled" severity="error" style={styles.banner}>
-                      {errorMessage ? errorMessage : "Error. Please contact developers."}
+                      {message ? message : "Error. Please contact developers."}
               </Alert>
             </div>
           </div>
