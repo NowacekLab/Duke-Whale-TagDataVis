@@ -13,6 +13,7 @@ A slider is positioned between the subplots to dictate the range of time
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import scipy.signal as sg
 # pip install ipywidgets
 from plotly.offline import plot
 from plotly.subplots import make_subplots
@@ -34,6 +35,24 @@ def plot2D(filename):
     t = [x/fs for x in range(numData)]
     t_hr = [x/3600 for x in t]
 
+    '''
+    Added code to reduce the lag of the Figure
+    '''
+    # Scaling Factor to reduce amount of data
+    # A factor of 10 will reduce the data for example from 50 Hz to 5 Hz
+    scale = 10
+
+    # Reduce Data
+    sP = sg.decimate(p,scale).copy()
+    sRoll = sg.decimate(roll,scale).copy()
+    sPitch = sg.decimate(pitch,scale).copy()
+    sHead = sg.decimate(head,scale).copy()
+
+    # Calculate time - Reduced 
+    numData = len(sP)
+    sT = [x/(fs/scale) for x in range(numData)]
+    sT_hr = [x/3600 for x in sT]
+
     # Make Widget Figure 
     fig = go.Figure(
             make_subplots(
@@ -47,47 +66,17 @@ def plot2D(filename):
         )
 
     # Create traces for the data and add to figure
-    fig.add_trace(go.Scattergl(x = t_hr, y = p, mode = "lines", name = "Depth"), row = 1, col = 1) 
-    fig.add_trace(go.Scattergl(x = t_hr, y = head, mode = "lines", name = "Head"), row = 2, col = 1)
-    fig.add_trace(go.Scattergl(x = t_hr, y = pitch, mode = "lines", name = "Pitch"), row = 2, col = 1)
-    fig.add_trace(go.Scattergl(x = t_hr, y = roll, mode = "lines", name = "Roll" ), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = sT_hr, y = sP, mode = "lines", name = "Depth"), row = 1, col = 1) 
+    fig.add_trace(go.Scattergl(x = sT_hr, y = sHead, mode = "lines", name = "Head"), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = sT_hr, y = sPitch, mode = "lines", name = "Pitch"), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = sT_hr, y = sRoll, mode = "lines", name = "Roll" ), row = 2, col = 1)
 
     # Update x-axis
     fig.update_xaxes(title = "Time (hr)", rangeslider = dict(visible = True), row = 2, col = 1)
     # Update y-axis
     fig.update_yaxes(title = "Depth (m)", autorange = "reversed", row = 1, col = 1)
 
-
-
-    # # Create Checkboxes for which data to plot
-    # use_head = widgets.Checkbox(
-    #     description='Head: ',
-    #     value=True,
-    # )
-    # use_pitch = widgets.Checkbox(
-    #     description='Pitch: ',
-    #     value=True,
-    # )
-    # use_roll = widgets.Checkbox(
-    #     description='Roll: ',
-    #     value=True,
-    # )
-
-    # container = widgets.HBox(children=[use_head, use_pitch, use_roll])
-
-    # # Create response function to update traces when boxes are checked
-    # def response(change):
-    #    fig.update_traces(visible = [True, use_head.value, use_pitch.value, use_roll.value]) 
-
-    # # Watch Checkboxes for changes
-    # use_head.observe(response, names="value")
-    # use_pitch.observe(response, names="value")
-    # use_roll.observe(response, names="value")
-
-    # # Show the Figure
-    # # fig.show()
-    # widgets.VBox([container,
-    #               fig])
+    # Show figure and save as an HTML
     fig.show()
 
     fig.write_html('.'.join(filename.split('.')[0:-1]) + '_demoPlot2D.html')
