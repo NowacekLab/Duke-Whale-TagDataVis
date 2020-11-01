@@ -27,10 +27,10 @@ def plotPOI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     # Pull Specific Variables
     fs = df['fs'].tolist()[0]
-    head = df['head'].tolist()
-    p = df['p'].tolist()
-    roll = df['roll'].tolist()
-    pitch = df['pitch'].tolist()
+    head = df['Heading'].tolist()
+    p = df['Depth'].tolist()
+    roll = df['Roll'].tolist()
+    pitch = df['Pitch'].tolist()
 
     # Calculate time 
     numData = len(p)
@@ -185,10 +185,10 @@ def plotClickable(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     # Pull Specific Variables
     fs = df['fs'].tolist()[0]
-    head = df['head'].tolist()
-    p = df['p'].tolist()
-    roll = df['roll'].tolist()
-    pitch = df['pitch'].tolist()
+    head = df['Heading'].tolist()
+    p = df['Depth'].tolist()
+    roll = df['Roll'].tolist()
+    pitch = df['Pitch'].tolist()
     # Calculate time 
     numData = len(p)
     t = [x/fs for x in range(numData)]
