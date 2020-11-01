@@ -60,6 +60,18 @@ const styles = {
         backgroundColor: "#012069",
         color: "white"
     },
+    listfooter: {
+        position: "relative",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    filecounter: {
+        position: "absolute",
+        left: 0,
+        color: "black"
+    },
     generateButton: {
         marginTop: "20px",
         backgroundColor: "#012069",
@@ -186,10 +198,10 @@ const Comp3D = props => {
             if (info[file].hasOwnProperty('graphs3D')) {
                 let graphs = new Array();
                 for (let key in info[file]['graphs3D']) {
-                    let graph2D = new Object();
-                    graph2D['name'] = key;
-                    graph2D['path'] = info[file]['graphs3D'][key];
-                    graphs.push(graph2D);
+                    let graph3D = new Object();
+                    graph3D['name'] = key;
+                    graph3D['path'] = info[file]['graphs3D'][key];
+                    graphs.push(graph3D);
                 }
                 setGraphs3D(graphs);
             }
@@ -256,6 +268,19 @@ const Comp3D = props => {
             notif.style.display = 'none';
         }, 3000);    
     }
+
+    const graphNumber = () => {
+        let graphNumber = graphs3D ? graphs3D.length : 0;
+
+        switch (graphNumber) {
+          case 0: 
+            return `No Graphs`
+          case 1:
+            return `1 Graph`
+          default:
+            return `${graphNumber} Graphs`
+        }
+    }
   
     return (
         <Container fluid style={rootStyle} textAlign="center">
@@ -273,6 +298,9 @@ const Comp3D = props => {
                                             checked={selected.map(ob => ob['name']).indexOf(obj['name']) !== -1}
                                             tabIndex = {-1}
                                             disableRipple 
+                                            style = {{
+                                                color: '#012069'
+                                            }}
                                         />
                                     </ListItemIcon>
                                     <ListItemText style={{color: "black"}} id={obj['name']} primary={obj['name']} />
@@ -292,13 +320,18 @@ const Comp3D = props => {
                 }
                 </List>
 
-                <Button
-                    variant="contained"
-                    onClick={handleClick}
-                    style={styles.generateButton}
-                >
-                    Generate
-                </Button>
+                <div style={styles.listfooter}>
+                    <p style={styles.filecounter}>{graphNumber()}</p>
+                    <Button
+                        variant="contained"
+                        onClick={handleClick}
+                        style={styles.generateButton}
+                    >
+                        Generate
+                    </Button>
+                </div>
+
+
                 <div style={styles.bannerSuperCont}>
                     <div id="success-notif-cont" style={styles.bannerCont}>
                     <Alert variant="filled" severity="success" style={styles.banner}>

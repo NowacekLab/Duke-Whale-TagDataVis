@@ -91,6 +91,9 @@ function createData(file, size, modified) {
     fs.readFile(files, function(err, data) {
 
       const testing = JSON.parse(data);
+
+      console.log("hello");
+      console.log(testing);
     
       const realRows = new Array(); 
       for (var key in testing) {
@@ -165,6 +168,7 @@ function createData(file, size, modified) {
                             key={row.file}
                             onClick={(e) => handleChoice(row.file)}
                             selected={choice === row.file}
+                            className="override-hover"
                         >
                         {columns.map((column) => {
                             const value = row[column.id];

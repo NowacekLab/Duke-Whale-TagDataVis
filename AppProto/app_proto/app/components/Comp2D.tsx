@@ -51,6 +51,7 @@ const styles = {
     },
     list: {
         width: "100%",
+        overflow: "auto"
     },
     listItem: {
         display: "flex",
@@ -59,6 +60,18 @@ const styles = {
     listsubheader: {
         backgroundColor: "#012069",
         color: "white"
+    },
+    listfooter: {
+        position: "relative",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    filecounter: {
+        position: "absolute",
+        left: 0,
+        color: "black"
     },
     generateButton: {
         marginTop: "20px",
@@ -179,6 +192,12 @@ const Comp2D = props => {
         fs.readFile(files, function(err, data) {
             const info = JSON.parse(data);
 
+
+            console.log('hello');
+            console.log(info);
+
+
+
             if (!(info.hasOwnProperty(file))) {
                 return;
             }
@@ -189,7 +208,9 @@ const Comp2D = props => {
                     let graph2D = new Object();
                     graph2D['name'] = key;
                     graph2D['path'] = info[file]['graphs2D'][key];
-                    graphs.push(graph2D);
+                    if (graph2D['path'] !== "") {
+                        graphs.push(graph2D);
+                    }
                 }
                 setGraphs2D(graphs);
             }
@@ -256,6 +277,19 @@ const Comp2D = props => {
             notif.style.display = 'none';
         }, 3000);    
     }
+
+    const graphNumber = () => {
+        let graphNumber = graphs2D ? graphs2D.length : 0;
+
+        switch (graphNumber) {
+          case 0: 
+            return `No Graphs`
+          case 1:
+            return `1 Graph`
+          default:
+            return `${graphNumber} Graphs`
+        }
+    }
   
     return (
         <Container fluid style={rootStyle} textAlign="center">
@@ -273,6 +307,9 @@ const Comp2D = props => {
                                             checked={selected.map(ob => ob['name']).indexOf(obj['name']) !== -1}
                                             tabIndex = {-1}
                                             disableRipple 
+                                            style = {{
+                                                color: '#012069'
+                                            }}
                                         />
                                     </ListItemIcon>
                                     <ListItemText style={{color: "black"}} id={obj['name']} primary={obj['name']} />
@@ -292,13 +329,17 @@ const Comp2D = props => {
                 }
                 </List>
 
-                <Button
-                    variant="contained"
-                    onClick={handleClick}
-                    style={styles.generateButton}
-                >
-                    Generate
-                </Button>
+                <div style={styles.listfooter}>
+                    <p style={styles.filecounter}>{graphNumber()}</p>
+                    <Button
+                        variant="contained"
+                        onClick={handleClick}
+                        style={styles.generateButton}
+                    >
+                        Generate
+                    </Button>
+                </div>
+
                 <div style={styles.bannerSuperCont}>
                     <div id="success-notif-cont" style={styles.bannerCont}>
                     <Alert variant="filled" severity="success" style={styles.banner}>

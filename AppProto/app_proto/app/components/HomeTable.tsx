@@ -79,12 +79,23 @@ const HomeTable = props => {
     setUpdate(!update);
   };
 
+  const fileNumber = () => {
+    switch (fileNum) {
+      case 0: 
+        return `No Files`
+      case 1:
+        return `1 File`
+      default:
+        return `${fileNum} Files`
+    }
+  }
+
   return (
 
     <div style={styles.mainContainer}>
     
         <div style={styles.tableHeader}>
-            <p style={styles.tableHeaderElem}>{fileNum} Files</p>
+        <p style={styles.tableHeaderElem}>{fileNumber()}</p>
 
             <FileActions updater={change} selection={fileSelection}/>
         </div>

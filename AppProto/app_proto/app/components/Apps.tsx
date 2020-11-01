@@ -179,7 +179,16 @@ const Apps = props => {
             // graphs2D, graphs3D
             for (let key in graphs) {
                 if (info[file].hasOwnProperty(graphs[key])) {
-                    setters[key](info[file][graphs[key]]);
+                    let hasGraph = false;
+                    for (let name in info[file][graphs[key]]) {
+                        if (info[file][graphs[key]][name] !== "") {
+                            hasGraph = true;
+                            break;
+                        }
+                    }
+                    if (hasGraph) {
+                        setters[key](info[file][graphs[key]]);
+                    }
                 }
             }
 

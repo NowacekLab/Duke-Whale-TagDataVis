@@ -76,12 +76,14 @@ const createWindow = async () => {
         ? {
             nodeIntegration: true,
             enableRemoteModule: true,
+            webSecurity: false,
           }
         : {
             preload: path.join(__dirname, 'dist/renderer.prod.js'),
             enableRemoteModule:true,
+            webSecurity: false,
           },
-  });  
+  });
 
   // getAssetPath('icon.png'),
 

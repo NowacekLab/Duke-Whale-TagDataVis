@@ -20,6 +20,21 @@ const styles = {
       boxShadow: "5px 10px",
       marginTop: "10px",
   },
+  header: {
+    color: "white",
+    textAlign: "center",
+    fontSize: "36px",
+  },
+  headersubtext: {
+    marginTop: "5px"
+  },
+  loadertext: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "5px",
+    flexDirection: "column"
+  },
   bannerSuperCont: {
     zIndex: 999998,
     bottom: 20,
@@ -45,14 +60,15 @@ const styles = {
     animation: "all 1s ease-in",
   },
   loading: {
-    display: "none",
-    background: "rgba(0,0,0,0.8)",
+    display: "none", // none 
+    background: "rgba(0,0,0,0.9)",
     position: "fixed", 
     zIndex: 99998,
     bottom: 0,
     top: 0,
     right: 0,
     left: 200,
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     },
@@ -207,6 +223,10 @@ const FileActions = props => {
 
     <ThemeProvider theme={color}>
           <div style={styles.loading} id="loader">
+            <div style={styles.loadertext}>
+              <span style={styles.header}>This may take a while...</span>
+              <span style={styles.headersubtext}>Please do not close or change the page</span>
+            </div>
             <ReactLoading />
           </div>
           <div>

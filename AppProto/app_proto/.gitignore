@@ -30,7 +30,7 @@ node_modules
 # OSX
 .DS_Store
 
-# App packaged
+# App packaged and other App stuff
 release
 app/main.prod.js
 app/main.prod.js.map
@@ -38,6 +38,9 @@ app/renderer.prod.js
 app/renderer.prod.js.map
 app/style.css
 app/style.css.map
+app/server/files.json
+app/server/user_files
+app/server/user_graphs
 dist
 dll
 main.js
