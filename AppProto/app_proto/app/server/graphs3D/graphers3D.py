@@ -59,9 +59,9 @@ def trackplot(filename):
         line=dict(
             color='darkblue',
             width=1
-        )
+        ),
     ))
-    
+
     fig.update_layout(
         width=800,
         height=700,
@@ -84,10 +84,12 @@ def trackplot(filename):
         ),
     )
 
+
     return [fig]
 
 CREATORS = [(trackplot, 'trackplot.html'),]
 
 if __name__ == '__main__':
-    trackplot('../Data/Pm19_136aprh.mat')
+    # trackplot('../Data/Pm19_136aprh.mat')
+    pass 
     

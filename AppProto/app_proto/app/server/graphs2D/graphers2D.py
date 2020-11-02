@@ -17,7 +17,7 @@ import numpy as np
 
 # EACH FUNCTION UNLESS OTHERWISE SPECIFIED RETURNS [graph object1, graph object2, ...]
 
-def plotPOI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     """
     This graph, like the one below it, does not 
     use the xAxis nor indices params, only there
@@ -120,7 +120,7 @@ def plotPOI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     Update the layout of subplots
     Have to go axis by axis 
     '''
-    # Upadte x-axis
+    # Update x-axis
     fig.update_xaxes(title_text = "Time (hr)", row = 1, col = 1)
     fig.update_xaxes(title_text = "Time (hr)", row = 1, col = 2)
 
@@ -177,7 +177,7 @@ def plotPOI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [fig]
 
-def plotClickable(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+def plot_timeline(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     """
     Note that this graph does not use xAxis nor indices params
     Only there as part of graph standardization in creating 
@@ -237,9 +237,12 @@ def plotClickable(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [fig]
 
+def all_graphs_comb(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+    startIndex, endIndex = indices 
 
-def all_graphs(df: "data frame", xAxis: List[int], indices: Tuple[int]):
-    # ARBITARY INDICES 
+    pass 
+
+def all_graphs_sep(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
     plots = make_subplots(rows=3, cols=2, 
@@ -337,8 +340,8 @@ def pitch(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     
     return [graph1, graph2, graph3]
 
-CREATORS = [(plotPOI, 'plotPOI.html'), (plotClickable, 'plotClickable.html'), 
-            (all_graphs, 'all_graphs.html'), (head, 'heading.html'), 
+CREATORS = [(plot_POI, 'plot_POI.html'), (plot_timeline, 'plot_timeline.html'), 
+            (all_graphs_sep, 'all_graphs_separate.html'), (head, 'heading.html'), 
             (pitch, 'roll.html', 'pitch.html', 'pitchroll.html'), (accelerationX, 'xAccel.html'), 
             (accelerationY, 'yAccel.html'), (accelerationZ, 'zAccel.html')]
 

@@ -99,17 +99,18 @@ def test(file_, file_path):
     This test() is super important // it's the only way to test the graphers/html .py
     """
 
-    return html3D.test(file_, file_path)
+    # return html3D.test(file_, file_path)
+    return html3D.test2()
 
 if __name__ == "__main__":
     # print(main())
     # sys.stdout.flush()
 
-    # test()
-    file_test = 'eg01_207aprh.csv'
-    file_path_test = os.path.join(BASE_DIR, 'user_files', 'eg01_207aprh.csv') # cross-platform
+    test("", "")
+    # file_test = 'eg01_207aprh.csv'
+    # file_path_test = os.path.join(BASE_DIR, 'user_files', 'eg01_207aprh.csv') # cross-platform
     # print(test(file_test, file_path_test))
-    print(main(file_test, file_path_test, 'generate'))
+    # print(main(file_test, file_path_test, 'generate'))
 
     #"/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/server/user_files/eg01_207aprh.csv"
 

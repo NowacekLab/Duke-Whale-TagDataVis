@@ -108,6 +108,12 @@ def test(file_: str, file_path: str): # similar to above without save_existing_g
     except Exception as e: 
         print(e) 
 
+def test2():
+    path_ = "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_files\\eg01_207aprh.csv"
+    graphs = trackplot(path_)
+    graph = graphs[0]
+    graph.show()
+
 if __name__ == "__main__":
     # this is only testing -- this module is only really called via the 'main()' function 
     # print(main('mn17_005aprh25.mat.csv', 'mn17_005aprh25.mat.csv'))
