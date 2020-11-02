@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
-import PropTypes from "prop-types";
+import routes from '../server/routes.json';
 import {Container} from 'semantic-ui-react';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GraphicEqIcon from '@material-ui/icons/GraphicEq';
@@ -10,11 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import Button from "@material-ui/core/Button";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Alert from '@material-ui/lab/Alert';
@@ -199,55 +195,53 @@ const Apps = props => {
         return Object.keys(obj).length === 0 && obj.constructor === Object;
     }
 
+    const apps = [
+        {
+            "key": 0,
+            "title": "2D Graph",
+            "disable?": objEmpty(graphs2D),
+            "disabled": <TrendingUpIcon onClick={showError} style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D} />,
+            "enabled": <Link to={routes.GRAPH2D} style={styles.link}>
+                            <TrendingUpIcon style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D} />
+                       </Link>
+        },
+        {
+            "key": 1,
+            "title": "3D Graph",
+            "disable?": objEmpty(graphs3D),
+            "disabled": <GraphicEqIcon onClick={showError} style={hover3D ? styles.app_hover : styles.app} onMouseEnter={toggleHover3D} onMouseLeave={toggleHover3D}/>,
+            "enabled": <Link to={routes.GRAPH3D} style={styles.link}>
+                            <GraphicEqIcon style={hover3D ? styles.app_hover : styles.app} onMouseEnter={toggleHover3D} onMouseLeave={toggleHover3D}/>
+                        </Link>
+        },
+        {
+            "key": 2,
+            "title": "Mixed Graph",
+            "disable?": objEmpty(graphsMixed),
+            "disabled": <MultilineChartIcon onClick={showError} style={hoverMIX ? styles.app_hover : styles.app} onMouseEnter={toggleHoverMIX} onMouseLeave={toggleHoverMIX}/>,
+            "enabled": <Link to={routes.GRAPHMIX} style={styles.link}>
+                            <MultilineChartIcon style={hoverMIX ? styles.app_hover : styles.app} onMouseEnter={toggleHoverMIX} onMouseLeave={toggleHoverMIX}/>
+                        </Link>
+        }
+
+    ]
+
     return (
             <Container fluid style={rootStyle} textAlign="center">
                 <p style={styles.header}>Apps</p>
                 <div>
                     <div style={styles.dock}>
-                        <div>
-                            {
-                                objEmpty(graphs2D) ? 
-                                <TrendingUpIcon onClick={showError} style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D} />
-                                :
-                                <Link to={{
-                                    pathname: routes.GRAPH2D,
-                                    state: {
-                                        chosen: "",
-                                    }
-                                    }} style={styles.link}>
-                                    <TrendingUpIcon style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D} />
-                                </Link>
-                            }
-                            <Typography style={styles.text}>
-                                        2D Graph
-                            </Typography>
-                        </div>
-                        <div>
-                            {
-                                objEmpty(graphs3D) ?
-                                <GraphicEqIcon onClick={showError} style={hover3D ? styles.app_hover : styles.app} onMouseEnter={toggleHover3D} onMouseLeave={toggleHover3D}/>
-                                :
-                                <Link to={routes.GRAPH3D} style={styles.link}>
-                                    <GraphicEqIcon style={hover3D ? styles.app_hover : styles.app} onMouseEnter={toggleHover3D} onMouseLeave={toggleHover3D}/>
-                                </Link>
-                            }
-                            <Typography style={styles.text}>
-                                    3D Graph
-                            </Typography>
-                        </div>
-                        <div>
-                            {
-                                objEmpty(graphsMixed) ?
-                                <MultilineChartIcon onClick={showError} style={hoverMIX ? styles.app_hover : styles.app} onMouseEnter={toggleHoverMIX} onMouseLeave={toggleHoverMIX}/>
-                                :
-                                <Link to={routes.GRAPHMIX} style={styles.link}>
-                                    <MultilineChartIcon style={hoverMIX ? styles.app_hover : styles.app} onMouseEnter={toggleHoverMIX} onMouseLeave={toggleHoverMIX}/>
-                                </Link>
-                            }
-                            <Typography style={styles.text}>
-                                    Mixed
-                            </Typography>
-                        </div>
+                        {apps.map((obj) => {
+                            return(
+                                <div>
+                                    {obj['disable?'] ? obj['disabled'] : obj['enabled']}
+                                    <Typography style={styles.text}>
+                                        {obj['title']}
+                                    </Typography>   
+                                </div>
+                            )
+
+                        })}
                     </div>
 
                     <List style={styles.selectButton}>
@@ -257,6 +251,7 @@ const Apps = props => {
                         </ListItem>
                     </List>
                 </div>
+
                 <Modal
                     aria-labelledby="transition-modal-title"
                     aria-describedby="transition-modal-description"
@@ -277,6 +272,7 @@ const Apps = props => {
                         <AppsTable fileSelector={setFile} file={file} closeModal={handleModalClose}/>
                     </Fade>
                 </Modal>
+
                 <div style={styles.bannerSuperCont}>
                     <div id="error-notif-cont" style={styles.bannerErrorCont}>
                     <Alert variant="filled" severity="error" style={styles.banner}>

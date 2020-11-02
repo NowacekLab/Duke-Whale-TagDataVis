@@ -1,10 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
-import PropTypes from "prop-types";
-import {Container, Icon} from "semantic-ui-react";
-import path from "path";
-import Plot from 'react-plotly.js';
 
 const styles = {
     root: {

@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
+import React, { useState } from 'react';
 import PropTypes from "prop-types";
-import Paper from '@material-ui/core/Paper';
 import Button from "@material-ui/core/Button";
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 
 import FileTable from "./FileTable";
 

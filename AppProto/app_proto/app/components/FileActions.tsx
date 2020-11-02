@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
 import PropTypes from "prop-types";
-import { Container } from "semantic-ui-react";
-import Typography from '@material-ui/core/Typography';
-import Popover from '@material-ui/core/Popover';
 import Alert from '@material-ui/lab/Alert';
 import ReactLoading from 'react-loading';
 import Button from "@material-ui/core/Button";
@@ -45,6 +40,11 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonCont: {
+    display: "flex",
+    justifyContent: "center",
+    alignContent: "center",
+  },  
   bannerCont: {
     width: "500px",
     display: "none",
@@ -219,6 +219,55 @@ const FileActions = props => {
     });
   }
 
+  const frequentStyle = {
+    marginTop: "15px",
+    marginLeft: "5px",
+    height: "50px",
+    display: chosenFile === "" ? "none" : "flex"
+  }
+
+  const buttons = [
+    {
+      "title": "Reprocess",
+      "icon": <AssessmentIcon />,
+      "style": {
+        marginTop: "15px",
+        height: "50px",
+        display: chosenFile === "" ? "none" : "flex",
+      },
+      "onClick": handleRegenerate, 
+    },
+    {
+      "title": "Save",
+      "icon": <SaveIcon />,
+      "style": frequentStyle,
+      "onClick": handleSave, 
+    },
+    {
+      "title": "Edit",
+      "icon": <EditIcon />,
+      "style": frequentStyle,
+      "onClick": handleEdit, 
+    },
+    {
+      "title": "Delete",
+      "icon": <DeleteIcon />,
+      "style": frequentStyle,
+      "onClick": handleDelete, 
+    },
+    {
+      "title": "Upload",
+      "icon": <CloudUploadIcon />,
+      "style": {
+        marginTop: "15px",
+        marginLeft: "5px",
+        height: "50px",
+        display: "flex"
+      },
+      "onClick": handleFileUpload, 
+    },
+  ]
+
   return (
 
     <ThemeProvider theme={color}>
@@ -229,78 +278,22 @@ const FileActions = props => {
             </div>
             <ReactLoading />
           </div>
-          <div>
+          <div style={styles.buttonCont}>
 
-          {/* CAN PROBABLY REFACTOR THE BELOW WITH OBJ/DICT AND MAPPING */}
+            {buttons.map((obj) => {
+              return(
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={obj['icon']}
+                  style={obj['style']}
+                  onClick={obj['onClick']}
+                >
+                  {obj['title']}
+                </Button>
+              )
+            })}
 
-          <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AssessmentIcon />}
-                style={{
-                  marginTop: "15px",
-                  height: "50px",
-                  display: chosenFile === "" ? "none" : "inline",
-                }}
-                onClick={handleRegenerate}
-            >
-                Reprocess
-          </Button>
-          <Button
-                variant="contained"
-                color="primary"
-                startIcon={<SaveIcon />}
-                style={{
-                  marginTop: "15px",
-                  marginLeft: "5px",
-                  height: "50px",
-                  display: chosenFile === "" ? "none" : "inline",
-                }}
-                onClick={handleSave}
-            >
-                Save
-            </Button>
-            <Button
-                variant="contained"
-                color="primary"
-                startIcon={<EditIcon />}
-                style={{
-                  marginTop: "15px",
-                  marginLeft: "5px",
-                  height: "50px",
-                  display: chosenFile === "" ? "none" : "inline",
-                }}
-                onClick={handleEdit}
-            >
-                Edit
-            </Button>
-            <Button
-                variant="contained"
-                color="primary"
-                startIcon={<DeleteIcon />}
-                style={{
-                  marginTop: "15px",
-                  marginLeft: "5px",
-                  height: "50px",
-                  display: chosenFile === "" ? "none" : "inline",
-                }}
-                onClick={handleDelete}
-            >
-                Delete
-            </Button>
-            <Button
-                variant="contained"
-                color="primary"
-                startIcon={<CloudUploadIcon />}
-                style={{
-                  marginTop: "15px",
-                  marginLeft: "5px",
-                  height: "50px",
-                }}
-                onClick={handleFileUpload}
-            >
-                Upload
-            </Button>
           </div>
 
           <input type="file" id="file-upload" style={{display:"none"}} onChange={handleUpload} ref={upload} accept=".mat, .csv"></input>

@@ -1,10 +1,8 @@
-import React, {ReactNode} from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import routes from '../constants/routes.json';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import routes from '../server/routes.json';
 import SideBarComp from "./SideBarComp";
 import PropTypes from "prop-types";
-import {Icon} from "@blueprintjs/core";
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';

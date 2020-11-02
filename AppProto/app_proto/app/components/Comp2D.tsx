@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
-import PropTypes from "prop-types";
 import {Container, Icon} from "semantic-ui-react";
 
 import List from '@material-ui/core/List';
@@ -12,11 +9,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
 import Alert from '@material-ui/lab/Alert';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/Icons/Delete';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import * as url from "url";
 
