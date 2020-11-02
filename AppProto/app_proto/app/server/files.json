@@ -6,9 +6,9 @@
         "size": "16.43 MB",
         "modified": "11/01/2020 02:37:44 PM",
         "graphs2D": {
-            "plotPOI.html": "",
-            "plotClickable.html": "",
-            "all_graphs.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\all_graphs.html",
+            "plot_POI.html": "",
+            "plot_timeline.html": "",
+            "all_graphs_separate.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\all_graphs_separate.html",
             "heading.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\heading.html",
             "roll.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\roll.html",
             "pitch.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\pitch.html",

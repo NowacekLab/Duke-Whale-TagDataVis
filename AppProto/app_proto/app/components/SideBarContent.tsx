@@ -50,7 +50,7 @@ const SideBarContent = props => {
         <SideBarComp>
             <div>
 
-            <div style={styles.content}>
+                <div style={styles.content}>
                     <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link_side}>
                         <ListItem>
                             <ListItemIcon>
@@ -61,15 +61,7 @@ const SideBarContent = props => {
                                 primary={<Typography style={styles.text}>{"Home"}</Typography>}
                             />                    
                         </ListItem>
-
-                        {/* <Icon icon="home" iconSize={25} intent="primary"/>
-                        Home */}
                     </NavLink>
-
-                    {/* <a href="#" style={styles.sidebarLink}>
-                        Home
-                    </a> */}
-
                     <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link_side}>
                         <ListItem>
                             <ListItemIcon>
