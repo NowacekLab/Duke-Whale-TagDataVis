@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {Container} from "semantic-ui-react";
+import {Container, Icon} from "semantic-ui-react";
+
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -45,6 +46,7 @@ const styles = {
     },
     list: {
         width: "100%",
+        overflow: "auto"
     },
     listItem: {
         display: "flex",
@@ -102,7 +104,7 @@ const styles = {
 };
 
   
-const Comp3D = props => {
+const Graphs = props => {
     const rootStyle = props.style
       ? { ...styles.root, ...props.style }
       : { ...styles.root }
@@ -114,16 +116,54 @@ const Comp3D = props => {
     const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
     const spawn = require("child_process").spawn; 
 
-    const [graphs3D, setGraphs3D] = useState([]);
-
-    const [successMessage, setSuccessMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const [graphs, setGraphs] = useState([]);
 
     const [update, setUpdater] = useState(false);
 
     useEffect(() => {
         getGraphs();
       }, new Array(update))
+    
+    function showNotif() {
+        const notif = document.getElementById('notif-cont');
+        notif.style.display='flex';
+        setTimeout(() => {
+            notif.style.display = 'none';
+        }, 5000);
+    }
+    
+    // Messages for actions
+    const [response, setResponse] = useState("True");
+    const [message, setMessage] = useState("");
+
+    const messages = {
+        'True': {
+        'delete': `Successfully deleted.`,
+        'save': 'Saved in data_visualization folder in Downloads!',
+        'component':             <Alert variant="filled" severity="success" style={styles.banner}>
+                                    {message}
+                                </Alert>
+        },
+        'False': {
+        'delete': 'File could not be deleted.',
+        'save': 'File could not be saved.',
+        'component':             <Alert variant="filled" severity="error" style={styles.banner}>
+                                    {message}
+                                </Alert>
+        }
+    }
+
+    // Handles the message based on response and action taken 
+    function handleResponse(resp, action) {
+        if (!(messages.hasOwnProperty(resp))) {
+            setMessage("Error. Please contact developers.");
+            setResponse('False');
+        } else {
+            setMessage(messages[resp][action]);
+            setResponse(resp);
+        }
+        showNotif();
+    } 
     
     function handleAction(action, obj) {
 
@@ -138,78 +178,85 @@ const Comp3D = props => {
 
             let resp = data.toString().trim();
 
-            console.log(resp);
+            handleResponse(resp, action);
 
-            if (resp === "True") {
-                if (action === 'delete') {
-                    setSuccessMessage(`${FILE} deleted.`);
-                } else if (action === 'save') {
-                    setSuccessMessage(`Saved in 'data _visualization' folder in Downloads!`)
-                }
-                showSuccess();
-
+            if (action === 'delete') {
                 setUpdater(!update);
-
-            } else if (resp === 'False') {
-                if (action === 'delete') {
-                    setErrorMessage("File could not be deleted.")
-                } else if (action === 'edit') {
-                    setErrorMessage("File could not be opened.")
-                }
-
-                showError();
-            } else {
-
-                setErrorMessage("Error. Please contact developers.");
-                showError();
             }
 
         })
     }
 
     function handleDelete(obj) {
-
-        console.log("DELETE");
-
         handleAction('delete', obj);
     }
     function handleSave(obj) {
-
-        console.log("SAVE");
-
         handleAction('save', obj);
     }
 
-
+    const [graphType, setGraphType] = useState("default");
+    const graphChoices = {
+        '2D': {
+            'title': '2D Graphs',
+            'key': 'graphs2D'
+        },
+        '3D': {
+            'title': '3D Graphs',
+            'key': 'graphs3D'
+        },
+        'MIXED': {
+            'title': 'Mixed Graphs',
+            'key': 'graphsMixed'
+        },
+        "default": {
+            'title': 'Loading...'
+        }
+    }
     const getGraphs = () => {
+
+
+        console.log("RENDERING!!!");
+        console.log(localStorage.getItem('app'));
+
+        let graph_type = localStorage.getItem('app');
+
+        graph_type = graph_type ? graph_type : "2D"; // defaults to 2D 
+
+        console.log('AFTER');
+        console.log(graph_type);
+
+        setGraphType(graph_type);
+
         fs.readFile(files, function(err, data) {
             const info = JSON.parse(data);
-
             if (!(info.hasOwnProperty(file))) {
                 return;
             }
+            
+            const graph_key = graphChoices[graph_type]['key'];
 
-            if (info[file].hasOwnProperty('graphs3D')) {
-                let graphs = new Array();
-                for (let key in info[file]['graphs3D']) {
-                    let graph3D = new Object();
-                    graph3D['name'] = key;
-                    graph3D['path'] = info[file]['graphs3D'][key];
-                    graphs.push(graph3D);
+            if (info[file].hasOwnProperty(graph_key)) {
+                let new_graphs = new Array();
+                for (let key in info[file][graph_key]) {
+                    let graph = new Object();
+                    graph['name'] = key;
+                    graph['path'] = info[file][graph_key][key];
+                    if (graph['path'] !== "") {
+                        new_graphs.push(graph);
+                    }
                 }
-                setGraphs3D(graphs);
+                setGraphs(new_graphs);
             }
         })
     }
-
 
     const createBrowserWindow = (name, path) => {
 
         const remote = require('electron').remote;
         const BrowserWindow = remote.BrowserWindow; 
         const win = new BrowserWindow({
-            height: 600,
-            width: 800,
+            height: 800,
+            width: 1000,
             title: name,
         });
     
@@ -235,36 +282,21 @@ const Comp3D = props => {
 
     const handleClick = () => {
         if (selected.length === 0) {
-            setErrorMessage("No graphs have been selected.");
-            showError();
-            return;
+            setMessage("No graphs have been selected.");
+            setResponse("False");
+        } else {
+            selected.forEach((obj, i) => {
+                createBrowserWindow(obj['name'], obj['path']);
+            });
+            setMessage(`${selected.length} graphs have been generated.`);
+            setResponse("True");
         }
-        selected.forEach((obj, i) => {
-            createBrowserWindow(obj['name'], obj['path']);
-        });
-        setSuccessMessage(`${selected.length} graphs have been generated.`);
-        showSuccess();
-    }
-
-    // Error, no graphs selected
-    function showError() {
-        const notif = document.getElementById('error-notif-cont');
-        notif.style.display='flex';
-        setTimeout(() => {
-            notif.style.display = 'none';
-        }, 5000);
-    }
-
-    function showSuccess() {
-        const notif = document.getElementById('success-notif-cont');
-        notif.style.display='flex';
-        setTimeout(() => {
-            notif.style.display = 'none';
-        }, 3000);    
+        setResponse("True");
+        showNotif();
     }
 
     const graphNumber = () => {
-        let graphNumber = graphs3D ? graphs3D.length : 0;
+        let graphNumber = graphs ? graphs.length : 0;
 
         switch (graphNumber) {
           case 0: 
@@ -278,11 +310,11 @@ const Comp3D = props => {
   
     return (
         <Container fluid style={rootStyle} textAlign="center">
-            <p style={styles.header}>3D Graphs</p>
+            <p style={styles.header}>{graphChoices[graphType]['title']}</p>
             <div style={styles.listContainer}>
                 <List style={styles.list} subheader={<ListSubheader style={styles.listsubheader}>{file}</ListSubheader>}>
-                    {graphs3D ?
-                        graphs3D.map((obj) => {
+                    {graphs ?
+                        graphs.map((obj) => {
                             
                             return (
                                 <ListItem style={styles.listItem} key={obj['name']} dense button onClick={handleToggle(obj)}>
@@ -325,19 +357,9 @@ const Comp3D = props => {
                     </Button>
                 </div>
 
-
                 <div style={styles.bannerSuperCont}>
-                    <div id="success-notif-cont" style={styles.bannerCont}>
-                    <Alert variant="filled" severity="success" style={styles.banner}>
-                            {successMessage === "" ? "Success!" : successMessage}
-                    </Alert>
-                    </div>
-                </div>
-                <div style={styles.bannerSuperCont}>
-                    <div id="error-notif-cont" style={styles.bannerErrorCont}>
-                    <Alert variant="filled" severity="error" style={styles.banner}>
-                            {errorMessage === "" ? "Error." : errorMessage}
-                    </Alert>
+                    <div id="notif-cont" style={styles.bannerCont}>
+                        {messages[response]['component']}
                     </div>
                 </div>
             </div>
@@ -351,4 +373,4 @@ const Comp3D = props => {
 //     children: PropTypes.object
 //   };
   
-  export default Comp3D;
+  export default Graphs;
