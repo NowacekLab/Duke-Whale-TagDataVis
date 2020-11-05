@@ -115,9 +115,7 @@ const Apps = props => {
     const [file, setFile] = useState(localStorage.getItem('file') || "");
 
     useEffect(() => {
-        if (!(file === "")) {
-            checkForGraphs();
-        }
+        checkForGraphs();
       }, new Array(file))
       
     const fs = window.require('fs');
@@ -142,11 +140,12 @@ const Apps = props => {
     };
 
     // Clickability (there are processed graph files associated with chosen file)
-    const [clickables, setClickables] = useState({
-        "graphs2D": false,
-        "graphs3D": false,
-        "graphsMixed": false,
-    });
+    const clickablesDisabled = {
+        'graphs2D': false,
+        'graphs3D': false,
+        'graphsMixed': false,
+    }
+    const [clickables, setClickables] = useState(clickablesDisabled);
 
     const handleClickable = (type, clickable) => {
         var obj = Object.create(clickables);
@@ -179,6 +178,8 @@ const Apps = props => {
             const info = JSON.parse(data);
 
             if (!(info.hasOwnProperty(file))) {
+                localStorage.setItem('file', '');
+                setClickables(clickablesDisabled); // byproduct of not wanting to conflict with logic below || CAN BE REFACTORED
                 return;
             }
             const graphs = ['graphs2D', 'graphs3D', 'graphsMixed'];

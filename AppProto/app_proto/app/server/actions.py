@@ -7,7 +7,6 @@ import os
 import sys
 import subprocess 
 import platform 
-import webbrowser 
 import shutil
 
 import graphs 
@@ -18,9 +17,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(BASE_DIR, 'user_files')
 file_info = os.path.join(BASE_DIR, 'files.json')
 
-def get_path(file_: str):
+def get_path(file_: str) -> str:
     """
-    Helper, gets path for given file_ 
+    Helper, gets path for given file_ (NON html)
     """
 
     try: 
@@ -34,6 +33,27 @@ def get_path(file_: str):
     except Exception as e: 
         print(e)
         return None 
+
+def get_path_html(parent_file: str, html_file: str) -> str:
+    """
+    Helper, gets path for HTML file
+    """
+
+    try:
+        info = helper_json.read(file_info)
+        if all((
+            parent_file in info, 
+            'graphs2D' in info[parent_file],
+            html_file in info[parent_file]['graphs2D'],
+        )):
+            file_path = info[parent_file]['graphs2D'][html_file]
+            if len(file_path) > 0:
+                return file_path 
+        return None 
+
+    except Exception as e: 
+        print(e)
+        return None
 
 def get_download_path():
     """
@@ -50,7 +70,7 @@ def get_download_path():
     else:
         return os.path.join(os.path.expanduser('~'), 'downloads')
 
-def save(path_: str, file_: str):
+def save(path_: str, file_: str, parent_file: str):
     """
     Saves the file located at the path_ parameter
     to the downloads directory
@@ -61,16 +81,22 @@ def save(path_: str, file_: str):
     try: 
         downloads_dir = get_download_path() 
         proper_dir = os.path.join(downloads_dir, 'data_visualization')
-        if not os.path.exists(proper_dir):
+        if not os.path.isdir(proper_dir):
             os.mkdir(proper_dir)
-        file_path = os.path.join(proper_dir, file_)
+        if file_.endswith('html') and parent_file: 
+            parent_dir = os.path.join(proper_dir, parent_file)
+        else: 
+            parent_dir = os.path.join(proper_dir, file_)
+        if not os.path.isdir(parent_dir):
+            os.mkdir(parent_dir)
+        file_path = os.path.join(parent_dir, file_)
         shutil.copyfile(path_, file_path)
 
         return True 
     except: 
         return False 
 
-def edit(path_: str, _):
+def edit(path_: str, *args, **kwargs):
     """
     Opens the file located at the path_ parameter
     with the default application for the file 
@@ -84,18 +110,19 @@ def edit(path_: str, _):
         subprocess.Popen(['xdg-open', path_])
     return True 
 
-def delete(path_: str, html_):
+def delete(path_: str, _, file_: str, *args, **kwargs):
     """
     Finds and deletes file located at path_ parameter 
     """
     try: 
+        html_ = file_.endswith('html')
         os.remove(path_)
-        updates.main(html_)
+        updates.main(html_, path_)
         return True 
     except: 
         return False 
 
-def regenerate(file_path: str, file_: str):
+def regenerate(file_path: str, file_: str, *args, **kwargs):
     """
     Regenerates graph for a .csv file
     """
@@ -114,10 +141,11 @@ def main() -> str:
         file_ = sys.argv[1]
         action = sys.argv[2]
 
-        html_ = False
-        if len(sys.argv) > 3: # for graphs
-            path = sys.argv[3]
-            html_ = True
+        html_ = file_.endswith('.html')
+        parent_file = ""
+        if len(sys.argv) > 3 and html_:
+            parent_file = sys.argv[3] # need to know which file belongs to 
+            path = get_path_html(parent_file, file_)
         else: # for regular files 
             path = get_path(file_)
 
@@ -132,10 +160,7 @@ def main() -> str:
 
         if func == None or path == None: 
             raise Exception("Not a valid action or file not found.")
-        if action in set(('delete', 'edit')): # delete, edit
-            result = func(path, html_) 
-        else: # save
-            result = func(path, file_)
+        result = func(path, file_, parent_file)
         if result: 
             return "True"
         else: 

@@ -81,8 +81,7 @@ const HomeTable = props => {
     <div style={styles.mainContainer}>
     
         <div style={styles.tableHeader}>
-        <p style={styles.tableHeaderElem}>{fileNumber()}</p>
-
+            <p style={styles.tableHeaderElem}>{fileNumber()}</p>
             <FileActions updater={change} selection={fileSelection}/>
         </div>
 

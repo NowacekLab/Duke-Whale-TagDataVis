@@ -1,26 +1,4 @@
 {
-    "eg01_207aprh.csv": {
-        "orig_path": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_files\\eg01_207aprh.csv",
-        "csv_path": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_files\\eg01_207aprh.csv",
-        "original_name": "eg01_207aprh.csv",
-        "size": "16.43 MB",
-        "modified": "11/01/2020 02:37:44 PM",
-        "graphs2D": {
-            "plot_POI.html": "",
-            "plot_timeline.html": "",
-            "all_graphs_separate.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\all_graphs_separate.html",
-            "heading.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\heading.html",
-            "roll.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\roll.html",
-            "pitch.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\pitch.html",
-            "pitchroll.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\pitchroll.html",
-            "xAccel.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\xAccel.html",
-            "yAccel.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\yAccel.html",
-            "zAccel.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\eg01_207aprh.csv\\zAccel.html"
-        },
-        "graphs3D": {
-            "trackplot.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\3D\\eg01_207aprh.csv\\trackplot.html"
-        }
-    },
     "Pm19_136aprh.csv": {
         "orig_path": "C:\\Users\\joonl\\Downloads\\Pm19_136aprh.mat",
         "csv_path": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_files\\Pm19_136aprh.csv",
@@ -28,9 +6,9 @@
         "size": "147.97 MB",
         "modified": "11/01/2020 09:36:17 PM",
         "graphs2D": {
-            "plotPOI.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\plotPOI.html",
-            "plotClickable.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\plotClickable.html",
-            "all_graphs.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\all_graphs.html",
+            "plot_POI.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\plot_POI.html",
+            "plot_timeline.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\plot_timeline.html",
+            "all_graphs_separate.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\all_graphs_separate.html",
             "heading.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\heading.html",
             "roll.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\roll.html",
             "pitch.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Pm19_136aprh.csv\\pitch.html",
@@ -41,6 +19,28 @@
         },
         "graphs3D": {
             "trackplot.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\3D\\Pm19_136aprh.csv\\trackplot.html"
+        }
+    },
+    "Zc19_206aprh.csv": {
+        "orig_path": "C:\\Users\\joonl\\Downloads\\Zc19_206aprh.mat",
+        "csv_path": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_files\\Zc19_206aprh.csv",
+        "original_name": "Zc19_206aprh.mat",
+        "size": "113.77 MB",
+        "modified": "11/06/2020 03:00:40 AM",
+        "graphs2D": {
+            "plot_POI.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\plot_POI.html",
+            "plot_timeline.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\plot_timeline.html",
+            "all_graphs_separate.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\all_graphs_separate.html",
+            "heading.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\heading.html",
+            "roll.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\roll.html",
+            "pitch.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\pitch.html",
+            "pitchroll.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\pitchroll.html",
+            "xAccel.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\xAccel.html",
+            "yAccel.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\yAccel.html",
+            "zAccel.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\2D\\Zc19_206aprh.csv\\zAccel.html"
+        },
+        "graphs3D": {
+            "trackplot.html": "C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_graphs\\3D\\Zc19_206aprh.csv\\trackplot.html"
         }
     }
 }

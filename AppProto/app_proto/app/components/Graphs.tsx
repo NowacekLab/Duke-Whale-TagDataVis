@@ -13,10 +13,15 @@ import Alert from '@material-ui/lab/Alert';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/Icons/Delete';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddCommentIcon from '@material-ui/icons/AddComment';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import * as url from "url";
 
 const styles = {
     root: {
+        position: 'relative',
         fontFamily: "HelveticaNeue-Light",
         height: "100%",
         display: "grid",
@@ -46,7 +51,8 @@ const styles = {
     },
     list: {
         width: "100%",
-        overflow: "auto"
+        overflow: "auto",
+        position: "relative"
     },
     listItem: {
         display: "flex",
@@ -63,10 +69,10 @@ const styles = {
         justifyContent: "center",
         alignItems: "center"
     },
-    filecounter: {
+    listInfo: {
         position: "absolute",
         left: 0,
-        color: "black"
+        color: "black",
     },
     generateButton: {
         marginTop: "20px",
@@ -101,9 +107,17 @@ const styles = {
       display: "none",
       animation: "all 1s ease-in",
     },
+    loadingSmaller: {
+        display: "none",
+        position: "fixed",
+        zIndex: 99998,
+        top: 0,
+        left: 200, 
+        right: 0,
+        height: 5,
+    }
 };
 
-  
 const Graphs = props => {
     const rootStyle = props.style
       ? { ...styles.root, ...props.style }
@@ -168,9 +182,12 @@ const Graphs = props => {
     function handleAction(action, obj) {
 
         const FILE = obj['name'];
-        const PATH = obj['path'];
 
-        const args = new Array(action_script_path, FILE, action, PATH);
+        const args = new Array(action_script_path, FILE, action, file);
+
+        const loadingSmaller = document.getElementById('loader-smaller');
+
+        loadingSmaller.style.display = 'flex';
 
         const pythonProcess = spawn('python3', args);
 
@@ -184,6 +201,8 @@ const Graphs = props => {
                 setUpdater(!update);
             }
 
+            loadingSmaller.style.display = 'none';
+
         })
     }
 
@@ -192,6 +211,9 @@ const Graphs = props => {
     }
     function handleSave(obj) {
         handleAction('save', obj);
+    }
+    function handleComment(obj) {
+        console.log("placeholder");
     }
 
     const [graphType, setGraphType] = useState("default");
@@ -214,16 +236,9 @@ const Graphs = props => {
     }
     const getGraphs = () => {
 
-
-        console.log("RENDERING!!!");
-        console.log(localStorage.getItem('app'));
-
         let graph_type = localStorage.getItem('app');
 
         graph_type = graph_type ? graph_type : "2D"; // defaults to 2D 
-
-        console.log('AFTER');
-        console.log(graph_type);
 
         setGraphType(graph_type);
 
@@ -257,7 +272,7 @@ const Graphs = props => {
         const win = new BrowserWindow({
             height: 800,
             width: 1000,
-            title: name,
+            title: `${file} : ${name}`,
         });
     
         win.loadURL(url.format({
@@ -291,7 +306,6 @@ const Graphs = props => {
             setMessage(`${selected.length} graphs have been generated.`);
             setResponse("True");
         }
-        setResponse("True");
         showNotif();
     }
 
@@ -307,9 +321,33 @@ const Graphs = props => {
             return `${graphNumber} Graphs`
         }
     }
+
+    const buttons = [
+        {
+            "key": 0,
+            "title": <h1>Comments</h1>,
+            "icon": <AddCommentIcon />,
+            "onClick": handleComment,
+        },
+        {
+            "key": 1,
+            "title": <h1>Save</h1>,
+            "icon": <SaveIcon />,
+            "onClick": handleSave,
+        },
+        {
+            "key": 2, 
+            "title": <h1>Delete</h1>,
+            "icon": <DeleteIcon />,
+            "onClick": handleDelete,
+        },
+    ]
   
     return (
         <Container fluid style={rootStyle} textAlign="center">
+
+            <LinearProgress id="loader-smaller" color="primary" style={styles.loadingSmaller}/>
+
             <p style={styles.header}>{graphChoices[graphType]['title']}</p>
             <div style={styles.listContainer}>
                 <List style={styles.list} subheader={<ListSubheader style={styles.listsubheader}>{file}</ListSubheader>}>
@@ -331,12 +369,20 @@ const Graphs = props => {
                                     </ListItemIcon>
                                     <ListItemText style={{color: "black"}} id={obj['name']} primary={obj['name']} />
                                     <ListItemSecondaryAction>
-                                        <IconButton onClick={() => handleSave(obj)}>
-                                            <SaveIcon/>
-                                        </IconButton>
-                                        <IconButton edge="end" onClick={() => handleDelete(obj)}>
-                                            <DeleteIcon />
-                                        </IconButton>
+                                        {buttons.map((btn) => {
+
+                                            return(
+                                                <Tooltip
+                                                    title={btn['title']}
+                                                    arrow
+                                                >
+                                                    <IconButton onClick={() => btn['onClick'](obj)}>
+                                                        {btn['icon']}
+                                                    </IconButton>
+
+                                                </Tooltip>
+                                            )
+                                        })}
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             )
@@ -347,7 +393,8 @@ const Graphs = props => {
                 </List>
 
                 <div style={styles.listfooter}>
-                    <p style={styles.filecounter}>{graphNumber()}</p>
+                    <p style={styles.listInfo}>{graphNumber()}</p>
+                    {/* SCROLL TO SEE ALL -- WAS HERE */}
                     <Button
                         variant="contained"
                         onClick={handleClick}

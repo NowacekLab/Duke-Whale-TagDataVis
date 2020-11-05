@@ -22,7 +22,9 @@ const styles = {
   },
 };
 
-// 012069
+const fs = window.require('fs');
+const path = require('path');
+const server_path = path.resolve(path.join(__dirname, 'server'));
   
 const Settings = props => {
   const rootStyle = props.style
