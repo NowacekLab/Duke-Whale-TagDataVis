@@ -84,9 +84,6 @@ function createData(file, size, modified) {
     fs.readFile(files, function(err, data) {
 
       const testing = JSON.parse(data);
-
-      console.log("hello");
-      console.log(testing);
     
       const realRows = new Array(); 
       for (var key in testing) {

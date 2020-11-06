@@ -5,7 +5,7 @@ import ReactLoading from 'react-loading';
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import AddCommentIcon from '@material-ui/icons/AddComment';
+import CommentIcon from '@material-ui/icons/Comment';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/Icons/Delete';
@@ -71,7 +71,7 @@ const styles = {
     bottom: 0,
     top: 0,
     right: 0,
-    left: 0,
+    left: 200,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
@@ -199,6 +199,8 @@ const FileActions = props => {
   // Actual executors...
   function handleAction(action) {
 
+    props.setLoading ? props.setLoading(true) : "";
+
     const args = new Array(action_script_path, chosenFile, action);
 
     const pythonProcess = spawn('python3', args);
@@ -222,10 +224,15 @@ const FileActions = props => {
       } else {
         loaderSmaller.style.display = 'none';
       }
+
+      props.setLoading ? props.setLoading(false) : "";
+
     })
   }
 
   const handleUpload = e => {
+
+    props.setLoading ? props.setLoading(true) : "";
 
     const file_path = e.target.files[0].path;
     const file_name = e.target.files[0].name; 
@@ -239,11 +246,16 @@ const FileActions = props => {
     pythonProcess.stdout.on('data', (data) => {
         let resp = data.toString().trim();
 
+        console.log(resp);
+
         const action = 'upload';
 
         handleResponse(resp, action);
       
         loader.style.display='none';
+
+        props.setLoading ? props.setLoading(false) : "";
+
     });
   }
 
@@ -254,8 +266,8 @@ const FileActions = props => {
   const buttons = [
     {
       "key": 0,
-      "title": <h1>Add Comment</h1>,
-      "icon": <AddCommentIcon
+      "title": <h1>Comments</h1>,
+      "icon": <CommentIcon
         color="primary"
         fontSize="large"
       />,

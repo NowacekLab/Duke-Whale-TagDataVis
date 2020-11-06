@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import routes from '../server/routes.json';
 import SideBarComp from "./SideBarComp";
@@ -42,6 +42,16 @@ const styles = {
         width: "100%",
         justifyContent: "space-between"
     },
+    bannerSuperCont: {
+        zIndex: 999998,
+        bottom: 20,
+        left: 200,
+        right: 0,
+        position: "fixed",
+        display: "flex",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 };
 
 const SideBarContent = props => {
@@ -51,7 +61,7 @@ const SideBarContent = props => {
             <div>
 
                 <div style={styles.content}>
-                    <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link_side}>
+                    <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={(e) => {props.loading ? e.preventDefault() : ""}}>
                         <ListItem>
                             <ListItemIcon>
                                 <HomeIcon style={{color:"white"}} fontSize="large"/>
@@ -62,7 +72,7 @@ const SideBarContent = props => {
                             />                    
                         </ListItem>
                     </NavLink>
-                    <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link_side}>
+                    <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={(e) => {props.loading ? e.preventDefault() : ""}}>
                         <ListItem>
                             <ListItemIcon>
                                 <AppsIcon style={{color:"white"}} fontSize="large"/>
@@ -78,12 +88,12 @@ const SideBarContent = props => {
                 </div>
 
                 <div style={styles.bottomBtnCont}>
-                    <NavLink to={routes.SETTINGS} exact activeStyle={styles.active_link_bottom}>
+                    <NavLink to={routes.SETTINGS} exact activeStyle={styles.active_link_bottom} onClick={(e) => {props.loading ? e.preventDefault() : ""}}>
                         <IconButton>
                             <SettingsIcon style={{color: "white"}} fontSize="large" />
                         </IconButton>
                     </NavLink>
-                    <NavLink to={routes.INFO} exact activeStyle={styles.active_link_bottom}>
+                    <NavLink to={routes.INFO} exact activeStyle={styles.active_link_bottom} onClick={(e) => {props.loading ? e.preventDefault() : ""}}>
                         <IconButton>
                             <HelpIcon style={{color: "white"}} fontSize="large" />
                         </IconButton>

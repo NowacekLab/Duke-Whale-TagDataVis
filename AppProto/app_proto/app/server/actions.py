@@ -41,14 +41,12 @@ def get_path_html(parent_file: str, html_file: str) -> str:
 
     try:
         info = helper_json.read(file_info)
-        if all((
-            parent_file in info, 
-            'graphs2D' in info[parent_file],
-            html_file in info[parent_file]['graphs2D'],
-        )):
-            file_path = info[parent_file]['graphs2D'][html_file]
-            if len(file_path) > 0:
-                return file_path 
+        if parent_file in info: 
+            for graph_type in ('graphs2D', 'graphs3D'):
+                if graph_type in info[parent_file] and html_file in info[parent_file][graph_type]:
+                    file_path = info[parent_file][graph_type][html_file]
+                    if len(file_path) > 0: 
+                        return file_path
         return None 
 
     except Exception as e: 
@@ -169,40 +167,10 @@ def main() -> str:
     except Exception as e: 
         return e 
 
+def test(): 
 
-def test() -> str:
-    """
-    Main handler -- TEST 
-    'True' IF successful ELSE 'False'
-    """
-
-    file_ = 'patients.csv'
-    action = 'save'
-
-    available = {
-        'delete': delete,
-        'edit': edit,
-        'save': save,
-    }
-
-    func = available.get(action, None)
-    path = get_path(file_)
-
-    try: 
-        if func == None or path == None: 
-            raise Exception("Not a valid action.")
-        result = func(path, file_)
-        if result: 
-            return "True"
-        else: 
-            return "False"
-
-    except Exception as e: 
-        return e 
-
+    return get_path_html('Zc19_206aprh.csv', 'trackplot.html')
 
 if __name__ == "__main__":
     print(main())
     sys.stdout.flush()
-    # print(test())
-    # print('hi')

@@ -57,7 +57,6 @@ const HomeTable = props => {
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
 
-    const [fileNum, setFileNum] = useState(0);
     const [update, setUpdate] = useState(false);
     const [fileSelection, setFileSelection] = useState("");
 
@@ -66,13 +65,13 @@ const HomeTable = props => {
   };
 
   const fileNumber = () => {
-    switch (fileNum) {
+    switch (props.fileNum) {
       case 0: 
         return `No Files`
       case 1:
         return `1 File`
       default:
-        return `${fileNum} Files`
+        return `${props.fileNum} Files`
     }
   }
 
@@ -82,10 +81,10 @@ const HomeTable = props => {
     
         <div style={styles.tableHeader}>
             <p style={styles.tableHeaderElem}>{fileNumber()}</p>
-            <FileActions updater={change} selection={fileSelection}/>
+            <FileActions updater={change} selection={fileSelection} setLoading={props.setLoading ? props.setLoading : ""}/>
         </div>
 
-        <FileTable toUpdate={update} fileNum={setFileNum} selection={setFileSelection}/>
+        <FileTable toUpdate={update} fileNum={props.setFileNum} selection={setFileSelection}/>
 
     </div>
   );

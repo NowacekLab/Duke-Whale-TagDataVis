@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from "prop-types";
 import { Container } from "semantic-ui-react";
+
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import HomeTable from "./HomeTable";
 
@@ -89,6 +92,7 @@ const styles = {
   },
   tableContainer: {
     overflow: "scroll",
+    display: "none"
   },
   table: {
     width: "80%",
@@ -98,24 +102,57 @@ const styles = {
   container: {
     maxHeight: 440,
   },
+  loadingSmaller : {
+    display: "flex",
+    position: "fixed",
+    zIndex: 99998,
+    top: 0,
+    left: 200, 
+    right: 0,
+    height: 5,
+  }
 };
-
-// 012069
   
 const Home = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
 
+  const [fileNum, setFileNum] = useState(-1);
+
+  const handleLoading = () => {
+    const loaderSmaller = document.getElementById('loader-smaller');
+    const loadingTable = document.getElementById('loading-table');
+    const homeTable = document.getElementById('home-table');
+
+    if (fileNum > -1) {
+      setTimeout(() => {
+        loaderSmaller ? loaderSmaller.style.display = "none" : "";
+        loadingTable ? loadingTable.style.display="none" : "";
+        homeTable ? homeTable.style.display = "block" : "";
+      }, 300)
+    }
+  }
+
+  useEffect(() => {
+    handleLoading();
+  }, [fileNum]);
+
   return (
     <Container fluid style={rootStyle} textAlign="center">
       <p style={styles.header}>Home</p>
 
-      <div style={styles.tableContainer}>
-        <HomeTable />
+      <LinearProgress id="loader-smaller" color="primary" style={styles.loadingSmaller}/>
 
+      <div style={styles.table} id="loading-table">
+        <Skeleton variant="text" width="100%" height={30} />
+        <Skeleton variant="rect" height={500} />
       </div>
 
+      <div style={styles.tableContainer} id="home-table">
+        <HomeTable fileNum={fileNum} setFileNum={setFileNum} setLoading={props.setLoading ? props.setLoading : () => {return}}/>
+
+      </div>
     </Container>
   );
 };

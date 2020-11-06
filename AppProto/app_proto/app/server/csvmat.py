@@ -110,7 +110,7 @@ def main() -> str:
 
     except Exception as e: 
         # print(e) -- enable for dev
-        return "False"
+        return e
 
 def tester():
 

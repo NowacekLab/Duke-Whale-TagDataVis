@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Grid, List } from 'semantic-ui-react';
 import styles from "./base.css";
 import Sidebar from 'react-sidebar';
@@ -15,16 +15,19 @@ const sidebarStyles = {
     }
 };
 
-const sidebarProps = {
-    sidebar: <SideBarContent />, 
-    docked: true, 
-    styles: sidebarStyles,
-}
-
 export default function Base({Page}: Props) {
+
+    const [loading, setLoading] = useState(false); // disable navigation when action taken 
+
+    const sidebarProps = {
+        sidebar: <SideBarContent loading={loading} />, 
+        docked: true, 
+        styles: sidebarStyles,
+    }
+
     return ( 
         <Sidebar {...sidebarProps}>
-            <Page />
+            <Page setLoading={setLoading} />
         </Sidebar>
     )
 }
