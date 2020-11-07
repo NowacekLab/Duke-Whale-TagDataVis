@@ -16,6 +16,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Alert from '@material-ui/lab/Alert';
 
 import AppsTable from "./AppsTable";
+import { FastRewind } from '@material-ui/icons';
 
 const styles = {
     root: {
@@ -114,42 +115,51 @@ const Apps = props => {
     const [file, setFile] = useState(localStorage.getItem('file') || "");
 
     useEffect(() => {
-        if (!(file === "")) {
-            checkForGraphs();
-        }
+        checkForGraphs();
       }, new Array(file))
       
-  const fs = window.require('fs');
-  const path = require('path');
-  const server_path = path.resolve(path.join(__dirname, 'server'))
-  const files = path.resolve(path.join(server_path, 'files.json'));
+    const fs = window.require('fs');
+    const path = require('path');
+    const server_path = path.resolve(path.join(__dirname, 'server'))
+    const files = path.resolve(path.join(server_path, 'files.json'));
 
     // HOVER
-    const [hover2D, setHover2D] = useState(false);
-    const [hover3D, setHover3D] = useState(false);
-    const [hoverMIX, setHoverMIX] = useState(false);
+    const [hovers, setHovers] = useState({
+        "2D": false,
+        "3D": false,
+        "MIXED": false
+    });
 
-    // Clickability 
-    const [graphs2D, setGraphs2D] = useState({});
-    const [graphs3D, setGraphs3D] = useState({});
-    const [graphsMixed, setGraphsMixed] = useState({});
+    const handleHover = (type, hovering) => {
 
+        localStorage.setItem('app', type);
+
+        var obj = Object.create(hovers);
+        obj[type] = hovering;
+        setHovers(obj);
+    };
+
+    // Clickability (there are processed graph files associated with chosen file)
+    const clickablesDisabled = {
+        'graphs2D': false,
+        'graphs3D': false,
+        'graphsMixed': false,
+    }
+    const [clickables, setClickables] = useState(clickablesDisabled);
+
+    const handleClickable = (type, clickable) => {
+        var obj = Object.create(clickables);
+        obj[type] = clickable; 
+        setClickables(obj);
+    };
+
+    // Modal
     const [showModal, setShowModal] = useState(false);
-
     const handleModalOpen = () => {
         setShowModal(true);
     };
     const handleModalClose = () => {
         setShowModal(false);
-    };
-    const toggleHover2D = (e) => {
-        setHover2D(!hover2D);
-    };
-    const toggleHover3D = (e) => {
-        setHover3D(!hover3D);
-    };
-    const toggleHoverMIX = (e) => {
-        setHoverMIX(!hoverMIX);
     };
 
     // Error, no graphs
@@ -161,18 +171,21 @@ const Apps = props => {
         }, 5000);
     }
 
+    // Initialize clickability 
     const checkForGraphs = () => {
         localStorage.setItem('file', file);
         fs.readFile(files, function(err, data) {
             const info = JSON.parse(data);
 
             if (!(info.hasOwnProperty(file))) {
+                localStorage.setItem('file', '');
+                setClickables(clickablesDisabled); // byproduct of not wanting to conflict with logic below || CAN BE REFACTORED
                 return;
             }
             const graphs = ['graphs2D', 'graphs3D', 'graphsMixed'];
-            const setters =[setGraphs2D, setGraphs3D, setGraphsMixed];
-            // check if graphsMixed is right name 
-            // graphs2D, graphs3D
+
+            var obj = new Object();
+
             for (let key in graphs) {
                 if (info[file].hasOwnProperty(graphs[key])) {
                     let hasGraph = false;
@@ -182,45 +195,40 @@ const Apps = props => {
                             break;
                         }
                     }
-                    if (hasGraph) {
-                        setters[key](info[file][graphs[key]]);
-                    }
+                    obj[graphs[key]] = hasGraph;
                 }
             }
 
+            setClickables(obj);
         })
-    }
-
-    const objEmpty = (obj) => {
-        return Object.keys(obj).length === 0 && obj.constructor === Object;
     }
 
     const apps = [
         {
             "key": 0,
             "title": "2D Graph",
-            "disable?": objEmpty(graphs2D),
-            "disabled": <TrendingUpIcon onClick={showError} style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D} />,
-            "enabled": <Link to={routes.GRAPH2D} style={styles.link}>
-                            <TrendingUpIcon style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D} />
+            "clickable?": clickables['graphs2D'],
+            "disabled": <TrendingUpIcon onClick={showError} style={hovers['2D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("2D", true)} onMouseLeave={() => handleHover("2D", false)} />,
+            "enabled": <Link to={routes.GRAPHS} style={styles.link}>
+                            <TrendingUpIcon style={hovers['2D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("2D", true)} onMouseLeave={() => handleHover("2D", false)} />
                        </Link>
         },
         {
             "key": 1,
             "title": "3D Graph",
-            "disable?": objEmpty(graphs3D),
-            "disabled": <GraphicEqIcon onClick={showError} style={hover3D ? styles.app_hover : styles.app} onMouseEnter={toggleHover3D} onMouseLeave={toggleHover3D}/>,
-            "enabled": <Link to={routes.GRAPH3D} style={styles.link}>
-                            <GraphicEqIcon style={hover3D ? styles.app_hover : styles.app} onMouseEnter={toggleHover3D} onMouseLeave={toggleHover3D}/>
+            "clickable?": clickables['graphs3D'],
+            "disabled": <GraphicEqIcon onClick={showError} style={hovers['3D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("3D", true)} onMouseLeave={() => handleHover("3D", false)}/>,
+            "enabled": <Link to={routes.GRAPHS} style={styles.link}>
+                            <GraphicEqIcon style={hovers['3D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("3D", true)} onMouseLeave={() => handleHover("3D", false)}/>
                         </Link>
         },
         {
             "key": 2,
             "title": "Mixed Graph",
-            "disable?": objEmpty(graphsMixed),
-            "disabled": <MultilineChartIcon onClick={showError} style={hoverMIX ? styles.app_hover : styles.app} onMouseEnter={toggleHoverMIX} onMouseLeave={toggleHoverMIX}/>,
-            "enabled": <Link to={routes.GRAPHMIX} style={styles.link}>
-                            <MultilineChartIcon style={hoverMIX ? styles.app_hover : styles.app} onMouseEnter={toggleHoverMIX} onMouseLeave={toggleHoverMIX}/>
+            "clickable?": clickables['graphsMixed'],
+            "disabled": <MultilineChartIcon onClick={showError} style={hovers['MIXED'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("MIXED", true)} onMouseLeave={() => handleHover("MIXED", false)}/>,
+            "enabled": <Link to={routes.GRAPHS} style={styles.link}>
+                            <MultilineChartIcon style={hovers['MIXED'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("MIXED", true)} onMouseLeave={() => handleHover("MIXED", false)}/>
                         </Link>
         }
 
@@ -234,7 +242,7 @@ const Apps = props => {
                         {apps.map((obj) => {
                             return(
                                 <div>
-                                    {obj['disable?'] ? obj['disabled'] : obj['enabled']}
+                                    {obj['clickable?'] ? obj['enabled'] : obj['disabled']}
                                     <Typography style={styles.text}>
                                         {obj['title']}
                                     </Typography>   

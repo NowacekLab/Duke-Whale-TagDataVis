@@ -82,6 +82,11 @@ const Info = props => {
       visualizing it using your own browser and the .html file.`
     },
     {
+      "title": "Why do buttons not work sometimes?",
+      "description": `The most likely reason is that an action has already been requested at that time.
+      In that case the application prevents additional actions for safety. In rare cases it may be technical difficulties (see below).`
+    },
+    {
       "title": "What if there are serious technical difficulties?",
       "description": `If you have tried your best to deal with them, including restarting the application,
       and it appears to be a problem internally with the application, then please contact the main supervisor (see credits)

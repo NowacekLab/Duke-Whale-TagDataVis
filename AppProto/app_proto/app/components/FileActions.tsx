@@ -5,10 +5,14 @@ import ReactLoading from 'react-loading';
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import CommentIcon from '@material-ui/icons/Comment';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/Icons/Delete';
 import AssessmentIcon from '@material-ui/icons/Assessment';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = {
   banner: {
@@ -72,6 +76,15 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     },
+    loadingSmaller: {
+      display: "none",
+      position: "fixed",
+      zIndex: 99998,
+      top: 0,
+      left: 200, 
+      right: 0,
+      height: 5,
+    }
 };
 
 const FileActions = props => {
@@ -107,6 +120,9 @@ const FileActions = props => {
 
   // Success, Error -- related to messages below
   function showSuccess() {
+
+    props.updater(); // alert to update 
+
     const notif = document.getElementById('success-notif-cont');
     notif.style.display='flex';
     setTimeout(() => {
@@ -115,6 +131,9 @@ const FileActions = props => {
   }
 
   function showError() {
+
+      props.updater(); // alert to update 
+
       const notif = document.getElementById('error-notif-cont');
       notif.style.display='flex';
       setTimeout(() => {
@@ -157,6 +176,9 @@ const FileActions = props => {
   } 
 
   // Handlers attached to buttons 
+  function handleComment() {
+    console.log('placeholder');
+  }
   function handleRegenerate() {
     handleAction('regenerate');
   }
@@ -171,19 +193,25 @@ const FileActions = props => {
   }
   function handleFileUpload() {
     upload.current.click();
-}
+  }
+
 
   // Actual executors...
   function handleAction(action) {
+
+    props.setLoading ? props.setLoading(true) : "";
 
     const args = new Array(action_script_path, chosenFile, action);
 
     const pythonProcess = spawn('python3', args);
 
     const loader = document.getElementById('loader');
+    const loaderSmaller = document.getElementById('loader-smaller');
 
     if (action === 'regenerate') {
       loader.style.display = 'flex';
+    } else {
+      loaderSmaller.style.display='flex';
     }
 
     pythonProcess.stdout.on('data', (data) => {
@@ -193,11 +221,18 @@ const FileActions = props => {
 
       if (action === 'regenerate') {
         loader.style.display='none';
+      } else {
+        loaderSmaller.style.display = 'none';
       }
+
+      props.setLoading ? props.setLoading(false) : "";
+
     })
   }
 
   const handleUpload = e => {
+
+    props.setLoading ? props.setLoading(true) : "";
 
     const file_path = e.target.files[0].path;
     const file_name = e.target.files[0].name; 
@@ -211,58 +246,83 @@ const FileActions = props => {
     pythonProcess.stdout.on('data', (data) => {
         let resp = data.toString().trim();
 
+        console.log(resp);
+
         const action = 'upload';
 
         handleResponse(resp, action);
       
         loader.style.display='none';
+
+        props.setLoading ? props.setLoading(false) : "";
+
     });
   }
 
   const frequentStyle = {
-    marginTop: "15px",
-    marginLeft: "5px",
-    height: "50px",
     display: chosenFile === "" ? "none" : "flex"
   }
 
   const buttons = [
     {
-      "title": "Reprocess",
-      "icon": <AssessmentIcon />,
-      "style": {
-        marginTop: "15px",
-        height: "50px",
-        display: chosenFile === "" ? "none" : "flex",
-      },
+      "key": 0,
+      "title": <h1>Comments</h1>,
+      "icon": <CommentIcon
+        color="primary"
+        fontSize="large"
+      />,
+      "style": frequentStyle,
+      "onClick": handleComment,
+    },
+    {
+      "key": 1,
+      "title": <h1>Reprocess</h1>,
+      "icon": <AssessmentIcon 
+        color="primary"
+        fontSize="large"
+      />,
+      "style": frequentStyle,
       "onClick": handleRegenerate, 
     },
     {
-      "title": "Save",
-      "icon": <SaveIcon />,
+      "key": 2,
+      "title": <h1>Save</h1>,
+      "icon": <SaveIcon 
+        color="primary"
+        fontSize="large"
+      />,
       "style": frequentStyle,
       "onClick": handleSave, 
     },
     {
-      "title": "Edit",
-      "icon": <EditIcon />,
+      "key": 3,
+      "title": <h1>Edit</h1>,
+      "icon": <EditIcon 
+        color="primary"
+        fontSize="large"
+      />,
       "style": frequentStyle,
       "onClick": handleEdit, 
     },
     {
-      "title": "Delete",
-      "icon": <DeleteIcon />,
+      "key": 4,
+      "title": <h1>Delete</h1>,
+      "icon": <DeleteIcon 
+        color="primary"
+        fontSize="large"
+      />,
       "style": frequentStyle,
       "onClick": handleDelete, 
     },
     {
-      "title": "Upload",
-      "icon": <CloudUploadIcon />,
+      "key": 5,
+      "title": <h1>Upload</h1>,
+      "icon": <CloudUploadIcon 
+        color="primary" 
+        fontSize="large"
+      />,
       "style": {
-        marginTop: "15px",
-        marginLeft: "5px",
-        height: "50px",
-        display: "flex"
+        display: "flex",
       },
       "onClick": handleFileUpload, 
     },
@@ -278,19 +338,24 @@ const FileActions = props => {
             </div>
             <ReactLoading />
           </div>
+
+          <LinearProgress id="loader-smaller" color="primary" style={styles.loadingSmaller}/>
+
           <div style={styles.buttonCont}>
 
             {buttons.map((obj) => {
               return(
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={obj['icon']}
-                  style={obj['style']}
-                  onClick={obj['onClick']}
-                >
-                  {obj['title']}
-                </Button>
+                <Tooltip 
+                  title={obj['title']} 
+                  arrow
+                  >
+                      <IconButton 
+                        style={obj['style']}
+                        onClick={obj['onClick']}
+                        >
+                        {obj['icon']}
+                      </IconButton>
+                </Tooltip>
               )
             })}
 

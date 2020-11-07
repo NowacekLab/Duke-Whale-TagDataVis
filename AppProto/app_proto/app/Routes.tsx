@@ -6,9 +6,7 @@ import App from './containers/App';
 import HomePage from './containers/HomePage';
 import AppsPage from "./containers/AppsPage";
 import Base from './containers/Base';
-import Page2D from "./containers/Page2D";
-import Page3D from "./containers/Page3D";
-import PageMIX from "./containers/PageMIX";
+import GraphsPage from './containers/GraphsPage';
 import SettingsPage from "./containers/SettingsPage";
 import InfoPage from "./containers/InfoPage";
 
@@ -22,19 +20,9 @@ export default function Routes() {
           return <Base Page={AppsPage} />
         }} />
 
-        <Route path={routes.GRAPH2D}
+        <Route path={routes.GRAPHS}
         render={() => {
-          return <Base Page={Page2D} />
-        }} />
-
-        <Route path={routes.GRAPH3D}
-        render={() => {
-          return <Base Page={Page3D} />
-        }} />
-
-        <Route path={routes.GRAPHMIX}
-        render={() => {
-          return <Base Page={PageMIX} />
+          return <Base Page={GraphsPage} />
         }} />
 
         <Route path={routes.SETTINGS}
