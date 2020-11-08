@@ -19,7 +19,8 @@ import graphs
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(BASE_DIR, 'user_files')
-file_info = os.path.join(BASE_DIR, 'files.json')
+SERVER_FILES = os.path.join(BASE_DIR, 'server_files')
+file_info = os.path.join(SERVER_FILES, 'files.json')
 
 def ensure_paths(file_path: str) -> bool:
     """
@@ -124,96 +125,100 @@ def convert(file_path: str, file_: str) -> str:
 
 def main() -> str:
     """
-    Main handler
+    Main handler 
     - 'True' IF successful, ELSE 'False'
     """
 
-    file_path = sys.argv[1]
+    file_path = sys.argv[1] 
     file_ = sys.argv[2]
 
-    try:
+    try:             
 
         if not ensure_paths(file_path):
             raise Exception('user_files directory or files.json does not exist.')
 
         info = helper_json.read(file_info)
-        if not info:
-            info = dict()
+        if not info: 
+            info = dict() 
 
-        new_info = dict()
+        new_info = dict() 
 
-        if file_.endswith('.csv'):
-            new_info['orig_path'] = file_path
+        if file_.endswith('.csv'): 
+            new_info['orig_path'] = file_path 
             conversion_path = file_path
-            new_info['csv_path'] = conversion_path
+            new_info['csv_path'] = conversion_path 
             new_info['original_name'] = file_
-            conversion = file_
+            conversion = file_ 
         elif file_.endswith('.mat'):
-            new_info['orig_path'] = file_path
+            new_info['orig_path'] = file_path 
             conversion_path, conversion = convert(file_path, file_)
             if conversion_path == None: raise Exception("Failed in converting file.")
             new_info['csv_path'] = conversion_path
-            new_info['original_name'] = file_
-        else:
+            new_info['original_name'] = file_ 
+        else: 
             raise Exception("Unknown file format.")
 
-        info[conversion] = new_info
+        info[conversion] = new_info 
 
-        if not helper_json.create(file_info, info):
+        if not helper_json.create(file_info, info): 
             raise Exception("Failed in final creation of new files.json file.")
 
-        updates.main()
+        updates.main() 
 
         if os.path.exists(conversion_path):
 
-            graphs.main(file_=conversion, file_path=conversion_path, action='generate')
+            print("processed")
+            sys.stdout.flush()
 
-            return "True"
+            return graphs.main(file_=conversion, file_path=conversion_path, action='generate')
 
         return "False"
 
-    except Exception as e:
+    except Exception as e: 
         # print(e) -- enable for dev
-        return "False"
+        return e
 
 def tester():
 
     # python3 graphs.py eg01_207aprh.csv /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/server/user_files/eg01_207aprh.csv generate
-    file_path = "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/server/user_files/eg01_207aprh.mat"
-    file_ = "eg01_207aprh.mat"
+    # file_path = "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/server/user_files/eg01_207aprh.mat"
+    # file_ = "eg01_207aprh.mat"
 
-    try:
+    file_ = "mn19_066aprh.mat"
+    file_path = os.path.join(FILE_DIR, file_)
+
+    try:             
 
         if not ensure_paths(file_path):
             raise Exception('user_files directory or files.json does not exist.')
 
         info = helper_json.read(file_info)
-        if not info:
-            info = dict()
+        if not info: 
+            info = dict() 
 
-        new_info = dict()
+        new_info = dict() 
 
-        if file_.endswith('.csv'):
-            new_info['orig_path'] = file_path
+        if file_.endswith('.csv'): 
+            new_info['orig_path'] = file_path 
             conversion_path = file_path
-            new_info['csv_path'] = conversion_path
+            new_info['csv_path'] = conversion_path 
             new_info['original_name'] = file_
-            conversion = file_
+            conversion = file_ 
         elif file_.endswith('.mat'):
-            new_info['orig_path'] = file_path
+            new_info['orig_path'] = file_path 
             conversion_path, conversion = convert(file_path, file_)
             if conversion_path == None: raise Exception("Failed in converting file.")
             new_info['csv_path'] = conversion_path
-            new_info['original_name'] = file_
-        else:
+            new_info['original_name'] = file_ 
+        else: 
             raise Exception("Unknown file format.")
 
-        info[conversion] = new_info
+        info[conversion] = new_info 
 
-        if not helper_json.create(file_info, info):
+        if not helper_json.create(file_info, info): 
             raise Exception("Failed in final creation of new files.json file.")
 
-        updates.main()
+        updates.main() 
 
         if os.path.exists(conversion_path):
 
@@ -221,7 +226,7 @@ def tester():
 
             return json.dumps({
                     'status': "True",
-                    'new_file': conversion,
+                    'new_file': conversion, 
                     'new_path': conversion_path,
             })
 
@@ -230,20 +235,15 @@ def tester():
             'reason': "Failed conversion or otherwise."
         })
 
-    except Exception as e:
+    except Exception as e: 
         # print(e) -- enable for dev
         return json.dumps({
             'status': "False",
             'reason': e,
         })
-        # return False
-
-
+        # return False 
 
 if __name__ == "__main__":
     print(main())
     # print(tester())
-    sys.stdout.flush()
-
-    # print(tester())
-
+    sys.stdout.flush() 

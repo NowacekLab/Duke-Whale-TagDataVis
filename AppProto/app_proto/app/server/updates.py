@@ -11,7 +11,8 @@ GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
 GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
 GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
 
-file_info = os.path.join(BASE_DIR, 'files.json')
+SERVER_FILES = os.path.join(BASE_DIR, 'server_files')
+file_info = os.path.join(SERVER_FILES, 'files.json')
 
 def humansize(nbytes):
     """

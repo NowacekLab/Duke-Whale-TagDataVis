@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { Grid, List } from 'semantic-ui-react';
-import styles from "./base.css";
 import Sidebar from 'react-sidebar';
 import SideBarContent from "../components/SideBarContent";
 
@@ -27,7 +26,7 @@ export default function Base({Page}: Props) {
 
     return ( 
         <Sidebar {...sidebarProps}>
-            <Page setLoading={setLoading} />
+            <Page setLoading={setLoading} loading={loading}/>
         </Sidebar>
     )
 }

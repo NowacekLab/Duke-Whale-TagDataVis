@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from "prop-types";
-import { Container } from "semantic-ui-react";
+// import { Container } from "semantic-ui-react";
+import Container from '@material-ui/core/Container';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -139,7 +140,7 @@ const Home = props => {
   }, [fileNum]);
 
   return (
-    <Container fluid style={rootStyle} textAlign="center">
+    <Container style={rootStyle}>
       <p style={styles.header}>Home</p>
 
       <LinearProgress id="loader-smaller" color="primary" style={styles.loadingSmaller}/>
@@ -150,7 +151,7 @@ const Home = props => {
       </div>
 
       <div style={styles.tableContainer} id="home-table">
-        <HomeTable fileNum={fileNum} setFileNum={setFileNum} setLoading={props.setLoading ? props.setLoading : () => {return}}/>
+        <HomeTable loading={props.loading ? props.loading : () => {return}} fileNum={fileNum} setFileNum={setFileNum} setLoading={props.setLoading ? props.setLoading : () => {return}}/>
 
       </div>
     </Container>

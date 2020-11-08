@@ -15,7 +15,8 @@ import helper_json, updates
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(BASE_DIR, 'user_files')
-file_info = os.path.join(BASE_DIR, 'files.json')
+SERVER_FILES = os.path.join(BASE_DIR, 'server_files')
+file_info = os.path.join(SERVER_FILES, 'files.json')
 
 def get_path(file_: str) -> str:
     """

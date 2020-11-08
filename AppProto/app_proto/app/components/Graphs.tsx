@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Container, Icon} from "semantic-ui-react";
-
+import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -116,8 +115,9 @@ const Graphs = props => {
       : { ...styles.root }
     const fs = window.require('fs');
     const path = require('path');
-    const server_path = path.resolve(path.join(__dirname, 'server'))
-    const files = path.resolve(path.join(server_path, 'files.json'));
+    const server_path = path.resolve(path.join(__dirname, 'server'));
+    const server_files = path.resolve(path.join(server_path, 'server_files'));
+    const files = path.resolve(path.join(server_files, 'files.json'));
     const file = localStorage.getItem('file');
     const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
     const spawn = require("child_process").spawn; 
@@ -354,7 +354,7 @@ const Graphs = props => {
     }
   
     return (
-        <Container fluid style={rootStyle} textAlign="center">
+        <Container style={rootStyle}>
 
             <LinearProgress id="loader-smaller" color="primary" style={loadingSmaller}/>
 

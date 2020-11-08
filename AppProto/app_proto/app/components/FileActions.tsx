@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from "prop-types";
 import Alert from '@material-ui/lab/Alert';
-import ReactLoading from 'react-loading';
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
@@ -13,6 +12,7 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import UploadProgress from './UploadProgress';
 
 const styles = {
   banner: {
@@ -95,8 +95,9 @@ const FileActions = props => {
   // **TO INTERACT WITH PYTHON**
   const fs = window.require('fs');
   const path = require('path');
-  const server_path = path.resolve(path.join(__dirname, 'server'))
-  const files = path.resolve(path.join(server_path, 'files.json'));
+  const server_path = path.resolve(path.join(__dirname, 'server'));
+  const server_files = path.resolve(path.join(server_path, 'server_files'));
+  const files = path.resolve(path.join(server_files, 'files.json'));
   const script_path = path.resolve(path.join(server_path, 'csvmat.py'));
   const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
   const spawn = require("child_process").spawn; 
@@ -180,7 +181,7 @@ const FileActions = props => {
     console.log('placeholder');
   }
   function handleRegenerate() {
-    handleAction('regenerate');
+    handleUpload('', 'regenerate');
   }
   function handleEdit() {
     handleAction('edit');
@@ -201,62 +202,135 @@ const FileActions = props => {
 
     props.setLoading ? props.setLoading(true) : "";
 
-    const args = new Array(action_script_path, chosenFile, action);
+    const args = new Array('-u', action_script_path, chosenFile, action);
 
     const pythonProcess = spawn('python3', args);
 
-    const loader = document.getElementById('loader');
     const loaderSmaller = document.getElementById('loader-smaller');
-
-    if (action === 'regenerate') {
-      loader.style.display = 'flex';
-    } else {
-      loaderSmaller.style.display='flex';
-    }
+    loaderSmaller.style.display='flex';
 
     pythonProcess.stdout.on('data', (data) => {
       let resp = data.toString().trim();
 
       handleResponse(resp, action);
 
-      if (action === 'regenerate') {
-        loader.style.display='none';
-      } else {
-        loaderSmaller.style.display = 'none';
-      }
+      loaderSmaller.style.display = 'none';
 
       props.setLoading ? props.setLoading(false) : "";
 
     })
   }
+  
+  // The below is very ugly! 
+  const [isuploading, setIsUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [loadingUpdate, setLoadingUpdate] = useState(0);
+  const [finishedupload, setFinishedUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({
+    "processed": "progress", 
+    "graphs2D": "progress",
+    "graphs3D": "progress",
+  });
 
-  const handleUpload = e => {
+  const reset = () => {
+
+    props.setLoading ? props.setLoading(false) : "";
+
+    setUploadProgress({
+      "processed": "progress", 
+      "graphs2D": "progress",
+      "graphs3D": "progress",
+    })
+
+    setLoadingUpdate(0);
+
+    setFinishedUploading(false);
+    setUploading(false);
+    setIsUploading(false);
+  }
+
+  const handleProcess = (process, action) => {
+
+    process.stdout.on('data', (data) => {
+      let resp = data.toString().trim();
+      resp = resp.split(":");
+
+      console.log(resp);
+
+      switch (resp[0]) {// this will do for now ... not too inefficient because it's just small stream/stages 
+        case "processed":
+          uploadProgress[resp[0]] = "success"; 
+          setUploadProgress(uploadProgress);
+          setLoadingUpdate(2); // im going to be honest here and say that I'm not sure why this hard-coded # increment works and a variable + 1 does not
+          break;
+        case "graphs2D":
+          uploadProgress[resp[0]] = resp[1];
+          setUploadProgress(uploadProgress);
+          setLoadingUpdate(3);
+          break;
+        case "graphs3D":
+          uploadProgress[resp[0]] = resp[1];
+          setUploadProgress(uploadProgress);
+          setFinishedUploading(true);
+
+          setLoadingUpdate(4);
+
+          // setTimeout(() => {
+          //   handleResponse('True', action);
+          //   reset();
+          //   setLoadingUpdate(5);
+          // }, 500);
+          break;
+        default: 
+          // handleResponse(resp[0], action);
+          // reset();
+          setFinishedUploading(true);
+          setLoadingUpdate(6);
+      }
+    });
+
+    process.stdout.on('error', (err) => {
+      handleResponse('false', action);
+      reset();
+      setLoadingUpdate(8);
+    })
+
+  }
+   
+  const handleUpload = (e, action = 'upload') => { // this function really needs refactoring... but it does for now!
+
+    console.log(action);
+
+    if (action !== "upload" && action !== "regenerate") return; 
 
     props.setLoading ? props.setLoading(true) : "";
+    setLoadingUpdate(1);
 
-    const file_path = e.target.files[0].path;
-    const file_name = e.target.files[0].name; 
+    if (action === 'upload') {
+      const file_path = e.target.files[0].path;
+      const file_name = e.target.files[0].name; 
+      e.target.value = '';
 
-    e.target.value = '';
-    const pythonProcess = spawn('python3', [script_path, file_path, file_name]);
+      console.log(file_name);
 
-    const loader = document.getElementById('loader');
-    loader.style.display = 'flex';
+      if (file_name !== "") {
+        setIsUploading(true);
+        setUploading(true);
+        const pythonProcess = spawn('python3', ['-u', script_path, file_path, file_name]);
+        handleProcess(pythonProcess, action);
+      } else {
+        reset();
+        return;
+      }
 
-    pythonProcess.stdout.on('data', (data) => {
-        let resp = data.toString().trim();
+    } else if (action === 'regenerate') {
+      setIsUploading(false);
+      setUploading(true);
+      const args = new Array('-u', action_script_path, chosenFile, action);
+      const pythonProcess = spawn('python3', args);
+      handleProcess(pythonProcess, action);
+    }
 
-        console.log(resp);
-
-        const action = 'upload';
-
-        handleResponse(resp, action);
-      
-        loader.style.display='none';
-
-        props.setLoading ? props.setLoading(false) : "";
-
-    });
   }
 
   const frequentStyle = {
@@ -331,13 +405,14 @@ const FileActions = props => {
   return (
 
     <ThemeProvider theme={color}>
-          <div style={styles.loading} id="loader">
-            <div style={styles.loadertext}>
-              <span style={styles.header}>This may take a while...</span>
-              <span style={styles.headersubtext}>Please do not close or change the page</span>
-            </div>
-            <ReactLoading />
-          </div>
+          <UploadProgress 
+            uploadProgress = {uploadProgress} 
+            uploading = {uploading} 
+            isuploading={isuploading} 
+            finishedupload={finishedupload}
+            updater = {loadingUpdate}
+            reset = {reset}
+          />
 
           <LinearProgress id="loader-smaller" color="primary" style={styles.loadingSmaller}/>
 
@@ -361,7 +436,7 @@ const FileActions = props => {
 
           </div>
 
-          <input type="file" id="file-upload" style={{display:"none"}} onChange={handleUpload} ref={upload} accept=".mat, .csv"></input>
+          <input type="file" id="file-upload" style={{display:"none"}} onChange={(e) => {handleUpload(e)}} ref={upload} accept=".mat, .csv"></input>
 
           <div style={styles.bannerSuperCont}>
             <div id="success-notif-cont" style={styles.bannerCont}>
@@ -391,14 +466,3 @@ FileActions.propTypes = {
 };
 
 export default FileActions;
-
-{/* <div id="success-notif-cont" style={styles.bannerCont}>
-<Alert variant="filled" severity="success" style={styles.banner}>
-        Successfully Uploaded
-</Alert>
-</div>
-<div id="error-notif-cont" style={styles.bannerErrorCont}>
-<Alert variant="filled" severity="error" style={styles.banner}>
-        {errorMessage}
-</Alert>
-</div> */}

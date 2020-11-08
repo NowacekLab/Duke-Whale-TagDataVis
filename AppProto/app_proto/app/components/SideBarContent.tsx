@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import routes from '../server/routes.json';
+import routes from '../server/server_files/routes.json';
 import SideBarComp from "./SideBarComp";
 import PropTypes from "prop-types";
 import ListItem from '@material-ui/core/ListItem';
@@ -56,12 +56,16 @@ const styles = {
 
 const SideBarContent = props => {
 
+    const handleNav = (e) => {
+        props.loading ? e.preventDefault() : null;
+    };
+
     return(
         <SideBarComp>
             <div>
 
                 <div style={styles.content}>
-                    <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={(e) => {props.loading ? e.preventDefault() : ""}}>
+                    <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={handleNav}>
                         <ListItem>
                             <ListItemIcon>
                                 <HomeIcon style={{color:"white"}} fontSize="large"/>
@@ -72,7 +76,7 @@ const SideBarContent = props => {
                             />                    
                         </ListItem>
                     </NavLink>
-                    <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={(e) => {props.loading ? e.preventDefault() : ""}}>
+                    <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={handleNav}>
                         <ListItem>
                             <ListItemIcon>
                                 <AppsIcon style={{color:"white"}} fontSize="large"/>
@@ -88,12 +92,12 @@ const SideBarContent = props => {
                 </div>
 
                 <div style={styles.bottomBtnCont}>
-                    <NavLink to={routes.SETTINGS} exact activeStyle={styles.active_link_bottom} onClick={(e) => {props.loading ? e.preventDefault() : ""}}>
+                    <NavLink to={routes.SETTINGS} exact activeStyle={styles.active_link_bottom} onClick={handleNav}>
                         <IconButton>
                             <SettingsIcon style={{color: "white"}} fontSize="large" />
                         </IconButton>
                     </NavLink>
-                    <NavLink to={routes.INFO} exact activeStyle={styles.active_link_bottom} onClick={(e) => {props.loading ? e.preventDefault() : ""}}>
+                    <NavLink to={routes.INFO} exact activeStyle={styles.active_link_bottom} onClick={handleNav}>
                         <IconButton>
                             <HelpIcon style={{color: "white"}} fontSize="large" />
                         </IconButton>

@@ -81,7 +81,7 @@ const HomeTable = props => {
     
         <div style={styles.tableHeader}>
             <p style={styles.tableHeaderElem}>{fileNumber()}</p>
-            <FileActions updater={change} selection={fileSelection} setLoading={props.setLoading ? props.setLoading : ""}/>
+            <FileActions loading={props.loading ? props.loading : ""} updater={change} selection={fileSelection} setLoading={props.setLoading ? props.setLoading : ""}/>
         </div>
 
         <FileTable toUpdate={update} fileNum={props.setFileNum} selection={setFileSelection}/>

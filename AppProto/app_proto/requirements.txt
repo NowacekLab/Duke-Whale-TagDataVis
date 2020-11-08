@@ -1,22 +1,13 @@
 -react
 -electron
 -react-dom
--semantic-ui-react, semantic-ui-css 
-
--@types/react -- extra type dependencies 
 
 -react-sidebar
--@types/react-sidebar 
 
 -@material-ui/core
 -@material-ui/icons
-
--react-plotly.js
--@types/react-plotly.js
--plotly.js 
-
 -@material-ui/lab 
-
--react-loading 
-
 -@material-ui/data-grid
+
+-@types/react -- extra type dependencies 
+-@types/react-sidebar 

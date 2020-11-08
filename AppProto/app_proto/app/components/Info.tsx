@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from "prop-types";
-import { Container } from "semantic-ui-react";
+import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -129,7 +129,7 @@ const Info = props => {
   ]
 
   return (
-    <Container fluid style={rootStyle} textAlign="center">
+    <Container style={rootStyle}>
       <p style={styles.header}>Info</p>
       <div style={styles.bodyContainer}>
         <Accordion style={styles.accordion}>

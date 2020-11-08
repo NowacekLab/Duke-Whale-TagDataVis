@@ -19,7 +19,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
 GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
 GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
-file_info = os.path.join(BASE_DIR, 'files.json')
+SERVER_FILES = os.path.join(BASE_DIR, 'server_files')
+file_info = os.path.join(SERVER_FILES, 'files.json')
 
 sys.path.append(BASE_DIR)
 
@@ -69,10 +70,13 @@ def main(file_: str, file_path: str) -> Tuple[bool, List[str]]:
     try: 
         all_processes = [] 
 
+        total_graphs = 0
+
         # multiprocessing
         for creator in CREATORS: # 'CREATORS' MUST conform to create_graph params/args 
             func = creator[0]
             names = list(creator[1:])
+            total_graphs += len(names)
             p = Process(target=create_graph, args=(file_, file_path, func, names))
             all_processes.append(p)
         
@@ -83,6 +87,9 @@ def main(file_: str, file_path: str) -> Tuple[bool, List[str]]:
             p.join() 
         
         unsaved_graphs = save_existing_graphs(file_)
+
+        if len(unsaved_graphs) == total_graphs:
+            return (False, [])
         
         return (True, unsaved_graphs)
     except Exception as e:

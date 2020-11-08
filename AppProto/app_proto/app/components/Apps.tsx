@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import routes from '../server/routes.json';
-import {Container} from 'semantic-ui-react';
+import routes from '../server/server_files/routes.json';
+import Container from '@material-ui/core/Container';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GraphicEqIcon from '@material-ui/icons/GraphicEq';
 import MultilineChartIcon from '@material-ui/icons/MultilineChart';
@@ -120,8 +120,9 @@ const Apps = props => {
       
     const fs = window.require('fs');
     const path = require('path');
-    const server_path = path.resolve(path.join(__dirname, 'server'))
-    const files = path.resolve(path.join(server_path, 'files.json'));
+    const server_path = path.resolve(path.join(__dirname, 'server'));
+    const server_files = path.resolve(path.join(server_path, 'server_files'));
+    const files = path.resolve(path.join(server_files, 'files.json'));
 
     // HOVER
     const [hovers, setHovers] = useState({
@@ -203,31 +204,32 @@ const Apps = props => {
         })
     }
 
+    const handleNav = (e, graph_type) => {
+        if (!clickables[graph_type]) {
+            e.preventDefault();
+            showError();
+        }
+    }
+
     const apps = [
         {
             "key": 0,
             "title": "2D Graph",
-            "clickable?": clickables['graphs2D'],
-            "disabled": <TrendingUpIcon onClick={showError} style={hovers['2D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("2D", true)} onMouseLeave={() => handleHover("2D", false)} />,
-            "enabled": <Link to={routes.GRAPHS} style={styles.link}>
+            "comp": <Link to={routes.GRAPHS} style={styles.link} onClick={(e) => {handleNav(e, 'graphs2D')}}>
                             <TrendingUpIcon style={hovers['2D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("2D", true)} onMouseLeave={() => handleHover("2D", false)} />
                        </Link>
         },
         {
             "key": 1,
             "title": "3D Graph",
-            "clickable?": clickables['graphs3D'],
-            "disabled": <GraphicEqIcon onClick={showError} style={hovers['3D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("3D", true)} onMouseLeave={() => handleHover("3D", false)}/>,
-            "enabled": <Link to={routes.GRAPHS} style={styles.link}>
+            "comp": <Link to={routes.GRAPHS} style={styles.link} onClick={(e) => {handleNav(e, 'graphs3D')}}>
                             <GraphicEqIcon style={hovers['3D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("3D", true)} onMouseLeave={() => handleHover("3D", false)}/>
                         </Link>
         },
         {
             "key": 2,
             "title": "Mixed Graph",
-            "clickable?": clickables['graphsMixed'],
-            "disabled": <MultilineChartIcon onClick={showError} style={hovers['MIXED'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("MIXED", true)} onMouseLeave={() => handleHover("MIXED", false)}/>,
-            "enabled": <Link to={routes.GRAPHS} style={styles.link}>
+            "comp": <Link to={routes.GRAPHS} style={styles.link} onClick={(e) => {handleNav(e, 'graphsMixed')}}>
                             <MultilineChartIcon style={hovers['MIXED'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("MIXED", true)} onMouseLeave={() => handleHover("MIXED", false)}/>
                         </Link>
         }
@@ -235,14 +237,14 @@ const Apps = props => {
     ]
 
     return (
-            <Container fluid style={rootStyle} textAlign="center">
+            <Container style={rootStyle}>
                 <p style={styles.header}>Apps</p>
                 <div>
                     <div style={styles.dock}>
                         {apps.map((obj) => {
                             return(
                                 <div>
-                                    {obj['clickable?'] ? obj['enabled'] : obj['disabled']}
+                                    {obj['comp']}
                                     <Typography style={styles.text}>
                                         {obj['title']}
                                     </Typography>   

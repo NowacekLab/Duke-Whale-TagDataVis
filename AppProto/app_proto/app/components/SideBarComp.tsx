@@ -16,8 +16,6 @@ const styles = {
     }
 };
 
-// : path.join(__dirname, '../resources');
-
 const img_path = path.join(__dirname, '../resources/');
 
 const SideBarComp = props => {

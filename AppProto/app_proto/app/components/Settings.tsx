@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import { Container } from "semantic-ui-react";
+import Container from '@material-ui/core/Container';
 
 const styles = {
   root: {
@@ -21,10 +21,6 @@ const styles = {
     fontSize: "36px",
   },
 };
-
-const fs = window.require('fs');
-const path = require('path');
-const server_path = path.resolve(path.join(__dirname, 'server'));
   
 const Settings = props => {
   const rootStyle = props.style
@@ -32,7 +28,7 @@ const Settings = props => {
     : { ...styles.root }
 
   return (
-    <Container fluid style={rootStyle} textAlign="center">
+    <Container style={rootStyle}>
       <p style={styles.header}>Settings</p>
 
       <div></div>

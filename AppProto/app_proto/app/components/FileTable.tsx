@@ -73,8 +73,9 @@ const FileTable = props => {
   
     const fs = window.require('fs');
     const path = require('path');
-    const server_path = path.resolve(path.join(__dirname, 'server'))
-    const files = path.resolve(path.join(server_path, 'files.json'));
+    const server_path = path.resolve(path.join(__dirname, 'server'));
+    const server_files = path.resolve(path.join(server_path, 'server_files'));
+    const files = path.resolve(path.join(server_files, 'files.json'));
 
 function createData(file, size, modified) {
   return { file, size, modified };
