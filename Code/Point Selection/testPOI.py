@@ -19,10 +19,10 @@ def plotPOI(filename):
 
     # Pull Specific Variables
     fs = data['fs'].tolist()[0]
-    head = data['head'].tolist()
-    p = data['p'].tolist()
-    roll = data['roll'].tolist()
-    pitch = data['pitch'].tolist()
+    head = data['Heading'].tolist()
+    p = data['Depth'].tolist()
+    roll = data['Roll'].tolist()
+    pitch = data['Pitch'].tolist()
 
     # Calculate time 
     numData = len(p)
