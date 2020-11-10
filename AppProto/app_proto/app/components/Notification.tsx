@@ -38,13 +38,13 @@ const Notification = props => {
         handleShow();
     }, [props.show])
 
-    const status = props.status ? props.status : "error";
+    const status = props.status ?? "error";
     
     const getMessage = () => {
         if (status === 'error') {
-            return props.message ? props.message : "An error has occurred."
+            return props.message ?? "An error has occurred."
         } else if (status === 'success') {
-            return props.message ? props.message : "Successfully executed."
+            return props.message ?? "Successfully executed."
         }
     }
 

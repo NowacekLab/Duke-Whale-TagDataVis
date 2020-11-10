@@ -128,9 +128,9 @@ const Home = props => {
 
     if (fileNum > -1) {
       setTimeout(() => {
-        loaderSmaller ? loaderSmaller.style.display = "none" : "";
-        loadingTable ? loadingTable.style.display="none" : "";
-        homeTable ? homeTable.style.display = "block" : "";
+        loaderSmaller ? loaderSmaller.style.display = "none" : null;
+        loadingTable ? loadingTable.style.display="none" : null;
+        homeTable ? homeTable.style.display = "block" : null;
       }, 300)
     }
   }

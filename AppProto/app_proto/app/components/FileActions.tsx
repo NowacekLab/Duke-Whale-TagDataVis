@@ -519,8 +519,8 @@ const FileActions = props => {
           <Confirmation 
             open={openConfirm}
             close={handleCloseConfirm}
-            title={confirmInfo ? confirmInfo['title'] : null}
-            desc={confirmInfo ? confirmInfo['description'] : null}
+            title={confirmInfo['title'] ?? null}
+            desc={confirmInfo['description'] ?? null}
             confirm={verifyConfirm}
             reject={rejectConfirm}
           />

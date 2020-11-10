@@ -225,7 +225,7 @@ const Graphs = props => {
 
         let graph_type = localStorage.getItem('app');
 
-        graph_type = graph_type ? graph_type : "2D"; // defaults to 2D 
+        graph_type = graph_type ?? "2D"; // defaults to 2D 
 
         setGraphType(graph_type);
 

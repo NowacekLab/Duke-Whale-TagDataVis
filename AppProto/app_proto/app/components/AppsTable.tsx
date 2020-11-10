@@ -44,10 +44,10 @@ const AppsTable = props => {
     : { ...styles.root }
 
 const [update, setUpdate] = useState(false);
-const [fileSelection, setFileSelection] = useState(props.file ? props.file : "");
+const [fileSelection, setFileSelection] = useState(props.file ?? "");
 
   const handleClick = () => {
-      props.fileSelector ? props.fileSelector(fileSelection) : "";
+      props.fileSelector ? props.fileSelector(fileSelection) : null;
       props.closeModal();
   };
 

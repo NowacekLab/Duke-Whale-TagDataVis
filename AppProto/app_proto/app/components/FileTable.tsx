@@ -125,10 +125,10 @@ function createData(file, size, modified) {
   const handleChoice = (select) => {
       if (select === choice) {
           setChoice("");
-          props.selection ? props.selection("") : "";
+          props.selection ? props.selection("") : null;
       } else {
            setChoice(select);
-           props.selection ? props.selection(select) : "";
+           props.selection ? props.selection(select) : null;
       }
   };
 
@@ -169,13 +169,13 @@ function createData(file, size, modified) {
                                 key={column.id} 
                                 align={column.align}
                             >
-                                {column.id === "file" ? 
+                                {column.id === "file" &&
                                     <Checkbox 
                                         checked={choice === row.file}
                                         style = {{
                                             color: '#012069'
                                         }}
-                                    /> : ""}
+                                    />}
                                 {column.format && typeof value === 'number' ? column.format(value) : value}
                             </TableCell>
                             );

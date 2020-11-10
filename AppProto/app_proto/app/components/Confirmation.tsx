@@ -12,8 +12,8 @@ const Confirmation = props => {
 
     return (
         <Dialog
-        open={props.open ? props.open : false}
-        onClose={props.close ? props.close : () => {return}}
+        open={props.open ?? false}
+        onClose={props.close ?? function fail(){return}}
         style={{
           color: "#012069",
           position: "absolute",
@@ -26,18 +26,18 @@ const Confirmation = props => {
         }}
       >
         <DialogTitle>
-          {props.title ? props.title : null}
+          {props.title ?? null}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {props.desc ? props.desc : null}
+            {props.desc ?? null}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.reject ? props.reject : () => {return}} color="primary">
+          <Button onClick={props.reject ?? function fail(){return}} color="primary">
             Cancel
           </Button>
-          <Button onClick={props.confirm ? props.confirm : () => {return}} color="primary">
+          <Button onClick={props.confirm ?? function fail(){return}} color="primary">
             Execute
           </Button>
         </DialogActions>
