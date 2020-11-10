@@ -121,9 +121,9 @@ def delete(path_: str, _, file_: str, *args, **kwargs):
     except: 
         return False 
 
-def regenerate(file_path: str, file_: str, *args, **kwargs):
+def reprocess(file_path: str, file_: str, *args, **kwargs):
     """
-    Regenerates graph for a .csv file
+    Reprocesses graphs for a .csv file
     """
     try: 
         graphs.main(file_=file_, file_path=file_path, action='generate')
@@ -152,7 +152,7 @@ def main() -> str:
             'delete': delete,
             'edit': edit,
             'save': save,
-            'regenerate': regenerate,
+            'reprocess': reprocess,
         }
 
         func = available.get(action, None)

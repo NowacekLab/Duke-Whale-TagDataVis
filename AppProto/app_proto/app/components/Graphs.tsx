@@ -17,6 +17,8 @@ import CommentIcon from '@material-ui/icons/Comment';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Skeleton from '@material-ui/lab/Skeleton';
 
+import Confirmation from "./Confirmation";
+import Notification from "./Notification";
 import * as url from "url";
 
 const styles = {
@@ -130,45 +132,32 @@ const Graphs = props => {
         getGraphs();
       }, new Array(update))
     
-    function showNotif() {
-        const notif = document.getElementById('notif-cont');
-        notif.style.display='flex';
-        setTimeout(() => {
-            notif.style.display = 'none';
-        }, 5000);
-    }
-    
     // Messages for actions
-    const [response, setResponse] = useState("True");
-    const [message, setMessage] = useState("");
+    const [notifStatus, setNotifStatus] = useState("error");
+    const [notifMsg, setNotifMsg] = useState("");
+    const [showNotif, setShowNotif] = useState(false);
 
     const messages = {
         'True': {
         'delete': `Successfully deleted.`,
-        'save': 'Saved in data_visualization folder in Downloads!',
-        'component':             <Alert variant="filled" severity="success" style={styles.banner}>
-                                    {message}
-                                </Alert>
+        'save': 'Saved in data_visualization folder in Downloads!'
         },
         'False': {
         'delete': 'File could not be deleted.',
-        'save': 'File could not be saved.',
-        'component':             <Alert variant="filled" severity="error" style={styles.banner}>
-                                    {message}
-                                </Alert>
+        'save': 'File could not be saved.'
         }
     }
 
     // Handles the message based on response and action taken 
     function handleResponse(resp, action) {
         if (!(messages.hasOwnProperty(resp))) {
-            setMessage("Error. Please contact developers.");
-            setResponse('False');
+            setNotifMsg("Error. Please contact developers.");
+            setNotifStatus("error");
         } else {
-            setMessage(messages[resp][action]);
-            setResponse(resp);
+            setNotifMsg(messages[resp][action]);
+            setNotifStatus(resp === "True" ? "success" : "error");
         }
-        showNotif();
+        setShowNotif(true);
     } 
     
     function handleAction(action, obj) {
@@ -205,7 +194,7 @@ const Graphs = props => {
     }
 
     function handleDelete(obj) {
-        handleAction('delete', obj);
+        handleConfirm('delete', obj);
     }
     function handleSave(obj) {
         handleAction('save', obj);
@@ -297,16 +286,16 @@ const Graphs = props => {
 
     const handleClick = () => {
         if (selected.length === 0) {
-            setMessage("No graphs have been selected.");
-            setResponse("False");
+            setNotifMsg("No graphs have been selected.");
+            setNotifStatus("error");
         } else {
             selected.forEach((obj, i) => {
                 createBrowserWindow(obj['name'], obj['path']);
             });
-            setMessage(`${selected.length} graphs have been generated.`);
-            setResponse("True");
+            setNotifMsg(`${selected.length} graphs have been generated.`);
+            setNotifStatus("success");
         }
-        showNotif();
+        setShowNotif(true);
     }
 
     const graphNumber = () => {
@@ -352,6 +341,47 @@ const Graphs = props => {
         right: 0,
         height: 5,
     }
+
+// CONFIRMATION
+  const confirmations = {
+    "delete": {
+      "title": `Delete `,
+      "description": `This will permanently delete the file. ${file} will need to be reprocessed
+      to get access again.`
+    },
+  }
+  const [confirmInfo, setConfirmInfo] = useState({});
+  const [chosenObj, setChosenObj] = useState({});
+  const [pendingAction, setPendingAction] = useState("");
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const handleOpenConfirm = () => {
+    setOpenConfirm(true);
+  }
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+  }
+  const verifyConfirm = () => {
+    if (pendingAction === 'delete') {
+      handleAction('delete', chosenObj);
+    } 
+    handleCloseConfirm();
+    setPendingAction("");
+    setChosenObj({});
+  }
+  const rejectConfirm = () => {
+    handleCloseConfirm();
+    setPendingAction("");
+    setChosenObj({});
+  }
+  const handleConfirm = (action: string, obj) => {
+
+    setPendingAction(action);
+    setChosenObj(obj);
+    const info = confirmations[action];
+    info['title'] = info['title'] + `${obj['name']}?`;
+    setConfirmInfo(info);
+    handleOpenConfirm();
+  }
   
     return (
         <Container style={rootStyle}>
@@ -426,11 +456,21 @@ const Graphs = props => {
                 
                 }
 
-                <div style={styles.bannerSuperCont}>
-                    <div id="notif-cont" style={styles.bannerCont}>
-                        {messages[response]['component']}
-                    </div>
-                </div>
+                <Confirmation 
+                    open={openConfirm}
+                    close={handleCloseConfirm}
+                    title={confirmInfo ? confirmInfo['title'] : null}
+                    desc={confirmInfo ? confirmInfo['description'] : null}
+                    confirm={verifyConfirm}
+                    reject={rejectConfirm}
+                />
+
+                <Notification 
+                    status={notifStatus}
+                    show={showNotif}
+                    message={notifMsg}
+                    setShow={setShowNotif}
+                />
 
             </div>
         </Container>

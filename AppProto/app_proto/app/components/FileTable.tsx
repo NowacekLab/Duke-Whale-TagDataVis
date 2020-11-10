@@ -84,14 +84,15 @@ function createData(file, size, modified) {
   function generate() {
     fs.readFile(files, function(err, data) {
 
-      const testing = JSON.parse(data);
+      const fileInfo = JSON.parse(data);
     
       const realRows = new Array(); 
-      for (var key in testing) {
-        realRows.push(createData(key, testing[key]["size"], testing[key]["modified"]));
+      for (var key in fileInfo) {
+        realRows.push(createData(key, fileInfo[key]["size"], fileInfo[key]["modified"]));
       }
       setRows(realRows);
-      props.fileNum ? props.fileNum(realRows.length) : "";
+      props.fileNum ? props.fileNum(realRows.length) : null;
+      props.setRows ? props.setRows(realRows) : null; // this is to not redo row work in FileActions... passing up rows to HomeTable
     })
   }
 
@@ -206,4 +207,3 @@ FileTable.propTypes = {
 };
 
 export default FileTable;
-

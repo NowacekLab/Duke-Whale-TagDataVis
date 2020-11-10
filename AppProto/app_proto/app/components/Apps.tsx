@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../server/server_files/routes.json';
 import Container from '@material-ui/core/Container';
@@ -16,7 +16,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Alert from '@material-ui/lab/Alert';
 
 import AppsTable from "./AppsTable";
-import { FastRewind } from '@material-ui/icons';
+import Notification from "./Notification";
 
 const styles = {
     root: {
@@ -77,34 +77,6 @@ const styles = {
         marginLeft: "auto",
         marginRight: "auto"
     },
-    banner: {
-        boxShadow: "5px 10px",
-        marginTop: "10px",
-    },
-    bannerSuperCont: {
-      zIndex: 999998,
-      bottom: 20,
-      left: 200,
-      right: 0,
-      position: "fixed",
-      display: "flex",
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    bannerCont: {
-      width: "500px",
-      display: "none",
-      alignItems: "center",
-      justifyContent: "center",
-      animation: "all 1s ease-in",
-    },
-    bannerErrorCont: {
-      width: "500px",
-      alignItems: "center",
-      justifyContent: "center",
-      display: "none",
-      animation: "all 1s ease-in",
-    },
 };
 
 const Apps = props => {
@@ -163,16 +135,15 @@ const Apps = props => {
         setShowModal(false);
     };
 
-    // Error, no graphs
+    // NOTIFICATION
+    const [showNotif, setShowNotif] = useState(false);
+    const notifMsg = "Graph type not available for selected file.";
+    const notifStatus = "error";
     function showError() {
-        const notif = document.getElementById('error-notif-cont');
-        notif.style.display='flex';
-        setTimeout(() => {
-            notif.style.display = 'none';
-        }, 5000);
+        setShowNotif(true);
     }
 
-    // Initialize clickability 
+    // CLICKABILITY
     const checkForGraphs = () => {
         localStorage.setItem('file', file);
         fs.readFile(files, function(err, data) {
@@ -283,13 +254,13 @@ const Apps = props => {
                     </Fade>
                 </Modal>
 
-                <div style={styles.bannerSuperCont}>
-                    <div id="error-notif-cont" style={styles.bannerErrorCont}>
-                    <Alert variant="filled" severity="error" style={styles.banner}>
-                            {"Graph type not available for selected file."}
-                    </Alert>
-                    </div>
-                </div>
+                <Notification 
+                    status={notifStatus}
+                    show={showNotif}
+                    message={notifMsg}
+                    setShow={setShowNotif}
+                />
+
             </Container>
     );
 };

@@ -59,13 +59,14 @@ const HomeTable = props => {
 
     const [update, setUpdate] = useState(false);
     const [fileSelection, setFileSelection] = useState("");
+    const [rows, setRows] = useState([]);
 
   const change = () => {
     setUpdate(!update);
   };
 
   const fileNumber = () => {
-    switch (props.fileNum) {
+    switch (props.fileNum) { // fileNum is an indicator of loading for Home.tsx 
       case 0: 
         return `No Files`
       case 1:
@@ -81,10 +82,10 @@ const HomeTable = props => {
     
         <div style={styles.tableHeader}>
             <p style={styles.tableHeaderElem}>{fileNumber()}</p>
-            <FileActions loading={props.loading ? props.loading : ""} updater={change} selection={fileSelection} setLoading={props.setLoading ? props.setLoading : ""}/>
+            <FileActions loading={props.loading ? props.loading : ""} updater={change} selection={fileSelection} setLoading={props.setLoading ? props.setLoading : ""} rows={rows}/>
         </div>
 
-        <FileTable toUpdate={update} fileNum={props.setFileNum} selection={setFileSelection}/>
+        <FileTable toUpdate={update} fileNum={props.setFileNum} selection={setFileSelection} setRows={setRows}/>
 
     </div>
   );

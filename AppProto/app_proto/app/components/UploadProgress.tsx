@@ -78,6 +78,7 @@ const UploadProgress = props => {
     const handleClick = () => {
         if (props.finishedupload) {
             props.reset ? props.reset() : null;
+            props.refresh ? props.refresh() : null; // connection from FileAction --> HomeTable --> FileTable to refresh rows 
         }
     }
 

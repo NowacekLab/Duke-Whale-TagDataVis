@@ -14,6 +14,9 @@ import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import UploadProgress from './UploadProgress';
 
+import Confirmation from "./Confirmation";
+import Notification from "./Notification";
+
 const styles = {
   banner: {
       boxShadow: "5px 10px",
@@ -84,7 +87,7 @@ const styles = {
       left: 200, 
       right: 0,
       height: 5,
-    }
+    },
 };
 
 const FileActions = props => {
@@ -104,7 +107,8 @@ const FileActions = props => {
 
   // Unrelated to above 
   const upload = React.useRef(null);
-  const [chosenFile, setChosenFile] = useState("");
+  const [chosenFile, setChosenFile] = useState(""); // this is table file selection
+  const [uploadFile, setUploadFile] = useState({}); // this is the file to be uploaded 
 
   const color = createMuiTheme({
     palette: {
@@ -114,34 +118,114 @@ const FileActions = props => {
     },
   });
 
+  // CONFIRMATION
+  const confirmations = {
+    "delete": {
+      "title": `Delete ${chosenFile}?`,
+      "description": "This will permanently delete the file and its graphs."
+    },
+    "upload-exists": {
+      "title": `Upload `,
+      "description": `A file with the same name is already uploaded. Reuploading will
+      take extra time to reprocess the file and will replace all of the existing file's information.`
+    },
+    "upload-new": {
+      "title": `Upload `,
+      "description": `Uploading may take a long time to process the file appropriately.`
+    },
+    "reprocess": {
+      "title": `Reprocess ${chosenFile}?`,
+      "description": "It may take a long time to process the file appropriately."
+    }
+  }
+  const [confirmInfo, setConfirmInfo] = useState({});
+  const [pendingAction, setPendingAction] = useState("");
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const handleOpenConfirm = () => {
+    setOpenConfirm(true);
+  }
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+  }
+  const verifyConfirm = () => {
+
+    switch (pendingAction) {
+      case "delete":
+        handleAction('delete');
+        break;
+      case "upload":
+        handleUpload('upload');
+        setUploadFile({});
+        break;
+      case "reprocess":
+        handleUpload('reprocess');
+    }
+
+    handleCloseConfirm();
+
+    setPendingAction("");
+  }
+  const rejectConfirm = () => {
+    if (pendingAction === 'upload') {
+      setUploadFile({});
+    }
+    handleCloseConfirm();
+    setPendingAction("");
+  }
+  const fileExists = (file1) => {
+
+    if (file1.endsWith('.mat')) {
+      file1 = file1.replace('.mat', '.csv');
+    }
+
+    for (const obj of props.rows) {
+      let file2 = obj['file'];
+      if (file1 === file2) {
+        return true;
+      }
+    }
+    return false;
+  }
+  const handleConfirm = (action: string, uploadFileName) => {
+
+    setPendingAction(action);
+
+    if (action === 'upload') {
+      if (fileExists(uploadFileName)) {
+        const obj = confirmations['upload-exists'];
+        obj['title'] = obj['title'] + `${uploadFileName}?`;
+        setConfirmInfo(obj);
+      } else {
+        const obj = confirmations['upload-new'];
+        obj['title'] = obj['title'] + `${uploadFileName}?`;
+        setConfirmInfo(obj);
+      }
+    } else {
+      const obj = confirmations[action];
+      setConfirmInfo(obj);
+    }
+    handleOpenConfirm();
+  }
+
   // Executes whenever props.selection changes (interact with table)
   useEffect(() => {
     setChosenFile(props.selection);
-  }, new Array(props.selection))
+  }, [props.selection, props.rows])
 
-  // Success, Error -- related to messages below
-  function showSuccess() {
-
-    props.updater(); // alert to update 
-
-    const notif = document.getElementById('success-notif-cont');
-    notif.style.display='flex';
-    setTimeout(() => {
-        notif.style.display = 'none';
-    }, 3000);    
+  const showSuccess = () => {
+    setNotifStatus("success");
+    setShowNotif(true);
+    props.updater();
+  }
+  const showError = () => {
+    setNotifStatus("error");
+    setShowNotif(true);
+    props.updater();
   }
 
-  function showError() {
-
-      props.updater(); // alert to update 
-
-      const notif = document.getElementById('error-notif-cont');
-      notif.style.display='flex';
-      setTimeout(() => {
-          notif.style.display = 'none';
-      }, 5000);
-  }
-
+  // NOTIFICATION STATE
+  const [showNotif, setShowNotif] = useState(false);
+  const [notifStatus, setNotifStatus] = useState("error");
   // Messages for actions 
   const messages = {
     'True': {
@@ -162,15 +246,15 @@ const FileActions = props => {
     }
   }
 
-  const [message, setMessage] = useState("");
+  const [notifMsg, setNotifMsg] = useState("");
 
   // Handles the message based on response and action taken 
   function handleResponse(resp, action) {
     if (!(messages.hasOwnProperty(resp))) {
-      setMessage("Error. Please contact developers.");
+      setNotifMsg("Error. Please contact developers.");
       showError();
     } else {
-      setMessage(messages[resp][action]);
+      setNotifMsg(messages[resp][action]);
       const func = messages[resp]['func'];
       func();
     }
@@ -180,14 +264,14 @@ const FileActions = props => {
   function handleComment() {
     console.log('placeholder');
   }
-  function handleRegenerate() {
-    handleUpload('', 'regenerate');
+  function handleReprocess() {
+    handleConfirm('reprocess');
   }
   function handleEdit() {
     handleAction('edit');
   }
   function handleDelete() {
-    handleAction('delete');
+    handleConfirm('delete');
   }
   function handleSave() {
     handleAction('save');
@@ -195,7 +279,6 @@ const FileActions = props => {
   function handleFileUpload() {
     upload.current.click();
   }
-
 
   // Actual executors...
   function handleAction(action) {
@@ -269,21 +352,17 @@ const FileActions = props => {
           setLoadingUpdate(3);
           break;
         case "graphs3D":
-          uploadProgress[resp[0]] = resp[1];
+          if (resp[1].startsWith('success')) {
+            uploadProgress[resp[0]] = 'success';
+          } else {
+            uploadProgress[resp[0]] = 'fail';
+          }
           setUploadProgress(uploadProgress);
           setFinishedUploading(true);
 
           setLoadingUpdate(4);
-
-          // setTimeout(() => {
-          //   handleResponse('True', action);
-          //   reset();
-          //   setLoadingUpdate(5);
-          // }, 500);
           break;
         default: 
-          // handleResponse(resp[0], action);
-          // reset();
           setFinishedUploading(true);
           setLoadingUpdate(6);
       }
@@ -296,34 +375,31 @@ const FileActions = props => {
     })
 
   }
-   
-  const handleUpload = (e, action = 'upload') => { // this function really needs refactoring... but it does for now!
 
-    console.log(action);
+  const beforeUpload = (e) => {
+    const file_path = e.target.files[0].path;
+    const file_name = e.target.files[0].name; 
+    e.target.value = ''; 
+    if (file_name !== "") {
+      setUploadFile({...uploadFile, "name": file_name, "path": file_path});
+      handleConfirm('upload', file_name);
+    }
+  }
 
-    if (action !== "upload" && action !== "regenerate") return; 
+  const handleUpload = (action = 'upload') => { // this function really needs refactoring... but it does for now!
+
+    if (action !== "upload" && action !== "reprocess") return; 
 
     props.setLoading ? props.setLoading(true) : "";
     setLoadingUpdate(1);
 
     if (action === 'upload') {
-      const file_path = e.target.files[0].path;
-      const file_name = e.target.files[0].name; 
-      e.target.value = '';
+      setIsUploading(true);
+      setUploading(true);
+      const pythonProcess = spawn('python3', ['-u', script_path, uploadFile['path'], uploadFile['name']]);
+      handleProcess(pythonProcess, action);
 
-      console.log(file_name);
-
-      if (file_name !== "") {
-        setIsUploading(true);
-        setUploading(true);
-        const pythonProcess = spawn('python3', ['-u', script_path, file_path, file_name]);
-        handleProcess(pythonProcess, action);
-      } else {
-        reset();
-        return;
-      }
-
-    } else if (action === 'regenerate') {
+    } else if (action === 'reprocess') {
       setIsUploading(false);
       setUploading(true);
       const args = new Array('-u', action_script_path, chosenFile, action);
@@ -356,7 +432,7 @@ const FileActions = props => {
         fontSize="large"
       />,
       "style": frequentStyle,
-      "onClick": handleRegenerate, 
+      "onClick": handleReprocess, 
     },
     {
       "key": 2,
@@ -411,6 +487,7 @@ const FileActions = props => {
             isuploading={isuploading} 
             finishedupload={finishedupload}
             updater = {loadingUpdate}
+            refresh = {props.updater} // 'refresh' is to not interfere with 'updater'
             reset = {reset}
           />
 
@@ -436,22 +513,26 @@ const FileActions = props => {
 
           </div>
 
-          <input type="file" id="file-upload" style={{display:"none"}} onChange={(e) => {handleUpload(e)}} ref={upload} accept=".mat, .csv"></input>
+          <input type="file" id="file-upload" style={{display:"none"}} onChange={(e) => {beforeUpload(e)}} ref={upload} accept=".mat, .csv"></input>
 
-          <div style={styles.bannerSuperCont}>
-            <div id="success-notif-cont" style={styles.bannerCont}>
-              <Alert variant="filled" severity="success" style={styles.banner}>
-                      {message ? message : "Successfully Executed."}
-              </Alert>
-            </div>
-          </div>
-          <div style={styles.bannerSuperCont}>
-            <div id="error-notif-cont" style={styles.bannerErrorCont}>
-              <Alert variant="filled" severity="error" style={styles.banner}>
-                      {message ? message : "Error. Please contact developers."}
-              </Alert>
-            </div>
-          </div>
+          
+          <Confirmation 
+            open={openConfirm}
+            close={handleCloseConfirm}
+            title={confirmInfo ? confirmInfo['title'] : null}
+            desc={confirmInfo ? confirmInfo['description'] : null}
+            confirm={verifyConfirm}
+            reject={rejectConfirm}
+          />
+
+
+          <Notification 
+            status={notifStatus}
+            show={showNotif}
+            message={notifMsg}
+            setShow={setShowNotif}
+          />
+
     </ThemeProvider>
   );
 
