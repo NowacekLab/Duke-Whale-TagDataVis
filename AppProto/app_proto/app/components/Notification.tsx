@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; 
+import React, { useState, useEffect, useRef } from "react"; 
 
 import Alert from "@material-ui/lab/Alert";
 import Fade from "@material-ui/core/Fade";
@@ -26,16 +26,31 @@ const styles = {
       },
 }
 
+function useIsMountedRef(){
+    const isMountedRef = useRef(null);
+    useEffect(() => {
+        isMountedRef.current = true; 
+        return () => isMountedRef.current = false; 
+    })
+    return isMountedRef;
+}
+
 const Notification = props => {
 
     const handleShow = () => {
-        setTimeout(() => {
-            props.setShow ? props.setShow(false) : null;
+        setTimeout(() => { // there was a memory leak here that this fixed (I hope)
+            if (isMountedRef.current) {
+                props.setShow ? props.setShow(false) : null;
+            }
         }, 3000)
     }
 
+    const isMountedRef = useIsMountedRef();
+
     useEffect(() => { // this might unnecessarily re-render multiple times 
-        handleShow();
+        if (isMountedRef.current) {
+            handleShow();
+        }
     }, [props.show])
 
     const status = props.status ?? "error";

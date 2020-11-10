@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from "prop-types";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -58,15 +58,27 @@ const styles = {
     maxHeight: 440,
   },
 };
+
+function useIsMountedRef(){
+  const isMountedRef = useRef(null);
+  useEffect(() => {
+      isMountedRef.current = true; 
+      return () => isMountedRef.current = false; 
+  })
+  return isMountedRef;
+}
+
   
 const FileTable = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
 
+    const isMountedRef = useIsMountedRef();
+
     useEffect(() => {
       generate();
-    }, new Array(props.toUpdate))
+    }, new Array(props.toUpdate));
 
     const [rows, setRows] = useState([]);
     const [choice, setChoice] = useState(props.selectedFile ? props.selectedFile : "");
@@ -81,7 +93,7 @@ function createData(file, size, modified) {
   return { file, size, modified };
 }
 
-  function generate() {
+  async function generate() {
     fs.readFile(files, function(err, data) {
 
       const fileInfo = JSON.parse(data);
@@ -90,12 +102,14 @@ function createData(file, size, modified) {
       for (var key in fileInfo) {
         realRows.push(createData(key, fileInfo[key]["size"], fileInfo[key]["modified"]));
       }
-      setRows(realRows);
-      props.fileNum ? props.fileNum(realRows.length) : null;
-      props.setRows ? props.setRows(realRows) : null; // this is to not redo row work in FileActions... passing up rows to HomeTable
+
+      if (isMountedRef.current) {
+        setRows(realRows);
+        props.fileNum && props.fileNum(realRows.length);
+        props.setRows && props.setRows(realRows);
+      }
     })
   }
-
   const columns = [
     { id: "file", label: "File", minWidth: 170},
     { id: "size", label: "Size", minWidth: 100},
@@ -151,7 +165,7 @@ function createData(file, size, modified) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    {rows && rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     return (
                         <TableRow 
                             hover 
@@ -182,7 +196,7 @@ function createData(file, size, modified) {
                         })}
                         </TableRow>
                     );
-                    }) : ""
+                    })
                 }
                 </TableBody>
                 </Table>

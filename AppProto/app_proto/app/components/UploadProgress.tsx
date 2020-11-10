@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from "prop-types";
 import Alert from '@material-ui/lab/Alert';
 import ReactLoading from 'react-loading';
@@ -60,10 +60,21 @@ const styles = {
     },
     };
 
+function useIsMountedRef(){
+    const isMountedRef = useRef(null);
+    useEffect(() => {
+        isMountedRef.current = true; 
+        return () => isMountedRef.current = false; 
+    })
+    return isMountedRef;
+}
+
 const UploadProgress = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
+
+    const isMountedRef = useIsMountedRef();
 
     const handleLoading = () => {
         const loader = document.getElementById('loader');
@@ -83,10 +94,7 @@ const UploadProgress = props => {
     }
 
     useEffect(() => {
-        handleLoading();
-
-        console.log("UPDATE");
-
+        isMountedRef.current && handleLoading();
     }, [props.updater])
 
     const timeline = props.isuploading ? [

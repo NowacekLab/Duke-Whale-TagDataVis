@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 
@@ -37,14 +37,25 @@ const styles = {
       color: "white"
   }
 };
+
+function useIsMountedRef(){
+  const isMountedRef = useRef(null);
+  useEffect(() => {
+      isMountedRef.current = true; 
+      return () => isMountedRef.current = false; 
+  })
+  return isMountedRef;
+}
   
 const AppsTable = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
 
-const [update, setUpdate] = useState(false);
-const [fileSelection, setFileSelection] = useState(props.file ?? "");
+  const isMountedRef = useIsMountedRef();
+
+  const [update, setUpdate] = useState(false);
+  const [fileSelection, setFileSelection] = useState(props.file ?? "");
 
   const handleClick = () => {
       props.fileSelector ? props.fileSelector(fileSelection) : null;

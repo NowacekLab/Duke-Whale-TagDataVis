@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from "prop-types";
 // import { Container } from "semantic-ui-react";
 import Container from '@material-ui/core/Container';
@@ -165,12 +165,3 @@ Home.propTypes = {
 };
 
 export default Home;
-
-
-
-/*
-    <div>
-         <input type="file" name="file" onChange={addFile} style={styles.button} />
-         <label style={styles.label}> Upload </label>
-      </div>
-*/

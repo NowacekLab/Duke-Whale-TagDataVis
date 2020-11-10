@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -8,7 +8,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import Alert from '@material-ui/lab/Alert';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/Icons/Delete';
 import Button from '@material-ui/core/Button';
@@ -111,6 +110,15 @@ const styles = {
     },
 };
 
+function useIsMountedRef(){
+    const isMountedRef = useRef(null);
+    useEffect(() => {
+        isMountedRef.current = true; 
+        return () => isMountedRef.current = false; 
+    })
+    return isMountedRef;
+  }
+
 const Graphs = props => {
     const rootStyle = props.style
       ? { ...styles.root, ...props.style }
@@ -122,16 +130,18 @@ const Graphs = props => {
     const files = path.resolve(path.join(server_files, 'files.json'));
     const file = localStorage.getItem('file');
     const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
-    const spawn = require("child_process").spawn; 
+    const spawn = require("child_process").spawn;
 
     const [graphs, setGraphs] = useState([]);
 
     const [update, setUpdater] = useState(false);
 
+    const isMountedRef = useIsMountedRef();
+
     useEffect(() => {
         getGraphs();
       }, new Array(update))
-    
+
     // Messages for actions
     const [notifStatus, setNotifStatus] = useState("error");
     const [notifMsg, setNotifMsg] = useState("");
@@ -148,7 +158,7 @@ const Graphs = props => {
         }
     }
 
-    // Handles the message based on response and action taken 
+    // Handles the message based on response and action taken
     function handleResponse(resp, action) {
         if (!(messages.hasOwnProperty(resp))) {
             setNotifMsg("Error. Please contact developers.");
@@ -158,8 +168,8 @@ const Graphs = props => {
             setNotifStatus(resp === "True" ? "success" : "error");
         }
         setShowNotif(true);
-    } 
-    
+    }
+
     function handleAction(action, obj) {
 
         props.setLoading ? props.setLoading(true) : "";
@@ -225,16 +235,16 @@ const Graphs = props => {
 
         let graph_type = localStorage.getItem('app');
 
-        graph_type = graph_type ?? "2D"; // defaults to 2D 
+        graph_type = graph_type ?? "2D"; // defaults to 2D
 
-        setGraphType(graph_type);
+        isMountedRef.current && setGraphType(graph_type);
 
         fs.readFile(files, function(err, data) {
             const info = JSON.parse(data);
             if (!(info.hasOwnProperty(file))) {
                 return;
             }
-            
+
             const graph_key = graphChoices[graph_type]['key'];
 
             if (info[file].hasOwnProperty(graph_key)) {
@@ -248,7 +258,7 @@ const Graphs = props => {
                     }
                 }
                 setTimeout(() => {
-                    setGraphs(new_graphs);
+                    isMountedRef.current && setGraphs(new_graphs);
                 }, 300);
             }
         })
@@ -257,13 +267,13 @@ const Graphs = props => {
     const createBrowserWindow = (name, path) => {
 
         const remote = require('electron').remote;
-        const BrowserWindow = remote.BrowserWindow; 
+        const BrowserWindow = remote.BrowserWindow;
         const win = new BrowserWindow({
             height: 800,
             width: 1000,
             title: `${file} : ${name}`,
         });
-    
+
         win.loadURL(url.format({
             pathname: 'file://' + path,
         }));
@@ -302,7 +312,7 @@ const Graphs = props => {
         let graphNumber = graphs ? graphs.length : 0;
 
         switch (graphNumber) {
-          case 0: 
+          case 0:
             return `No Graphs`
           case 1:
             return `1 Graph`
@@ -325,7 +335,7 @@ const Graphs = props => {
             "onClick": handleSave,
         },
         {
-            "key": 2, 
+            "key": 2,
             "title": <h1>Delete</h1>,
             "icon": <DeleteIcon />,
             "onClick": handleDelete,
@@ -337,7 +347,7 @@ const Graphs = props => {
         position: "fixed",
         zIndex: 99998,
         top: 0,
-        left: 200, 
+        left: 200,
         right: 0,
         height: 5,
     }
@@ -363,7 +373,7 @@ const Graphs = props => {
   const verifyConfirm = () => {
     if (pendingAction === 'delete') {
       handleAction('delete', chosenObj);
-    } 
+    }
     handleCloseConfirm();
     setPendingAction("");
     setChosenObj({});
@@ -382,7 +392,7 @@ const Graphs = props => {
     setConfirmInfo(info);
     handleOpenConfirm();
   }
-  
+
     return (
         <Container style={rootStyle}>
 
@@ -391,17 +401,17 @@ const Graphs = props => {
             <p style={styles.header}>{graphChoices[graphType]['title']}</p>
             <div style={graphs.length > 0 ? styles.listContainer : {marginTop: "auto", marginBottom: "auto"}}>
                 {
-                    graphs.length > 0 ? 
+                    graphs.length > 0 ?
                     <List style={styles.list} subheader={<ListSubheader style={styles.listsubheader}>{file}</ListSubheader>}>
                         {graphs.map((obj) => {
-                            return ( 
+                            return (
                                 <ListItem style={styles.listItem} key={obj['name']} dense button onClick={handleToggle(obj)}>
                                     <ListItemIcon>
-                                        <Checkbox 
+                                        <Checkbox
                                             edge="start"
                                             checked={selected.map(ob => ob['name']).indexOf(obj['name']) !== -1}
                                             tabIndex = {-1}
-                                            disableRipple 
+                                            disableRipple
                                             style = {{
                                                 color: '#012069'
                                             }}
@@ -426,7 +436,7 @@ const Graphs = props => {
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             )
-                        })}                        
+                        })}
                     </List>
 
                     :
@@ -436,8 +446,8 @@ const Graphs = props => {
                         <Skeleton variant="rect" height={500}/>
                     </div>
                 }
-                
-                {graphs.length > 0 ? 
+
+                {graphs.length > 0 ?
                             <div style={styles.listfooter}>
                                 <p style={styles.listInfo}>{graphNumber()}</p>
                                 {/* SCROLL TO SEE ALL -- WAS HERE */}
@@ -453,10 +463,10 @@ const Graphs = props => {
                             :
 
                             <Skeleton variant="text" width="100%" height={50}/>
-                
+
                 }
 
-                <Confirmation 
+                <Confirmation
                     open={openConfirm}
                     close={handleCloseConfirm}
                     title={confirmInfo ? confirmInfo['title'] : null}
@@ -465,7 +475,7 @@ const Graphs = props => {
                     reject={rejectConfirm}
                 />
 
-                <Notification 
+                <Notification
                     status={notifStatus}
                     show={showNotif}
                     message={notifMsg}
@@ -476,11 +486,11 @@ const Graphs = props => {
         </Container>
     );
   };
-  
+
 //   Comp2D.propTypes = {
 //     style: PropTypes.object,
 //     title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 //     children: PropTypes.object
 //   };
-  
+
   export default Graphs;

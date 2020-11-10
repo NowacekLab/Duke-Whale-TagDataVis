@@ -79,12 +79,22 @@ const styles = {
     },
 };
 
+function useIsMountedRef(){
+    const isMountedRef = useRef(null);
+    useEffect(() => {
+        isMountedRef.current = true; 
+        return () => isMountedRef.current = false; 
+    })
+    return isMountedRef;
+}
+
 const Apps = props => {
     const rootStyle = props.style 
     ? {...styles.root, ...props.style}
     : {...styles.root}
 
     const [file, setFile] = useState(localStorage.getItem('file') || "");
+    const isMountedRef = useIsMountedRef();
 
     useEffect(() => {
         checkForGraphs();
@@ -151,8 +161,7 @@ const Apps = props => {
 
             if (!(info.hasOwnProperty(file))) {
                 localStorage.setItem('file', '');
-                setClickables(clickablesDisabled); // byproduct of not wanting to conflict with logic below || CAN BE REFACTORED
-                return;
+                return clickablesDisabled;
             }
             const graphs = ['graphs2D', 'graphs3D', 'graphsMixed'];
 
@@ -171,7 +180,7 @@ const Apps = props => {
                 }
             }
 
-            setClickables(obj);
+            isMountedRef.current && setClickables(obj);
         })
     }
 
