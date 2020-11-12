@@ -21,7 +21,7 @@ def trackplot(filename):
     accel_x = np.array(data['Accel_X']) * 9.81 # X Data in m/s^2
     accel_y = np.array(data['Accel_Y']) * 9.81 # Y Data in m/s^2
     accel_z = np.array(data['Accel_Z']) * 9.81 # Z Data in m/s^2
-    length = len(accel_x)
+    length = 20000
     v = np.zeros([length + 1, 3]) #Initial velocity in xW, yW, zW
     v[0] = [5, 0, 0]
     dx = np.zeros([length + 1, 3]) #Initial displacement in x, y, z

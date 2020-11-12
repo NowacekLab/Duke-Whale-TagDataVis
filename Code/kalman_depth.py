@@ -57,12 +57,13 @@ for i in range(length):
     step = rotateq.rotate(step)
     #Calculate new displacement for the current step
     z_estimate = z[i] + step[2]
-    p_estimate = p[i] + 100 #Updated Estimate with Error in Prediction (Default = 100)
-    r = 1 #Error in Measurement (Default = 1)
+    p_estimate = p[i] + 1 #Updated Estimate with Error in Prediction (Default = 100)
+    r = 10000000000 #Error in Measurement (Default = 1)
     K = p_estimate / (p_estimate + r)
     z[i + 1] = z_estimate + K * (depth[i] - z_estimate)
     p[i + 1] = (1 - K) * p_estimate
-    
+
+plt.figure(3)
 plt.plot(np.linspace(0, length, length), data['p'][0:200000], label = 'True')
 plt.plot(np.linspace(0, length + 1, length + 1), z, label = 'Prediction')
 plt.legend()
