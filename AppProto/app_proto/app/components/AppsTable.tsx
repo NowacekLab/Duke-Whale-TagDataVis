@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
+import React, { useState, useRef } from 'react';
 import PropTypes from "prop-types";
-import Paper from '@material-ui/core/Paper';
 import Button from "@material-ui/core/Button";
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 
 import FileTable from "./FileTable";
 
@@ -41,17 +37,28 @@ const styles = {
       color: "white"
   }
 };
+
+function useIsMountedRef(){
+  const isMountedRef = useRef(null);
+  useEffect(() => {
+      isMountedRef.current = true; 
+      return () => isMountedRef.current = false; 
+  })
+  return isMountedRef;
+}
   
 const AppsTable = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
 
-const [update, setUpdate] = useState(false);
-const [fileSelection, setFileSelection] = useState(props.file ? props.file : "");
+  const isMountedRef = useIsMountedRef();
+
+  const [update, setUpdate] = useState(false);
+  const [fileSelection, setFileSelection] = useState(props.file ?? "");
 
   const handleClick = () => {
-      props.fileSelector ? props.fileSelector(fileSelection) : "";
+      props.fileSelector ? props.fileSelector(fileSelection) : null;
       props.closeModal();
   };
 

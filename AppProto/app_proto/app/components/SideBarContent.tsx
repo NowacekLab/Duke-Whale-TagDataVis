@@ -1,10 +1,8 @@
-import React, {ReactNode} from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import routes from '../constants/routes.json';
+import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import routes from '../server/server_files/routes.json';
 import SideBarComp from "./SideBarComp";
 import PropTypes from "prop-types";
-import {Icon} from "@blueprintjs/core";
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -22,8 +20,12 @@ const styles = {
         color: "white",
         textDecoration: "none",
     },
-    active_link: {
+    active_link_side: {
         borderLeft: "3px solid white",
+        opacity: 1,
+    },
+    active_link_bottom: {
+        borderBottom: "3px solid white",
         opacity: 1,
     },
     content: {
@@ -40,54 +42,69 @@ const styles = {
         width: "100%",
         justifyContent: "space-between"
     },
+    bannerSuperCont: {
+        zIndex: 999998,
+        bottom: 20,
+        left: 200,
+        right: 0,
+        position: "fixed",
+        display: "flex",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 };
 
 const SideBarContent = props => {
 
+    const handleNav = (e) => {
+        props.loading ? e.preventDefault() : null;
+    };
+
     return(
         <SideBarComp>
-            <div style={styles.content}>
-                <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link}>
-                    <ListItem>
-                        <ListItemIcon>
-                            <HomeIcon style={{color:"white"}} fontSize="large"/>
-                        </ListItemIcon>
-                        <ListItemText 
-                            disableTypography 
-                            primary={<Typography style={styles.text}>{"Home"}</Typography>}
-                        />                    
-                    </ListItem>
+            <div>
 
-                    {/* <Icon icon="home" iconSize={25} intent="primary"/>
-                    Home */}
-                </NavLink>
+                <div style={styles.content}>
+                    <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={handleNav}>
+                        <ListItem>
+                            <ListItemIcon>
+                                <HomeIcon style={{color:"white"}} fontSize="large"/>
+                            </ListItemIcon>
+                            <ListItemText 
+                                disableTypography 
+                                primary={<Typography style={styles.text}>{"Home"}</Typography>}
+                            />                    
+                        </ListItem>
+                    </NavLink>
+                    <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={handleNav}>
+                        <ListItem>
+                            <ListItemIcon>
+                                <AppsIcon style={{color:"white"}} fontSize="large"/>
+                            </ListItemIcon>
+                            <ListItemText 
+                                disableTypography 
+                                primary={<Typography style={styles.text}>{"Apps"}</Typography>}
+                            />
+                        </ListItem>
 
-                {/* <a href="#" style={styles.sidebarLink}>
-                    Home
-                </a> */}
+                    </NavLink>
 
-                <NavLink to={routes.APPS} exact style={styles.sidebarLink} activeStyle={styles.active_link}>
-                    <ListItem>
-                        <ListItemIcon>
-                            <AppsIcon style={{color:"white"}} fontSize="large"/>
-                        </ListItemIcon>
-                        <ListItemText 
-                            disableTypography 
-                            primary={<Typography style={styles.text}>{"Apps"}</Typography>}
-                        />
-                    </ListItem>
+                </div>
 
-                </NavLink>
+                <div style={styles.bottomBtnCont}>
+                    <NavLink to={routes.SETTINGS} exact activeStyle={styles.active_link_bottom} onClick={handleNav}>
+                        <IconButton>
+                            <SettingsIcon style={{color: "white"}} fontSize="large" />
+                        </IconButton>
+                    </NavLink>
+                    <NavLink to={routes.INFO} exact activeStyle={styles.active_link_bottom} onClick={handleNav}>
+                        <IconButton>
+                            <HelpIcon style={{color: "white"}} fontSize="large" />
+                        </IconButton>
+                    </NavLink>
+                </div>
 
-            </div>
 
-            <div style={styles.bottomBtnCont}>
-                <IconButton>
-                    <SettingsIcon style={{color: "white"}} fontSize="large" />
-                </IconButton>
-                <IconButton>
-                    <HelpIcon style={{color: "white"}} fontSize="large" />
-                </IconButton>
             </div>
 
         </SideBarComp>

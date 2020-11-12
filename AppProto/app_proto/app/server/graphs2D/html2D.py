@@ -16,11 +16,12 @@ import json
 from .graphers2D import * 
 import helper_json
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
 GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
 GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
-file_info = os.path.join(BASE_DIR, 'files.json')
+SERVER_FILES = os.path.join(BASE_DIR, 'server_files')
+file_info = os.path.join(SERVER_FILES, 'files.json')
 
 sys.path.append(BASE_DIR)
 
@@ -80,6 +81,48 @@ def main(file_: str, file_path: str) -> Tuple[bool, List[str]]:
 
         all_processes = [] 
 
+        total_graphs = 0 
+
+        # multiprocessing
+        for creator in CREATORS: # 'CREATORS' MUST conform to create_graph params/args 
+            func = creator[0]
+            names = list(creator[1:])
+            total_graphs += len(names)
+            p = Process(target=create_graph, args=(df, xAxis, indices, func, names, file_))
+            all_processes.append(p)
+        
+        for p in all_processes:
+            p.start() 
+
+        for p in all_processes: # have the main code wait for execution to then check for files that exist
+            p.join() 
+        
+        unsaved_graphs = save_existing_graphs(file_)
+
+        if total_graphs == len(unsaved_graphs):
+            return (False, [])
+        
+        return (True, unsaved_graphs)
+    except Exception as e:
+        return (False, [])
+
+def test(file_: str, file_path: str) -> Tuple[bool, List[str]]: 
+    """
+    TEST of MAIN handler 
+    """
+    try: 
+        df = pd.read_csv(file_path)
+
+        # arbitrary for this set of graphs
+        startIndex = 32
+        endIndex = 232
+
+        xAxis = list(range(startIndex, endIndex))
+        indices = (startIndex, endIndex)
+
+
+        all_processes = [] 
+
         # multiprocessing
         for creator in CREATORS: # 'CREATORS' MUST conform to create_graph params/args 
             func = creator[0]
@@ -92,13 +135,17 @@ def main(file_: str, file_path: str) -> Tuple[bool, List[str]]:
 
         for p in all_processes: # have the main code wait for execution to then check for files that exist
             p.join() 
-        
-        unsaved_graphs = save_existing_graphs(file_)
-        
+
+        unsaved_graphs = [] 
+
         return (True, unsaved_graphs)
     except Exception as e:
         return (False, [])
 
+
 if __name__ == "__main__":
-    print(main('mn17_005aprh25.mat.csv', 'mn17_005aprh25.mat.csv'))
-    sys.stdout.flush()
+    # this is only testing -- this module is only really called via the 'main()' function 
+    # print(main('mn17_005aprh25.mat.csv', 'mn17_005aprh25.mat.csv'))
+    # sys.stdout.flush()
+
+    print(BASE_DIR)

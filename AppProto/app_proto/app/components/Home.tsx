@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
+import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from "prop-types";
-import { Container, Icon } from "semantic-ui-react";
-import Typography from '@material-ui/core/Typography';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TablePagination from '@material-ui/core/TablePagination';
-import Paper from '@material-ui/core/Paper';
-import { chownSync } from 'fs';
+// import { Container } from "semantic-ui-react";
+import Container from '@material-ui/core/Container';
+
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import HomeTable from "./HomeTable";
 
@@ -102,6 +93,7 @@ const styles = {
   },
   tableContainer: {
     overflow: "scroll",
+    display: "none"
   },
   table: {
     width: "80%",
@@ -111,24 +103,57 @@ const styles = {
   container: {
     maxHeight: 440,
   },
+  loadingSmaller : {
+    display: "flex",
+    position: "fixed",
+    zIndex: 99998,
+    top: 0,
+    left: 200, 
+    right: 0,
+    height: 5,
+  }
 };
-
-// 012069
   
 const Home = props => {
   const rootStyle = props.style
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
 
+  const [fileNum, setFileNum] = useState(-1);
+
+  const handleLoading = () => {
+    const loaderSmaller = document.getElementById('loader-smaller');
+    const loadingTable = document.getElementById('loading-table');
+    const homeTable = document.getElementById('home-table');
+
+    if (fileNum > -1) {
+      setTimeout(() => {
+        loaderSmaller ? loaderSmaller.style.display = "none" : null;
+        loadingTable ? loadingTable.style.display="none" : null;
+        homeTable ? homeTable.style.display = "block" : null;
+      }, 300)
+    }
+  }
+
+  useEffect(() => {
+    handleLoading();
+  }, [fileNum]);
+
   return (
-    <Container fluid style={rootStyle} textAlign="center">
+    <Container style={rootStyle}>
       <p style={styles.header}>Home</p>
 
-      <div style={styles.tableContainer}>
-        <HomeTable />
+      <LinearProgress id="loader-smaller" color="primary" style={styles.loadingSmaller}/>
 
+      <div style={styles.table} id="loading-table">
+        <Skeleton variant="text" width="100%" height={30} />
+        <Skeleton variant="rect" height={500} />
       </div>
 
+      <div style={styles.tableContainer} id="home-table">
+        <HomeTable loading={props.loading ? props.loading : () => {return}} fileNum={fileNum} setFileNum={setFileNum} setLoading={props.setLoading ? props.setLoading : () => {return}}/>
+
+      </div>
     </Container>
   );
 };
@@ -140,12 +165,3 @@ Home.propTypes = {
 };
 
 export default Home;
-
-
-
-/*
-    <div>
-         <input type="file" name="file" onChange={addFile} style={styles.button} />
-         <label style={styles.label}> Upload </label>
-      </div>
-*/

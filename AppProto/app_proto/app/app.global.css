@@ -18,12 +18,8 @@ body {
   overflow-y: hidden;
 }
 
-h2 {
-  margin: 0;
-  font-size: 2.25rem;
-  font-weight: bold;
-  letter-spacing: -0.025em;
-  color: #fff;
+::-webkit-scrollbar {
+  display: none;
 }
 
 p {
@@ -44,4 +40,8 @@ a:hover {
   opacity: 1;
   text-decoration: none;
   cursor: pointer;
+}
+
+.override-hover {
+  background-color: transparent !important;
 }

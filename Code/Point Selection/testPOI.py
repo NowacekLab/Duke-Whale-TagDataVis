@@ -8,6 +8,7 @@ Allows the user to select a point to display with a closer view in the subplots
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import scipy.signal as sg
 # pip install ipywidgets
 from plotly.subplots import make_subplots
 
@@ -18,15 +19,29 @@ def plotPOI(filename):
 
     # Pull Specific Variables
     fs = data['fs'].tolist()[0]
-    head = data['head'].tolist()
-    p = data['p'].tolist()
-    roll = data['roll'].tolist()
-    pitch = data['pitch'].tolist()
+    head = data['Heading'].tolist()
+    p = data['Depth'].tolist()
+    roll = data['Roll'].tolist()
+    pitch = data['Pitch'].tolist()
 
     # Calculate time 
     numData = len(p)
     t = [x/fs for x in range(numData)]
     t_hr = [x/3600 for x in t]
+
+    # Scaling Factor to reduce amount of data
+    scale = 10
+
+    # Reduce Data
+    sP = sg.decimate(p,scale).copy()
+    sRoll = sg.decimate(roll,scale).copy()
+    sPitch = sg.decimate(pitch,scale).copy()
+    sHead = sg.decimate(head,scale).copy()
+
+    # Calculate Reduced time 
+    numData = len(sP)
+    sT = [x/(fs/scale) for x in range(numData)]
+    sT_hr = [x/3600 for x in sT]
 
     tView = 10 # seconds
     N = int(fs*tView/2) # Number of points
@@ -77,7 +92,7 @@ def plotPOI(filename):
         )
 
     # Add traces to Figure
-    trace = go.Scattergl(x=t_hr, y=p, mode='lines', name = "Depth")
+    trace = go.Scattergl(x=sT_hr, y=sP, mode='lines', name = "Depth")
     fig.add_trace(trace, row = 1, col = 1)
     fig.add_trace(go.Scattergl(x = xPOI, y = yPOI, mode = 'markers', 
                             marker = dict(color = 'green', symbol = 'square', size = 10),

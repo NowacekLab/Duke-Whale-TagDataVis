@@ -15,9 +15,9 @@ def calculation(filename):
     pitch = np.array(data['Pitch'])
     yaw = np.array(data['Heading'])
     depth = np.array(data['Depth']) * -1
-    accel_x = np.array(data['Accel_X']) * 9.81 # X Data in m/s^2
-    accel_y = np.array(data['Accel_Y']) * 9.81 # Y Data in m/s^2
-    accel_z = np.array(data['Accel_Z']) * 9.81 # Z Data in m/s^2
+    accel_x = np.array(data['WhaleAccel_X']) * 9.81 # X Data in m/s^2
+    accel_y = np.array(data['WhaleAccel_Y']) * 9.81 # Y Data in m/s^2
+    accel_z = np.array(data['WhaleAccel_Z']) * 9.81 # Z Data in m/s^2
     length = len(accel_x)
     v = 2.2 #Initial velocity in xW, yW, zW
     dx = np.zeros([length + 1, 2]) #Initial displacement in x, y

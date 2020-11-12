@@ -88,5 +88,5 @@ def trackplot(filename):
     fig.write_html('.'.join(filename.split('.')[0:-1]) + '.html')
 
 if __name__ == '__main__':
-    trackplot('../Data/Pm19_136aprh.mat.csv')
+    trackplot('./eg01_207aprh.csv')
     

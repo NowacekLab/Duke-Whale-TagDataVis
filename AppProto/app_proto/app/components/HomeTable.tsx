@@ -1,19 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
+import React, { useState } from 'react';
 import PropTypes from "prop-types";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TablePagination from '@material-ui/core/TablePagination';
-import Paper from '@material-ui/core/Paper';
-import Button from "@material-ui/core/Button";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import { chownSync } from 'fs';
 
 import FileActions from "./FileActions";
 import FileTable from "./FileTable";
@@ -71,25 +57,35 @@ const HomeTable = props => {
     ? { ...styles.root, ...props.style }
     : { ...styles.root }
 
-    const [fileNum, setFileNum] = useState(0);
     const [update, setUpdate] = useState(false);
     const [fileSelection, setFileSelection] = useState("");
+    const [rows, setRows] = useState([]);
 
   const change = () => {
     setUpdate(!update);
   };
+
+  const fileNumber = () => {
+    switch (props.fileNum) { // fileNum is an indicator of loading for Home.tsx 
+      case 0: 
+        return `No Files`
+      case 1:
+        return `1 File`
+      default:
+        return `${props.fileNum} Files`
+    }
+  }
 
   return (
 
     <div style={styles.mainContainer}>
     
         <div style={styles.tableHeader}>
-            <p style={styles.tableHeaderElem}>{fileNum} Files</p>
-
-            <FileActions updater={change} selection={fileSelection}/>
+            <p style={styles.tableHeaderElem}>{fileNumber()}</p>
+            <FileActions loading={props.loading ?? false} updater={change} selection={fileSelection} setLoading={props.setLoading ?? function fail(){return}} rows={rows}/>
         </div>
 
-        <FileTable toUpdate={update} fileNum={setFileNum} selection={setFileSelection}/>
+        <FileTable toUpdate={update} fileNum={props.setFileNum} selection={setFileSelection} setRows={setRows}/>
 
     </div>
   );

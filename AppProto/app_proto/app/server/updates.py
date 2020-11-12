@@ -1,12 +1,18 @@
 import os 
+import shutil
 import sys 
 import time 
 
 import helper_json
 
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(BASE_DIR, 'user_files')
-file_info = os.path.join(BASE_DIR, 'files.json')
+GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
+GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
+GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
+
+SERVER_FILES = os.path.join(BASE_DIR, 'server_files')
+file_info = os.path.join(SERVER_FILES, 'files.json')
 
 def humansize(nbytes):
     """
@@ -99,10 +105,51 @@ def all_updates(info: dict) -> bool:
         helper_json.create(file_info, info)
     return changes 
 
-def main():
+def html_deleted(info: dict) -> bool: 
+    """
+    Updates info for deleted html file
+    """
+    changes = False 
+    for file_ in info: # yes... the object nesting takes this much to traverse
+        for graph_type in ('graphs2D', 'graphs3D'):
+            if graph_type in info[file_]:
+                modified = info[file_][graph_type].copy()
+                for graph in info[file_][graph_type]:
+                    graph_path = info[file_][graph_type][graph]
+                    if (not os.path.isfile(os.path.join(GRAPHS_2D_DIR, graph_path)) or not os.path.isfile(os.path.join(GRAPHS_3D_DIR, graph_path))):
+                        modified.pop(graph)
+                        changes = True
+                info[file_][graph_type] = modified 
+    helper_json.create(file_info, info)
+    return changes 
+
+def clear_files(path_: str, info: dict) -> None: 
+    """
+    Cleares all files associated with deleted .csv file
+    (e.g. graphs)
+    """
+    # csv_path 
+    chosen_file = None 
+    for file_ in info: 
+        if 'csv_path' in info[file_] and info[file_]['csv_path'] == path_: 
+            chosen_file = file_ 
+            break 
+    if chosen_file != None: 
+        for directory in (GRAPHS_2D_DIR, GRAPHS_3D_DIR):
+            file_directory = os.path.join(directory, chosen_file)
+            if os.path.isdir(file_directory):
+                shutil.rmtree(file_directory) # this forces removal 
+
+def main(html_=False, path_=None): # html_ TRUE .html file-related update 
     info = helper_json.read(file_info)
-    return all_updates(info) # update/validate files in files.json
+    if html_: 
+        return html_deleted(info)
+    else: 
+        if path_ != None and path_.endswith('csv'): # clear .csv file graphs 
+            clear_files(path_, info)
+        return all_updates(info) # update/validate files in files.json
 
 if __name__ == "__main__":
-    print(main())
-    sys.stdout.flush()
+    # print(main())
+    # sys.stdout.flush()
+    print(main(False, path_="C:\\Users\\joonl\\CODING\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\server\\user_files\\eg01_207aprh.csv"))

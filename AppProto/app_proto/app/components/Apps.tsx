@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
-import PropTypes from "prop-types";
-import {Container} from 'semantic-ui-react';
+import routes from '../server/server_files/routes.json';
+import Container from '@material-ui/core/Container';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GraphicEqIcon from '@material-ui/icons/GraphicEq';
 import MultilineChartIcon from '@material-ui/icons/MultilineChart';
@@ -10,16 +9,14 @@ import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import Button from "@material-ui/core/Button";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Alert from '@material-ui/lab/Alert';
 
 import AppsTable from "./AppsTable";
+import Notification from "./Notification";
 
 const styles = {
     root: {
@@ -80,183 +77,161 @@ const styles = {
         marginLeft: "auto",
         marginRight: "auto"
     },
-    banner: {
-        boxShadow: "5px 10px",
-        marginTop: "10px",
-    },
-    bannerSuperCont: {
-      zIndex: 999998,
-      bottom: 20,
-      left: 200,
-      right: 0,
-      position: "fixed",
-      display: "flex",
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    bannerCont: {
-      width: "500px",
-      display: "none",
-      alignItems: "center",
-      justifyContent: "center",
-      animation: "all 1s ease-in",
-    },
-    bannerErrorCont: {
-      width: "500px",
-      alignItems: "center",
-      justifyContent: "center",
-      display: "none",
-      animation: "all 1s ease-in",
-    },
 };
+
+function useIsMountedRef(){
+    const isMountedRef = useRef(null);
+    useEffect(() => {
+        isMountedRef.current = true; 
+        return () => isMountedRef.current = false; 
+    })
+    return isMountedRef;
+}
 
 const Apps = props => {
     const rootStyle = props.style 
     ? {...styles.root, ...props.style}
     : {...styles.root}
 
-    const [file, setFile] = useState("");
+    const [file, setFile] = useState(localStorage.getItem('file') || "");
+    const isMountedRef = useIsMountedRef();
 
     useEffect(() => {
-        if (!(file === "")) {
-            checkForGraphs();
-        }
+        checkForGraphs();
       }, new Array(file))
       
-  const fs = window.require('fs');
-  const path = require('path');
-  const server_path = path.resolve(path.join(__dirname, 'server'))
-  const files = path.resolve(path.join(server_path, 'files.json'));
+    const fs = window.require('fs');
+    const path = require('path');
+    const server_path = path.resolve(path.join(__dirname, 'server'));
+    const server_files = path.resolve(path.join(server_path, 'server_files'));
+    const files = path.resolve(path.join(server_files, 'files.json'));
 
     // HOVER
-    const [hover2D, setHover2D] = useState(false);
-    const [hover3D, setHover3D] = useState(false);
-    const [hoverMIX, setHoverMIX] = useState(false);
+    const [hovers, setHovers] = useState({
+        "2D": false,
+        "3D": false,
+        "MIXED": false
+    });
 
-    // Clickability 
-    const [graphs2D, setGraphs2D] = useState({});
-    const [graphs3D, setGraphs3D] = useState({});
-    const [graphsMixed, setGraphsMixed] = useState({});
+    const handleHover = (type, hovering) => {
 
+        localStorage.setItem('app', type);
+
+        var obj = Object.create(hovers);
+        obj[type] = hovering;
+        setHovers(obj);
+    };
+
+    // Clickability (there are processed graph files associated with chosen file)
+    const clickablesDisabled = {
+        'graphs2D': false,
+        'graphs3D': false,
+        'graphsMixed': false,
+    }
+    const [clickables, setClickables] = useState(clickablesDisabled);
+
+    const handleClickable = (type, clickable) => {
+        var obj = Object.create(clickables);
+        obj[type] = clickable; 
+        setClickables(obj);
+    };
+
+    // Modal
     const [showModal, setShowModal] = useState(false);
-
     const handleModalOpen = () => {
         setShowModal(true);
     };
     const handleModalClose = () => {
         setShowModal(false);
     };
-    const toggleHover2D = (e) => {
-        setHover2D(!hover2D);
-    };
-    const toggleHover3D = (e) => {
-        setHover3D(!hover3D);
-    };
-    const toggleHoverMIX = (e) => {
-        setHoverMIX(!hoverMIX);
-    };
 
-    // Error, no graphs
+    // NOTIFICATION
+    const [showNotif, setShowNotif] = useState(false);
+    const notifMsg = "Graph type not available for selected file.";
+    const notifStatus = "error";
     function showError() {
-        const notif = document.getElementById('error-notif-cont');
-        notif.style.display='flex';
-        setTimeout(() => {
-            notif.style.display = 'none';
-        }, 5000);
+        setShowNotif(true);
     }
 
+    // CLICKABILITY
     const checkForGraphs = () => {
         localStorage.setItem('file', file);
         fs.readFile(files, function(err, data) {
             const info = JSON.parse(data);
 
-            console.log(info);
-
             if (!(info.hasOwnProperty(file))) {
-                return;
+                localStorage.setItem('file', '');
+                return clickablesDisabled;
             }
             const graphs = ['graphs2D', 'graphs3D', 'graphsMixed'];
-            const setters =[setGraphs2D, setGraphs3D, setGraphsMixed];
-            // check if graphsMixed is right name 
-            // graphs2D, graphs3D
-            for (let key in graphs) {
-                console.log(graphs[key]);
-                console.log(info[file]);
 
+            var obj = new Object();
+
+            for (let key in graphs) {
                 if (info[file].hasOwnProperty(graphs[key])) {
-                    setters[key](info[file][graphs[key]]);
+                    let hasGraph = false;
+                    for (let name in info[file][graphs[key]]) {
+                        if (info[file][graphs[key]][name] !== "") {
+                            hasGraph = true;
+                            break;
+                        }
+                    }
+                    obj[graphs[key]] = hasGraph;
                 }
             }
 
+            isMountedRef.current && setClickables(obj);
         })
     }
 
-    const objEmpty = (obj) => {
-        return Object.keys(obj).length === 0 && obj.constructor === Object;
+    const handleNav = (e, graph_type) => {
+        if (!clickables[graph_type]) {
+            e.preventDefault();
+            showError();
+        }
     }
 
-    const createBrowserWindow = () => {
-        const remote = require('electron').remote;
-        const BrowserWindow = remote.BrowserWindow; 
-        const win = new BrowserWindow({
-            height: 600,
-            width: 800
-        });
+    const apps = [
+        {
+            "key": 0,
+            "title": "2D Graph",
+            "comp": <Link to={routes.GRAPHS} style={styles.link} onClick={(e) => {handleNav(e, 'graphs2D')}}>
+                            <TrendingUpIcon style={hovers['2D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("2D", true)} onMouseLeave={() => handleHover("2D", false)} />
+                       </Link>
+        },
+        {
+            "key": 1,
+            "title": "3D Graph",
+            "comp": <Link to={routes.GRAPHS} style={styles.link} onClick={(e) => {handleNav(e, 'graphs3D')}}>
+                            <GraphicEqIcon style={hovers['3D'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("3D", true)} onMouseLeave={() => handleHover("3D", false)}/>
+                        </Link>
+        },
+        {
+            "key": 2,
+            "title": "Mixed Graph",
+            "comp": <Link to={routes.GRAPHS} style={styles.link} onClick={(e) => {handleNav(e, 'graphsMixed')}}>
+                            <MultilineChartIcon style={hovers['MIXED'] ? styles.app_hover : styles.app} onMouseEnter={() => handleHover("MIXED", true)} onMouseLeave={() => handleHover("MIXED", false)}/>
+                        </Link>
+        }
 
-        win.loadURL('<url>');
-    }
-
-
+    ]
 
     return (
-            <Container fluid style={rootStyle} textAlign="center">
+            <Container style={rootStyle}>
                 <p style={styles.header}>Apps</p>
                 <div>
                     <div style={styles.dock}>
-                        <div>
-                            {
-                                objEmpty(graphs2D) ? 
-                                <TrendingUpIcon onClick={showError} style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D} />
-                                :
-                                <Link to={{
-                                    pathname: routes.GRAPH2D,
-                                    state: {
-                                        chosen: "",
-                                    }
-                                    }} style={styles.link}>
-                                    <TrendingUpIcon style={hover2D ? styles.app_hover : styles.app} onMouseEnter={toggleHover2D} onMouseLeave={toggleHover2D} />
-                                </Link>
-                            }
-                            <Typography style={styles.text}>
-                                        2D Graph
-                            </Typography>
-                        </div>
-                        <div>
-                            {
-                                objEmpty(graphs3D) ?
-                                <GraphicEqIcon onClick={showError} style={hover3D ? styles.app_hover : styles.app} onMouseEnter={toggleHover3D} onMouseLeave={toggleHover3D}/>
-                                :
-                                <Link to={routes.GRAPH3D} style={styles.link}>
-                                    <GraphicEqIcon style={hover3D ? styles.app_hover : styles.app} onMouseEnter={toggleHover3D} onMouseLeave={toggleHover3D}/>
-                                </Link>
-                            }
-                            <Typography style={styles.text}>
-                                    3D Graph
-                            </Typography>
-                        </div>
-                        <div>
-                            {
-                                objEmpty(graphsMixed) ?
-                                <MultilineChartIcon onClick={showError} style={hoverMIX ? styles.app_hover : styles.app} onMouseEnter={toggleHoverMIX} onMouseLeave={toggleHoverMIX}/>
-                                :
-                                <Link to={routes.GRAPHMIX} style={styles.link}>
-                                    <MultilineChartIcon style={hoverMIX ? styles.app_hover : styles.app} onMouseEnter={toggleHoverMIX} onMouseLeave={toggleHoverMIX}/>
-                                </Link>
-                            }
-                            <Typography style={styles.text}>
-                                    Mixed
-                            </Typography>
-                        </div>
+                        {apps.map((obj) => {
+                            return(
+                                <div>
+                                    {obj['comp']}
+                                    <Typography style={styles.text}>
+                                        {obj['title']}
+                                    </Typography>   
+                                </div>
+                            )
+
+                        })}
                     </div>
 
                     <List style={styles.selectButton}>
@@ -266,6 +241,7 @@ const Apps = props => {
                         </ListItem>
                     </List>
                 </div>
+
                 <Modal
                     aria-labelledby="transition-modal-title"
                     aria-describedby="transition-modal-description"
@@ -286,13 +262,14 @@ const Apps = props => {
                         <AppsTable fileSelector={setFile} file={file} closeModal={handleModalClose}/>
                     </Fade>
                 </Modal>
-                <div style={styles.bannerSuperCont}>
-                    <div id="error-notif-cont" style={styles.bannerErrorCont}>
-                    <Alert variant="filled" severity="error" style={styles.banner}>
-                            {"Graph type not available for selected file."}
-                    </Alert>
-                    </div>
-                </div>
+
+                <Notification 
+                    status={notifStatus}
+                    show={showNotif}
+                    message={notifMsg}
+                    setShow={setShowNotif}
+                />
+
             </Container>
     );
 };

@@ -1,6 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
 import PropTypes from "prop-types";
 import path from "path";
 
@@ -17,8 +15,6 @@ const styles = {
         display: "block",
     }
 };
-
-// : path.join(__dirname, '../resources');
 
 const img_path = path.join(__dirname, '../resources/');
 
