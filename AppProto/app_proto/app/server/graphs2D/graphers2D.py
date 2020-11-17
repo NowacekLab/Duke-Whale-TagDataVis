@@ -1,25 +1,25 @@
 """
-MAIN 2D GRAPHERS 
+MAIN 2D GRAPHERS
 MODULE USED IN graph --> HTML
 """
-from plotly import graph_objects as go 
-from plotly import express as px 
+from plotly import graph_objects as go
+from plotly import express as px
 from plotly.subplots import make_subplots
-from scipy import signal as sg 
-from plotly.offline import plot 
-from ipywidgets import widgets 
+from scipy import signal as sg
+from plotly.offline import plot
+from ipywidgets import widgets
 from datetime import datetime
 import pandas as pd
 import csv
 from typing import List, Tuple
-import os 
-import numpy as np 
+import os
+import numpy as np
 
 # EACH FUNCTION UNLESS OTHERWISE SPECIFIED RETURNS [graph object1, graph object2, ...]
 
 def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     """
-    This graph, like the one below it, does not 
+    This graph, like the one below it, does not
     use the xAxis nor indices params, only there
     as part of graph creation standardization
     """
@@ -32,7 +32,7 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     roll = df['Roll'].tolist()
     pitch = df['Pitch'].tolist()
 
-    # Calculate time 
+    # Calculate time
     numData = len(p)
     t = [x/fs for x in range(numData)]
     t_hr = [x/3600 for x in t]
@@ -46,7 +46,7 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     sPitch = sg.decimate(pitch,scale).copy()
     sHead = sg.decimate(head,scale).copy()
 
-    # Calculate Reduced time 
+    # Calculate Reduced time
     numData = len(sP)
     sT = [x/(fs/scale) for x in range(numData)]
     sT_hr = [x/3600 for x in sT]
@@ -54,7 +54,7 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     tView = 10 # seconds
     N = int(fs*tView/2) # Number of points
 
-    # Create a list of Points of Interest 
+    # Create a list of Points of Interest
     xPOI = [1, 1.5, 2.2] #hour
     # Empty list for y coordinates of points of interest to be populated
     yPOI = []
@@ -92,7 +92,7 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     # fig = go.FigureWidget(make_subplots(
     fig = go.Figure(make_subplots(
-        rows = 2, cols=2, 
+        rows = 2, cols=2,
         # Define what plot goes where and the type of plot
         specs = [[{"rowspan":2},{"type":"polar"}],
                 [None, {}]]
@@ -102,23 +102,23 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     # Add traces to Figure
     trace = go.Scattergl(x=sT_hr, y=sP, mode='lines', name = "Depth")
     fig.add_trace(trace, row = 1, col = 1)
-    fig.add_trace(go.Scattergl(x = xPOI, y = yPOI, mode = 'markers', 
+    fig.add_trace(go.Scattergl(x = xPOI, y = yPOI, mode = 'markers',
                             marker = dict(color = 'green', symbol = 'square', size = 10),
                             name = "Points of Interest"), row = 1, col = 1)
-    
+
     # Loop through points of interest and create traces for each for the subplots
     for k in range(len(xPOI)):
-        nameK = "Depth of POI " + str(k) 
+        nameK = "Depth of POI " + str(k)
         # Polar Plot
         fig.add_trace(go.Scatterpolar(r = [1, 0.25, 0.25, 0.25, 0.25, 1], theta = zoomR[k][0], mode = "lines", visible = False), row = 1, col = 2)
         # Zoomed Depth Plot
         fig.add_trace(go.Scattergl(x = zoomT[k], y = zoomP[k], mode = "lines", visible = False, name = nameK), row = 2, col = 2)
-        # Third Trace is for animation purposes 
+        # Third Trace is for animation purposes
         fig.add_trace(go.Scattergl(x= [], y = [], mode = 'markers', marker = dict(color="red", size = 10), visible = False), row = 2, col = 2)
 
     '''
     Update the layout of subplots
-    Have to go axis by axis 
+    Have to go axis by axis
     '''
     # Update x-axis
     fig.update_xaxes(title_text = "Time (hr)", row = 1, col = 1)
@@ -136,7 +136,7 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
                         )]
     # Create a "visible" list for button creation based on number of POI
     visibleList = [False]*(2 + 3*len(xPOI))
-    # The first two traces will always be visible 
+    # The first two traces will always be visible
     visibleList[0] = True
     visibleList[1] = True
     # Add a None button
@@ -156,7 +156,7 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
         inds = [2+(3*k), 3+(3*k), 4+(3*k)]
         # Flip visibilities to True
         for i in inds:
-            visibleListK[i] = True 
+            visibleListK[i] = True
         # Add button
         buttonList.append(dict(label = labelK,
                             method = 'update',
@@ -180,7 +180,7 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 def plot_timeline(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     """
     Note that this graph does not use xAxis nor indices params
-    Only there as part of graph standardization in creating 
+    Only there as part of graph standardization in creating
     """
 
     # Pull Specific Variables
@@ -189,7 +189,7 @@ def plot_timeline(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     p = df['Depth'].tolist()
     roll = df['Roll'].tolist()
     pitch = df['Pitch'].tolist()
-    # Calculate time 
+    # Calculate time
     numData = len(p)
     t = [x/fs for x in range(numData)]
     t_hr = [x/3600 for x in t]
@@ -207,16 +207,16 @@ def plot_timeline(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     sPitch = sg.decimate(pitch,scale).copy()
     sHead = sg.decimate(head,scale).copy()
 
-    # Calculate time - Reduced 
+    # Calculate time - Reduced
     numData = len(sP)
     sT = [x/(fs/scale) for x in range(numData)]
     sT_hr = [x/3600 for x in sT]
 
-    # Make Widget Figure 
+    # Make Widget Figure
     fig = go.Figure(
             make_subplots(
                 # Deifne dimensions of subplot
-                rows = 2, cols=1, 
+                rows = 2, cols=1,
                 # Define what plot goes where and the type of plot
                 specs = [[{}],
                         [{}]],
@@ -225,7 +225,7 @@ def plot_timeline(df: "data frame", xAxis: List[int], indices: Tuple[int]):
         )
 
     # Create traces for the data and add to figure
-    fig.add_trace(go.Scattergl(x = sT_hr, y = sP, mode = "lines", name = "Depth"), row = 1, col = 1) 
+    fig.add_trace(go.Scattergl(x = sT_hr, y = sP, mode = "lines", name = "Depth"), row = 1, col = 1)
     fig.add_trace(go.Scattergl(x = sT_hr, y = sHead, mode = "lines", name = "Head"), row = 2, col = 1)
     fig.add_trace(go.Scattergl(x = sT_hr, y = sPitch, mode = "lines", name = "Pitch"), row = 2, col = 1)
     fig.add_trace(go.Scattergl(x = sT_hr, y = sRoll, mode = "lines", name = "Roll" ), row = 2, col = 1)
@@ -238,15 +238,15 @@ def plot_timeline(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     return [fig]
 
 def all_graphs_comb(df: "data frame", xAxis: List[int], indices: Tuple[int]):
-    startIndex, endIndex = indices 
+    startIndex, endIndex = indices
 
-    pass 
+    pass
 
 def all_graphs_sep(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
-    plots = make_subplots(rows=3, cols=2, 
-                      subplot_titles=("Heading", "Pitch", 
+    plots = make_subplots(rows=3, cols=2,
+                      subplot_titles=("Heading", "Pitch",
                                       "X Acceleration", "Roll", "Y Acceleration", "Z Acceleration"))
 
     headData = df.Heading[startIndex:endIndex]
@@ -267,7 +267,7 @@ def all_graphs_sep(df: "data frame", xAxis: List[int], indices: Tuple[int]):
         row=2, col=1
     )
 
-    rollData = df.Roll[startIndex:endIndex] 
+    rollData = df.Roll[startIndex:endIndex]
     plots.add_trace(
         go.Scatter(x=xAxis, y=rollData, name = "roll"),
         row=2, col=2
@@ -289,7 +289,7 @@ def all_graphs_sep(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [plots]
 
-def head(df: "data frame", xAxis: List[int], indices: Tuple[int]): 
+def head(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
     headData = df.Heading[startIndex:endIndex]
@@ -297,7 +297,7 @@ def head(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
-def accelerationX(df: "data frame", xAxis: List[int], indices: Tuple[int]): 
+def accelerationX(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
     xAccelerationData = df["Accel_X"][startIndex:endIndex]
@@ -329,7 +329,7 @@ def pitch(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     pitchData = df.Pitch[startIndex:endIndex]
     graph2 = px.line(x=xAxis, y=pitchData, labels={'x':'Time', 'y':'Pitch'})
-    
+
     graph3 = go.Figure()
     graph3.add_trace(go.Scatter(x=xAxis, y=pitchData,
                         mode='lines',
@@ -337,13 +337,43 @@ def pitch(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     graph3.add_trace(go.Scatter(x=xAxis, y=rollData,
                         mode='lines',
                         name='roll'))
-    
+
     return [graph1, graph2, graph3]
 
-CREATORS = [(plot_POI, 'plot_POI.html'), (plot_timeline, 'plot_timeline.html'), 
-            (all_graphs_sep, 'all_graphs_separate.html'), (head, 'heading.html'), 
-            (pitch, 'roll.html', 'pitch.html', 'pitchroll.html'), (accelerationX, 'xAccel.html'), 
-            (accelerationY, 'yAccel.html'), (accelerationZ, 'zAccel.html')]
+"""
+  Three added Jerk plots
+  Input df has to be to from "...._calculations.csv"
+"""
+def jerkX(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+    startIndex, endIndex = indices
+
+    xJerkData = df["Jerk_X"][startIndex:endIndex]
+    graph = px.line(x=xAxis, y=xJerkData, labels={'x':'Time', 'y':'Jerk in the x direction'})
+
+    return [graph]
+
+def jerkY(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+    startIndex, endIndex = indices
+
+    yJerkData = df["Jerk_Y"][startIndex:endIndex]
+    graph = px.line(x=xAxis, y=yJerkData, labels={'x':'Time', 'y':'Jerk in the y direction'})
+
+    return [graph]
+
+def jerkZ(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+    startIndex, endIndex = indices
+
+    zJerkData = df["Jerk_Z"][startIndex:endIndex]
+    graph = px.line(x=xAxis, y=zJerkData, labels={'x':'Time', 'y':'Jerk in the z direction'})
+
+    return [graph]
+
+
+CREATORS = [(plot_POI, 'plot_POI.html'), (plot_timeline, 'plot_timeline.html'),
+            (all_graphs_sep, 'all_graphs_separate.html'), (head, 'heading.html'),
+            (pitch, 'roll.html', 'pitch.html', 'pitchroll.html'), (accelerationX, 'xAccel.html'),
+            (accelerationY, 'yAccel.html'), (accelerationZ, 'zAccel.html'),(jerkX,'xJerk.html'),
+            (jerkY,'yJerk.html'),(jerkZ,'zJerk.html')]
 
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

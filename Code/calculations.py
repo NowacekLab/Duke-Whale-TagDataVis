@@ -24,6 +24,9 @@ def calculation(filename):
     fs = 1/50
     t = np.linspace(0, length * fs, length + 1)
     forward_vec = np.array([1, 0, 0])
+
+    #initialize jerk as 3-d 0 vectors
+    j=np.zeros([length , 3])
     
     for i in range(length):
         rollq = Quaternion(axis=[1, 0, 0], angle=roll[i])
@@ -37,10 +40,18 @@ def calculation(filename):
         print(i)
         #Calculate new displacement for the current step
         dx[i + 1] = [(dv * np.cos(yaw[i])) * fs + dx[i][0], (dv * np.sin(yaw[i])) * fs + dx[i][1]]
-    
+
+        #fill in jerk for each step, skip first step & leave it as 0
+        if (i!=0):
+            j[i]=[(accel_x[i]-accel_x[i-1])/fs,(accel_y[i]-accel_y[i-1])/fs,(accel_z[i]-accel_z[i-1])/fs]
+
     csv['X Position'] = dx[:-1, 0]
     csv['Y Position'] = dx[:-1, 1]
     csv['Z Position'] = depth
+    
+    csv['Jerk_X'] = j[:,0]
+    csv['Jerk_Y'] = j[:,1]
+    csv['Jerk_Z'] = j[:,2]
     csv.to_csv('.'.join(filename.split('.')[0:-1]) + '_calculations.csv', index = False)
     
 if __name__ == "__main__":
