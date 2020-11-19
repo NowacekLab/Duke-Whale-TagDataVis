@@ -60,7 +60,7 @@ const Info = props => {
   // information in title:content format 
   const information = [
     {
-      "title": "Summary of features",
+      "title": "Summary Of Features",
       "description": `On the 'Home' page, files can be uploaded, and then
       deleted permanently, manually edited, saved to a folder in downloads specified
       in settings, and/or reprocessed for all its graphs. On the 'Apps' page, a processed

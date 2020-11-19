@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from "prop-types";
-import Alert from '@material-ui/lab/Alert';
-import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import CommentIcon from '@material-ui/icons/Comment';
@@ -109,12 +107,14 @@ const FileActions = props => {
   // **TO INTERACT WITH PYTHON**
   const fs = window.require('fs');
   const path = require('path');
-  const server_path = path.resolve(path.join(__dirname, 'server'));
+  const isDev = process.env.NODE_ENV !== 'production';
+  const remote = require('electron').remote;
+  const server_path = isDev ? path.resolve(path.join(__dirname, 'server')) : path.resolve(path.join(remote.app.getAppPath(), 'server'));
   const server_files = path.resolve(path.join(server_path, 'server_files'));
   const files = path.resolve(path.join(server_files, 'files.json'));
-  const script_path = path.resolve(path.join(server_path, 'csvmat.py'));
-  const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
+  const main_script_path = path.resolve(path.join(server_path, 'main.py'));
   const spawn = require("child_process").spawn; 
+  const python3 = path.resolve(path.join(server_path, 'env', 'bin','python3'))
 
   // Unrelated to above 
   const upload = React.useRef(null);
@@ -298,9 +298,16 @@ const FileActions = props => {
 
     props.setLoading ? props.setLoading(true) : "";
 
-    const args = new Array('-u', action_script_path, chosenFile, action);
+    if (action === 'delete') {
+      const current_file = localStorage.getItem('file') || "";
+      if (current_file === chosenFile) {
+        localStorage.setItem('file', "");
+      }
+    }
 
-    const pythonProcess = spawn('python3', args);
+    const args = new Array('-u', main_script_path, 'actions', chosenFile, action);
+
+    const pythonProcess = spawn(python3, args);
 
     const loaderSmaller = document.getElementById('loader-smaller');
     loaderSmaller.style.display='flex';
@@ -355,12 +362,20 @@ const FileActions = props => {
 
       switch (resp[0]) {// this will do for now ... not too inefficient because it's just small stream/stages 
         case "processed":
-          uploadProgress[resp[0]] = "success"; 
+          if (resp[1].startsWith('success')) {
+            uploadProgress[resp[0]] = 'success';
+          } else {
+            uploadProgress[resp[0]] = 'fail';
+          }
           setUploadProgress(uploadProgress);
           setLoadingUpdate(2); // im going to be honest here and say that I'm not sure why this hard-coded # increment works and a variable + 1 does not
           break;
         case "graphs2D":
-          uploadProgress[resp[0]] = resp[1];
+          if (resp[1].startsWith('success')) {
+            uploadProgress[resp[0]] = 'success';
+          } else {
+            uploadProgress[resp[0]] = 'fail';
+          }
           setUploadProgress(uploadProgress);
           setLoadingUpdate(3);
           break;
@@ -376,6 +391,14 @@ const FileActions = props => {
           setLoadingUpdate(4);
           break;
         default: 
+          const categories = ['processed', 'graphs2D', 'graphs3D'];
+          categories.forEach((name) => { // set to fail if it is finished but still in 'progress'
+            if (uploadProgress.hasOwnProperty(name) && uploadProgress[name] === 'progress') {
+              uploadProgress[name] = 'fail';
+            }
+          })
+          setUploadProgress(uploadProgress);
+
           setFinishedUploading(true);
           setLoadingUpdate(6);
       }
@@ -409,14 +432,15 @@ const FileActions = props => {
     if (action === 'upload') {
       setIsUploading(true);
       setUploading(true);
-      const pythonProcess = spawn('python3', ['-u', script_path, uploadFile['path'], uploadFile['name']]);
+
+      const pythonProcess = spawn(python3, ['-u', main_script_path, 'csvmat', uploadFile['path'], uploadFile['name']]);
       handleProcess(pythonProcess, action);
 
     } else if (action === 'reprocess') {
       setIsUploading(false);
       setUploading(true);
-      const args = new Array('-u', action_script_path, chosenFile, action);
-      const pythonProcess = spawn('python3', args);
+      const args = new Array('-u', main_script_path, 'actions', chosenFile, action);
+      const pythonProcess = spawn(python3, args);
       handleProcess(pythonProcess, action);
     }
 

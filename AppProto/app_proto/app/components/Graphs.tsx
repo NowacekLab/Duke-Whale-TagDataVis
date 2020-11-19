@@ -125,12 +125,15 @@ const Graphs = props => {
       : { ...styles.root }
     const fs = window.require('fs');
     const path = require('path');
-    const server_path = path.resolve(path.join(__dirname, 'server'));
+    const isDev = process.env.NODE_ENV !== 'production';
+    const remote = require('electron').remote;
+    const server_path = isDev ? path.resolve(path.join(__dirname, 'server')) : path.resolve(path.join(remote.app.getAppPath(), 'server'));
     const server_files = path.resolve(path.join(server_path, 'server_files'));
     const files = path.resolve(path.join(server_files, 'files.json'));
     const file = localStorage.getItem('file');
-    const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
+    const main_script_path = path.resolve(path.join(server_path, 'main.py'));
     const spawn = require("child_process").spawn;
+    const python3 = path.resolve(path.join(server_path, 'env', 'bin','python3'))
 
     const [graphs, setGraphs] = useState([]);
 
@@ -176,13 +179,13 @@ const Graphs = props => {
 
         const FILE = obj['name'];
 
-        const args = new Array(action_script_path, FILE, action, file);
+        const args = new Array(main_script_path, 'actions', FILE, action, file);
 
         const loadingSmaller = document.getElementById('loader-smaller');
 
         loadingSmaller.style.display = 'flex';
 
-        const pythonProcess = spawn('python3', args);
+        const pythonProcess = spawn(python3, args);
 
         pythonProcess.stdout.on('data', (data) => {
 

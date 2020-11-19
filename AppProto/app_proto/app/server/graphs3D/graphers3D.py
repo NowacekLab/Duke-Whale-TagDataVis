@@ -4,69 +4,41 @@ USED IN GRAPH --> HTML
 """
 
 from scipy.io import loadmat
-import numpy as np
-import matplotlib.pyplot as plt
+from scipy.signal import decimate as dc
+from plotly.offline import plot
 from pyquaternion import Quaternion
 from datetime import datetime
+import numpy as np
+import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-from plotly.offline import plot
 import pandas as pd 
 
-def trackplot(filename):
-    data = pd.read_csv(filename).to_dict(orient = 'list')
-    roll = np.array(data['Roll'])
-    pitch = np.array(data['Pitch'])
-    yaw = np.array(data['Heading'])
-    accel_x = np.array(data['Accel_X']) * 9.81 # X Data in m/s^2
-    accel_y = np.array(data['Accel_Y']) * 9.81 # Y Data in m/s^2
-    accel_z = np.array(data['Accel_Z']) * 9.81 # Z Data in m/s^2
-    length = len(accel_x)
-    v = np.zeros([length + 1, 3]) #Initial velocity in xW, yW, zW
-    v[0] = [5, 0, 0]
-    dx = np.zeros([length + 1, 3]) #Initial displacement in x, y, z
-    fs = 1/50
-    t = np.linspace(0, length * fs, length + 1)
+def trackplot(calc_file_path: str):
+    csv = pd.read_csv(calc_file_path)
+    data = csv.to_dict(orient = 'list')    
+    x = dc(data['X Position'], 10)
+    y = dc(data['Y Position'], 10)
+    z = dc(data['Z Position'], 10)
     
-    start = datetime.now()
-    starttime = np.zeros([length, 1])
-    
-    for i in range(length):
-        #Creating a rotational matrix to transform a displament in the whale frame to a displacement in the inertial coordinate system
-        rollq = Quaternion(axis=[1, 0, 0], angle=roll[i])
-        pitchq = Quaternion(axis=[0, 1, 0], angle=pitch[i])
-        yawq = Quaternion(axis=[0, 0, 1], angle=yaw[i])
-        rotateq = (yawq * pitchq * rollq).inverse
-        #Update velocity step
-        v[i+1] = [v[i][0] + accel_x[i] * fs, 
-                           v[i][1] + accel_y[i] * fs, 
-                           v[i][2] + accel_z[i] * fs]
-        #Update displacement step and apply rotation matrix
-        step = [v[i][0] * fs, 
-                v[i][1] * fs, 
-                v[i][2] * fs]
-        step = rotateq.rotate(step)
-        #Calculate new displacement for the current step
-        dx[i+1] = [dx[i][0] + step[0], 
-                             dx[i][1] + step[1], 
-                             dx[i][2] + step[2]]
-        starttime[i] = (datetime.now() - start).total_seconds()
     fig = go.Figure(data=go.Scatter3d(
-        x=dx[:,0][0::50], y=dx[:,1][0::50], z=dx[:,2][0::50],
+            x=x, y=y, z=z,
         marker=dict(
-            size=0.1,
+            size=0.5,
             colorscale='Viridis',
         ),
         line=dict(
             color='darkblue',
-            width=1
-        ),
+            width=0.5
+        )
     ))
-
+    
     fig.update_layout(
         width=800,
         height=700,
-        autosize=False,
         scene=dict(
+            xaxis_title="X Displacement (m)",
+            yaxis_title="X Displacement (m)",
+            zaxis_title="X Displacement (m)",
             camera=dict(
                 up=dict(
                     x=0,
@@ -83,7 +55,6 @@ def trackplot(filename):
             aspectmode = 'manual'
         ),
     )
-
 
     return [fig]
 

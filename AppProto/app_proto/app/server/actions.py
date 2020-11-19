@@ -137,13 +137,13 @@ def main() -> str:
     'True' IF successful ELSE 'False'
     """
     try: 
-        file_ = sys.argv[1]
-        action = sys.argv[2]
+        file_ = sys.argv[2]
+        action = sys.argv[3]
 
         html_ = file_.endswith('.html')
         parent_file = ""
-        if len(sys.argv) > 3 and html_:
-            parent_file = sys.argv[3] # need to know which file belongs to 
+        if len(sys.argv) > 4 and html_:
+            parent_file = sys.argv[4] # need to know which file belongs to 
             path = get_path_html(parent_file, file_)
         else: # for regular files 
             path = get_path(file_)

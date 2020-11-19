@@ -52,9 +52,11 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "Data Visualization",
+    "appId": "org.develar.DataVisualization",
+    "asar": false,
     "files": [
+      "server/",
       "dist/",
       "node_modules/",
       "app.html",
@@ -94,9 +96,6 @@
       "buildResources": "resources",
       "output": "release"
     },
-    "extraResources": [
-      "./resources/**"
-    ],
     "publish": {
       "provider": "github",
       "owner": "electron-react-boilerplate",
@@ -146,7 +145,6 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {

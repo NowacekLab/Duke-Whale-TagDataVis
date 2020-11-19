@@ -102,7 +102,9 @@ const Apps = props => {
       
     const fs = window.require('fs');
     const path = require('path');
-    const server_path = path.resolve(path.join(__dirname, 'server'));
+    const isDev = process.env.NODE_ENV !== 'production';
+    const remote = require('electron').remote;
+    const server_path = isDev ? path.resolve(path.join(__dirname, 'server')) : path.resolve(path.join(remote.app.getAppPath(), 'server'));    
     const server_files = path.resolve(path.join(server_path, 'server_files'));
     const files = path.resolve(path.join(server_files, 'files.json'));
 

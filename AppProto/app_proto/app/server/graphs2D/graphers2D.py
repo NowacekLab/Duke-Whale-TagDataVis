@@ -17,7 +17,7 @@ import numpy as np
 
 # EACH FUNCTION UNLESS OTHERWISE SPECIFIED RETURNS [graph object1, graph object2, ...]
 
-def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+def plot_POI(df: "data frame"):
     """
     This graph, like the one below it, does not
     use the xAxis nor indices params, only there
@@ -177,7 +177,7 @@ def plot_POI(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [fig]
 
-def plot_timeline(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+def plot_timeline(df: "data frame"):
     """
     Note that this graph does not use xAxis nor indices params
     Only there as part of graph standardization in creating
@@ -237,10 +237,10 @@ def plot_timeline(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [fig]
 
-def all_graphs_comb(df: "data frame", xAxis: List[int], indices: Tuple[int]):
-    startIndex, endIndex = indices
+# def all_graphs_comb(df: "data frame", xAxis: List[int], indices: Tuple[int]):
+#     startIndex, endIndex = indices
 
-    pass
+#     pass
 
 def all_graphs_sep(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
@@ -368,12 +368,14 @@ def jerkZ(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
-
-CREATORS = [(plot_POI, 'plot_POI.html'), (plot_timeline, 'plot_timeline.html'),
-            (all_graphs_sep, 'all_graphs_separate.html'), (head, 'heading.html'),
+CREATORS = {
+    'STANDARD': [(all_graphs_sep, 'all_graphs_separate.html'), (head, 'heading.html'),
             (pitch, 'roll.html', 'pitch.html', 'pitchroll.html'), (accelerationX, 'xAccel.html'),
-            (accelerationY, 'yAccel.html'), (accelerationZ, 'zAccel.html'),(jerkX,'xJerk.html'),
-            (jerkY,'yJerk.html'),(jerkZ,'zJerk.html')]
+            (accelerationY, 'yAccel.html'), (accelerationZ, 'zAccel.html')],
+    'PRECALC_DF': [(jerkX,'xJerk.html'),
+            (jerkY,'yJerk.html'),(jerkZ,'zJerk.html')],
+    'STANDARD_ONLY_DF': [(plot_POI, 'plot_POI.html'), (plot_timeline, 'plot_timeline.html')]
+}
 
 if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

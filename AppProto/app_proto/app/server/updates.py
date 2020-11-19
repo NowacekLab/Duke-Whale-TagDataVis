@@ -48,7 +48,7 @@ def memory_update(file_: str, info: dict) -> bool:
     True IF changes ELSE False
     """
     try: 
-        path1 = info[file_]["orig_path"]
+        path1 = info[file_]["csv_path"]
         memory = humansize(int(os.path.getsize(path1)))
         try: 
             orig_memory = info[file_]["size"]
@@ -68,7 +68,7 @@ def modified_update(file_: str, info: dict) -> bool:
     True IF changes ELSE False
     """
     try: 
-        path1 = info[file_]["orig_path"]
+        path1 = info[file_]["csv_path"]
         date = time.strftime("%m/%d/%Y %I:%M:%S %p", time.localtime(os.path.getmtime(path1)))
         try: 
             orig_date = info[file_]["modified"]
@@ -139,6 +139,13 @@ def clear_files(path_: str, info: dict) -> None:
             file_directory = os.path.join(directory, chosen_file)
             if os.path.isdir(file_directory):
                 shutil.rmtree(file_directory) # this forces removal 
+        if 'extra' in info[chosen_file]:
+            for extra in info[chosen_file]['extra']:
+                extra_path = info[chosen_file]['extra'][extra]
+                if os.path.isfile(extra_path): 
+                    os.remove(extra_path)
+                elif os.path.isdir(extra_path):
+                    shutil.rmtree(extra_path)
 
 def main(html_=False, path_=None): # html_ TRUE .html file-related update 
     info = helper_json.read(file_info)

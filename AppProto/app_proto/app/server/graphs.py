@@ -60,6 +60,9 @@ def generate_graphs(file_: str, file_path: str) -> bool:
         # ...
     try:
         success2D, unsaved2D = html2D.main(file_, file_path)
+
+        time.sleep(3) # place so stdout does not lump them all 
+
         if success2D: 
             print('graphs2D:success')
             sys.stdout.flush()
@@ -67,12 +70,17 @@ def generate_graphs(file_: str, file_path: str) -> bool:
             print('graphs2D:fail')
             sys.stdout.flush()
         success3D, unsaved3D = html3D.main(file_, file_path)
+
+        time.sleep(3) # place this so stdout does not lump them all 
+
         if success3D: 
             print('graphs3D:success')
             sys.stdout.flush()
         else: 
             print('graphs3D:fail')
             sys.stdout.flush()
+        
+        time.sleep(3) # place so stdout does not lump them all 
     
         return
     except Exception as e: 
@@ -87,23 +95,23 @@ def main(file_=None, file_path=None, action=None) -> bool:
     try:
 
         if file_ == None and file_path == None:
-            file_ = str(sys.argv[1])
-            file_path = str(sys.argv[2])
+            file_ = str(sys.argv[2])
+            file_path = str(sys.argv[3])
 
         if not ensure_paths(file_):
             raise Exception("Required graph directories do not exist.")
 
         if action == None:
-            if len(sys.argv) > 3:
-                action = str(sys.argv[3])
+            if len(sys.argv) > 4:
+                action = str(sys.argv[4])
 
         if action == "generate": # generate all graphs
             generate_graphs(file_, file_path)
             return "True"
         elif action == "verify":
-            if not len(sys.argv) > 4:
+            if not len(sys.argv) > 5:
                 raise Exception("'verify' command without graph_type.")
-            graph_type = sys.argv[4] # could add extra verification that graph_type is valid
+            graph_type = sys.argv[5] # could add extra verification that graph_type is valid
             return graphs_exist(file_, graph_type) # graphsMixed, graphs2D, graphs3D
 
     except Exception as e:
@@ -128,7 +136,6 @@ if __name__ == "__main__":
     # print(test(file_test, file_path_test))
     # print(main(file_test, file_path_test, 'generate'))
 
-    file_ = "mn19_066aprh.mat"
+    file_ = "mn17_005aprh25.csv"
     file_path = os.path.join(FILE_DIR, file_)
-    print(html2D.test(file_, file_path))
-    print(html3D.test(file_, file_path))
+    print(main(file_, file_path, 'generate'))

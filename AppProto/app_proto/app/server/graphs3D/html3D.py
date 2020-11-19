@@ -1,22 +1,29 @@
 """
 3D GRAPH --> HTML HANDLER 
 """
-
+from typing import List, Tuple
+from scipy.io import loadmat
+from scipy.signal import decimate as dc
+from pyquaternion import Quaternion
 from plotly import graph_objects as go 
 from plotly import express as px
+from plotly.offline import plot
+from multiprocessing import Process 
+from datetime import datetime
+import numpy as np
 import pandas as pd
 import csv
 import sys 
-from multiprocessing import Process 
-from typing import List, Tuple
 import os 
 import json
+import matplotlib.pyplot as plt
 
 from .graphers3D import * 
 import helper_json
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
+PRECALCS_DIR = os.path.join(GRAPHS_DIR, 'precalcs')
 GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
 GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
 SERVER_FILES = os.path.join(BASE_DIR, 'server_files')
@@ -24,12 +31,12 @@ file_info = os.path.join(SERVER_FILES, 'files.json')
 
 sys.path.append(BASE_DIR)
 
-def create_graph(file_: str, file_path: str, func: "function", names: List[str]) -> None:
+def create_graph(file_: str, calc_file_path: str, func: "function", names: List[str]) -> None:
     """
     Wrapper for the graph functions, writes each to html to reduce code 
     - len(names) == len(List[] return from func)
     """
-    graphs = func(file_path)
+    graphs = func(calc_file_path)
     for name, graph in zip(names, graphs):
         path_ = os.path.join(GRAPHS_3D_DIR, file_, name)
         graph.write_html(path_)
@@ -63,11 +70,38 @@ def save_existing_graphs(file_: str) -> List[str]:
     except Exception as e:
         print(e)
 
+def exist_calculations(file_: str, calc_file: str) -> bool: 
+    """
+    Checks if pre-calculations already exist 
+    """
+    try: 
+        info = helper_json.read(file_info)
+        if not 'extra' in info[file_]: 
+            return False 
+        return calc_file in info[file_]['extra']
+    except Exception as e: 
+        print(e)
+        return False
+
+def get_calculations(file_: str, calc_file: str): 
+    """
+    Returns pre-calculations file path 
+    """
+    try: 
+        if not exist_calculations(file_, calc_file): return None 
+        info = helper_json.read(file_info)
+        return info[file_]['extra'][calc_file]
+    except Exception as e: 
+        return None 
+
 def main(file_: str, file_path: str) -> Tuple[bool, List[str]]: 
     """
     Main handler 
     """
     try: 
+        calc_file = f"{''.join(file_.split('.')[:-1])}_precalc.csv"
+        calc_file_path = get_calculations(file_, calc_file)
+
         all_processes = [] 
 
         total_graphs = 0
@@ -77,7 +111,7 @@ def main(file_: str, file_path: str) -> Tuple[bool, List[str]]:
             func = creator[0]
             names = list(creator[1:])
             total_graphs += len(names)
-            p = Process(target=create_graph, args=(file_, file_path, func, names))
+            p = Process(target=create_graph, args=(file_, calc_file_path, func, names))
             all_processes.append(p)
         
         for p in all_processes:
@@ -93,6 +127,7 @@ def main(file_: str, file_path: str) -> Tuple[bool, List[str]]:
         
         return (True, unsaved_graphs)
     except Exception as e:
+        print(e) 
         return (False, [])
 
 def test(file_: str, file_path: str): # similar to above without save_existing_graphs

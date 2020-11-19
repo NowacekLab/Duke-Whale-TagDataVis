@@ -56,9 +56,11 @@ const createWindow = async () => {
     await installExtensions();
   }
 
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'resources')
-    : path.join(__dirname, '../resources');
+  const RESOURCES_PATH = path.join(__dirname, '../resources');
+
+  // const RESOURCES_PATH = app.isPackaged
+  //   ? path.join(process.resourcesPath, 'resources')
+  //   : path.join(__dirname, '../resources');
 
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
@@ -79,7 +81,7 @@ const createWindow = async () => {
             webSecurity: false,
           }
         : {
-            preload: path.join(__dirname, 'dist/renderer.prod.js'),
+            nodeIntegration: true,
             enableRemoteModule:true,
             webSecurity: false,
           },

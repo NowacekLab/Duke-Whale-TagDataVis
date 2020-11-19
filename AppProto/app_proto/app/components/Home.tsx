@@ -135,13 +135,20 @@ const Home = props => {
     }
   }
 
+  const fs = window.require('fs');
+  const path = require('path');
+  const isDev = process.env.NODE_ENV !== 'production';
+  const remote = require('electron').remote;
+  const server_path = isDev ? path.resolve(path.join(__dirname, 'server')) : path.resolve(path.join(remote.app.getAppPath(), 'server'));
+  const server_files = path.resolve(path.join(server_path, 'server_files'));
+
   useEffect(() => {
     handleLoading();
   }, [fileNum]);
 
   return (
     <Container style={rootStyle}>
-      <p style={styles.header}>Home</p>
+      <p style={styles.header}>{"Home"}</p>
 
       <LinearProgress id="loader-smaller" color="primary" style={styles.loadingSmaller}/>
 

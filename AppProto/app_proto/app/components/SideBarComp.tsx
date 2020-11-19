@@ -16,16 +16,18 @@ const styles = {
     }
 };
 
-const img_path = path.join(__dirname, '../resources/');
-
 const SideBarComp = props => {
     const rootStyle = styles
     ? {...styles.root, ...props.style}
     : {}
 
+    const isDev = process.env.NODE_ENV !== 'production';
+    const remote = require('electron').remote;
+    const img_path = isDev ? path.resolve(path.join(__dirname, 'server', 'duke.png')) : path.resolve(path.join(remote.app.getAppPath(), 'server', 'duke.png'));
+
     return (
         <div style={rootStyle}>
-            <img src={path.join(img_path, "duke.png")} style={styles.logo}/>
+            <img src={img_path} style={styles.logo}/>
             {props.children}
         </div>
     );
