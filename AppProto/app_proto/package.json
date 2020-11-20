@@ -1,8 +1,8 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "1.3.1",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "WhaleDataVisualization",
+  "productName": "Whale",
+  "version": "1.0.0",
+  "description": "Whale data visualization software created by Duke University students under direction of Nowacek Lab @ Duke University.",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -52,8 +52,8 @@
     ]
   },
   "build": {
-    "productName": "Data Visualization",
-    "appId": "org.develar.DataVisualization",
+    "productName": "Whale",
+    "appId": "org.develar.Whale",
     "asar": false,
     "files": [
       "server/",
@@ -98,52 +98,56 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate",
-      "private": false
+      "owner": "Data-Visualization-MAPS",
+      "repo": "Data-Visualization-MAPS",
+      "private": true
     }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": ""
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Nowacek Lab @ Duke University",
+    "email": "douglas.nowacek@duke.edu",
+    "url": "https://sites.nicholas.duke.edu/nowacek/about-2/"
   },
   "contributors": [
     {
-      "name": "Vikram Rangaraj",
-      "email": "vikr01@icloud.com",
-      "url": "https://github.com/vikr01"
+      "name": "Joon Young Lee",
+      "email": "joonyoung.lee@duke.edu",
+      "url": "https://www.linkedin.com/in/joon-young-lee-duke/"
     },
     {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
+      "name": "Zeping Luo",
+      "email": "zeping.luo@duke.edu",
+      "url": ""
     },
     {
-      "name": "John Tran",
-      "email": "jptran318@gmail.com",
-      "url": "https://github.com/jooohhn"
+      "name": "Vincent Wang",
+      "email": "vincent.y.wang@duke.edu",
+      "url": ""
+    },
+    {
+      "name": "Delaney Demark",
+      "email": "delaney.demark@duke.edu",
+      "url": ""
+    },
+    {
+      "name": "Mitchell Frisch",
+      "email": "harold.frisch@duke.edu",
+      "url": ""
     }
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": ""
   },
   "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "redux",
-    "typescript",
-    "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "data", 
+    "visualization", 
+    "whale",
+    "duke"
   ],
   "jest": {
     "testURL": "http://localhost/",

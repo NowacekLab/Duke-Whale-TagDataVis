@@ -1,27 +1,49 @@
-# Data-Visualization-MAPS
+# How do you begin?
 
-# 'App Proto' Specific
+## If you are a developer...
 
-## High level overview
-- Electron provides for the desktop app functionality, acting as a pseudo-browser of sorts
-- React is a JavaScript library that helps accelerate frontend development with reusability/modularity
-- To combine the two in a fast, timely manner **react-electron-boilerplate (open source)** was used, so that is why there is a 'license' (the standard MIT license that says it is open source and can be used anywhere and everywhere)
+* Make sure npm and yarn are installed
 
-## Keep in mind...
-- This is not a packaged version of the app so it is not executable like a normal desktop app
-- It is primarily for devs to communicate and see/make changes
+1. Pull the repository 
+2. Run 'npm install' then 'yarn add' inside the appropriate app_proto folder 
+3. If not all dependencies were installed, then install any extra using yarn (list available in requirements.txt, though potentially not exhaustive)
+4. If you run into errors, then alternate between npm install and yarn add until it works 
+5. Run 'yarn dev', hot reloading is enabled by default 
 
-## So, how do you begin?
-Make sure npm and yarn are installed
-1. Run 'npm install' THEN 'yarn add' inside the folder after pulling. 
-2. If not all dependencies were installed, then install them using **yarn**
-3. Run 'yarn dev' to be able to inspect element, 'npm start' for a more isolated run (you will likely use 'yarn dev')
+* If you want to package the app...
 
-### I ran into an error!
-Check if the error is...
-- A system error (your system is missing some files or has wrong paths set up)
-- A dependency error (you are missing a dependency or yarn and npm aren't playing well...then refer to the above beginning steps)
+1. Verify the app works with 'yarn dev' by testing it in a full run
+2. Remove any unnecessary files from testing done in step 1
+3. Run 'yarn package'
+4. Go to 'release' folder 
 
-Still not working?
-- Go to Google, Stack, ... and look for an answer, try debugging
-- Last resort, contact Joon Young (not for any special reason, he just set up this framework first so he might be able to debug it fast)
+## If you are a tester...
+
+* Ask a developer to package the application for you and send a dmg version
+
+# Licenses
+
+**Electron React Boilerplate was used to quick start the project development**: 
+
+The MIT License (MIT)
+
+Copyright (c) 2015-present Electron React Boilerplate
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
