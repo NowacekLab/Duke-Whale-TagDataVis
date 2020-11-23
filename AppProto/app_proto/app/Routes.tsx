@@ -2,13 +2,13 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import routes from './server/server_files/routes.json';
-import App from './containers/App';
-import HomePage from './containers/HomePage';
-import AppsPage from "./containers/AppsPage";
-import Base from './containers/Base';
-import GraphsPage from './containers/GraphsPage';
-import SettingsPage from "./containers/SettingsPage";
-import InfoPage from "./containers/InfoPage";
+import App from './pages/App';
+import HomePage from './pages/HomePage';
+import AppsPage from "./pages/AppsPage";
+import Base from './pages/Base';
+import GraphsPage from './pages/GraphsPage';
+import SettingsPage from "./pages/SettingsPage";
+import InfoPage from "./pages/InfoPage";
 
 export default function Routes() {
   return (

@@ -1,19 +1,26 @@
 import React from "react";
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle'; 
-
 import Button from "@material-ui/core/Button";
 
-const Confirmation = props => {
+type ConfirmationProps = {
+  open: boolean,
+  close: callBack, 
+  title: string, 
+  desc: string, 
+  reject: callBack, 
+  confirm: callBack,
+}
+
+const Confirmation = ({open, close, title, desc, reject, confirm}: ConfirmationProps) => {
 
     return (
         <Dialog
-        open={props.open ?? false}
-        onClose={props.close ?? function fail(){return}}
+        open={open}
+        onClose={close}
         style={{
           color: "#012069",
           position: "absolute",
@@ -26,18 +33,18 @@ const Confirmation = props => {
         }}
       >
         <DialogTitle>
-          {props.title ?? null}
+          {title}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {props.desc ?? null}
+            {desc}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.reject ?? function fail(){return}} color="primary">
+          <Button onClick={reject} color="primary">
             Cancel
           </Button>
-          <Button onClick={props.confirm ?? function fail(){return}} color="primary">
+          <Button onClick={confirm} color="primary">
             Execute
           </Button>
         </DialogActions>

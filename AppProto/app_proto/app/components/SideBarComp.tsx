@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from "prop-types";
+import {makeStyles} from '@material-ui/core/styles';
 import path from "path";
 
-const styles = {
+const useStyles = makeStyles({
     root: {
         fontFamily: "HelveticaNeue-Light",
         fontWeight: 300,
@@ -14,29 +14,25 @@ const styles = {
         height: "6em",
         display: "block",
     }
-};
+});
 
-const SideBarComp = props => {
-    const rootStyle = styles
-    ? {...styles.root, ...props.style}
-    : {}
+type SideBarCompProps = {
+    children: React.ReactNode;
+}
+
+const SideBarComp = (props: SideBarCompProps) => {
+    const classes = useStyles();
 
     const isDev = process.env.NODE_ENV !== 'production';
     const remote = require('electron').remote;
     const img_path = isDev ? path.resolve(path.join(__dirname, 'server', 'duke.png')) : path.resolve(path.join(remote.app.getAppPath(), 'server', 'duke.png'));
 
     return (
-        <div style={rootStyle}>
-            <img src={img_path} style={styles.logo}/>
+        <div className={classes.root}>
+            <img src={img_path} className={classes.logo}/>
             {props.children}
         </div>
     );
-};
-
-SideBarComp.propTypes = {
-    style: PropTypes.object,
-    title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    children: PropTypes.object
 };
 
 export default SideBarComp;

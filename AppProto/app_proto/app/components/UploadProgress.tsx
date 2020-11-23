@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from "prop-types";
-import Alert from '@material-ui/lab/Alert';
-import ReactLoading from 'react-loading';
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import React, { useEffect } from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
@@ -14,8 +11,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
+import useIsMountedRef from "../functions/useIsMountedRef";
 
-const styles = {
+const useStyles = makeStyles({
     header: {
         color: "white",
         textAlign: "center",
@@ -58,21 +56,21 @@ const styles = {
         backgroundColor: "#012069",
         color: "white",
     },
-    };
+    });
 
-function useIsMountedRef(){
-    const isMountedRef = useRef(null);
-    useEffect(() => {
-        isMountedRef.current = true; 
-        return () => isMountedRef.current = false; 
-    })
-    return isMountedRef;
+type UploadProgressProps = {
+    uploadProgress: Record<string, string>,
+    uploading: boolean,
+    isUploading: boolean,
+    finishedUpload: boolean, 
+    loadingUpdateIncrement: number, 
+    refresh: Function, 
+    reset: Function, 
 }
 
-const UploadProgress = props => {
-  const rootStyle = props.style
-    ? { ...styles.root, ...props.style }
-    : { ...styles.root }
+const UploadProgress = (props: UploadProgressProps) => {
+
+    const classes = useStyles();
 
     const isMountedRef = useIsMountedRef();
 
@@ -80,14 +78,14 @@ const UploadProgress = props => {
         const loader = document.getElementById('loader');
         // props.uploading
         if (props.uploading) {
-            loader.style.display = 'flex';
+            loader ? loader.style.display = 'flex' : null;
         } else {
-            loader.style.display = 'none';
+            loader ? loader.style.display = 'none' : null;
         }
     }
 
     const handleClick = () => {
-        if (props.finishedupload) {
+        if (props.finishedUpload) {
             props.reset ? props.reset() : null;
             props.refresh ? props.refresh() : null; // connection from FileAction --> HomeTable --> FileTable to refresh rows 
         }
@@ -95,9 +93,10 @@ const UploadProgress = props => {
 
     useEffect(() => {
         isMountedRef.current && handleLoading();
-    }, [props.updater])
+    }, [props.loadingUpdateIncrement])
 
-    const timeline = props.isuploading ? [
+    type timelineObject = Record<string, any>;
+    const timeline: Array<timelineObject> = props.isUploading ? [
         {
             "key": 0,
             "show": props.uploadProgress ? props.uploadProgress['processed'] : "progress",
@@ -141,7 +140,7 @@ const UploadProgress = props => {
         },
     ]
 
-    const description = (item) => {
+    const description = (item: timelineObject) => {
         let choice = `description-${item['show']}`
         if (item.hasOwnProperty(choice)) {
             return item[choice];
@@ -151,10 +150,10 @@ const UploadProgress = props => {
     }
 
   return (
-          <div style={styles.loading} id="loader">
-            <div style={styles.loadertext}>
-              <span style={styles.header}>This may take a while</span>
-              <span style={styles.headersubtext}>Do not close the page</span>
+          <div className={classes.loading} id="loader">
+            <div className={classes.loadertext}>
+              <span className={classes.header}>This may take a while</span>
+              <span className={classes.headersubtext}>Do not close the page</span>
             </div>
             <div style={{width: "100%"}}>
                 <Timeline>
@@ -163,21 +162,21 @@ const UploadProgress = props => {
                         return(
                             <TimelineItem>
                                 <TimelineSeparator>
-                                    <TimelineDot color="white" />
+                                    <TimelineDot />
 
                                     {item['title'] === "3D Graphs" ?
                                         <div style={{display: "none"}}></div>
 
                                         :
 
-                                        <TimelineConnector color="white" />
+                                        <TimelineConnector />
                                     }
 
                                 </TimelineSeparator>
 
                                 <TimelineContent>
-                                    <div style={styles.timelineCont}>
-                                        <div style={styles.timelineContHead}>
+                                    <div className={classes.timelineCont}>
+                                        <div className={classes.timelineContHead}>
                                             <p style={{fontSize: "18px", margin:0, padding:0}}>{item['title']}</p>
                                             {
                                                 item['show'] === 'success' && 
@@ -187,7 +186,7 @@ const UploadProgress = props => {
                                             }
                                             {
                                                 item['show'] === 'progress' && 
-                                                <CircularProgress color="white" style={{width: "15px", height: "15px", marginLeft: "5px"}} />
+                                                <CircularProgress style={{width: "15px", height: "15px", marginLeft: "5px", color: "white"}} />
                                             }
                                             {
                                                 item['show'] === 'fail' &&
@@ -213,9 +212,9 @@ const UploadProgress = props => {
                 </Timeline>
 
 
-                <div style={{width: "100%", display: "flex", justifyContent: "center", opacity: props.finishedupload ? 1 : 0}}>
-                    <Fade in={props.finishedupload} timeout={500}>
-                        <Button style={styles.finishButton} onClick={handleClick}>
+                <div style={{width: "100%", display: "flex", justifyContent: "center", opacity: props.finishedUpload ? 1 : 0}}>
+                    <Fade in={props.finishedUpload} timeout={500}>
+                        <Button className={classes.finishButton} onClick={handleClick}>
                             Done
                         </Button>
                     </Fade>
@@ -227,12 +226,6 @@ const UploadProgress = props => {
           </div>
   );
 
-};
-
-UploadProgress.propTypes = {
-  style: PropTypes.object,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  children: PropTypes.object
 };
 
 export default UploadProgress;

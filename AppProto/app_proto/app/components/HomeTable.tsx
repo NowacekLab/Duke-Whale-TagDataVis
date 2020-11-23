@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import PropTypes from "prop-types";
-
+import {makeStyles} from '@material-ui/core/styles';
 import FileActions from "./FileActions";
 import FileTable from "./FileTable";
 
-const styles = {
+const useStyles = makeStyles({
   root: {
     fontFamily: "HelveticaNeue-Light",
     height: "100%",
@@ -50,51 +49,51 @@ const styles = {
   container: {
     maxHeight: 440,
   },
-};
+});
   
-const HomeTable = props => {
-  const rootStyle = props.style
-    ? { ...styles.root, ...props.style }
-    : { ...styles.root }
+
+type HomeTableProps = {
+  loading: boolean, 
+  setLoading: Function, 
+  setFileNum: Function,
+  fileNum: number,
+}
+
+const HomeTable = ({loading, setLoading, setFileNum, fileNum}: HomeTableProps) => {
+    const classes = useStyles();
 
     const [update, setUpdate] = useState(false);
     const [fileSelection, setFileSelection] = useState("");
     const [rows, setRows] = useState([]);
 
-  const change = () => {
+  const refresh = () => {
     setUpdate(!update);
   };
 
   const fileNumber = () => {
-    switch (props.fileNum) { // fileNum is an indicator of loading for Home.tsx 
+    switch (fileNum) { // fileNum is an indicator of loading for Home.tsx 
       case 0: 
         return `No Files`
       case 1:
         return `1 File`
       default:
-        return `${props.fileNum} Files`
+        return `${fileNum} Files`
     }
   }
 
   return (
 
-    <div style={styles.mainContainer}>
+    <div className={classes.mainContainer}>
     
-        <div style={styles.tableHeader}>
-            <p style={styles.tableHeaderElem}>{fileNumber()}</p>
-            <FileActions loading={props.loading ?? false} updater={change} selection={fileSelection} setLoading={props.setLoading ?? function fail(){return}} rows={rows}/>
+        <div className={classes.tableHeader}>
+            <p className={classes.tableHeaderElem}>{fileNumber()}</p>
+            <FileActions loading={loading ?? false} refresh={refresh} selection={fileSelection} setLoading={setLoading ?? function fail(){return}} rows={rows}/>
         </div>
 
-        <FileTable toUpdate={update} fileNum={props.setFileNum} selection={setFileSelection} setRows={setRows}/>
+        <FileTable toUpdate={update} fileNum={setFileNum} selection={setFileSelection} setRows={setRows}/>
 
     </div>
   );
-};
-
-HomeTable.propTypes = {
-  style: PropTypes.object,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  children: PropTypes.object
 };
 
 export default HomeTable;

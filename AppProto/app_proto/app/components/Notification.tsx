@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react"; 
-
+import React, { useEffect } from "react"; 
+import {makeStyles} from '@material-ui/core/styles';
 import Alert from "@material-ui/lab/Alert";
 import Fade from "@material-ui/core/Fade";
+import useIsMountedRef from "../functions/useIsMountedRef";
 
-const styles = {
+const useStyles = makeStyles({
     banner: {
         boxShadow: "5px 10px",
         marginTop: "10px",
@@ -24,23 +25,22 @@ const styles = {
         justifyContent: "center",
         animation: "all 1s ease-in",
       },
-}
+});
 
-function useIsMountedRef(){
-    const isMountedRef = useRef(null);
-    useEffect(() => {
-        isMountedRef.current = true; 
-        return () => isMountedRef.current = false; 
-    })
-    return isMountedRef;
+type NotificationProps = {
+    setShow: Function, 
+    show: boolean, 
+    message: string,
+    status: string,
 }
+const Notification = ({setShow, show, message, status}: NotificationProps) => {
 
-const Notification = props => {
+    const classes = useStyles();
 
     const handleShow = () => {
         setTimeout(() => { // there was a memory leak here that this fixed (I hope)
             if (isMountedRef.current) {
-                props.setShow ? props.setShow(false) : null;
+                setShow ? setShow(false) : null;
             }
         }, 3000)
     }
@@ -51,31 +51,26 @@ const Notification = props => {
         if (isMountedRef.current) {
             handleShow();
         }
-    }, [props.show])
-
-    const status = props.status ?? "error";
+    }, [show])
     
     const getMessage = () => {
         if (status === 'error') {
-            return props.message ?? "An error has occurred."
+            return message ?? "An error has occurred."
         } else if (status === 'success') {
-            return props.message ?? "Successfully executed."
+            return message ?? "Successfully executed."
         }
+        return "Fatal Error";
     }
 
-    const show = props.show ? props.show : false;
-
-    // Below, severity={...} has been tried, does not work, seems to only accept string
-
     return (
-        <div style={styles.bannerSuperCont}>
+        <div className={classes.bannerSuperCont}>
             {
                 show && 
-                <div style={styles.bannerCont}>
+                <div className={classes.bannerCont}>
                     {
                         status === "error" &&
                         <Fade in={status==="error"} timeout={500}>
-                            <Alert variant="filled" severity="error" style={styles.banner}> 
+                            <Alert variant="filled" severity="error" className={classes.banner}> 
                                 {getMessage()}
                             </Alert>
                         </Fade>
@@ -83,7 +78,7 @@ const Notification = props => {
                     {
                         status === "success" &&
                         <Fade in={status==="success"} timeout={500}>
-                            <Alert variant="filled" severity="success" style={styles.banner}>
+                            <Alert variant="filled" severity="success" className={classes.banner}>
                                 {getMessage()}
                             </Alert>
                         </Fade>
