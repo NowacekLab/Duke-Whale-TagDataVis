@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import {useDispatch} from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import routes from '../server/server_files/routes.json';
+import routes from '../scripts/scripts_files/routes.json';
 import Container from '@material-ui/core/Container';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GraphicEqIcon from '@material-ui/icons/GraphicEq';
@@ -17,6 +18,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import AppsTable from "../components/AppsTable";
 import Notification from "../components/Notification";
+import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import useIsMountedRef from "../functions/useIsMountedRef";
 
 const useStyles = makeStyles({
@@ -79,23 +81,25 @@ const useStyles = makeStyles({
 
 const Apps = () => {
     const classes = useStyles();
-
-    const [file, setFile] = useState(localStorage.getItem('file') || "");
     const isMountedRef = useIsMountedRef();
+
+    //TODO: Convert to Redux 
+    const [selectedGraphFile, setSelectedGraphFile] = useState(localStorage.getItem('selectedGraphFile') || "");
 
     useEffect(() => {
         checkForGraphs();
-      }, new Array(file))
+      }, [selectedGraphFile])
       
     const fs = window.require('fs');
     const path = require('path');
     const isDev = process.env.NODE_ENV !== 'production';
     const remote = require('electron').remote;
-    const server_path = isDev ? path.resolve(path.join(__dirname, 'server')) : path.resolve(path.join(remote.app.getAppPath(), 'server'));    
-    const server_files = path.resolve(path.join(server_path, 'server_files'));
-    const files = path.resolve(path.join(server_files, 'files.json'));
+    const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));    
+    const scripts_files = path.resolve(path.join(scripts_path, 'scripts_files'));
+    const files = path.resolve(path.join(scripts_files, 'files.json'));
 
     // HOVER
+    type truthMap = Record<string, boolean>; 
     const [hovers, setHovers] = useState<truthMap>({
         "2D": false,
         "3D": false,
@@ -128,23 +132,25 @@ const Apps = () => {
         setShowModal(false);
     };
 
+
     // NOTIFICATION
-    const [showNotif, setShowNotif] = useState(false);
     const notifMsg = "Graph type not available for selected file.";
-    const notifStatus = "error";
+    const dispatch = useDispatch();
+    const notifsActionHandler = new notifsActionsHandler(dispatch);
     function showError() {
-        setShowNotif(true);
+        notifsActionHandler.showErrorNotif(notifMsg);
     }
+
 
     // CLICKABILITY
     const checkForGraphs = () => {
-        localStorage.setItem('file', file);
+        localStorage.setItem('selectedGraphFile', file);
         fs.readFile(files, function(err: string, data: string) {
             err;
 
             const info = JSON.parse(data);
 
-            if (!(info.hasOwnProperty(file))) {
+            if (!(info.hasOwnProperty(selectedGraphFile))) {
                 localStorage.setItem('file', '');
                 return clickablesDisabled;
             }
@@ -153,10 +159,10 @@ const Apps = () => {
             var obj: truthMap = {};
 
             for (let key in graphs) {
-                if (info[file].hasOwnProperty(graphs[key])) {
+                if (info[selectedGraphFile].hasOwnProperty(graphs[key])) {
                     let hasGraph = false;
-                    for (let name in info[file][graphs[key]]) {
-                        if (info[file][graphs[key]][name] !== "") {
+                    for (let name in info[selectedGraphFile][graphs[key]]) {
+                        if (info[selectedGraphFile][graphs[key]][name] !== "") {
                             hasGraph = true;
                             break;
                         }
@@ -223,7 +229,7 @@ const Apps = () => {
 
                     <List className={classes.selectButton}>
                         <ListItem button onClick={handleModalOpen} style={{color: "white"}}>
-                            <ListItemText primary={file ? file : "No file selected"}/>
+                            <ListItemText primary={selectedGraphFile ? selectedGraphFile : "No file selected"}/>
                             <ExpandMore />
                         </ListItem>
                     </List>
@@ -247,16 +253,11 @@ const Apps = () => {
                     }}
                 >
                     <Fade in={showModal}>
-                        <AppsTable fileSelector={setFile} file={file} closeModal={handleModalClose}/>
+                        <AppsTable setSelectedGraphFile={setSelectedGraphFile} selectedGraphFile={selectedGraphFile} closeModal={handleModalClose}/>
                     </Fade>
                 </Modal>
 
-                <Notification 
-                    status={notifStatus}
-                    show={showNotif}
-                    message={notifMsg}
-                    setShow={setShowNotif}
-                />
+                <Notification />
 
             </Container>
     );

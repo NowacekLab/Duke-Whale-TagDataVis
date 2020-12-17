@@ -1,8 +1,10 @@
 import React, { useEffect } from "react"; 
 import {makeStyles} from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
 import Alert from "@material-ui/lab/Alert";
 import Fade from "@material-ui/core/Fade";
 import useIsMountedRef from "../functions/useIsMountedRef";
+import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 
 const useStyles = makeStyles({
     banner: {
@@ -24,23 +26,23 @@ const useStyles = makeStyles({
         alignItems: "center",
         justifyContent: "center",
         animation: "all 1s ease-in",
-      },
+    },
 });
 
-type NotificationProps = {
-    setShow: Function, 
-    show: boolean, 
-    message: string,
-    status: string,
-}
-const Notification = ({setShow, show, message, status}: NotificationProps) => {
+const Notification = () => {
 
     const classes = useStyles();
 
-    const handleShow = () => {
+    const dispatch = useDispatch();
+    const notifActionHandler = new notifsActionsHandler(dispatch);
+
+    //@ts-ignore
+    const notif = useSelector(state => state.notif);
+
+    const handleHideNotification = () => {
         setTimeout(() => { // there was a memory leak here that this fixed (I hope)
             if (isMountedRef.current) {
-                setShow ? setShow(false) : null;
+                notifActionHandler.hideNotification();
             }
         }, 3000)
     }
@@ -48,16 +50,16 @@ const Notification = ({setShow, show, message, status}: NotificationProps) => {
     const isMountedRef = useIsMountedRef();
 
     useEffect(() => { // this might unnecessarily re-render multiple times 
-        if (isMountedRef.current) {
-            handleShow();
+        if (notif.visibility && isMountedRef.current) {
+            handleHideNotification();
         }
-    }, [show])
+    }, [notif.visibility])
     
     const getMessage = () => {
-        if (status === 'error') {
-            return message ?? "An error has occurred."
-        } else if (status === 'success') {
-            return message ?? "Successfully executed."
+        if (notif.status === 'error') {
+            return notif.msg ?? "An error has occurred."
+        } else if (notif.status === 'success') {
+            return notif.msg ?? "Successfully executed."
         }
         return "Fatal Error";
     }
@@ -65,19 +67,19 @@ const Notification = ({setShow, show, message, status}: NotificationProps) => {
     return (
         <div className={classes.bannerSuperCont}>
             {
-                show && 
+                notif.visibility && 
                 <div className={classes.bannerCont}>
                     {
-                        status === "error" &&
-                        <Fade in={status==="error"} timeout={500}>
+                        notif.status === "error" &&
+                        <Fade in={notif.status==="error"} timeout={500}>
                             <Alert variant="filled" severity="error" className={classes.banner}> 
                                 {getMessage()}
                             </Alert>
                         </Fade>
                     }
                     {
-                        status === "success" &&
-                        <Fade in={status==="success"} timeout={500}>
+                        notif.status === "success" &&
+                        <Fade in={notif.status==="success"} timeout={500}>
                             <Alert variant="filled" severity="success" className={classes.banner}>
                                 {getMessage()}
                             </Alert>

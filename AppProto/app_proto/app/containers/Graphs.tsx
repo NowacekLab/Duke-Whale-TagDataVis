@@ -20,6 +20,10 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Confirmation from "../components/Confirmation";
 import Notification from "../components/Notification";
 import * as url from "url";
+
+import {useDispatch} from "react-redux";
+import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHandler";
+import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import useIsMountedRef from "../functions/useIsMountedRef";
 
 const useStyles = makeStyles({
@@ -86,8 +90,7 @@ const useStyles = makeStyles({
         backgroundColor: "#012069",
         color: "white",
         "&:hover": {
-            backgroundColor: "black",
-            color: "white"
+            backgroundColor: "rgba(1,32,105,0.9)"
         }
     },
     banner: {
@@ -120,11 +123,7 @@ const useStyles = makeStyles({
     },
 });
 
-type GraphsProps = {
-    setLoading: Function
-}
-
-const Graphs = ({setLoading}: GraphsProps) => {
+const Graphs = () => {
 
     const classes = useStyles();
     
@@ -132,13 +131,13 @@ const Graphs = ({setLoading}: GraphsProps) => {
     const path = require('path');
     const isDev: boolean = process.env.NODE_ENV !== 'production';
     const remote = require('electron').remote;
-    const server_path = isDev ? path.resolve(path.join(__dirname, 'server')) : path.resolve(path.join(remote.app.getAppPath(), 'server'));
-    const server_files = path.resolve(path.join(server_path, 'server_files'));
-    const files= path.resolve(path.join(server_files, 'files.json'));
+    const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
+    const scripts_files = path.resolve(path.join(scripts_path, 'scripts_files'));
+    const files= path.resolve(path.join(scripts_files, 'files.json'));
     const file = localStorage.getItem('file') ?? "";
-    const main_script_path = path.resolve(path.join(server_path, 'main.py'));
+    const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
     const spawn = require("child_process").spawn;
-    const python3 = path.resolve(path.join(server_path, 'env', 'bin','python3'))
+    const python3 = path.resolve(path.join(scripts_path, 'env', 'bin','python3'))
 
 
     type graphObject = Record<string, string>;
@@ -146,16 +145,15 @@ const Graphs = ({setLoading}: GraphsProps) => {
 
     const [update, setUpdater] = useState(false);
 
+    const dispatch = useDispatch();
+    const forceLoadActionHandler = new forceLoadActionsHandler(dispatch);
+    const notifActionHandler = new notifsActionsHandler(dispatch);
+
     const isMountedRef = useIsMountedRef();
 
     useEffect(() => {
         getGraphs();
-      }, new Array(update))
-
-    // Messages for actions
-    const [notifStatus, setNotifStatus] = useState("error");
-    const [notifMsg, setNotifMsg] = useState("");
-    const [showNotif, setShowNotif] = useState(false);
+      }, [update])
     
     type messagesObject = Record<string, Record<string, string>>
     const messages: messagesObject = {
@@ -172,18 +170,20 @@ const Graphs = ({setLoading}: GraphsProps) => {
     // Handles the message based on response and action taken
     function handleResponse(resp: string, action: string) {
         if (!(messages.hasOwnProperty(resp))) {
-            setNotifMsg("Error. Please contact developers.");
-            setNotifStatus("error");
+            notifActionHandler.showErrorNotif("Error. Please contact developers.");
         } else {
-            setNotifMsg(messages[resp][action]);
-            setNotifStatus(resp === "True" ? "success" : "error");
+            const msg = messages[resp][action];
+            if (resp === "True") {
+                notifActionHandler.showSuccessNotif(msg);
+            } else {
+                notifActionHandler.showErrorNotif(msg);
+            }
         }
-        setShowNotif(true);
     }
 
     function handleAction(action: string, obj: graphObject) {
 
-        setLoading ? setLoading(true) : null;
+        forceLoadActionHandler.activateForceLoad();
 
         const FILE = obj['name'];
 
@@ -209,7 +209,7 @@ const Graphs = ({setLoading}: GraphsProps) => {
 
             loadingSmaller ? loadingSmaller.style.display = 'none' : null;
 
-            setLoading ? setLoading(false) : null;
+            forceLoadActionHandler.deactivateForceLoad();
 
         })
     }
@@ -309,17 +309,14 @@ const Graphs = ({setLoading}: GraphsProps) => {
 
     const handleClick = () => {
         if (selected.length === 0) {
-            setNotifMsg("No graphs have been selected.");
-            setNotifStatus("error");
+            notifActionHandler.showErrorNotif("No graphs ahve been selected.");
         } else {
             selected.forEach((obj, i) => {
                 i;
                 createBrowserWindow(obj['name'], obj['path']);
             });
-            setNotifMsg(`${selected.length} graphs have been generated.`);
-            setNotifStatus("success");
+            notifActionHandler.showSuccessNotif(`${selected.length} graphs have been generated`);
         }
-        setShowNotif(true);
     }
 
     const graphNumber = () => {
@@ -421,7 +418,11 @@ const Graphs = ({setLoading}: GraphsProps) => {
             <p className={classes.header}>{graphChoices[graphType]['title']}</p>
             <div className={graphs.length > 0 ? classes.listContainer : classes.listContainer2}>
                 {
+
+
                     graphs.length > 0 ?
+
+
                     <List className={classes.list} subheader={<ListSubheader className={classes.listSubheader}>{file}</ListSubheader>}>
                         {graphs.map((obj) => {
                             return (
@@ -474,7 +475,11 @@ const Graphs = ({setLoading}: GraphsProps) => {
                     </div>
                 }
 
-                {graphs.length > 0 ?
+                {
+                
+                graphs.length > 0 ?
+
+                
                             <div className={classes.listFooter}>
                                 <p className={classes.listInfo}>{graphNumber()}</p>
                                 {/* SCROLL TO SEE ALL -- WAS HERE */}
@@ -502,12 +507,7 @@ const Graphs = ({setLoading}: GraphsProps) => {
                     reject={rejectConfirm}
                 />
 
-                <Notification
-                    status={notifStatus}
-                    show={showNotif}
-                    message={notifMsg}
-                    setShow={setShowNotif}
-                />
+                <Notification />
 
             </div>
         </Container>

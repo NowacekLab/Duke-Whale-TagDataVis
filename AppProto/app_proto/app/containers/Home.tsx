@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import useIsMountedRef from "../functions/useIsMountedRef";
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -112,16 +113,13 @@ const useStyles = makeStyles({
     height: 5,
   }
 });
-  
-type HomeProps = {
-  loading: boolean,
-  setLoading: Function
-}
 
-const Home = ({loading, setLoading}: HomeProps) => {
+const Home = () => {
   const classes = useStyles();
 
   const [fileNum, setFileNum] = useState(-1);
+
+  const isMountedRef = useIsMountedRef();
 
   const handleLoading = () => {
     const loaderSmaller = document.getElementById('loader-smaller');
@@ -130,15 +128,19 @@ const Home = ({loading, setLoading}: HomeProps) => {
 
     if (fileNum > -1) {
       setTimeout(() => {
-        loaderSmaller ? loaderSmaller.style.display = "none" : null;
-        loadingTable ? loadingTable.style.display="none" : null;
-        homeTable ? homeTable.style.display = "block" : null;
+        if (isMountedRef.current) {
+          loaderSmaller ? loaderSmaller.style.display = "none" : null;
+          loadingTable ? loadingTable.style.display="none" : null;
+          homeTable ? homeTable.style.display = "block" : null;
+        }
       }, 300)
     }
   }
 
   useEffect(() => {
-    handleLoading();
+    if (isMountedRef.current) {
+      handleLoading();
+    }
   }, [fileNum]);
 
   return (
@@ -153,7 +155,7 @@ const Home = ({loading, setLoading}: HomeProps) => {
       </div>
 
       <div className={classes.tableContainer} id="home-table">
-        <HomeTable loading={loading ?? false} fileNum={fileNum} setFileNum={setFileNum} setLoading={setLoading ?? function fail(){return}}/>
+        <HomeTable fileNum={fileNum} setFileNum={setFileNum}/>
 
       </div>
     </Container>

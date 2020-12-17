@@ -23,24 +23,24 @@ const useStyles = makeStyles({
     backgroundColor: "#012069",
     color: "white",
     "&:hover": {
-      backgroundColor: "black",
-      color: "white"
+      backgroundColor: "rgba(1,32,105,0.5)"
     }
   }
 });
 
 type AppsTableProps = {
-  fileSelector: Function, 
-  file: string,
+  setSelectedGraphFile: Function, 
+  selectedGraphFile: string,
   closeModal: Function,
 }
-const AppsTable = ({fileSelector, file, closeModal}: AppsTableProps) => {
+
+const AppsTable = ({setSelectedGraphFile, selectedGraphFile, closeModal}: AppsTableProps) => {
   const classes = useStyles();
 
-  const [fileSelection, setFileSelection] = useState(file ?? "");
+  const [selectedFile, setSelectedFile] = useState(selectedGraphFile ?? "");
 
   const handleClick = () => {
-      fileSelector ? fileSelector(fileSelection) : null;
+      setSelectedGraphFile ? setSelectedGraphFile(selectedFile) : null;
       closeModal ? closeModal() : null;
   };
 
@@ -49,7 +49,7 @@ const AppsTable = ({fileSelector, file, closeModal}: AppsTableProps) => {
     <div className={classes.root}>
         <p className={classes.header}>Select a File</p>
 
-        <FileTable selectedFile={fileSelection} selection={setFileSelection}/>
+        <FileTable selectedFile={selectedGraphFile} setSelectedFile={setSelectedFile}/>
 
         <Button
                 variant="contained"
@@ -60,12 +60,6 @@ const AppsTable = ({fileSelector, file, closeModal}: AppsTableProps) => {
         </Button>
     </div>
   );
-};
-
-AppsTable.propTypes = {
-  fileSelector: PropTypes.func,
-  file: PropTypes.string,
-  closeModal: PropTypes.func,
 };
 
 export default AppsTable;

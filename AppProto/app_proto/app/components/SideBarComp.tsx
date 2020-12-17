@@ -6,8 +6,10 @@ const useStyles = makeStyles({
     root: {
         fontFamily: "HelveticaNeue-Light",
         fontWeight: 300,
-        position: "relative",
         height: "100%",
+        backgroundColor: "#012069",
+        position: "relative",
+        width: 200
     },
     logo: {
         width: "12em",
@@ -25,7 +27,7 @@ const SideBarComp = (props: SideBarCompProps) => {
 
     const isDev = process.env.NODE_ENV !== 'production';
     const remote = require('electron').remote;
-    const img_path = isDev ? path.resolve(path.join(__dirname, 'server', 'duke.png')) : path.resolve(path.join(remote.app.getAppPath(), 'server', 'duke.png'));
+    const img_path = isDev ? path.resolve(path.join(__dirname, 'scripts', 'duke.png')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts', 'duke.png'));
 
     return (
         <div className={classes.root}>

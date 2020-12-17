@@ -55,17 +55,20 @@ const useStyles = makeStyles({
         marginTop: "20px",
         backgroundColor: "#012069",
         color: "white",
+        "&:hover": {
+            backgroundColor: "rgba(1,32,105,0.5)"
+        }
     },
     });
 
 type UploadProgressProps = {
     uploadProgress: Record<string, string>,
     uploading: boolean,
-    isUploading: boolean,
-    finishedUpload: boolean, 
-    loadingUpdateIncrement: number, 
-    refresh: Function, 
-    reset: Function, 
+    uploadingNotReprocessing: boolean,
+    finishedUploading: boolean, 
+    updateUploadStateIndicator: number, 
+    refreshTableView: Function, 
+    resetUploadState: Function, 
 }
 
 const UploadProgress = (props: UploadProgressProps) => {
@@ -85,18 +88,18 @@ const UploadProgress = (props: UploadProgressProps) => {
     }
 
     const handleClick = () => {
-        if (props.finishedUpload) {
-            props.reset ? props.reset() : null;
-            props.refresh ? props.refresh() : null; // connection from FileAction --> HomeTable --> FileTable to refresh rows 
+        if (props.finishedUploading) {
+            props.resetUploadState ? props.resetUploadState() : null;
+            props.refreshTableView ? props.refreshTableView() : null; // connection from FileAction --> HomeTable --> FileTable to refreshTableView rows 
         }
     }
 
     useEffect(() => {
         isMountedRef.current && handleLoading();
-    }, [props.loadingUpdateIncrement])
+    }, [props.updateUploadStateIndicator])
 
     type timelineObject = Record<string, any>;
-    const timeline: Array<timelineObject> = props.isUploading ? [
+    var timeline: Array<timelineObject> = [
         {
             "key": 0,
             "show": props.uploadProgress ? props.uploadProgress['processed'] : "progress",
@@ -120,25 +123,12 @@ const UploadProgress = (props: UploadProgressProps) => {
             "description-success": "3D Graphs generated.",
             "description-progress": "Generating 3D Graphs.",
             "description-fail": "3D Graph generation failed."
-        },
-    ] : [
-        {
-            "key": 1, 
-            "show": props.uploadProgress ? props.uploadProgress['graphs2D'] : "progress",
-            "title": "2D Graphs",
-            "description-success": "2D Graphs generated.",
-            "description-progress": "Generating 2D Graphs.",
-            "description-fail": "2D Graph generation failed."
-        },
-        {
-            "key": 2, 
-            "show": props.uploadProgress ? props.uploadProgress['graphs3D'] : "progress",
-            "title": "3D Graphs",
-            "description-success": "3D Graphs generated.",
-            "description-progress": "Generating 3D Graphs.",
-            "description-fail": "3D Graph generation failed."
-        },
+        }
     ]
+    if (props.uploadingNotReprocessing === false) {
+        timeline.splice(0, 1);
+    }
+
 
     const description = (item: timelineObject) => {
         let choice = `description-${item['show']}`
@@ -212,8 +202,8 @@ const UploadProgress = (props: UploadProgressProps) => {
                 </Timeline>
 
 
-                <div style={{width: "100%", display: "flex", justifyContent: "center", opacity: props.finishedUpload ? 1 : 0}}>
-                    <Fade in={props.finishedUpload} timeout={500}>
+                <div style={{width: "100%", display: "flex", justifyContent: "center", opacity: props.finishedUploading ? 1 : 0}}>
+                    <Fade in={props.finishedUploading} timeout={500}>
                         <Button className={classes.finishButton} onClick={handleClick}>
                             Done
                         </Button>

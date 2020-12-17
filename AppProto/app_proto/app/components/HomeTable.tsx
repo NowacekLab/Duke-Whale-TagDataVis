@@ -8,7 +8,7 @@ const useStyles = makeStyles({
     fontFamily: "HelveticaNeue-Light",
     height: "100%",
     display: "grid",
-    gridTemplateRows: "20% 80%",
+    gridTemplatefileRows: "20% 80%",
     gridTemplateColumns: "100%",
     gridTemplateAreas:`
     'header'
@@ -53,21 +53,20 @@ const useStyles = makeStyles({
   
 
 type HomeTableProps = {
-  loading: boolean, 
-  setLoading: Function, 
   setFileNum: Function,
   fileNum: number,
 }
 
-const HomeTable = ({loading, setLoading, setFileNum, fileNum}: HomeTableProps) => {
+const HomeTable = ({setFileNum, fileNum}: HomeTableProps) => {
     const classes = useStyles();
 
-    const [update, setUpdate] = useState(false);
-    const [fileSelection, setFileSelection] = useState("");
-    const [rows, setRows] = useState([]);
+    const [updateTableView, setUpdateTableView] = useState(false);
+    const [selectedFile, setSelectedFile] = useState("");
+    const [fileRows, setFileRows] = useState([]);
 
-  const refresh = () => {
-    setUpdate(!update);
+  //TODO: change name, should reflect that it is refreshing FileTable
+  const refreshTableView = () => {
+    setUpdateTableView(!updateTableView);
   };
 
   const fileNumber = () => {
@@ -87,10 +86,11 @@ const HomeTable = ({loading, setLoading, setFileNum, fileNum}: HomeTableProps) =
     
         <div className={classes.tableHeader}>
             <p className={classes.tableHeaderElem}>{fileNumber()}</p>
-            <FileActions loading={loading ?? false} refresh={refresh} selection={fileSelection} setLoading={setLoading ?? function fail(){return}} rows={rows}/>
+            <FileActions refreshTableView={refreshTableView} selectedFile={selectedFile} fileRows={fileRows}/>
         </div>
 
-        <FileTable toUpdate={update} fileNum={setFileNum} selection={setFileSelection} setRows={setRows}/>
+        //TODO: CHANGE -- 'selection' here is a function, above it is the variable
+        <FileTable updateTableView={updateTableView} fileNum={setFileNum} setSelectedFile={setSelectedFile} setFileRows={setFileRows}/>
 
     </div>
   );

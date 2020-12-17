@@ -6,13 +6,15 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle'; 
 import Button from "@material-ui/core/Button";
 
+type Callback = any;
+
 type ConfirmationProps = {
   open: boolean,
-  close: callBack, 
+  close: Callback, 
   title: string, 
   desc: string, 
-  reject: callBack, 
-  confirm: callBack,
+  reject: Callback, 
+  confirm: Callback,
 }
 
 const Confirmation = ({open, close, title, desc, reject, confirm}: ConfirmationProps) => {

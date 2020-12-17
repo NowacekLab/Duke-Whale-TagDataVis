@@ -25,10 +25,10 @@ const useStyles = makeStyles({
 
 type FileTableProps = {
   selectedFile?: string,
-  selection?: Function,
-  toUpdate?: boolean, 
+  setSelectedFile?: Function,
+  updateTableView?: boolean, 
   fileNum?: Function, 
-  setRows?: Function
+  setFileRows?: Function
 }
 
 const FileTable = (props: FileTableProps) => {
@@ -38,21 +38,20 @@ const FileTable = (props: FileTableProps) => {
 
     useEffect(() => {
       generate();
-    }, [props.toUpdate]);
+    }, [props.updateTableView]);
 
-    const [rows, setRows] = useState<Array<Row>>([]);
+    type Row = Record<string, string>;
+    const [rows, setFileRows] = useState<Array<Row>>([]);
     const [choice, setChoice] = useState(props.selectedFile ? props.selectedFile : "");
 
 
     const isDev = process.env.NODE_ENV !== 'production';
     const remote = require('electron').remote;
-
-
     const fs = window.require('fs');
     const path = require('path');
-    const server_path = isDev ? path.resolve(path.join(__dirname, 'server')) : path.resolve(path.join(remote.app.getAppPath(), 'server'));
-    const server_files = path.resolve(path.join(server_path, 'server_files'));
-    const files = path.resolve(path.join(server_files, 'files.json'));
+    const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
+    const scripts_files = path.resolve(path.join(scripts_path, 'scripts_files'));
+    const files = path.resolve(path.join(scripts_files, 'files.json'));
 
     function createData(file: string, size: string, modified: string) {
     return { file, size, modified };
@@ -70,9 +69,9 @@ const FileTable = (props: FileTableProps) => {
         }
 
         if (isMountedRef.current) {
-          setRows(realRows);
+          setFileRows(realRows);
           props.fileNum && props.fileNum(realRows.length);
-          props.setRows && props.setRows(realRows);
+          props.setFileRows && props.setFileRows(realRows);
         }
 
       })
@@ -85,7 +84,7 @@ const FileTable = (props: FileTableProps) => {
       { id: "modified", label: "Modified", minWidth: 100}
     ]
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(3);
+    const [rowsPerPage, setFileRowsPerPage] = useState(3);
 
     const handleChangePage = (event: any, newPage: number) => {
       event;
@@ -93,17 +92,17 @@ const FileTable = (props: FileTableProps) => {
     };
 
     const handleChangeRowsPerPage = (event: any) => {
-      setRowsPerPage(+event.target.value);
+      setFileRowsPerPage(+event.target.value);
       setPage(0);
     };
 
     const handleChoice = (select: string) => {
         if (select === choice) {
             setChoice("");
-            props.selection ? props.selection("") : null;
+            props.setFileSelection ? props.setFileSelection("") : null;
         } else {
             setChoice(select);
-            props.selection ? props.selection(select) : null;
+            props.setFileSelection ? props.setFileSelection(select) : null;
         }
     };
 
@@ -170,14 +169,6 @@ const FileTable = (props: FileTableProps) => {
               />
           </Paper>
     );
-};
-
-FileTable.propTypes = {
-  selectedFile: PropTypes.string,
-  selection: PropTypes.func,
-  toUpdate: PropTypes.bool,
-  fileNum: PropTypes.func,
-  setRows: PropTypes.func,
 };
 
 export default FileTable;

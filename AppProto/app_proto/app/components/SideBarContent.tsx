@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {makeStyles} from '@material-ui/core/styles';
-import routes from '../server/server_files/routes.json';
+import routes from '../scripts/scripts_files/routes.json';
 import SideBarComp from "./SideBarComp";
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -56,16 +57,15 @@ const styles = {
     },
 }
 
-type SideBarContentProps = {
-    loading: boolean,
-}
-
-const SideBarContent = ({loading}: SideBarContentProps) => {
+const SideBarContent = () => {
 
     const classes = useStyles();
 
+    //@ts-ignore
+    const forceLoad = useSelector(state => state.forceLoad);
+
     const handleNav = (e: any) => {
-        loading ? e.preventDefault() : null;
+        forceLoad.shouldForceLoad ? e.preventDefault() : null;
     };
     return(
         <SideBarComp>

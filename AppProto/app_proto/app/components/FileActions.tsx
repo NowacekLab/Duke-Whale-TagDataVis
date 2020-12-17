@@ -13,8 +13,12 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import UploadProgress from './UploadProgress';
 import Confirmation from "./Confirmation";
+import {useDispatch} from 'react-redux';
 import Notification from "./Notification";
+
 import useIsMountedRef from "../functions/useIsMountedRef";
+import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
+import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHandler";
 
 import * as child from 'child_process';
 
@@ -34,32 +38,29 @@ const useStyles = makeStyles({
   },
 });
 
+type Row = Record<string, string>;
 type FileActionsProps = {
-  loading: boolean, 
-  refresh: Function, 
-  selection: string, 
-  setLoading: Function,
-  rows: Array<Row>,
+  refreshTableView: Function, 
+  selectedFile: string, 
+  fileRows: Array<Row>,
 }
 
 const FileActions = (props: FileActionsProps) => {
   const classes = useStyles();
-
   const isMountedRef = useIsMountedRef();
 
   // **TO INTERACT WITH PYTHON**
   const path = require('path');
   const isDev = process.env.NODE_ENV !== 'production';
-  const {shell} = require('electron');
   const remote = require('electron').remote;
-  const server_path = isDev ? path.resolve(path.join(__dirname, 'server')) : path.resolve(path.join(remote.app.getAppPath(), 'server'));
-  const main_script_path = path.resolve(path.join(server_path, 'main.py'));
+  const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
+  const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
   const spawn = require("child_process").spawn; 
-  const python3 = path.resolve(path.join(server_path, 'env', 'bin','python3'))
+  const python3 = path.resolve(path.join(scripts_path, 'env', 'bin','python3'))
 
   // Unrelated to above 
   const upload = React.useRef<HTMLInputElement>(null);
-  const [chosenFile, setChosenFile] = useState<string>(""); // this is table file selection
+  const [chosenFile, setChosenFile] = useState<string>(""); // this is table file selectedFile
   const [uploadFile, setUploadFile] = useState<any>({}); // this is the file to be uploaded, type is more Record<string, string>
 
   const color = createMuiTheme({
@@ -132,7 +133,7 @@ const FileActions = (props: FileActionsProps) => {
       file1 = file1.replace('.mat', '.csv');
     }
 
-    for (const obj of props.rows) {
+    for (const obj of props.fileRows) {
       let file2 = obj['file'];
       if (file1 === file2) {
         return true;
@@ -161,31 +162,28 @@ const FileActions = (props: FileActionsProps) => {
     handleOpenConfirm();
   }
 
-  // Executes whenever props.selection changes (interact with table)
+  // Executes whenever props.selectedFile changes (interact with table)
   useEffect(() => {
     if (isMountedRef.current) {
-      setChosenFile(props.selection);
+      setChosenFile(props.selectedFile);
     }
-  }, [props.selection, props.rows])
+  }, [props.selectedFile, props.fileRows])
 
-  const showSuccess = () => {
-    setNotifStatus("success");
-    setShowNotif(true);
-    props.refresh();
+  const dispatch = useDispatch();
+  const notifActionHandler = new notifsActionsHandler(dispatch);
+  const forceLoadActionHandler = new forceLoadActionsHandler(dispatch);
+
+  const showSuccessMsg = (msg: string) => {
+    notifActionHandler.showSuccessNotif(msg);
   }
-  const showError = () => {
-    setNotifStatus("error");
-    setShowNotif(true);
-    props.refresh();
+  const showErrorMsg = (msg: string) => {
+    notifActionHandler.showErrorNotif(msg);
   }
 
-  // NOTIFICATION STATE
-  const [showNotif, setShowNotif] = useState(false);
-  const [notifStatus, setNotifStatus] = useState("error");
   // Messages for actions 
   const messages: Record<string, Record<string, any>> = {
     'True': {
-      'func': showSuccess,
+      'func': showSuccessMsg,
       'upload': 'Successfully uploaded and processed.',
       'regenerate': 'Successfully regenerated graphs.',
       'delete': `${chosenFile} deleted.`,
@@ -193,7 +191,7 @@ const FileActions = (props: FileActionsProps) => {
       'save': 'Saved in data_visualization folder in Downloads!'
     },
     'False': {
-      'func': showError,
+      'func': showErrorMsg,
       'upload': 'Failed to upload and/or process.',
       'regenerate': 'Failed to regenerate graphs.',
       'delete': 'File could not be deleted.',
@@ -202,17 +200,15 @@ const FileActions = (props: FileActionsProps) => {
     }
   }
 
-  const [notifMsg, setNotifMsg] = useState("");
-
   // Handles the message based on response and action taken 
-  function handleResponse(resp: string, action: string) {
-    if (!(messages.hasOwnProperty(resp))) {
-      setNotifMsg("Error. Please contact developers.");
-      showError();
+  function handleResponse(response: string, action: string) {
+    if (!(messages.hasOwnProperty(response))) {
+      const notifMsg = "Error. Please contact developers.";
+      showErrorMsg(notifMsg);
     } else {
-      setNotifMsg(messages[resp][action]);
-      const func = messages[resp]['func'];
-      func();
+      const notifMsg = messages[response][action];
+      const notifFunc = messages[response]['func'];
+      notifFunc(notifMsg);
     }
   } 
 
@@ -239,7 +235,7 @@ const FileActions = (props: FileActionsProps) => {
   // Actual executors...
   function handleAction(action: string) {
 
-    props.setLoading ? props.setLoading(true) : "";
+    forceLoadActionHandler.activateForceLoad();
 
     if (action === 'delete') {
       const current_file = localStorage.getItem('file') || "";
@@ -267,16 +263,16 @@ const FileActions = (props: FileActionsProps) => {
 
       loaderSmaller && loaderSmaller.style ? loaderSmaller.style.display = 'none' : null;
 
-      props.setLoading ? props.setLoading(false) : "";
+      forceLoadActionHandler.deactivateForceLoad();
 
     })
   }
   
   // The below is very ugly! 
-  const [isUploading, setIsUploading] = useState(false);
+  const [uploadingNotReprocessing, setUploadingNotReprocessing] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [loadingUpdate, setLoadingUpdate] = useState(0);
-  const [finishedUpload, setFinishedUploading] = useState(false);
+  const [updateUploadStateIndicator, setUpdateUploadStateIndicator] = useState(0);
+  const [finishedUploading, setFinishedUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<Record<string, string>>({
     "processed": "progress", 
     "graphs2D": "progress",
@@ -284,8 +280,7 @@ const FileActions = (props: FileActionsProps) => {
   });
 
   const reset = () => {
-
-    props.setLoading ? props.setLoading(false) : "";
+    forceLoadActionHandler.deactivateForceLoad();
 
     setUploadProgress({
       "processed": "progress", 
@@ -293,11 +288,10 @@ const FileActions = (props: FileActionsProps) => {
       "graphs3D": "progress",
     })
 
-    setLoadingUpdate(0);
+    setUpdateUploadStateIndicator(0);
 
     setFinishedUploading(false);
     setUploading(false);
-    setIsUploading(false);
   }
 
   const handleProcess = (process: child.ChildProcess, action: string) => {
@@ -316,7 +310,7 @@ const FileActions = (props: FileActionsProps) => {
             uploadProgress[resp[0]] = 'fail';
           }
           setUploadProgress(uploadProgress);
-          setLoadingUpdate(2); // im going to be honest here and say that I'm not sure why this hard-coded # increment works and a variable + 1 does not
+          setUpdateUploadStateIndicator(2); // im going to be honest here and say that I'm not sure why this hard-coded # increment works and a variable + 1 does not
           break;
         case "graphs2D":
           if (resp[1].startsWith('success')) {
@@ -325,7 +319,7 @@ const FileActions = (props: FileActionsProps) => {
             uploadProgress[resp[0]] = 'fail';
           }
           setUploadProgress(uploadProgress);
-          setLoadingUpdate(3);
+          setUpdateUploadStateIndicator(3);
           break;
         case "graphs3D":
           if (resp[1].startsWith('success')) {
@@ -336,7 +330,7 @@ const FileActions = (props: FileActionsProps) => {
           setUploadProgress(uploadProgress);
           setFinishedUploading(true);
 
-          setLoadingUpdate(4);
+          setUpdateUploadStateIndicator(4);
           break;
         default: 
           const categories = ['processed', 'graphs2D', 'graphs3D'];
@@ -348,7 +342,7 @@ const FileActions = (props: FileActionsProps) => {
           setUploadProgress(uploadProgress);
 
           setFinishedUploading(true);
-          setLoadingUpdate(6);
+          setUpdateUploadStateIndicator(6);
       }
     });
 
@@ -357,7 +351,7 @@ const FileActions = (props: FileActionsProps) => {
 
       handleResponse('false', action);
       reset();
-      setLoadingUpdate(8);
+      setUpdateUploadStateIndicator(8);
     })
 
   }
@@ -372,22 +366,23 @@ const FileActions = (props: FileActionsProps) => {
     }
   }
 
-  const handleUpload = (action = 'upload') => { // this function really needs refactoring... but it does for now!
+  const handleUpload = (action = 'upload') => { 
 
     if (action !== "upload" && action !== "reprocess") return; 
 
-    props.setLoading ? props.setLoading(true) : "";
-    setLoadingUpdate(1);
+    forceLoadActionHandler.activateForceLoad();
+
+    setUpdateUploadStateIndicator(1);
 
     if (action === 'upload') {
-      setIsUploading(true);
+      setUploadingNotReprocessing(true);
       setUploading(true);
 
       const pythonProcess = spawn(python3, ['-u', main_script_path, 'csvmat', uploadFile['path'], uploadFile['name']]);
       handleProcess(pythonProcess, action);
 
     } else if (action === 'reprocess') {
-      setIsUploading(false);
+      setUploadingNotReprocessing(false);
       setUploading(true);
       const args = new Array('-u', main_script_path, 'actions', chosenFile, action);
       const pythonProcess = spawn(python3, args);
@@ -471,10 +466,10 @@ const FileActions = (props: FileActionsProps) => {
           <UploadProgress 
             uploadProgress = {uploadProgress} 
             uploading = {uploading} 
-            isUploading = {isUploading} 
-            finishedUpload ={finishedUpload}
-            loadingUpdateIncrement = {loadingUpdate}
-            refresh = {props.refresh} 
+            uploadingNotReprocessing = {uploadingNotReprocessing} 
+            finishedUploading ={finishedUploading}
+            updateUploadStateIndicator = {updateUploadStateIndicator}
+            refreshTableView = {props.refreshTableView} 
             reset = {reset}
           />
 
@@ -511,13 +506,7 @@ const FileActions = (props: FileActionsProps) => {
             reject={rejectConfirm}
           />
 
-
-          <Notification 
-            status={notifStatus}
-            show={showNotif}
-            message={notifMsg}
-            setShow={setShowNotif}
-          />
+          <Notification />
 
     </ThemeProvider>
   );

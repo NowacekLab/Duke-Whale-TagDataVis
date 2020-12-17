@@ -95,9 +95,8 @@ const useStyles = makeStyles({
     marginTop: "20px",
     backgroundColor: "transparent",
     color: "white",
-    '&:hover': {
-      backgroundColor: 'white',
-      color: "black"
+    "&:hover": {
+      backgroundColor: "rgba(0,0,0,0.1)"
     }
 }
 });
