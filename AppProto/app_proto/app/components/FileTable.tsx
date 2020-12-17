@@ -97,12 +97,13 @@ const FileTable = (props: FileTableProps) => {
     };
 
     const handleChoice = (select: string) => {
+
         if (select === choice) {
             setChoice("");
-            props.setFileSelection ? props.setFileSelection("") : null;
+            props.setSelectedFile ? props.setSelectedFile("") : null;
         } else {
             setChoice(select);
-            props.setFileSelection ? props.setFileSelection(select) : null;
+            props.setSelectedFile ? props.setSelectedFile(select) : null;
         }
     };
 

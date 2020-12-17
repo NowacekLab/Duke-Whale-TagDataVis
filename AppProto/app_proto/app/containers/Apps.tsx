@@ -144,14 +144,14 @@ const Apps = () => {
 
     // CLICKABILITY
     const checkForGraphs = () => {
-        localStorage.setItem('selectedGraphFile', file);
+        localStorage.setItem('selectedGraphFile', selectedGraphFile);
         fs.readFile(files, function(err: string, data: string) {
             err;
 
             const info = JSON.parse(data);
 
             if (!(info.hasOwnProperty(selectedGraphFile))) {
-                localStorage.setItem('file', '');
+                localStorage.setItem('selectedGraphFile', '');
                 return clickablesDisabled;
             }
             const graphs = ['graphs2D', 'graphs3D', 'graphsMixed'];

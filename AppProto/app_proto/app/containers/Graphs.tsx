@@ -134,7 +134,7 @@ const Graphs = () => {
     const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
     const scripts_files = path.resolve(path.join(scripts_path, 'scripts_files'));
     const files= path.resolve(path.join(scripts_files, 'files.json'));
-    const file = localStorage.getItem('file') ?? "";
+    const file = localStorage.getItem('selectedGraphFile') ?? "";
     const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
     const spawn = require("child_process").spawn;
     const python3 = path.resolve(path.join(scripts_path, 'env', 'bin','python3'))

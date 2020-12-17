@@ -164,6 +164,7 @@ const FileActions = (props: FileActionsProps) => {
 
   // Executes whenever props.selectedFile changes (interact with table)
   useEffect(() => {
+
     if (isMountedRef.current) {
       setChosenFile(props.selectedFile);
     }
@@ -238,9 +239,9 @@ const FileActions = (props: FileActionsProps) => {
     forceLoadActionHandler.activateForceLoad();
 
     if (action === 'delete') {
-      const current_file = localStorage.getItem('file') || "";
+      const current_file = localStorage.getItem('selectedGraphFile') || "";
       if (current_file === chosenFile) {
-        localStorage.setItem('file', "");
+        localStorage.setItem('selectedGraphFile', "");
       }
     }
 
@@ -279,7 +280,7 @@ const FileActions = (props: FileActionsProps) => {
     "graphs3D": "progress",
   });
 
-  const reset = () => {
+  const resetUploadState = () => {
     forceLoadActionHandler.deactivateForceLoad();
 
     setUploadProgress({
@@ -350,7 +351,7 @@ const FileActions = (props: FileActionsProps) => {
       err;
 
       handleResponse('false', action);
-      reset();
+      resetUploadState();
       setUpdateUploadStateIndicator(8);
     })
 
@@ -470,7 +471,7 @@ const FileActions = (props: FileActionsProps) => {
             finishedUploading ={finishedUploading}
             updateUploadStateIndicator = {updateUploadStateIndicator}
             refreshTableView = {props.refreshTableView} 
-            reset = {reset}
+            resetUploadState = {resetUploadState}
           />
 
           <LinearProgress id="loader-smaller" color="primary" className={classes.loadingSmaller}/>
