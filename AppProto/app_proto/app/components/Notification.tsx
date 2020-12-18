@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useRef } from "react"; 
-
+import React, { useEffect } from "react"; 
+import {makeStyles} from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
 import Alert from "@material-ui/lab/Alert";
 import Fade from "@material-ui/core/Fade";
+import useIsMountedRef from "../functions/useIsMountedRef";
+import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 
-const styles = {
+const useStyles = makeStyles({
     banner: {
         boxShadow: "5px 10px",
         marginTop: "10px",
@@ -23,24 +26,23 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         animation: "all 1s ease-in",
-      },
-}
+    },
+});
 
-function useIsMountedRef(){
-    const isMountedRef = useRef(null);
-    useEffect(() => {
-        isMountedRef.current = true; 
-        return () => isMountedRef.current = false; 
-    })
-    return isMountedRef;
-}
+const Notification = () => {
 
-const Notification = props => {
+    const classes = useStyles();
 
-    const handleShow = () => {
+    const dispatch = useDispatch();
+    const notifActionHandler = new notifsActionsHandler(dispatch);
+
+    //@ts-ignore
+    const notif = useSelector(state => state.notif);
+
+    const handleHideNotification = () => {
         setTimeout(() => { // there was a memory leak here that this fixed (I hope)
             if (isMountedRef.current) {
-                props.setShow ? props.setShow(false) : null;
+                notifActionHandler.hideNotification();
             }
         }, 3000)
     }
@@ -48,42 +50,37 @@ const Notification = props => {
     const isMountedRef = useIsMountedRef();
 
     useEffect(() => { // this might unnecessarily re-render multiple times 
-        if (isMountedRef.current) {
-            handleShow();
+        if (notif.visibility && isMountedRef.current) {
+            handleHideNotification();
         }
-    }, [props.show])
-
-    const status = props.status ?? "error";
+    }, [notif.visibility])
     
     const getMessage = () => {
-        if (status === 'error') {
-            return props.message ?? "An error has occurred."
-        } else if (status === 'success') {
-            return props.message ?? "Successfully executed."
+        if (notif.status === 'error') {
+            return notif.msg ?? "An error has occurred."
+        } else if (notif.status === 'success') {
+            return notif.msg ?? "Successfully executed."
         }
+        return "Fatal Error";
     }
 
-    const show = props.show ? props.show : false;
-
-    // Below, severity={...} has been tried, does not work, seems to only accept string
-
     return (
-        <div style={styles.bannerSuperCont}>
+        <div className={classes.bannerSuperCont}>
             {
-                show && 
-                <div style={styles.bannerCont}>
+                notif.visibility && 
+                <div className={classes.bannerCont}>
                     {
-                        status === "error" &&
-                        <Fade in={status==="error"} timeout={500}>
-                            <Alert variant="filled" severity="error" style={styles.banner}> 
+                        notif.status === "error" &&
+                        <Fade in={notif.status==="error"} timeout={500}>
+                            <Alert variant="filled" severity="error" className={classes.banner}> 
                                 {getMessage()}
                             </Alert>
                         </Fade>
                     }
                     {
-                        status === "success" &&
-                        <Fade in={status==="success"} timeout={500}>
-                            <Alert variant="filled" severity="success" style={styles.banner}>
+                        notif.status === "success" &&
+                        <Fade in={notif.status==="success"} timeout={500}>
+                            <Alert variant="filled" severity="success" className={classes.banner}>
                                 {getMessage()}
                             </Alert>
                         </Fade>

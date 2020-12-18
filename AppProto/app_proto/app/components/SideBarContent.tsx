@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import routes from '../server/server_files/routes.json';
+import { useSelector } from 'react-redux';
+import {makeStyles} from '@material-ui/core/styles';
+import routes from '../scripts/scripts_files/routes.json';
 import SideBarComp from "./SideBarComp";
-import PropTypes from "prop-types";
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -13,21 +14,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
 import HelpIcon from '@material-ui/icons/Help';
 
-const styles = {
-    sidebarLink: {
-        display: "block",
-        padding: "16px 16px",
-        color: "white",
-        textDecoration: "none",
-    },
-    active_link_side: {
-        borderLeft: "3px solid white",
-        opacity: 1,
-    },
-    active_link_bottom: {
-        borderBottom: "3px solid white",
-        opacity: 1,
-    },
+const useStyles = makeStyles({
     content: {
         height: "100%",
     },
@@ -52,19 +39,39 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
     },
-};
+});
+const styles = {
+    sidebarLink: {
+        display: "block",
+        padding: "16px 16px",
+        color: "white",
+        textDecoration: "none",
+    },
+    active_link_side: {
+        borderLeft: "3px solid white",
+        opacity: 1,
+    },
+    active_link_bottom: {
+        borderBottom: "3px solid white",
+        opacity: 1,
+    },
+}
 
-const SideBarContent = props => {
+const SideBarContent = () => {
 
-    const handleNav = (e) => {
-        props.loading ? e.preventDefault() : null;
+    const classes = useStyles();
+
+    //@ts-ignore
+    const forceLoad = useSelector(state => state.forceLoad);
+
+    const handleNav = (e: any) => {
+        forceLoad.shouldForceLoad ? e.preventDefault() : null;
     };
-
     return(
         <SideBarComp>
             <div>
 
-                <div style={styles.content}>
+                <div className={classes.content}>
                     <NavLink to={routes.HOME} exact style={styles.sidebarLink} activeStyle={styles.active_link_side} onClick={handleNav}>
                         <ListItem>
                             <ListItemIcon>
@@ -72,7 +79,7 @@ const SideBarContent = props => {
                             </ListItemIcon>
                             <ListItemText 
                                 disableTypography 
-                                primary={<Typography style={styles.text}>{"Home"}</Typography>}
+                                primary={<Typography className={classes.text}>{"Home"}</Typography>}
                             />                    
                         </ListItem>
                     </NavLink>
@@ -83,7 +90,7 @@ const SideBarContent = props => {
                             </ListItemIcon>
                             <ListItemText 
                                 disableTypography 
-                                primary={<Typography style={styles.text}>{"Apps"}</Typography>}
+                                primary={<Typography className={classes.text}>{"Apps"}</Typography>}
                             />
                         </ListItem>
 
@@ -91,7 +98,7 @@ const SideBarContent = props => {
 
                 </div>
 
-                <div style={styles.bottomBtnCont}>
+                <div className={classes.bottomBtnCont}>
                     <NavLink to={routes.SETTINGS} exact activeStyle={styles.active_link_bottom} onClick={handleNav}>
                         <IconButton>
                             <SettingsIcon style={{color: "white"}} fontSize="large" />
@@ -111,9 +118,5 @@ const SideBarContent = props => {
     )
 
 }
-
-SideBarContent.propTypes = {
-    style: PropTypes.object,
-};
 
 export default SideBarContent;

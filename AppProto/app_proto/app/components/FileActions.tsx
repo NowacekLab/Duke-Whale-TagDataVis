@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from "prop-types";
-import Alert from '@material-ui/lab/Alert';
-import Button from "@material-ui/core/Button";
+import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import CommentIcon from '@material-ui/icons/Comment';
@@ -12,114 +10,61 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import UploadProgress from './UploadProgress';
 
+import UploadProgress from './UploadProgress';
 import Confirmation from "./Confirmation";
+import {useDispatch} from 'react-redux';
 import Notification from "./Notification";
 
-const styles = {
-  banner: {
-      boxShadow: "5px 10px",
-      marginTop: "10px",
-  },
-  header: {
-    color: "white",
-    textAlign: "center",
-    fontSize: "36px",
-  },
-  headersubtext: {
-    marginTop: "5px"
-  },
-  loadertext: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: "5px",
-    flexDirection: "column"
-  },
-  bannerSuperCont: {
-    zIndex: 999998,
-    bottom: 20,
-    left: 200,
-    right: 0,
-    position: "fixed",
-    display: "flex",
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+import useIsMountedRef from "../functions/useIsMountedRef";
+import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
+import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHandler";
+
+import * as child from 'child_process';
+
+const useStyles = makeStyles({
   buttonCont: {
     display: "flex",
     justifyContent: "center",
     alignContent: "center",
   },  
-  bannerCont: {
-    width: "500px",
+  loadingSmaller: {
     display: "none",
-    alignItems: "center",
-    justifyContent: "center",
-    animation: "all 1s ease-in",
-  },
-  bannerErrorCont: {
-    width: "500px",
-    alignItems: "center",
-    justifyContent: "center",
-    display: "none",
-    animation: "all 1s ease-in",
-  },
-  loading: {
-    display: "none", // none 
-    background: "rgba(0,0,0,0.9)",
-    position: "fixed", 
     zIndex: 99998,
-    bottom: 0,
     top: 0,
+    left: 200, 
     right: 0,
-    left: 200,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    },
-    loadingSmaller: {
-      display: "none",
-      position: "fixed",
-      zIndex: 99998,
-      top: 0,
-      left: 200, 
-      right: 0,
-      height: 5,
-    },
-};
+    height: 5,
+  },
+});
 
-function useIsMountedRef(){
-  const isMountedRef = useRef(null);
-  useEffect(() => {
-      isMountedRef.current = true; 
-      return () => isMountedRef.current = false; 
-  })
-  return isMountedRef;
+type Row = Record<string, string>;
+type FileActionsProps = {
+  refreshTableView: Function, 
+  selectedFile: string, 
+  fileRows: Array<Row>,
 }
 
-const FileActions = props => {
-  const rootStyle = props.style
-    ? { ...styles.root, ...props.style }
-    : { ...styles.root }
-
+const FileActions = (props: FileActionsProps) => {
+  const classes = useStyles();
   const isMountedRef = useIsMountedRef();
 
   // **TO INTERACT WITH PYTHON**
-  const fs = window.require('fs');
   const path = require('path');
-  const server_path = path.resolve(path.join(__dirname, 'server'));
-  const server_files = path.resolve(path.join(server_path, 'server_files'));
-  const files = path.resolve(path.join(server_files, 'files.json'));
-  const script_path = path.resolve(path.join(server_path, 'csvmat.py'));
-  const action_script_path = path.resolve(path.join(server_path, 'actions.py'));
+  const isDev = process.env.NODE_ENV !== 'production';
+  const remote = require('electron').remote;
+  const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
+  const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
   const spawn = require("child_process").spawn; 
 
+  const isWindows = process.platform === "win32";
+  const python3 = isWindows ? path.resolve(path.join(scripts_path, 'windows_env', 'Scripts', 'python.exe')) : 
+                              path.resolve(path.join(scripts_path, 'mac_env', 'bin','python3'));
+
   // Unrelated to above 
-  const upload = React.useRef(null);
-  const [chosenFile, setChosenFile] = useState(""); // this is table file selection
-  const [uploadFile, setUploadFile] = useState({}); // this is the file to be uploaded 
+  const upload = React.useRef<HTMLInputElement>(null);
+  const [chosenFile, setChosenFile] = useState<string>(""); // this is table file selectedFile
+  const [uploadFile, setUploadFile] = useState<any>({}); // this is the file to be uploaded, type is more Record<string, string>
 
   const color = createMuiTheme({
     palette: {
@@ -130,7 +75,7 @@ const FileActions = props => {
   });
 
   // CONFIRMATION
-  const confirmations = {
+  const confirmations: Record<string, Record<string, string>> = {
     "delete": {
       "title": `Delete ${chosenFile}?`,
       "description": "This will permanently delete the file and its graphs."
@@ -149,7 +94,7 @@ const FileActions = props => {
       "description": "It may take a long time to process the file appropriately."
     }
   }
-  const [confirmInfo, setConfirmInfo] = useState({});
+  const [confirmInfo, setConfirmInfo]: any = useState({}); // was running into bug with Symbol.Iterator with Record<>
   const [pendingAction, setPendingAction] = useState("");
   const [openConfirm, setOpenConfirm] = useState(false);
   const handleOpenConfirm = () => {
@@ -183,13 +128,15 @@ const FileActions = props => {
     handleCloseConfirm();
     setPendingAction("");
   }
-  const fileExists = (file1) => {
+  const fileExists = (file1: string) => {
+
+    if (file1 === "") return false;
 
     if (file1.endsWith('.mat')) {
       file1 = file1.replace('.mat', '.csv');
     }
 
-    for (const obj of props.rows) {
+    for (const obj of props.fileRows) {
       let file2 = obj['file'];
       if (file1 === file2) {
         return true;
@@ -197,12 +144,12 @@ const FileActions = props => {
     }
     return false;
   }
-  const handleConfirm = (action: string, uploadFileName) => {
+  const handleConfirm = (action: string, uploadFileName?: string) => {
 
     setPendingAction(action);
 
     if (action === 'upload') {
-      if (fileExists(uploadFileName)) {
+      if (fileExists(uploadFileName ?? "")) {
         const obj = confirmations['upload-exists'];
         obj['title'] = obj['title'] + `${uploadFileName}?`;
         setConfirmInfo(obj);
@@ -218,31 +165,29 @@ const FileActions = props => {
     handleOpenConfirm();
   }
 
-  // Executes whenever props.selection changes (interact with table)
+  // Executes whenever props.selectedFile changes (interact with table)
   useEffect(() => {
+
     if (isMountedRef.current) {
-      setChosenFile(props.selection);
+      setChosenFile(props.selectedFile);
     }
-  }, [props.selection, props.rows])
+  }, [props.selectedFile, props.fileRows])
 
-  const showSuccess = () => {
-    setNotifStatus("success");
-    setShowNotif(true);
-    props.updater();
+  const dispatch = useDispatch();
+  const notifActionHandler = new notifsActionsHandler(dispatch);
+  const forceLoadActionHandler = new forceLoadActionsHandler(dispatch);
+
+  const showSuccessMsg = (msg: string) => {
+    notifActionHandler.showSuccessNotif(msg);
   }
-  const showError = () => {
-    setNotifStatus("error");
-    setShowNotif(true);
-    props.updater();
+  const showErrorMsg = (msg: string) => {
+    notifActionHandler.showErrorNotif(msg);
   }
 
-  // NOTIFICATION STATE
-  const [showNotif, setShowNotif] = useState(false);
-  const [notifStatus, setNotifStatus] = useState("error");
   // Messages for actions 
-  const messages = {
+  const messages: Record<string, Record<string, any>> = {
     'True': {
-      'func': showSuccess,
+      'func': showSuccessMsg,
       'upload': 'Successfully uploaded and processed.',
       'regenerate': 'Successfully regenerated graphs.',
       'delete': `${chosenFile} deleted.`,
@@ -250,7 +195,7 @@ const FileActions = props => {
       'save': 'Saved in data_visualization folder in Downloads!'
     },
     'False': {
-      'func': showError,
+      'func': showErrorMsg,
       'upload': 'Failed to upload and/or process.',
       'regenerate': 'Failed to regenerate graphs.',
       'delete': 'File could not be deleted.',
@@ -259,17 +204,15 @@ const FileActions = props => {
     }
   }
 
-  const [notifMsg, setNotifMsg] = useState("");
-
   // Handles the message based on response and action taken 
-  function handleResponse(resp, action) {
-    if (!(messages.hasOwnProperty(resp))) {
-      setNotifMsg("Error. Please contact developers.");
-      showError();
+  function handleResponse(response: string, action: string) {
+    if (!(messages.hasOwnProperty(response))) {
+      const notifMsg = "Error. Please contact developers.";
+      showErrorMsg(notifMsg);
     } else {
-      setNotifMsg(messages[resp][action]);
-      const func = messages[resp]['func'];
-      func();
+      const notifMsg = messages[response][action];
+      const notifFunc = messages[response]['func'];
+      notifFunc(notifMsg);
     }
   } 
 
@@ -290,47 +233,60 @@ const FileActions = props => {
     handleAction('save');
   }
   function handleFileUpload() {
-    upload.current.click();
+    upload && upload.current ? upload.current.click() : null;
   }
 
   // Actual executors...
-  function handleAction(action) {
+  function handleAction(action: string) {
 
-    props.setLoading ? props.setLoading(true) : "";
+    forceLoadActionHandler.activateForceLoad();
 
-    const args = new Array('-u', action_script_path, chosenFile, action);
+    if (action === 'delete') {
+      const currentGraphFile = localStorage.getItem('selectedGraphFile') || "";
+      if (currentGraphFile === chosenFile) {
+        localStorage.setItem('selectedGraphFile', "");
+      }
+    }
 
-    const pythonProcess = spawn('python3', args);
+    const args = new Array('-u', main_script_path, 'actions', chosenFile, action);
 
-    const loaderSmaller = document.getElementById('loader-smaller');
-    loaderSmaller.style.display='flex';
+    const pythonProcess = spawn(python3, args, {shell: isWindows});
 
-    pythonProcess.stdout.on('data', (data) => {
+    //TODO: abstract away this into another function
+    const loaderSmaller: HTMLElement | null = document.getElementById('loader-smaller');
+    loaderSmaller  && loaderSmaller.style ? loaderSmaller.style.display='flex' : null;
+
+    pythonProcess.stdout.on('data', (data: any) => {
       let resp = data.toString().trim();
+
+      if (action === 'save' && resp !== 'False') {
+        // shell.showItemInFolder(resp); --> convert this to opening downloads folder in preferences.json when it is made!!!
+        console.log('placeholder');
+      }
 
       handleResponse(resp, action);
 
-      loaderSmaller.style.display = 'none';
+      loaderSmaller && loaderSmaller.style ? loaderSmaller.style.display = 'none' : null;
 
-      props.setLoading ? props.setLoading(false) : "";
+      props.refreshTableView();
+      forceLoadActionHandler.deactivateForceLoad();
 
     })
   }
   
   // The below is very ugly! 
-  const [isuploading, setIsUploading] = useState(false);
+  const [uploadingNotReprocessing, setUploadingNotReprocessing] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [loadingUpdate, setLoadingUpdate] = useState(0);
-  const [finishedupload, setFinishedUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState({
+  const [updateUploadStateIndicator, setUpdateUploadStateIndicator] = useState(0);
+  const [finishedUploading, setFinishedUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<Record<string, string>>({
     "processed": "progress", 
     "graphs2D": "progress",
     "graphs3D": "progress",
   });
 
-  const reset = () => {
-
-    props.setLoading ? props.setLoading(false) : "";
+  const resetUploadState = () => {
+    forceLoadActionHandler.deactivateForceLoad();
 
     setUploadProgress({
       "processed": "progress", 
@@ -338,16 +294,15 @@ const FileActions = props => {
       "graphs3D": "progress",
     })
 
-    setLoadingUpdate(0);
+    setUpdateUploadStateIndicator(0);
 
     setFinishedUploading(false);
     setUploading(false);
-    setIsUploading(false);
   }
 
-  const handleProcess = (process, action) => {
+  const handleProcess = (process: child.ChildProcess, action: string) => {
 
-    process.stdout.on('data', (data) => {
+    process && process.stdout && process.stdout.on('data', (data) => {
       let resp = data.toString().trim();
       resp = resp.split(":");
 
@@ -355,14 +310,22 @@ const FileActions = props => {
 
       switch (resp[0]) {// this will do for now ... not too inefficient because it's just small stream/stages 
         case "processed":
-          uploadProgress[resp[0]] = "success"; 
+          if (resp[1].startsWith('success')) {
+            uploadProgress[resp[0]] = 'success';
+          } else {
+            uploadProgress[resp[0]] = 'fail';
+          }
           setUploadProgress(uploadProgress);
-          setLoadingUpdate(2); // im going to be honest here and say that I'm not sure why this hard-coded # increment works and a variable + 1 does not
+          setUpdateUploadStateIndicator(2); // im going to be honest here and say that I'm not sure why this hard-coded # increment works and a variable + 1 does not
           break;
         case "graphs2D":
-          uploadProgress[resp[0]] = resp[1];
+          if (resp[1].startsWith('success')) {
+            uploadProgress[resp[0]] = 'success';
+          } else {
+            uploadProgress[resp[0]] = 'fail';
+          }
           setUploadProgress(uploadProgress);
-          setLoadingUpdate(3);
+          setUpdateUploadStateIndicator(3);
           break;
         case "graphs3D":
           if (resp[1].startsWith('success')) {
@@ -373,50 +336,63 @@ const FileActions = props => {
           setUploadProgress(uploadProgress);
           setFinishedUploading(true);
 
-          setLoadingUpdate(4);
+          setUpdateUploadStateIndicator(4);
           break;
         default: 
+          const categories = ['processed', 'graphs2D', 'graphs3D'];
+          categories.forEach((name) => { // set to fail if it is finished but still in 'progress'
+            if (uploadProgress.hasOwnProperty(name) && uploadProgress[name] === 'progress') {
+              uploadProgress[name] = 'fail';
+            }
+          })
+          setUploadProgress(uploadProgress);
+
           setFinishedUploading(true);
-          setLoadingUpdate(6);
+          setUpdateUploadStateIndicator(6);
       }
     });
 
-    process.stdout.on('error', (err) => {
+    process && process.stdout && process.stdout.on('error', (err: string) => {
+      console.log(err);
+
       handleResponse('false', action);
-      reset();
-      setLoadingUpdate(8);
+      resetUploadState();
+      setUpdateUploadStateIndicator(8);
     })
 
   }
 
-  const beforeUpload = (e) => {
-    const file_path = e.target.files[0].path;
-    const file_name = e.target.files[0].name; 
+  const beforeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    //@ts-ignore
+    const file_path = e.target.files && e.target.files[0].path;
+    const file_name = e.target.files && e.target.files[0].name; 
     e.target.value = ''; 
-    if (file_name !== "") {
+    if (file_name && file_name !== "") {
       setUploadFile({...uploadFile, "name": file_name, "path": file_path});
       handleConfirm('upload', file_name);
     }
   }
 
-  const handleUpload = (action = 'upload') => { // this function really needs refactoring... but it does for now!
+  const handleUpload = (action = 'upload') => { 
 
     if (action !== "upload" && action !== "reprocess") return; 
 
-    props.setLoading ? props.setLoading(true) : "";
-    setLoadingUpdate(1);
+    forceLoadActionHandler.activateForceLoad();
+
+    setUpdateUploadStateIndicator(1);
 
     if (action === 'upload') {
-      setIsUploading(true);
+      setUploadingNotReprocessing(true);
       setUploading(true);
-      const pythonProcess = spawn('python3', ['-u', script_path, uploadFile['path'], uploadFile['name']]);
+
+      const pythonProcess = spawn(python3, ['-u', main_script_path, 'csvmat', uploadFile['path'], uploadFile['name']],  {shell: isWindows});
       handleProcess(pythonProcess, action);
 
     } else if (action === 'reprocess') {
-      setIsUploading(false);
+      setUploadingNotReprocessing(false);
       setUploading(true);
-      const args = new Array('-u', action_script_path, chosenFile, action);
-      const pythonProcess = spawn('python3', args);
+      const pythonProcess = spawn(python3, ['-u', main_script_path, 'actions', chosenFile, action], {shell: isWindows});
       handleProcess(pythonProcess, action);
     }
 
@@ -497,16 +473,16 @@ const FileActions = props => {
           <UploadProgress 
             uploadProgress = {uploadProgress} 
             uploading = {uploading} 
-            isuploading={isuploading} 
-            finishedupload={finishedupload}
-            updater = {loadingUpdate}
-            refresh = {props.updater} // 'refresh' is to not interfere with 'updater'
-            reset = {reset}
+            uploadingNotReprocessing = {uploadingNotReprocessing} 
+            finishedUploading ={finishedUploading}
+            updateUploadStateIndicator = {updateUploadStateIndicator}
+            refreshTableView = {props.refreshTableView} 
+            resetUploadState = {resetUploadState}
           />
 
-          <LinearProgress id="loader-smaller" color="primary" style={styles.loadingSmaller}/>
+          <LinearProgress id="loader-smaller" color="primary" className={classes.loadingSmaller}/>
 
-          <div style={styles.buttonCont}>
+          <div className={classes.buttonCont}>
 
             {buttons.map((obj) => {
               return(
@@ -528,7 +504,6 @@ const FileActions = props => {
 
           <input type="file" id="file-upload" style={{display:"none"}} onChange={(e) => {beforeUpload(e)}} ref={upload} accept=".mat, .csv"></input>
 
-          
           <Confirmation 
             open={openConfirm}
             close={handleCloseConfirm}
@@ -538,25 +513,13 @@ const FileActions = props => {
             reject={rejectConfirm}
           />
 
-
-          <Notification 
-            status={notifStatus}
-            show={showNotif}
-            message={notifMsg}
-            setShow={setShowNotif}
-          />
+          <Notification />
 
     </ThemeProvider>
   );
 
 
   
-};
-
-FileActions.propTypes = {
-  style: PropTypes.object,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  children: PropTypes.object
 };
 
 export default FileActions;

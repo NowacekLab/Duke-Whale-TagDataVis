@@ -79,10 +79,15 @@ def calculation(filename, logname, gpsname=''):
     pitch = np.array(data['Pitch'])
     yaw = np.array(data['Heading'])
     depth = np.array(data['Depth']) * -1
+    accel_x = np.array(data['WhaleAccel_X'])
+    accel_y = np.array(data['WhaleAccel_Y'])
+    accel_z = np.array(data['WhaleAccel_Z'])
     length = len(depth)
     v = 2.2 #Initial velocity in xW, yW, zW
     maxVelocityScale = 5 #Calculate Rough Maximum Velocity Possible for Error Catching
     dx = np.zeros([length + 1, 2]) #Initial displacement in x, y
+    #initialize jerk as 3-d 0 vectors
+    j=np.zeros([length , 3])
     fs = max(csv['fs'])
     ts = 1 / fs
     t = np.linspace(0, length * ts, length + 1)
@@ -103,6 +108,9 @@ def calculation(filename, logname, gpsname=''):
             print(i)
             #Calculate new displacement for the current step
             dx[i + 1] = [(dv * np.sin(yaw[i])) * ts + dx[i][0], (dv * np.cos(yaw[i])) * ts + dx[i][1]] #CHECK THIS STEPPPPPPPP
+            #fill in jerk for each step, skip first step & leave it as 0
+            if (i!=0):
+                j[i]=[(accel_x[i]-accel_x[i-1])/fs,(accel_y[i]-accel_y[i-1])/fs,(accel_z[i]-accel_z[i-1])/fs]
 
 #%% GPS File Included, Fit to GPS Data
     if(gpsname != ''):
@@ -169,6 +177,10 @@ def calculation(filename, logname, gpsname=''):
     csv['X Position'] = dx[:-1, 0]
     csv['Y Position'] = dx[:-1, 1]
     csv['Z Position'] = depth
+    
+    csv['Jerk_X'] = j[:,0]
+    csv['Jerk_Y'] = j[:,1]
+    csv['Jerk_Z'] = j[:,2]
     csv.to_csv('.'.join(filename.split('.')[0:-1]) + '_calculations.csv', index = False)
 
 #%% Main

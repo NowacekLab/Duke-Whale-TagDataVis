@@ -1,13 +1,13 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
-  "version": "1.3.1",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "WhaleDataVisualization",
+  "productName": "Whale",
+  "version": "1.0.0",
+  "description": "Whale data visualization software created by Duke University students under direction of Nowacek Lab @ Duke University.",
   "main": "./main.prod.js",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Nowacek Lab @ Duke University",
+    "email": "douglas.nowacek@duke.edu",
+    "url": "https://sites.nicholas.duke.edu/nowacek/about-2/"
   },
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
