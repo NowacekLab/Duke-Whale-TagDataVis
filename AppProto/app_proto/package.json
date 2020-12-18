@@ -56,7 +56,7 @@
     "appId": "org.develar.Whale",
     "asar": false,
     "files": [
-      "server/",
+      "scripts/",
       "dist/",
       "node_modules/",
       "app.html",

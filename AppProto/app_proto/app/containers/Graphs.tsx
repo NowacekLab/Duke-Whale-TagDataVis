@@ -137,7 +137,11 @@ const Graphs = () => {
     const file = localStorage.getItem('selectedGraphFile') ?? "";
     const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
     const spawn = require("child_process").spawn;
-    const python3 = path.resolve(path.join(scripts_path, 'env', 'bin','python3'))
+
+
+    const isWindows = process.platform === "win32";
+    const python3 = isWindows ? path.resolve(path.join(scripts_path, 'windows_env', 'Scripts', 'python.exe')) : 
+                                path.resolve(path.join(scripts_path, 'mac_env', 'bin','python3'));
 
 
     type graphObject = Record<string, string>;
@@ -193,7 +197,7 @@ const Graphs = () => {
 
         loadingSmaller ? loadingSmaller.style.display = 'flex' : null;
 
-        const pythonProcess = spawn(python3, args);
+        const pythonProcess = spawn(python3, args, {shell: isWindows});
 
         pythonProcess.stdout.on('data', (data: any) => {
 
