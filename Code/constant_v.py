@@ -38,8 +38,8 @@ def trackplot(filename):
         height=700,
         scene=dict(
             xaxis_title="X Displacement (m)",
-            yaxis_title="X Displacement (m)",
-            zaxis_title="X Displacement (m)",
+            yaxis_title="Y Displacement (m)",
+            zaxis_title="Z Displacement (m)",
             camera=dict(
                 up=dict(
                     x=0,
@@ -59,4 +59,4 @@ def trackplot(filename):
     fig.write_html('.'.join(filename.split('.')[0:-1]) + '.html')
 
 if __name__ == '__main__':
-    trackplot('../Data/Pm19_136aprh_calculations.csv')
+    trackplot('../Data/gm14_279aprh_calculations.csv')
