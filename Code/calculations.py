@@ -7,7 +7,7 @@
     #Add R2 Metric for time alignment check
     #Add option for manual selection of timezone
     #Make 3d Track mesh
-    #
+    #Add optional input for maxVelocityScale
 #Questions - Time Discrepancy Between GPS and Tag Start Date? Force Fit to GPS_Z as well if Values Don't fit exactly? Or should I do a 1-hour starttime sweep?
 
 #%%
