@@ -358,7 +358,10 @@ const FileActions = (props: FileActionsProps) => {
   }
 
   const beforeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    //@ts-ignore 
     const file_path = e.target.files && e.target.files[0].path;
+    
     const file_name = e.target.files && e.target.files[0].name; 
     e.target.value = ''; 
     if (file_name && file_name !== "") {
