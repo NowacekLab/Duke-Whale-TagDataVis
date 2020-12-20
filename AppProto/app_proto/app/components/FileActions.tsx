@@ -56,7 +56,10 @@ const FileActions = (props: FileActionsProps) => {
   const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
   const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
   const spawn = require("child_process").spawn; 
-  const python3 = path.resolve(path.join(scripts_path, 'env', 'bin','python3'))
+
+  const isWindows = process.platform === "win32";
+  const python3 = isWindows ? path.resolve(path.join(scripts_path, 'windows_env', 'Scripts', 'python.exe')) : 
+                              path.resolve(path.join(scripts_path, 'mac_env', 'bin','python3'));
 
   // Unrelated to above 
   const upload = React.useRef<HTMLInputElement>(null);
@@ -239,16 +242,17 @@ const FileActions = (props: FileActionsProps) => {
     forceLoadActionHandler.activateForceLoad();
 
     if (action === 'delete') {
-      const current_file = localStorage.getItem('selectedGraphFile') || "";
-      if (current_file === chosenFile) {
+      const currentGraphFile = localStorage.getItem('selectedGraphFile') || "";
+      if (currentGraphFile === chosenFile) {
         localStorage.setItem('selectedGraphFile', "");
       }
     }
 
     const args = new Array('-u', main_script_path, 'actions', chosenFile, action);
 
-    const pythonProcess = spawn(python3, args);
+    const pythonProcess = spawn(python3, args, {shell: isWindows});
 
+    //TODO: abstract away this into another function
     const loaderSmaller: HTMLElement | null = document.getElementById('loader-smaller');
     loaderSmaller  && loaderSmaller.style ? loaderSmaller.style.display='flex' : null;
 
@@ -264,6 +268,7 @@ const FileActions = (props: FileActionsProps) => {
 
       loaderSmaller && loaderSmaller.style ? loaderSmaller.style.display = 'none' : null;
 
+      props.refreshTableView();
       forceLoadActionHandler.deactivateForceLoad();
 
     })
@@ -348,7 +353,7 @@ const FileActions = (props: FileActionsProps) => {
     });
 
     process && process.stdout && process.stdout.on('error', (err: string) => {
-      err;
+      console.log(err);
 
       handleResponse('false', action);
       resetUploadState();
@@ -382,14 +387,13 @@ const FileActions = (props: FileActionsProps) => {
       setUploadingNotReprocessing(true);
       setUploading(true);
 
-      const pythonProcess = spawn(python3, ['-u', main_script_path, 'csvmat', uploadFile['path'], uploadFile['name']]);
+      const pythonProcess = spawn(python3, ['-u', main_script_path, 'csvmat', uploadFile['path'], uploadFile['name']],  {shell: isWindows});
       handleProcess(pythonProcess, action);
 
     } else if (action === 'reprocess') {
       setUploadingNotReprocessing(false);
       setUploading(true);
-      const args = new Array('-u', main_script_path, 'actions', chosenFile, action);
-      const pythonProcess = spawn(python3, args);
+      const pythonProcess = spawn(python3, ['-u', main_script_path, 'actions', chosenFile, action], {shell: isWindows});
       handleProcess(pythonProcess, action);
     }
 
