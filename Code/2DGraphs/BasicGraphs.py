@@ -7,6 +7,9 @@ import csv
 df = pd.read_csv('mn17_005aprh25.mat.csv') 
 
 startIndex = 0
+while df['Heading'][startIndex]==0:
+    startIndex += 1
+
 endIndex = len(df)
 
 xAxis = list(range(startIndex, endIndex))
