@@ -69,6 +69,7 @@ def logProcessStarttime(logname):
         print('Log filetype error: only .xml and .txt expected')
         return 0
     return startTime
+    
 
 #Calculation of X-Y-Z Position with GPS Fitting and Appending to .csv
 def calculation(filename, logname, gpsname=''):

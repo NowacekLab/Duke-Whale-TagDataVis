@@ -11,6 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+import UploadDialogCont from "./UploadDialogCont";
 import UploadProgress from './UploadProgress';
 import Confirmation from "./Confirmation";
 import {useDispatch} from 'react-redux';
@@ -48,6 +49,9 @@ type FileActionsProps = {
 const FileActions = (props: FileActionsProps) => {
   const classes = useStyles();
   const isMountedRef = useIsMountedRef();
+  const dispatch = useDispatch();
+  const notifActionHandler = new notifsActionsHandler(dispatch);
+  const forceLoadActionHandler = new forceLoadActionsHandler(dispatch);
 
   // **TO INTERACT WITH PYTHON**
   const path = require('path');
@@ -58,13 +62,51 @@ const FileActions = (props: FileActionsProps) => {
   const spawn = require("child_process").spawn; 
 
   const isWindows = process.platform === "win32";
-  const python3 = isWindows ? path.resolve(path.join(scripts_path, 'windows_env', 'Scripts', 'python.exe')) : 
-                              path.resolve(path.join(scripts_path, 'mac_env', 'bin','python3'));
+  const python3 = path.resolve(path.join(scripts_path, 'main', 'main'));
+  
+  
+  // isWindows ? path.resolve(path.join(scripts_path, 'windows_env', 'Scripts', 'python.exe')) : 
+  //                             path.resolve(path.join(scripts_path, 'mac_env', 'bin','python3'));
 
-  // Unrelated to above 
-  const upload = React.useRef<HTMLInputElement>(null);
   const [chosenFile, setChosenFile] = useState<string>(""); // this is table file selectedFile
-  const [uploadFile, setUploadFile] = useState<any>({}); // this is the file to be uploaded, type is more Record<string, string>
+
+
+  type uploadInfoObj = {
+    "dataFileName": string, 
+    "dataFilePath": string, 
+    "logFileName": string,
+    "logFilePath": string, 
+    "gpsFileName": string,
+    "gpsFilePath": string, 
+  }
+  const defaultUploadInfoObj = {
+    "dataFileName": "",
+    "dataFilePath": "",
+    "logFileName": "",
+    "logFilePath": "",
+    "gpsFileName": "",
+    "gpsFilePath": ""
+  }
+  const [uploadInfoObj, setUploadInfoObject] = useState<uploadInfoObj>(defaultUploadInfoObj);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const handleUploadDialogClose = () => {
+    setShowUploadDialog(false);
+    cancelFileUpload();
+  }
+  function handleFileUpload() {
+    setShowUploadDialog(true);
+    forceLoadActionHandler.activateForceLoad();
+  }
+  function beginProcessing(begin: boolean) {
+    if (!begin) cancelFileUpload();
+    else handleConfirm("upload", uploadInfoObj.dataFileName);
+  }
+  function cancelFileUpload() {
+    forceLoadActionHandler.deactivateForceLoad();
+    setUploadInfoObject(defaultUploadInfoObj);
+    setShowUploadDialog(false);
+  }
+
 
   const color = createMuiTheme({
     palette: {
@@ -111,7 +153,7 @@ const FileActions = (props: FileActionsProps) => {
         break;
       case "upload":
         handleUpload('upload');
-        setUploadFile({});
+        cancelFileUpload();
         break;
       case "reprocess":
         handleUpload('reprocess');
@@ -123,7 +165,7 @@ const FileActions = (props: FileActionsProps) => {
   }
   const rejectConfirm = () => {
     if (pendingAction === 'upload') {
-      setUploadFile({});
+      cancelFileUpload();
     }
     handleCloseConfirm();
     setPendingAction("");
@@ -147,7 +189,7 @@ const FileActions = (props: FileActionsProps) => {
   const handleConfirm = (action: string, uploadFileName?: string) => {
 
     setPendingAction(action);
-
+    
     if (action === 'upload') {
       if (fileExists(uploadFileName ?? "")) {
         const obj = confirmations['upload-exists'];
@@ -172,10 +214,6 @@ const FileActions = (props: FileActionsProps) => {
       setChosenFile(props.selectedFile);
     }
   }, [props.selectedFile, props.fileRows])
-
-  const dispatch = useDispatch();
-  const notifActionHandler = new notifsActionsHandler(dispatch);
-  const forceLoadActionHandler = new forceLoadActionsHandler(dispatch);
 
   const showSuccessMsg = (msg: string) => {
     notifActionHandler.showSuccessNotif(msg);
@@ -232,10 +270,6 @@ const FileActions = (props: FileActionsProps) => {
   function handleSave() {
     handleAction('save');
   }
-  function handleFileUpload() {
-    upload && upload.current ? upload.current.click() : null;
-  }
-
   // Actual executors...
   function handleAction(action: string) {
 
@@ -308,7 +342,7 @@ const FileActions = (props: FileActionsProps) => {
 
       console.log(resp);
 
-      switch (resp[0]) {// this will do for now ... not too inefficient because it's just small stream/stages 
+      switch (resp[0]) {
         case "processed":
           if (resp[1].startsWith('success')) {
             uploadProgress[resp[0]] = 'success';
@@ -316,7 +350,7 @@ const FileActions = (props: FileActionsProps) => {
             uploadProgress[resp[0]] = 'fail';
           }
           setUploadProgress(uploadProgress);
-          setUpdateUploadStateIndicator(2); // im going to be honest here and say that I'm not sure why this hard-coded # increment works and a variable + 1 does not
+          setUpdateUploadStateIndicator(2); 
           break;
         case "graphs2D":
           if (resp[1].startsWith('success')) {
@@ -362,19 +396,6 @@ const FileActions = (props: FileActionsProps) => {
 
   }
 
-  const beforeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-    //@ts-ignore 
-    const file_path = e.target.files && e.target.files[0].path;
-    
-    const file_name = e.target.files && e.target.files[0].name; 
-    e.target.value = ''; 
-    if (file_name && file_name !== "") {
-      setUploadFile({...uploadFile, "name": file_name, "path": file_path});
-      handleConfirm('upload', file_name);
-    }
-  }
-
   const handleUpload = (action = 'upload') => { 
 
     if (action !== "upload" && action !== "reprocess") return; 
@@ -387,7 +408,11 @@ const FileActions = (props: FileActionsProps) => {
       setUploadingNotReprocessing(true);
       setUploading(true);
 
-      const pythonProcess = spawn(python3, ['-u', main_script_path, 'csvmat', uploadFile['path'], uploadFile['name']],  {shell: isWindows});
+      const {dataFileName, dataFilePath, logFileName, logFilePath, gpsFileName, gpsFilePath} = uploadInfoObj;
+      const pythonProcess = spawn(python3, ['csvmat', 
+                                            dataFilePath, dataFileName, 
+                                            logFilePath, logFileName,
+                                            gpsFilePath, gpsFileName]);
       handleProcess(pythonProcess, action);
 
     } else if (action === 'reprocess') {
@@ -481,6 +506,13 @@ const FileActions = (props: FileActionsProps) => {
             resetUploadState = {resetUploadState}
           />
 
+          <UploadDialogCont 
+            showUploadDialog={showUploadDialog}
+            setUploadInfoObject={setUploadInfoObject}
+            beginProcessing={beginProcessing}
+            handleUploadDialogClose={handleUploadDialogClose}
+          />
+
           <LinearProgress id="loader-smaller" color="primary" className={classes.loadingSmaller}/>
 
           <div className={classes.buttonCont}>
@@ -503,7 +535,7 @@ const FileActions = (props: FileActionsProps) => {
 
           </div>
 
-          <input type="file" id="file-upload" style={{display:"none"}} onChange={(e) => {beforeUpload(e)}} ref={upload} accept=".mat, .csv"></input>
+
 
           <Confirmation 
             open={openConfirm}

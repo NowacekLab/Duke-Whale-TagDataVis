@@ -1,5 +1,6 @@
 """
-3D GRAPH --> HTML HANDLER 
+Generating 3D graphs, called AFTER 2D Graphs
+Precalculations are required, assumed that they are calculated beforehand 
 """
 from typing import List, Tuple
 from scipy.io import loadmat
@@ -21,7 +22,7 @@ import matplotlib.pyplot as plt
 from .graphers3D import * 
 import helper_json
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from settings import BASE_DIR
 GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
 PRECALCS_DIR = os.path.join(GRAPHS_DIR, 'precalcs')
 GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')

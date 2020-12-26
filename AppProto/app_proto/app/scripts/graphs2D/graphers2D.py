@@ -1,6 +1,5 @@
 """
-MAIN 2D GRAPHERS
-MODULE USED IN graph --> HTML
+2D Graphers called in html2D.py
 """
 from plotly import graph_objects as go
 from plotly import express as px

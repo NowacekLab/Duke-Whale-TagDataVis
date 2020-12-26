@@ -1,6 +1,5 @@
 """
-MAIN 3D GRAPHERS
-USED IN GRAPH --> HTML 
+3D Graphers called in html3D.py 
 """
 
 from scipy.io import loadmat

@@ -13,7 +13,8 @@ from actions import get_path
 from graphs2D import html2D
 from graphs3D import html3D
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+from settings import BASE_DIR
+
 GRAPHS_DIR = os.path.join(BASE_DIR, 'user_graphs')
 GRAPHS_2D_DIR = os.path.join(GRAPHS_DIR, '2D')
 GRAPHS_3D_DIR = os.path.join(GRAPHS_DIR, '3D')
@@ -108,34 +109,7 @@ def main(file_=None, file_path=None, action=None) -> bool:
         if action == "generate": # generate all graphs
             generate_graphs(file_, file_path)
             return "True"
-        elif action == "verify":
-            if not len(sys.argv) > 5:
-                raise Exception("'verify' command without graph_type.")
-            graph_type = sys.argv[5] # could add extra verification that graph_type is valid
-            return graphs_exist(file_, graph_type) # graphsMixed, graphs2D, graphs3D
 
     except Exception as e:
         print(e)
         sys.stdout.flush()
-
-def test(file_, file_path):
-    """
-    This test() is super important // it's the only way to test the graphers/html .py
-    """
-
-    # return html3D.test(file_, file_path)
-    return html3D.test2()
-
-if __name__ == "__main__":
-    # print(main())
-    # sys.stdout.flush()
-
-    # test("", "")
-    # file_test = 'eg01_207aprh.csv'
-    # file_path_test = os.path.join(BASE_DIR, 'user_files', 'eg01_207aprh.csv') # cross-platform
-    # print(test(file_test, file_path_test))
-    # print(main(file_test, file_path_test, 'generate'))
-
-    file_ = "mn17_005aprh25.csv"
-    file_path = os.path.join(FILE_DIR, file_)
-    print(main(file_, file_path, 'generate'))
