@@ -8,6 +8,7 @@ MODULE_NAME = "pandasHelper"
 genericLog = logDecorator.genericLog(MODULE_NAME)
 
 PandasDataFrame = Any 
+MatFileData = Any 
 
 @genericLog
 def getPandasDataFrameFromMatData(matFileData: MatFileData) -> PandasDataFrame:

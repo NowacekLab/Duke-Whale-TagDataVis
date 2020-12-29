@@ -11,10 +11,9 @@ import shutil
 from typing import Callable 
 
 # PACKAGE
-import graphs 
 from private.updates import updates 
 from private.actions import upload
-
+from private.helpers import filesHelper, kwargsHelper
 from private.logs import logDecorator
 
 MODULE_NAME = "actions"
@@ -71,7 +70,7 @@ def get_download_path():
     else:
         return os.path.join(os.path.expanduser('~'), 'downloads')
 
-def save(path_: str, file_: str, parent_file: str):
+def __handleSave(cmdArgs: dict):
     """
     Saves the file located at the path_ parameter
     to the downloads directory
@@ -79,91 +78,94 @@ def save(path_: str, file_: str, parent_file: str):
     ** For now it is hard-coded to Downloads/data_visualization, 
     should be changed to allow for user settings ** 
     """
-    try: 
-        downloads_dir = get_download_path() 
-        proper_dir = os.path.join(downloads_dir, 'data_visualization')
-        if not os.path.isdir(proper_dir):
-            os.mkdir(proper_dir)
-        if file_.endswith('html') and parent_file: 
-            parent_dir = os.path.join(proper_dir, parent_file)
-        else: 
-            parent_dir = os.path.join(proper_dir, file_)
-        if not os.path.isdir(parent_dir):
-            os.mkdir(parent_dir)
-        file_path = os.path.join(parent_dir, file_)
-        shutil.copyfile(path_, file_path)
+    
+    return 
+    # try: 
+    #     downloads_dir = get_download_path() 
+    #     proper_dir = os.path.join(downloads_dir, 'data_visualization')
+    #     if not os.path.isdir(proper_dir):
+    #         os.mkdir(proper_dir)
+    #     if file_.endswith('html') and parent_file: 
+    #         parent_dir = os.path.join(proper_dir, parent_file)
+    #     else: 
+    #         parent_dir = os.path.join(proper_dir, file_)
+    #     if not os.path.isdir(parent_dir):
+    #         os.mkdir(parent_dir)
+    #     file_path = os.path.join(parent_dir, file_)
+    #     shutil.copyfile(path_, file_path)
 
-        return True 
-    except: 
-        return False 
+    #     return True 
+    # except: 
+    #     return False 
 
-def edit(path_: str, *args, **kwargs):
+def __handleEdit(cmdArgs: dict):
     """
     Opens the file located at the path_ parameter
     with the default application for the file 
     """
+    return 
+    # if platform.system() == "Windows":
+    #     os.startfile(path_)
+    # elif platform.system() == "Darwin":
+    #     subprocess.Popen(['open', path_])
+    # else: 
+    #     subprocess.Popen(['xdg-open', path_])
+    # return True 
 
-    if platform.system() == "Windows":
-        os.startfile(path_)
-    elif platform.system() == "Darwin":
-        subprocess.Popen(['open', path_])
-    else: 
-        subprocess.Popen(['xdg-open', path_])
-    return True 
-
-def delete(path_: str, _, file_: str, *args, **kwargs):
+def __handleDelete(cmdArgs: dict):
     """
     Finds and deletes file located at path_ parameter 
     """
-    try: 
-        html_ = file_.endswith('html')
-        os.remove(path_)
-        updates.main(html_, path_)
-        return True 
-    except: 
-        return False 
+    return
+    # try: 
+    #     html_ = file_.endswith('html')
+    #     os.remove(path_)
+    #     updates.main(html_, path_)
+    #     return True 
+    # except: 
+    #     return False 
 
-def reprocess(file_path: str, file_: str, *args, **kwargs):
+def __handleReprocess(cmdArgs: dict):
     """
     Reprocesses graphs for a .csv file
     """
-    try: 
-        graphs.main(file_=file_, file_path=file_path, action='generate')
-        return True 
-    except: 
-        return False 
-    
-@logDecorator.genericLog(MODULE_NAME)
-def __checkUploadKwargs(cmdArgs: dict):
-    uploadKwargs = settings.ACTION_MODULE_UPLOAD_KWARGS
-    kwargsCheck.allKwargsExist(cmdArgs, uploadKwargs)
+    return 
+    # try: 
+    #     graphs.main(file_=file_, file_path=file_path, action='generate')
+    #     return True 
+    # except: 
+    #     return False 
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog 
+def __addRemainingUploadFileInfo(fileInfo: dict) -> dict:
+    
+    fileInfo = updates.refreshFileInfo(fileInfo)
+    return fileInfo 
+    
+@genericLog 
 def __handleUpload(cmdArgs: dict):
     
-    __checkUploadKwargs(cmdArgs)
-    upload.uploadFile(cmdArgs)
-
-    # ! not done yet
-    
-
-@logDecorator.genericLog(MODULE_NAME)
+    finalUploadArgs = upload.uploadFile(cmdArgs)
+    fileInfo = __addRemainingUploadFileInfo(finalUploadArgs)
+    filesHelper.addNewFileInfoEntry(fileInfo)
+        
+@genericLog
 def __getActionExec(action: str) -> Callable: 
     actionModules = {
         "upload": __handleUpload,
-        "reprocess":,
-        "edit":,
-        "save":,    
+        # "reprocess":,
+        # "edit":,
+        # "save":,    
     }
     
     actionExec = actionModules[action]
     
     return actionExec
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def handleAction(cmdArgs: dict): 
     
-    ACTION_KWARG = settings.ACTION_KWARG
+    ACTION_KWARG = kwargsHelper.getActionKwarg()
     
     if not ACTION_KWARG in cmdArgs: 
         raise Exception(f"Missing key word: {ACTION_KWARG}")

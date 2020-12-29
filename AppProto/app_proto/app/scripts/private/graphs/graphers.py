@@ -1,4 +1,4 @@
-from typing import List, Tuple, Callable 
+from typing import List, Tuple, Callable, Mapping
 
 from private.graphs.graphs2D import graphers2D 
 from private.graphs.graphs3D import graphers3D 
@@ -17,7 +17,7 @@ GRAPHING_FUNCTION = Callable
 GRAPH_NAME = str
 GRAPHER_TUP = Tuple[GRAPHING_FUNCTION, GRAPH_NAME]
 GRAPHER_TUPS = List[GRAPHER_TUP]
-GRAPHERS_DICT = dict[GRAPHER_KWARG, GRAPHER_TUPS]
+GRAPHERS_DICT = Mapping[GRAPHER_KWARG, GRAPHER_TUPS]
 
 @genericLog
 def __addGraphTypeMarkerToGrapherTups(grapherTups: GRAPHER_TUPS, graphType: str) -> GRAPHER_TUPS: 

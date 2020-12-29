@@ -1,10 +1,10 @@
-    """[Handles updates from deletion or refreshing basic info in files.json]
+"""[Handles updates from deletion or refreshing basic info in files.json]
 
-    PUBLIC MODULES:
-        - updateDeletedFileInfo
-        - refreshAllFileInfo
-        - refreshFileInfo
-    """
+PUBLIC MODULES:
+    - updateDeletedFileInfo
+    - refreshAllFileInfo
+    - refreshFileInfo
+"""
 
 import os 
 import shutil
@@ -16,10 +16,10 @@ from typing import Callable, Collection, Any
 import settings 
 from private.helpers import filesHelper, kwargsHelper, pathsHelper, keysHelper, othersHelper
 
-from logs import logDecorator
+from private.logs import logDecorator
 
 MODULE_NAME = "updates.py"
-genericLog = logs.logDecorator(MODULE_NAME)
+genericLog = logDecorator.genericLog(MODULE_NAME)
 
 # TYPES 
 byteMemory = Any
@@ -47,7 +47,7 @@ def __getFileMemoryInFormat(filePath: str) -> str:
     return formattedFileMemory
     
 @genericLog
-def __updateFileMemory(currFileInfo: dict) -> dict:
+def updateFileMemory(currFileInfo: dict) -> dict:
     
     CSV_PATH_KEY = keysHelper.getCSVPathKey()
     FILE_SIZE_KEY = keysHelper.getFileSizeKey()
@@ -55,8 +55,12 @@ def __updateFileMemory(currFileInfo: dict) -> dict:
     currFileInfoCopy = currFileInfo.copy()
     
     CSVFilePath = currFileInfo[CSV_PATH_KEY]
-    CSVFileStandardMemory = __getFileMemoryInFormat(CSVFilePath)    
-    currMemory = currFileInfo[FILE_SIZE_KEY]
+    CSVFileStandardMemory = __getFileMemoryInFormat(CSVFilePath)   
+    
+    currMemory = ""
+    if FILE_SIZE_KEY in currFileInfo: 
+        currMemory = currFileInfo[FILE_SIZE_KEY]
+        
     if (currMemory != CSVFileStandardMemory):
         currFileInfoCopy[FILE_SIZE_KEY] = CSVFileStandardMemory
     
@@ -76,7 +80,7 @@ def __getFormattedFileLocalTime(filePath: str) -> str:
     return formattedFileTime
 
 @genericLog
-def __updateFileDateModified(currFileInfo: dict):
+def updateFileDateModified(currFileInfo: dict):
     
     CSV_PATH_KEY = keysHelper.getCSVPathKey()
     FILE_MODIFY_DATE_KEY = keysHelper.getFileModifyDateKey()
@@ -85,30 +89,39 @@ def __updateFileDateModified(currFileInfo: dict):
     
     CSVFilePath = currFileInfo[CSV_PATH_KEY]
     formattedFileTime = __getFormattedFileLocalTime(CSVFilePath)
-    currFileTime = currFileInfo[FILE_MODIFY_DATE_KEY]
+    
+    currFileTime = ""
+    if FILE_MODIFY_DATE_KEY in currFileInfo: 
+        currFileTime = currFileInfo[FILE_MODIFY_DATE_KEY]
+        
     if (formattedFileTime != currFileTime):
         currFileInfoCopy[FILE_MODIFY_DATE_KEY] = formattedFileTime 
     
     return currFileInfoCopy
-    
-@genericLog
-def refreshFileInfo(CSVFileName: str, allFileInfo: dict):
-    
-    currFileInfo = allFileInfo[CSVFileName]
+
+@genericLog 
+def refreshFileInfo(currFileInfo: dict) -> dict: 
     UPDATERS = [__updateFileDateModified, __updateFileMemory]
-    
     for updater in UPDATERS: 
         currFileInfo = updater(currFileInfo)
+    return currFileInfo 
+    
+@genericLog
+def refreshAndSaveFileInfo(CSVFileName: str, allFileInfo: dict):
+    
+    currFileInfo = allFileInfo[CSVFileName]
+    
+    currFileInfo = refreshFileInfo(currFileInfo)
     
     allFileInfo[CSVFileName] = currFileInfo 
     
     files.saveFileInfo(currFileInfo) 
     
 @genericLog
-def refreshAllFileInfo():
+def refreshAndSaveAllFileInfo():
     allFileInfo = files.getAllFileInfo()
     for CSVFileName in allFileInfo: 
-        refreshFileInfo(CSVFileName)
+        refreshAndSaveFileInfo(CSVFileName)
     
 @genericLog
 def __getUpdatedAllFileInfoCSV(CSVFileName: str, allFileInfo: dict) -> dict: 
@@ -117,7 +130,7 @@ def __getUpdatedAllFileInfoCSV(CSVFileName: str, allFileInfo: dict) -> dict:
     allFileInfoCopy.pop(CSVFileName)
     return allFileInfoCopy
     
-@genericLog:
+@genericLog
 def __getGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     graphFilePaths = [] 

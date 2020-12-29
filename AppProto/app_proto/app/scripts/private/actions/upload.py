@@ -2,9 +2,15 @@ from typing import Tuple, Callable
 from private.logs import logDecorator
 from private.actions import csvmat, precalcs
 from private.helpers import pathsHelper, keysHelper, kwargsHelper
+from private.graphs import graphs 
 
 MODULE_NAME = "upload.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)
+
+@genericLog 
+def __handleGeneratingGraphs(uploadArgs: dict) -> dict: 
+    uploadArgs = graphs.handleGenerateAllGraphs(uploadArgs)
+    return uploadArgs
 
 @genericLog
 def __handlePreCalculate(uploadArgs: dict) -> dict: 
@@ -66,18 +72,20 @@ def __handleProcessDataToCSV(uploadArgs: dict):
     return uploadArgs
     
 @genericLog
-def uploadFile(uploadArgs: dict):    
+def uploadFile(uploadArgs: dict) -> dict:    
     
     uploadArgs = __handleProcessDataToCSV(uploadArgs)
     uploadArgs = __saveNeededFiles(uploadArgs)
     uploadArgs = __handlePreCalculate(uploadArgs)
+    uploadArgs = __handleGeneratingGraphs(uploadArgs)
     
+    return uploadArgs 
     
 # * 1. process data file to CSV
 # * 2. save log file locally
 # * 3. save gps file locally 
 # * 4. precalculate
-# 5. generate graphs 
+# * 5. generate graphs 
 # 6. SAVE INFORMATION 
 # -- IF IT GOES WRONG, DELETE EVERYTHING 
 

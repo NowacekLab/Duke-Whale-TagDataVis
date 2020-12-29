@@ -8,7 +8,7 @@ from scipy.io import loadmat
 import sys
 import time
 import json
-from typing import Tuple 
+from typing import Tuple, Any
 
 # PACKAGE
 from private.updates import updates 
@@ -25,8 +25,7 @@ MatFileData = Any
 @genericLog
 def __parseMatFileData(data: MatFileData) -> dict:
 
-    csv_header =
-    {
+    csv_header = {
         'fs':'fs',
         'p':'Depth',
         'head':'Heading',

@@ -3,7 +3,7 @@ import sys
 import time
 import json
 from multiprocessing import Process 
-from typing import Callable, Any, Tuple
+from typing import Callable, Any, Tuple, List, Mapping
 
 # PACKAGE 
 from private.graphs import graphers 
@@ -108,7 +108,7 @@ def __getDataFilePandasDataFrame(graphKwargs: dict) -> PandasDataFrame:
 GRAPHER_KWARG = str 
 GRAPHER_INPUTS = List[Any]
 @genericLog
-def __getGrapherKwargToInputs(graphKwargs: dict) -> dict[GRAPHER_KWARG, GRAPHER_INPUTS]: 
+def __getGrapherKwargToInputs(graphKwargs: dict) -> Mapping[GRAPHER_KWARG, GRAPHER_INPUTS]: 
     
     DATA_AXIS_INDICES_KWARG = kwargsHelper.getGrapherDataAxisIndicesKwarg()
     PRECALC_AXIS_INDICES_KWARG = kwargsHelper.getGrapherPreCalcAxisIndicesKwarg()
@@ -150,9 +150,8 @@ def __createGrapherProcesses(graphKwargs: dict, grapherKwargToInputs: dict) -> L
         for grapherTuple in grapherTuples:
             process = Process(target=__handleGraphCreation, args=(grapherTuples, grapherInputs, dataFileName))
             all_processes.append(process)
-    
-    # ! remember to create a central path creator near the start of the application
-        # ! all in 'files' dir 
+            
+    return all_processes 
             
 @genericLog
 def __generateAllGraphs(graphKwargs: dict):
@@ -210,34 +209,40 @@ def __getFoundHTMLFiles(fileGraphDir: str) -> dict:
     return foundHTMLFiles 
 
 @genericLog 
-def __get3DGraphHTMLFiles() -> dict: 
-
+def __getGraphKeyToDirPathMapping() -> dict: 
+    
+    graphKeyToDirPathMapping = {}
+    
+    GRAPH_2D_KEY = keysHelper.getGraph2DKey()
+    GRAPHS_2D_DIR_PATH = pathsHelper.getGraphs2DDirPath()
+    GRAPH_3D_KEY = keysHelper.getGraph3DKey()
     GRAPHS_3D_DIR_PATH = pathsHelper.getGraphs3DDirPath()
     
-    foundHTMLFiles = __getFoundHTMLFiles(GRAPHS_3D_DIR_PATH)
+    graphKeyToDirPathMapping[GRAPH_2D_KEY] = GRAPHS_2D_DIR_PATH
+    graphKeyToDirPathMapping[GRAPH_3D_KEY] = GRAPHS_3D_DIR_PATH
     
-    return foundHTMLFiles
-    
-
-@genericLog 
-def __get2DGraphHTMLFiles() -> dict: 
-    
-    GRAPHS_2D_DIR_PATH = pathsHelper.getGraphs2DDirPath()
-
-    foundHTMLFiles = __getFoundHTMLFiles(GRAPHS_2D_DIR_PATH)
-    
-    return foundHTMLFiles 
+    return graphKeyToDirPathMapping    
         
 @genericLog 
 def __addGeneratedGraphs(graphKwargs: dict): 
     
     graphKwargsCopy = graphKwargs.copy() 
-    fileGraphDirs = __getFileGraphDirsFromKwargs()
     
-                
+    graphKeyToDirPathMapping = __getGraphKeyToDirPathMapping()
+    
+    for graphKey in graphKeyToDirPathMapping: 
+        
+        graphDirPath = graphKeyToDirPathMapping[graphKey]
+        
+        HTMLFilesAtDir = __getFoundHTMLFiles(graphDirPath)
+        
+        graphKwargsCopy[graphKey] = HTMLFilesAtDir 
+    
+    return graphKwargsCopy
+    
 @genericLog
 def handleGenerateAllGraphs(graphKwargs: dict):
     __createGraphDirs(graphKwargs)
     __generateAllGraphs(graphKwargs)
     graphKwargs = __addGeneratedGraphs(graphKwargs)
-    
+    return graphKwargs 

@@ -1,8 +1,8 @@
-    """[Single entrypoint for executable packaging]
+"""[Single entrypoint for executable packaging]
 
-    PUBLIC MODULES:
-        - main
-    """
+PUBLIC MODULES:
+    - main
+"""
 
 import sys 
 
@@ -14,11 +14,11 @@ MODULE_NAME = "main.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)
 
 __MODULES = {
-    "actions": actions.main, 
+    "actions": actions.handleAction, 
 }
 
 @genericLog
-def __parseCMDLineArg(cmdLineArg: str) -> dict:
+def _parseCMDLineArg(cmdLineArg: str) -> dict:
     """
     Parses the command line argument 
     """
@@ -27,15 +27,23 @@ def __parseCMDLineArg(cmdLineArg: str) -> dict:
 
     cmdArgs = {} 
 
-    keyValPairs = cmdLineArg.split("-")
+    keyValPairs = cmdLineArg.split(";-;")
     for keyValPair in keyValPairs: 
-        key, val = keyValPair.split(":")
+        keyValPairLst = keyValPair.split(":")
+        if len(keyValPairLst) == 0: 
+            pass 
+        elif len(keyValPairLst) == 1: 
+            val = "" 
+            key = keyValPairLst[0]
+        else: 
+            key, val = keyValPairLst
+        
         cmdArgs[key] = val 
     
     return cmdArgs 
 
 @genericLog
-def __getModule(cmdArgs: dict) -> Callable: 
+def _getModule(cmdArgs: dict) -> Callable: 
     
     # ! hard coded 
     if not "moduleName" in cmdArgs: 
@@ -48,12 +56,12 @@ def __getModule(cmdArgs: dict) -> Callable:
     return module 
 
 @genericLog
-def __handleModuleExec(cmdArgs: dict) -> Any:
+def _handleModuleExec(cmdArgs: dict) -> Any:
     """
     Executes appropriate module 
     """
 
-    moduleExec = __getModule(cmdArgs) 
+    moduleExec = _getModule(cmdArgs) 
     
     return moduleExec() 
 
@@ -63,9 +71,12 @@ def main() -> Any:
         raise Exception(f"There must be exactly 2 cmd line args given. Was given {len(sys.argv)}. Check conventions.md")
 
     cmdLineArg = sys.argv[1]
-    cmdArgs = __parseCMDLineArg(cmdLineArg) 
+    cmdArgs = _parseCMDLineArg(cmdLineArg) 
     
-    return __handleModuleExec(cmdArgs)
+    return _handleModuleExec(cmdArgs)
+
+    # ! remember to create a central path creator near the start of the application
+        # ! all in 'files' dir 
 
 if __name__ == "__main__":
     print(main())

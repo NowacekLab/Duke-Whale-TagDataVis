@@ -6,7 +6,7 @@ import pandas as pd
 import xml.dom.minidom 
 import re 
 
-from typing import Tuple, Callable
+from typing import Tuple, Callable, Any
 from private.helpers import keysHelper, pathsHelper, kwargsHelper
 from private.logs import logDecorator
 

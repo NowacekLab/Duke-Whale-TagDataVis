@@ -1,8 +1,8 @@
-    """[Holds global settings vars.]
-    
-    NOTE: rarely, if at all, accessed directly from here except by helpers 
-    
-    """
+"""[Holds global settings vars.]
+
+NOTE: rarely, if at all, accessed directly from here except by helpers 
+
+"""
     
 import os 
 
@@ -57,12 +57,17 @@ LOG_PATH_KEY = LOG_FILE_PATH_KWARG
 CSV_NAME_KEY = "CSVFileName"
 CSV_PATH_KEY = "CSVFilePath"
 PRECALC_KEY = "PrecalculationsPath"
+GRAPH_2D_KEY = 'graphs2D'
+GRAPH_3D_KEY = 'graphs3D'
 FILE_SIZE_KEY = "size"
 FILE_MODIFY_DATE_KEY = "modified"
 
-# graphs2D / graphs3D : {HTMLFileName : HTMLFilePath}
-GRAPH_2D_KEY 'graphs2D'
-GRAPH_3D_KEY = 'graphs3D'
+ALL_FILE_INFO_KEYS = [ORIG_DATAFILE_PATH_KEY, ORIG_DATAFILE_NAME_KEY,
+                        GPS_NAME_KEY, GPS_PATH_KEY,
+                        LOG_NAME_KEY, LOG_PATH_KEY,
+                        CSV_NAME_KEY, CSV_PATH_KEY,
+                        PRECALC_KEY,
+                        GRAPH_2D_KEY, GRAPH_3D_KEY]
 
 # MAIN PATH KEYS -- excludes ORIG_PATH_KEY
 PATH_KEYS = [CSV_PATH_KEY, GPS_PATH_KEY, LOG_PATH_KEY, PRECALC_KEY]

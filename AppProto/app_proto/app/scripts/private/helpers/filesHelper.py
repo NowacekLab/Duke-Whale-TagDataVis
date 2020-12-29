@@ -7,8 +7,9 @@ import os
 import shutil
 
 from private.logs import logDecorator
+from private.helpers import keysHelper
 from typing import Callable 
-import settings 
+
 
 MODULE_NAME = "helper_json.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)
@@ -99,6 +100,23 @@ def JSON_create(filePath: str, info: dict) -> bool:
 @genericLog
 def saveFileInfo(info: dict): 
     return JSON_create(FILE_INFO_PATH, info) 
+
+@genericLog 
+def addNewFileInfoEntry(newFileInfo: dict): 
+    """[Adds the new file info using the data file's CSV_NAME as the key in files.json]
+
+    Args:
+        newFileInfo (dict): [the key:value data of the new added file]
+    """
+    
+    currFileInfo = getAllFileInfo()
+    
+    CSV_NAME_KEY = keysHelper.getCSVNameKey()
+    CSV_NAME = newFileInfo[CSV_NAME_KEY]
+    
+    currFileInfo[CSV_NAME] = newFileInfo 
+    
+    saveFileInfo(currFileInfo)
 
 @genericLog
 def __checkFileEndingGeneric(file_: str, ending: str) -> bool:

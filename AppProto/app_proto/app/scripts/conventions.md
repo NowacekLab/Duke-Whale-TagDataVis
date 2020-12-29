@@ -23,7 +23,7 @@
 - **Command line arguments sent to the single point of entry MUST adhere to one standard form**
 
   - Must be a single string
-  - Key-value args separated by "-"
+  - Key-value args separated by ";-;"
   - Key-value args joined as key:value
 - Unless otherwise needed by the JavaScript (e.g. for FileActions and UploadProgress components extra 'prints' are needed)...
   - The only form of communication will be "Error" (see Error Handling above) if there is an error or another form communicated by a function
@@ -40,4 +40,12 @@
   * specifies name of the module without the .py
     * available modules:
       * 'actions' -- actions.py
-* 
+* FOR UPLOADING 
+  * '(PYTHON_EXEC) main.py actions CMD_LINE_SINGLE_STRING'
+    * CMD_LINE_SINGLE_STRING must have... (**constants below in settings.py**)
+      * DATA_FILE_NAME_KWARG 
+      * DATA_FILE_PATH_KWARG
+      * LOG_FILE_NAME_KWARG
+      * LOG_FILE_PATH_KWARG 
+      * GPS_FILE_NAME_KWARG 
+      * GPS_FILE_PATH_KWARG 

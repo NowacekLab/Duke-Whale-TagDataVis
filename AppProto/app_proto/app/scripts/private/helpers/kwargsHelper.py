@@ -1,8 +1,8 @@
-    """[For checking whether given cmd line kwargs match required kwargs]
+"""[For checking whether given cmd line kwargs match required kwargs]
 
-        PUBLIC MODULES: 
-        - allKwargsExist 
-    """
+    PUBLIC MODULES: 
+    - allKwargsExist 
+"""
 
 from typing import Collection 
 from private.logs import logDecorator 
