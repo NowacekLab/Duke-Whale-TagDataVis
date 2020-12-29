@@ -11,27 +11,18 @@ import json
 from typing import Tuple 
 
 # PACKAGE
-import updates
-import graphs
-from helpers import files 
+from private.updates import updates 
+from private.logs import logDecorator 
+from private.helpers import pathsHelper
 
-import settings 
-BASE_DIR = settings.BASE_DIR 
-FILE_DIR = settings.FILE_DIR 
-SCRIPTS_FILES = settings.SCRIPTS_FILES 
-FILE_INFO = settings.FILE_INFO 
-
-from logs import logDecorator 
-
-__EXPECTED_KWARGS = ["filePath", "fileName", "logFilePath", "logFileName", "gpsFilePath", "gpsFileName"]
-
-MODULE_NAME = "csvmat.py"
+MODULE_NAME = "csvmat"
+genericLog = logDecorator.genericLog(MODULE_NAME)
 
 # TYPE ALIASES  
 PandasDataFrame = Any
 MatFileData = Any 
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __parseMatFileData(data: MatFileData) -> dict:
 
     csv_header =
@@ -79,14 +70,7 @@ def __parseMatFileData(data: MatFileData) -> dict:
 
     return d 
 
-@logDecorator.genericLog(MODULE_NAME)
-def __getPandasDataFrameFromMatData(matFileData: MatFileData):
-
-    parsedData = __parseMatFileData(matFileData)
-    dataFrame = pd.DataFrame(data=parsedData)
-    return dataFrame 
-
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __loadMatFileData(filePath: str) -> MatFileData:
 
     # 'rb' is necessary, look at https://stackoverflow.com/questions/42339876/error-unicodedecodeerror-utf-8-codec-cant-decode-byte-0xff-in-position-0-in
@@ -95,50 +79,58 @@ def __loadMatFileData(filePath: str) -> MatFileData:
     
     return matFileData 
 
-@logDecorator.genericLog(MODULE_NAME)
-def __savePandasDataFrame(df: PandasDataFrame, filePath: str): 
-    df.to_csv(filePath, index = False)
+@genericLog
+def __getParsedMatFileData(filePath: str) -> MatFileData: 
+    rawMatFileData = __loadMatFileData(filePath)
+    parsedMatFileData = __parseMatFileData(rawMatFileData)
+    return parsedMatFileData
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __newCSVFileNameAndPath(fileName: str) -> Tuple[str, str]:
+    
+    DATA_FILE_DIR = pathsHelper.getDataFileDirPath()
+    
     origName = fileName.split(".mat")[0]
-    newName = origName + ".csv"
-    newPath = os.path.join(FILE_DIR, newName)
-    return (newPath, newName)
+    newCSVName = origName + ".csv"
+    newCSVPath = os.path.join(DATA_FILE_DIR, newCSVName)
+    return (newCSVPath, newCSVName)
 
-@logDecorator.genericLog(MODULE_NAME)
-def __handleConversionToPandasDataFrame(filePath: str) -> PandasDataFrame:
-    matFileData = __loadMatFileData(filePath)
-    pandasDataFrame = __getPandasDataFrameFromMatData(matFileData)
+@genericLog
+def __handleMATConversionToPandasDataFrame(filePath: str) -> PandasDataFrame:
+    parsedMatFileData = __getParsedMatFileData(filePath)
+    pandasDataFrame = pandasHelper.getPandasDataFrameFromMatData(parsedMatFileData)
 
     return pandasDataFrame
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def convertToCSVAndSave(filePath: str, fileName: str) -> Tuple[str, str]:
     newFilePath, newFileName = __newCSVFileNameAndPath(fileName)
     pandasDataFrame = __handleConversionToPandasDataFrame(filePath)
-    __savePandasDataFrame(pandasDataFrame, newFilePath)
+    files.savePandasDataFrame(pandasDataFrame, newFilePath)
 
     return (newFilePath, newFileName)
+
+@genericLog
+def __needProcessToCSV(dataFileName: str) -> bool: 
+    isCSV = files.isFileCSV(dataFileName)
+    return not isCSV 
+
+@genericLog
+def handleProcessAndNewPathName(dataFilePath: str, dataFileName: str) -> Tuple[str]: 
+    """[Processes to CSV (if needed), returns correct CSVFilePath, CSVFileName]
+
+    Args:
+        uploadArgs (dict): [original upload args parsed in main.py]
+
+    Returns:
+        Tuple[str]: [CSVFilePath, CSVFileName pairing as strings]
+    """
+    needToProcess = __needProcessToCSV(dataFileName)
+    if not needToProcess: 
+        return (dataFileName, dataFilePath)
+    CSVFilePathAndName = convertToCSVAndSave(dataFilePath, dataFileName)
+    return CSVFilePathAndName
 
 if __name__ == "__main__":
     print(main())
     sys.stdout.flush() 
-
-
-
-
-    # @logDecorator.log(MODULE_NAME)
-# def ensure_paths(file_path: str) -> bool:
-#     """
-#     Ensures FILE_DIR, FILE_INFO, file_path exist
-#     """
-
-#     # different code than graphs.py, differece between directory, file
-#     if not os.path.exists(FILE_DIR):
-#         os.mkdir(FILE_DIR)
-#     if not os.path.isfile(FILE_INFO):
-#         with open(FILE_INFO, 'w') as f:
-#             f.write(json.dumps(dict()))
-
-#     return os.path.isfile(FILE_INFO) and os.path.exists(FILE_DIR) and os.path.isfile(file_path)

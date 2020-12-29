@@ -12,6 +12,14 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import pandas as pd 
 
+from private.logs import logDecorator 
+from private.helpers import kwargsHelper
+
+MODULE_NAME = "graphers3D"
+
+genericLog = logDecorator.genericLog(MODULE_NAME)
+
+@genericLog 
 def trackplot(calc_file_path: str):
     csv = pd.read_csv(calc_file_path)
     data = csv.to_dict(orient = 'list')    
@@ -57,9 +65,10 @@ def trackplot(calc_file_path: str):
 
     return [fig]
 
-CREATORS = [(trackplot, 'trackplot.html'),]
 
-if __name__ == '__main__':
-    # trackplot('../Data/Pm19_136aprh.mat')
-    pass 
-    
+
+PRECALC_FILE_KWARG = kwargsHelper.getGrapherPrecalcFileKwarg()
+
+GRAPHERS = {
+    PRECALC_FILE_KWARG: [(trackplot, 'trackplot.html')],
+}

@@ -5,21 +5,19 @@
     """
 
 import sys 
-import os
-import csvmat 
-import actions 
-import graphs
 
 from typing import Any, Callable
-from logs import logDecorator
+from private.logs import logDecorator 
+from private.actions import actions 
 
 MODULE_NAME = "main.py"
+genericLog = logDecorator.genericLog(MODULE_NAME)
 
 __MODULES = {
     "actions": actions.main, 
 }
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __parseCMDLineArg(cmdLineArg: str) -> dict:
     """
     Parses the command line argument 
@@ -36,8 +34,10 @@ def __parseCMDLineArg(cmdLineArg: str) -> dict:
     
     return cmdArgs 
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getModule(cmdArgs: dict) -> Callable: 
+    
+    # ! hard coded 
     if not "moduleName" in cmdArgs: 
         raise Exception("`moduleName` key missing in command line argument string.")
     
@@ -47,7 +47,7 @@ def __getModule(cmdArgs: dict) -> Callable:
     
     return module 
 
-@logDecorator.genericLog(MODULE_NAME) 
+@genericLog
 def __handleModuleExec(cmdArgs: dict) -> Any:
     """
     Executes appropriate module 
@@ -57,7 +57,7 @@ def __handleModuleExec(cmdArgs: dict) -> Any:
     
     return moduleExec() 
 
-@logDecorator.mainLog(MODULE_NAME)
+@genericLog
 def main() -> Any: 
     if not (len(sys.argv) == 2): 
         raise Exception(f"There must be exactly 2 cmd line args given. Was given {len(sys.argv)}. Check conventions.md")

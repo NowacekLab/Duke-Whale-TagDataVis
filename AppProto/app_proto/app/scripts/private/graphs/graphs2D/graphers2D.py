@@ -1,6 +1,7 @@
 """
 2D Graphers called in html2D.py
 """
+from typing import List, Tuple
 from plotly import graph_objects as go
 from plotly import express as px
 from plotly.subplots import make_subplots
@@ -10,12 +11,17 @@ from ipywidgets import widgets
 from datetime import datetime
 import pandas as pd
 import csv
-from typing import List, Tuple
 import os
 import numpy as np
 
-# EACH FUNCTION UNLESS OTHERWISE SPECIFIED RETURNS [graph object1, graph object2, ...]
+from private.logs import logDecorator 
+from private.helpers import kwargsHelper
 
+MODULE_NAME = "graphers2D"
+
+genericLog = logDecorator.genericLog(MODULE_NAME)
+
+@genericLog
 def plot_POI(df: "data frame"):
     """
     This graph, like the one below it, does not
@@ -176,6 +182,7 @@ def plot_POI(df: "data frame"):
 
     return [fig]
 
+@genericLog
 def plot_timeline(df: "data frame"):
     """
     Note that this graph does not use xAxis nor indices params
@@ -236,17 +243,13 @@ def plot_timeline(df: "data frame"):
 
     return [fig]
 
-# def all_graphs_comb(df: "data frame", xAxis: List[int], indices: Tuple[int]):
-#     startIndex, endIndex = indices
-
-#     pass
-
+@genericLog
 def all_graphs_sep(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
     plots = make_subplots(rows=3, cols=2,
-                      subplot_titles=("Heading", "Pitch",
-                                      "X Acceleration", "Roll", "Y Acceleration", "Z Acceleration"))
+                            subplot_titles=("Heading", "Pitch",
+                            "X Acceleration", "Roll", "Y Acceleration", "Z Acceleration"))
 
     headData = df.Heading[startIndex:endIndex]
     plots.add_trace(
@@ -288,6 +291,7 @@ def all_graphs_sep(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [plots]
 
+@genericLog
 def head(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
@@ -296,6 +300,7 @@ def head(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
+@genericLog
 def accelerationX(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
@@ -304,6 +309,7 @@ def accelerationX(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
+@genericLog
 def accelerationY(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
@@ -312,6 +318,7 @@ def accelerationY(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
+@genericLog
 def accelerationZ(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
@@ -320,6 +327,7 @@ def accelerationZ(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
+@genericLog
 def pitch(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
@@ -343,6 +351,8 @@ def pitch(df: "data frame", xAxis: List[int], indices: Tuple[int]):
   Three added Jerk plots
   Input df has to be to from "...._calculations.csv"
 """
+
+@genericLog
 def jerkX(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
@@ -351,6 +361,7 @@ def jerkX(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
+@genericLog
 def jerkY(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
@@ -359,6 +370,7 @@ def jerkY(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
+@genericLog
 def jerkZ(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
 
@@ -367,22 +379,16 @@ def jerkZ(df: "data frame", xAxis: List[int], indices: Tuple[int]):
 
     return [graph]
 
-CREATORS = {
-    'STANDARD': [(all_graphs_sep, 'all_graphs_separate.html'), (head, 'heading.html'),
+
+DATA_AXIS_INDICES_KWARG = kwargsHelper.getGrapherDataAxisIndicesKwarg()
+PRECALC_AXIS_INDICES_KWARG = kwargsHelper.getGrapherPreCalcAxisIndicesKwarg()
+DATA_FILE_KWARG = kwargsHelper.getGrapherDataFileKwarg()
+
+GRAPHERS = {
+    DATA_AXIS_INDICES_KWARG: [(all_graphs_sep, 'all_graphs_separate.html'), (head, 'heading.html'),
             (pitch, 'roll.html', 'pitch.html', 'pitchroll.html'), (accelerationX, 'xAccel.html'),
             (accelerationY, 'yAccel.html'), (accelerationZ, 'zAccel.html')],
-    'PRECALC_DF': [(jerkX,'xJerk.html'),
+    PRECALC_AXIS_INDICES_KWARG: [(jerkX,'xJerk.html'),
             (jerkY,'yJerk.html'),(jerkZ,'zJerk.html')],
-    'STANDARD_ONLY_DF': [(plot_POI, 'plot_POI.html'), (plot_timeline, 'plot_timeline.html')]
+    DATA_FILE_KWARG: [(plot_POI, 'plot_POI.html'), (plot_timeline, 'plot_timeline.html')]
 }
-
-if __name__ == "__main__":
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    FILES = os.path.join(BASE_DIR, 'user_files')
-    csv_file = os.path.join(FILES, 'eg01_207aprh.csv')
-
-    df = pd.read_csv(csv_file)
-    xAxis = list(range(32, 232))
-    indices = (32, 232)
-
-    all_graphs(df, xAxis, indices)

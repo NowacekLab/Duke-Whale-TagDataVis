@@ -14,38 +14,18 @@ from typing import Callable, Collection, Any
 
 # Package 
 import settings 
-from helpers import files 
+from private.helpers import filesHelper, kwargsHelper, pathsHelper, keysHelper, othersHelper
 
 from logs import logDecorator
 
-# PATHS
-FILE_DIR_PATH = settings.FILE_DIR_PATH 
-GRAPHS_DIR_PATH = settings.GRAPHS_DIR_PATH 
-GRAPHS_2D_DIR_PATH = settings.GRAPHS_2D_DIR_PATH
-GRAPHS_3D_DIR_PATH = settings.GRAPHS_3D_DIR_PATH 
-ALL_GRAPHS_DIRS_PATHS = settings.ALL_GRAPHS_DIR_PATHS
-PRECALCS_DIR_PATH = settings.PRECALS_DIR_PATH
-SCRIPTS_FILES_PATH = settings.SCRIPTS_FILES_PATH 
-FILE_INFO_PATH = settings.FILE_INFO_PATH 
-
-# OTHER
-GRAPH_TYPES = settings.GRAPH_TYPES 
-CSV_PATH_KEY = settings.CSV_PATH_KEY
-GPS_PATH_KEY = settings.GPS_PATH_KEY 
-LOG_PATH_KEY = settings.LOG_PATH_KEY 
-PRECALC_KEY = settings.PRECALC_KEY 
-PATH_KEYS = settings.PATH_KEYS
-FILE_SIZE_KEY = settings.FILE_SIZE_KEY 
-FILE_MODIFY_DATE_KEY = settings.FILE_MODIFY_DATE_KEY
-FILE_TIME_FORMAT = settings.FILE_TIME_FORMAT
-
 MODULE_NAME = "updates.py"
+genericLog = logs.logDecorator(MODULE_NAME)
 
 # TYPES 
 byteMemory = Any
 rawLocalTime = Any 
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __changeBytesToRegularMemoryFormat(nbytes: byteMemory) -> str:
     suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     i = 0
@@ -55,19 +35,22 @@ def __changeBytesToRegularMemoryFormat(nbytes: byteMemory) -> str:
     f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
     return '%s %s' % (f, suffixes[i])
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getFileMemoryInBytes(filePath: str) -> int:
     return int(os.path.getsize(CSVFilePath))
     
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getFileMemoryInFormat(filePath: str) -> str:
     
     fileMemoryInBytes = __getFileMemoryInBytes(filePath)
     formattedFileMemory = __changeBytesToRegularMemoryFormat(fileMemoryInBytes)
     return formattedFileMemory
     
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __updateFileMemory(currFileInfo: dict) -> dict:
+    
+    CSV_PATH_KEY = keysHelper.getCSVPathKey()
+    FILE_SIZE_KEY = keysHelper.getFileSizeKey()
     
     currFileInfoCopy = currFileInfo.copy()
     
@@ -79,19 +62,24 @@ def __updateFileMemory(currFileInfo: dict) -> dict:
     
     return currFileInfoCopy
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getFileLocalTime(filePath: str) -> rawLocalTime: 
     return time.localtime(os.path.getmtime(CSVFilePath))
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getFormattedFileLocalTime(filePath: str) -> str: 
+    
+    FILE_TIME_FORMAT = othersHelper.getFileTimeFormat()
     
     rawFileTime = __getFileLocalTime(filePath)
     formattedFileTime = time.strftime(FILE_TIME_FORMAT, rawFileTime)
     return formattedFileTime
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __updateFileDateModified(currFileInfo: dict):
+    
+    CSV_PATH_KEY = keysHelper.getCSVPathKey()
+    FILE_MODIFY_DATE_KEY = keysHelper.getFileModifyDateKey()
     
     currFileInfoCopy = currFileInfo.copy() 
     
@@ -103,7 +91,7 @@ def __updateFileDateModified(currFileInfo: dict):
     
     return currFileInfoCopy
     
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def refreshFileInfo(CSVFileName: str, allFileInfo: dict):
     
     currFileInfo = allFileInfo[CSVFileName]
@@ -116,24 +104,27 @@ def refreshFileInfo(CSVFileName: str, allFileInfo: dict):
     
     files.saveFileInfo(currFileInfo) 
     
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def refreshAllFileInfo():
     allFileInfo = files.getAllFileInfo()
     for CSVFileName in allFileInfo: 
         refreshFileInfo(CSVFileName)
     
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getUpdatedAllFileInfoCSV(CSVFileName: str, allFileInfo: dict) -> dict: 
     
     allFileInfoCopy = allFileInfo.copy() 
     allFileInfoCopy.pop(CSVFileName)
     return allFileInfoCopy
     
-@logDecorator.genericLog(MODULE_NAME):
+@genericLog:
 def __getGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     graphFilePaths = [] 
     currFileInfo = allFileInfo[CSVFileName]
+    
+    GRAPH_TYPES = othersHelper.getGraphTypes()
+    
     for graphType in GRAPH_TYPES: 
         if graphType in currFileInfo: 
             graphs = currFileInfo[graphType]
@@ -142,19 +133,22 @@ def __getGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     return graphFilePaths
 
-@logDecorator.genericLog(MODULE_NAME):
+@genericLog
 def __getNonGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     currFileInfo = allFileInfo[CSVFileName]
     
     nonGraphFilePaths = []
+    
+    PATH_KEYS = keysHelper.getPathKeys()
+    
     for pathKey in PATH_KEYS: 
         filePath = currFileInfo[pathKey]
         nonGraphFilePaths.append(filePath)
     
     return nonGraphFilePaths
 
-@logDecorator.genericLog(MODULE_NAME):
+@genericLog
 def __getAllFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     nonGraphFilePaths = __getNonGraphFilePaths(CSVFileName, allFileInfo)
@@ -164,23 +158,27 @@ def __getAllFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     return allFilePaths
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __clearAllRelatedFiles(CSVFileName: str, allFileInfo: dict):
 
     allFilePaths = __getAllFilePaths(CSVFileName, allFileInfo)
     for filePath in allFilePaths: 
         files.handlePathRemoval(filePath)
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getRelatedGraphDirPaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     relatedGraphDirPaths = [] 
+    
+    ALL_GRAPHS_DIRS_PATHS = pathsHelper.getAllGraphsDirPaths()
+    
     for graphDirPath in ALL_GRAPHS_DIRS_PATHS:
         relatedGraphDirPath = os.path.join(graphDirPath, CSVFileName)
         relatedGraphDirPaths.append(relatedGraphDirPath)
     
     return relatedGraphDirPaths
         
+@genericLog
 def __getAllRelatedDirPaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     relatedGraphDirPaths = __getRelatedGraphDirPaths(CSVFileName, allFileInfo)
@@ -188,21 +186,24 @@ def __getAllRelatedDirPaths(CSVFileName: str, allFileInfo: dict) -> Collection[s
     allRelatedDirPaths = relatedGraphDirPaths
 
     return allRelatedDirPaths
-    
+
+@genericLog
 def __clearAllRelatedDirs(CSVFileName: str, allFileInfo: dict):
     
     dirPaths = __getAllRelatedDirPaths(CSVFileName, allFileInfo)
     for dirPath in dirPaths: 
         files.handlePathRemoval(dirPath)
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __clearCSVFileRelatedItems(CSVFileName: str, allFileInfo: dict): 
     
     __clearAllRelatedFiles(CSVFileName, allFileInfo)
     __clearAllRelatedDirs(CSVFileName, allFileInfo)
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getCSVFileNameFromPath(CSVFilePath: str, allFileInfo: dict):
+    
+    CSV_PATH_KEY = keysHelper.getCSVPathKey()
 
     for fileName in allFileInfo: 
         currFileInfo = allFileInfo[fileName]
@@ -212,7 +213,7 @@ def __getCSVFileNameFromPath(CSVFilePath: str, allFileInfo: dict):
     
     raise Exception(f"Could not find a file associated with the given CSV path ({CSVFilePath})")
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __updateDeletedCSVFile(CSVFilePath: str, allFileInfo: dict) -> bool:
     
     CSVFileName = __getCSVFileNameFromPath(CSVFilePath, allFileInfo)
@@ -221,7 +222,7 @@ def __updateDeletedCSVFile(CSVFilePath: str, allFileInfo: dict) -> bool:
 
     return files.saveFileInfo(allFileInfo)
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getUpdatedAllFileInfoHTML(HTMLFilePath: str, allFileInfo: dict):
 
     for fileName in allFileInfo: 
@@ -249,13 +250,13 @@ def __getUpdatedAllFileInfoHTML(HTMLFilePath: str, allFileInfo: dict):
     
     return allFileInfo
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __updateDeletedHTMLFile(HTMLFilePath: str, allFileInfo: dict) -> bool:      
 
     updatedAllFileInfo = __getUpdatedAllFileInfoHTML(HTMLFilePath, allFileInfo)
     return files.saveFileInfo(updatedAllFileInfo)
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __getUpdateDeleteFile(filePath: str) -> Callable:
     isHTML = files.isFileHTML(filePath)
     isCSV = files.isFileCSV(filePath)    
@@ -266,7 +267,7 @@ def __getUpdateDeleteFile(filePath: str) -> Callable:
 
     raise Exception(f"Given file path ({filePath}) could not be identified as HTML nor CSV")
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def __handleDeleteUpdateByFileType(filePath: str) -> bool:
     
     updateDeleteFile = __getUpdateDeleteFile(filePath)
@@ -275,7 +276,7 @@ def __handleDeleteUpdateByFileType(filePath: str) -> bool:
     
     return updateSuccessful
 
-@logDecorator.genericLog(MODULE_NAME)
+@genericLog
 def updateDeletedFileInfo(filePath: str): 
     updateSuccessful = __handleDeleteUpdateByFileType(filePath)
 
@@ -324,5 +325,5 @@ if __name__ == "__main__":
 #         helper_json.create(FILE_INFO_PATH, info)
 #     return changes     
 
-# @logDecorator.genericLog(MODULE_NAME)
+# @genericLog
 # def refreshFileInfo(filePath: str): 

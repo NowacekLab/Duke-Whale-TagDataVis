@@ -1,3 +1,5 @@
+
+
 # Data Flow
 
 ## Single Point of Entry
@@ -23,15 +25,19 @@
   - Must be a single string
   - Key-value args separated by "-"
   - Key-value args joined as key:value
-
 - Unless otherwise needed by the JavaScript (e.g. for FileActions and UploadProgress components extra 'prints' are needed)...
   - The only form of communication will be "Error" (see Error Handling above) if there is an error or another form communicated by a function
+- **REQUIRED KWARGS**:
+  - 'moduleName' 
+    - specifies name of the module without the .py, limited available for public access
+    - **available modules:**
+      - 'actions' -- actions.py 
 
-# Duties
+### Required Key Word Arguments
 
-- main.py
-  - single point of entry
-- settings.py
-  - holds variables, including, but not limited to, the BASE_DIR variable for other modules to use as a single source of truth
-- csvmat.py
-  -
+* '**moduleName**'
+  * required globally
+  * specifies name of the module without the .py
+    * available modules:
+      * 'actions' -- actions.py
+* 

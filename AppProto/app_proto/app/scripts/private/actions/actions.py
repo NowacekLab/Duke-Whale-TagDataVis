@@ -12,18 +12,13 @@ from typing import Callable
 
 # PACKAGE
 import graphs 
-from helpers import files, kwargsCheck
-import updates
-import logDecorator 
-from . import upload 
+from private.updates import updates 
+from private.actions import upload
 
-import settings 
-BASE_DIR = settings.BASE_DIR 
-FILE_DIR = settings.FILE_DIR 
-SCRIPTS_FILES = settings.SCRIPTS_FILES 
-FILE_INFO = settings.FILE_INFO
+from private.logs import logDecorator
 
-MODULE_NAME = "actions.py"
+MODULE_NAME = "actions"
+genericLog = logDecorator.genericLog(MODULE_NAME)
 
 def get_path(file_: str) -> str:
     """
@@ -31,7 +26,7 @@ def get_path(file_: str) -> str:
     """
 
     try: 
-        info = helper_json.read(FILE_INFO)
+        info = helper_json.read(FILE_INFO_PATH)
         filtered = filter(lambda key : key == file_, info)
         file_path = info[next(filtered)]["csv_path"]
         if os.path.isfile(file_path):
@@ -48,7 +43,7 @@ def get_path_html(parent_file: str, html_file: str) -> str:
     """
 
     try:
-        info = helper_json.read(FILE_INFO)
+        info = helper_json.read(FILE_INFO_PATH)
         if parent_file in info: 
             for graph_type in ('graphs2D', 'graphs3D'):
                 if graph_type in info[parent_file] and html_file in info[parent_file][graph_type]:
@@ -147,12 +142,9 @@ def __checkUploadKwargs(cmdArgs: dict):
 def __handleUpload(cmdArgs: dict):
     
     __checkUploadKwargs(cmdArgs)
-    dataFileName = cmdArgs[settings.DATA_FILE_NAME_KWARG]
-    datFilePath = cmdArgs[settings.DATA_FILE_PATH_KWARG]
-    logFileName = cmdArgs[settings.LOG_FILE_NAME_KWARG]
-    logFilePath = cmdArgs[settings.LOG_FILE_PATH_KWARG]
-    gpsFileName = cmdArgs[settings.GPS_FILE_NAME_KWARG]
-    gpsFilePath = cmdArgs[settings.GPS_FILE_PATH_KWARG]
+    upload.uploadFile(cmdArgs)
+
+    # ! not done yet
     
 
 @logDecorator.genericLog(MODULE_NAME)
@@ -180,44 +172,7 @@ def handleAction(cmdArgs: dict):
     
     actionExec = getActionExec(action)
     
-    actionExec(cmdArgs)
-
-def main() -> str:
-    """
-    Main handler
-    'True' IF successful ELSE 'False'
-    """
-    try: 
-        file_ = sys.argv[2]
-        action = sys.argv[3]
-
-        html_ = file_.endswith('.html')
-        parent_file = ""
-        if len(sys.argv) > 4 and html_:
-            parent_file = sys.argv[4] # need to know which file belongs to 
-            path = get_path_html(parent_file, file_)
-        else: # for regular files 
-            path = get_path(file_)
-
-        available = {
-            'delete': delete,
-            'edit': edit,
-            'save': save,
-            'reprocess': reprocess,
-        }
-
-        func = available.get(action, None)
-
-        if func == None or path == None: 
-            raise Exception("Not a valid action or file not found.")
-        result = func(path, file_, parent_file)
-        if result: 
-            return "True"
-        else: 
-            return "False"
-
-    except Exception as e: 
-        return e 
+    return actionExec(cmdArgs)
 
 if __name__ == "__main__":
     print(main())
