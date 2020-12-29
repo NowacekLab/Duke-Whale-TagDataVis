@@ -18,7 +18,10 @@ import scipy.signal as sg
 from plotly.offline import plot
 from plotly.subplots import make_subplots
 from ipywidgets import widgets
-from datetime import datetime
+# from datetime import datetime
+# Imports from calculations
+import datetime
+import re
 
 '''
 Pulled the start time function from the calculation.py
@@ -54,10 +57,18 @@ def plot2D(filename, logname):
     p = data['Depth'].tolist()
     roll = data['Roll'].tolist()
     pitch = data['Pitch'].tolist()
+
     # Calculate time 
     numData = len(p)
-    t = [x/fs for x in range(numData)]
-    t_hr = [x/3600 for x in t]
+    startTime = logProcessStarttime(logname)
+    # t = [x/fs for x in range(numData)]
+    # t_hr = [x/3600 for x in t]
+    t = [startTime + datetime.timedelta(0, x/fs) for x in range(numData)]
+    
+    print(startTime)
+    dTime = datetime.timedelta(0, 1/fs)
+    newTime = startTime + dTime
+    print(newTime)
 
     '''
     Added code to reduce the lag of the Figure
@@ -73,9 +84,10 @@ def plot2D(filename, logname):
     sHead = sg.decimate(head,scale).copy()
 
     # Calculate time - Reduced 
-    numData = len(sP)
-    sT = [x/(fs/scale) for x in range(numData)]
-    sT_hr = [x/3600 for x in sT]
+    # numData = len(sP)
+    # sT = [x/(fs/scale) for x in range(numData)]
+    sT = [startTime + datetime.timedelta(0, x/(fs/scale)) for x in range(numData)]
+    # sT_hr = [x/3600 for x in sT]
 
     # Make Widget Figure 
     fig = go.Figure(
@@ -90,15 +102,40 @@ def plot2D(filename, logname):
         )
 
     # Create traces for the data and add to figure
-    fig.add_trace(go.Scattergl(x = sT_hr, y = sP, mode = "lines", name = "Depth"), row = 1, col = 1) 
-    fig.add_trace(go.Scattergl(x = sT_hr, y = sHead, mode = "lines", name = "Head"), row = 2, col = 1)
-    fig.add_trace(go.Scattergl(x = sT_hr, y = sPitch, mode = "lines", name = "Pitch"), row = 2, col = 1)
-    fig.add_trace(go.Scattergl(x = sT_hr, y = sRoll, mode = "lines", name = "Roll" ), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = sT, y = sP, mode = "lines", name = "Depth"), row = 1, col = 1) 
+    fig.add_trace(go.Scattergl(x = sT, y = sHead, mode = "lines", name = "Head"), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = sT, y = sPitch, mode = "lines", name = "Pitch"), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = sT, y = sRoll, mode = "lines", name = "Roll" ), row = 2, col = 1)
 
     # Update x-axis
-    fig.update_xaxes(title = "Time (hr)", rangeslider = dict(visible = True), row = 2, col = 1)
+    fig.update_xaxes(title = "Time (hr)", rangeselector=dict(
+            buttons=list([
+                dict(count=1,
+                     label="1 hr",
+                     step="hour",
+                     stepmode="backward"),
+                dict(count=5,
+                     label="5 min",
+                     step="minute",
+                     stepmode="backward"),
+                dict(count=1,
+                     label="1 min",
+                     step="minute",
+                     stepmode="backward"),
+                dict(count=30,
+                     label="30 sec",
+                     step="second",
+                     stepmode="backward"),
+                dict(count=10,
+                     label="10 sec",
+                     step="second",
+                     stepmode="backward"),
+                dict(step="all")
+            ])
+        ), rangeslider = dict(visible = True), row = 2, col = 1)
     # Update y-axis
     fig.update_yaxes(title = "Depth (m)", autorange = "reversed", row = 1, col = 1)
+    fig.update_yaxes(title = "Degrees", row = 2, col = 1)
 
     # Show figure and save as an HTML
     fig.show()
