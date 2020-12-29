@@ -54,21 +54,18 @@ def plot2D(filename, logname):
     # Pull Specific Variables
     fs = data['fs'].tolist()[0]
     head = data['Heading'].tolist()
+    head = [x*180/np.pi for x in head]
     p = data['Depth'].tolist()
     roll = data['Roll'].tolist()
+    roll = [x*180/np.pi for x in roll]
     pitch = data['Pitch'].tolist()
+    pitch = [x*180/np.pi for x in pitch]
 
     # Calculate time 
     numData = len(p)
     startTime = logProcessStarttime(logname)
-    # t = [x/fs for x in range(numData)]
-    # t_hr = [x/3600 for x in t]
     t = [startTime + datetime.timedelta(0, x/fs) for x in range(numData)]
     
-    print(startTime)
-    dTime = datetime.timedelta(0, 1/fs)
-    newTime = startTime + dTime
-    print(newTime)
 
     '''
     Added code to reduce the lag of the Figure
@@ -84,10 +81,8 @@ def plot2D(filename, logname):
     sHead = sg.decimate(head,scale).copy()
 
     # Calculate time - Reduced 
-    # numData = len(sP)
-    # sT = [x/(fs/scale) for x in range(numData)]
     sT = [startTime + datetime.timedelta(0, x/(fs/scale)) for x in range(numData)]
-    # sT_hr = [x/3600 for x in sT]
+    
 
     # Make Widget Figure 
     fig = go.Figure(
@@ -108,14 +103,25 @@ def plot2D(filename, logname):
     fig.add_trace(go.Scattergl(x = sT, y = sRoll, mode = "lines", name = "Roll" ), row = 2, col = 1)
 
     # Update x-axis
-    fig.update_xaxes(title = "Time (hr)", rangeselector=dict(
+    fig.update_xaxes(title = "Time (hr)", row = 2, col = 1)
+
+    # Update y-axis
+    fig.update_yaxes(title = "Depth (m)", autorange = "reversed", row = 1, col = 1)
+    fig.update_yaxes(title = "Degrees", row = 2, col = 1)
+
+    fig.update_layout(xaxis=dict(
+        rangeselector=dict(
             buttons=list([
                 dict(count=1,
                      label="1 hr",
                      step="hour",
                      stepmode="backward"),
-                dict(count=5,
-                     label="5 min",
+                dict(count=30,
+                     label="30 min",
+                     step="minute",
+                     stepmode="backward"),
+                dict(count=10,
+                     label="10 min",
                      step="minute",
                      stepmode="backward"),
                 dict(count=1,
@@ -126,16 +132,14 @@ def plot2D(filename, logname):
                      label="30 sec",
                      step="second",
                      stepmode="backward"),
-                dict(count=10,
-                     label="10 sec",
-                     step="second",
-                     stepmode="backward"),
                 dict(step="all")
             ])
-        ), rangeslider = dict(visible = True), row = 2, col = 1)
-    # Update y-axis
-    fig.update_yaxes(title = "Depth (m)", autorange = "reversed", row = 1, col = 1)
-    fig.update_yaxes(title = "Degrees", row = 2, col = 1)
+        ),
+        rangeslider=dict(
+            visible=True
+        ),
+        type="date"
+    ))
 
     # Show figure and save as an HTML
     fig.show()
