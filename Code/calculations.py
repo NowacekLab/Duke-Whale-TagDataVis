@@ -8,7 +8,11 @@
     #Add option for manual selection of timezone
     #Make 3d Track mesh
     #Add optional input for maxVelocityScale
+    #Add date column to calculations
+    #Ask about more plots? (Next week)
 #Questions - Time Discrepancy Between GPS and Tag Start Date? Force Fit to GPS_Z as well if Values Don't fit exactly? Or should I do a 1-hour starttime sweep?
+            #-Just confirming, 0/0/0 RPY is a flat whale facing due north? -Ans, Yes
+            #-I assume there's no easy way to get the start long/lat at tag time = 0? -Ans, may have a datasheet
 
 #%%
 import xml.dom.minidom
@@ -49,6 +53,10 @@ def xydistance(lat1, long1, lat2, long2):
     if(lat1 > lat2):
         y2 = -y2
     return (x1+x2)/2, (y1+y2)/2
+
+#Calculate Starting Lat/Long Given a GPS point and the corresponding index
+def startCoord(lat, long, xdis, ydix):
+    
 
 #Calculate Tag Start Time
 def logProcessStarttime(logname):
@@ -182,6 +190,7 @@ def calculation(filename, logname, gpsname=''):
     csv['Jerk_Y'] = j[:,1]
     csv['Jerk_Z'] = j[:,2]
     csv.to_csv('.'.join(filename.split('.')[0:-1]) + '_calculations.csv', index = False)
+    gps.to_csv('.'.join(gpsname.split('.')[0:-1]) + '_calculations.csv', index = False)
 
 #%% Main
 if __name__ == "__main__":

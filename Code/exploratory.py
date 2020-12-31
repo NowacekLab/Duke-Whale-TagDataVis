@@ -25,7 +25,7 @@ from pyquaternion import Quaternion
 
 
 #%%Import Relevant Data and Clean
-data = loadmat('../Data/Pm19_136aprh.mat')
+data = loadmat('../Data/gm14_279aprh.mat')
 roll = data['roll']
 pitch = data['pitch']
 yaw = data['head']
@@ -33,10 +33,10 @@ accel = data['Aw']
 accel_x = accel[:,0] * 1 #What Units is this in? (Currently assuming m/s)
 accel_y = accel[:,1] * 1
 accel_z = accel[:,2] * 1
-length = 20000
+length = 2000
 v = np.array([[0, 0, 0]]) #Initial velocity in x, y, z
 dx = np.array([[0, 0, 0]]) #Initial displacement in x, y, z
-fs = 1/50
+fs = 1/25
 #%%Define Necessary Functions
 
 def stl2mesh3d(stl_mesh):
@@ -103,7 +103,7 @@ x = []
 y = []
 z = []
 for i in range(length):
-    tempmesh = mesh.Mesh.from_file('Torpedo.stl')
+    tempmesh = mesh.Mesh.from_file('whale.stl')
 # Normal MatMul
 # =============================================================================
 #     rollmat = tempmesh.rotation_matrix([1, 0, 0], roll[i])
@@ -202,4 +202,4 @@ fig.update_layout(width=700, height=700, yaxis=dict(scaleanchor="x", scaleratio=
 
 
 
-#plot(fig)
+plot(fig)
