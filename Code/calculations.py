@@ -54,9 +54,6 @@ def xydistance(lat1, long1, lat2, long2):
         y2 = -y2
     return (x1+x2)/2, (y1+y2)/2
 
-#Calculate Starting Lat/Long Given a GPS point and the corresponding index
-def startCoord(lat, long, xdis, ydix):
-    
 
 #Calculate Tag Start Time
 def logProcessStarttime(logname):
@@ -77,6 +74,7 @@ def logProcessStarttime(logname):
         print('Log filetype error: only .xml and .txt expected')
         return 0
     return startTime
+    
 
 #Calculation of X-Y-Z Position with GPS Fitting and Appending to .csv
 def calculation(filename, logname, gpsname=''):

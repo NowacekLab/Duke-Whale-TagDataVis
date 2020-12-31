@@ -1,31 +1,88 @@
-"""
-Exists for future potential to package into one executable 
-"""
+"""[Single entrypoint for executable packaging]
 
+PUBLIC MODULES:
+    - main
+"""
 
 import sys 
 
-import csvmat 
-import actions 
-import graphs
+from typing import Any, Callable
+from private.logs import logDecorator 
+from private.actions import actions 
 
-def main(): 
-    funcs = {
-        'csvmat': csvmat.main, 
-        'actions': actions.main, 
-        'graphs': graphs.main,
-    }
+MODULE_NAME = "main.py"
+genericLog = logDecorator.genericLog(MODULE_NAME)
 
-    mod_name = sys.argv[1]
+__MODULES = {
+    "actions": actions.handleAction, 
+}
 
-    if not mod_name in funcs: 
-        return "False"
+@genericLog
+def _parseCMDLineArg(cmdLineArg: str) -> dict:
+    """
+    Parses the command line argument 
+    """
+    if not (type(cmdLineArg) is str): 
+        raise Exception("Command Line Argument MUST be a string. Check conventions.md.")
 
-    func = funcs[mod_name]
+    cmdArgs = {} 
 
-    return func()
+    keyValPairs = cmdLineArg.split(";-;")
+    for keyValPair in keyValPairs: 
+        keyValPairLst = keyValPair.split(":")
+        if len(keyValPairLst) == 0: 
+            pass 
+        elif len(keyValPairLst) == 1: 
+            val = "" 
+            key = keyValPairLst[0]
+        else: 
+            key, val = keyValPairLst
+        
+        cmdArgs[key] = val 
+    
+    return cmdArgs 
+
+@genericLog
+def _getModule(cmdArgs: dict) -> Callable: 
+    
+    # ! hard coded 
+    if not "moduleName" in cmdArgs: 
+        raise Exception("`moduleName` key missing in command line argument string.")
+    
+    moduleName = cmdArgs['moduleName']
+
+    module = __MODULES[moduleName]
+    
+    return module 
+
+@genericLog
+def _handleModuleExec(cmdArgs: dict) -> Any:
+    """
+    Executes appropriate module 
+    """
+
+    moduleExec = _getModule(cmdArgs) 
+    
+    return moduleExec() 
+
+@genericLog
+def main() -> Any: 
+    if not (len(sys.argv) == 2): 
+        raise Exception(f"There must be exactly 2 cmd line args given. Was given {len(sys.argv)}. Check conventions.md")
+
+    cmdLineArg = sys.argv[1]
+    cmdArgs = _parseCMDLineArg(cmdLineArg) 
+    
+    return _handleModuleExec(cmdArgs)
+
+    # ! remember to create a central path creator near the start of the application
+        # ! all in 'files' dir 
 
 if __name__ == "__main__":
     print(main())
     sys.stdout.flush()
     # print('hi')
+
+    # python3 main.py csvmat /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/gm14_279aprh.mat gm14_279aprh.mat /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/gm279alog.txt gm279alog.txt /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/20141006_Barber_Focal_Follow_Gm_14_279a.xlsx 20141006_Barber_Focal_Follow_Gm_14_279a.xlsx
+
+    # ./main/main csvmat /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/gm14_279aprh.mat gm14_279aprh.mat /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/gm279alog.txt gm279alog.txt 
