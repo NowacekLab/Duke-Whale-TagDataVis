@@ -65,7 +65,7 @@ def plot_POI(df: "data frame"):
     yPOI = []
 
 
-    #Creat zoomed in x and y data sets
+    #Create zoomed in x and y data sets
     zoomT = [[] for x in range(len(xPOI))]
     zoomP = [[] for x in range(len(xPOI))]
     zoomR = [[] for x in range(len(xPOI))]

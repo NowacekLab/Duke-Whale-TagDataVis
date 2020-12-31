@@ -177,13 +177,14 @@ def calculation(filename, logname, gpsname=''):
         v_total = np.sqrt(velocityComponents[:, 0] ** 2 + velocityComponents[:, 1] ** 2)
         if max(v_total) * fs > v * maxVelocityScale:
             print('Possible GPS Fit inaccuracy, maximum velocity of {0:.2f} is larger than the expected maximum of {1}'.format(max(v_total) * fs, v * maxVelocityScale))
+        csv['Latitude'] = latArray
+        csv['Longitude'] = longArray
     #calcDepth = np.array(calcDepth)
     #print(temp, ': ', sum(calcDepth ** 2) ** 0.5)
 #%% Export Data
     csv['X Position'] = dx[:-1, 0]
     csv['Y Position'] = dx[:-1, 1]
     csv['Z Position'] = depth
-    
     csv['Jerk_X'] = j[:,0]
     csv['Jerk_Y'] = j[:,1]
     csv['Jerk_Z'] = j[:,2]
