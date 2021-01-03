@@ -26,7 +26,7 @@ byteMemory = Any
 rawLocalTime = Any 
 
 @genericLog
-def __changeBytesToRegularMemoryFormat(nbytes: byteMemory) -> str:
+def _changeBytesToRegularMemoryFormat(nbytes: byteMemory) -> str:
     suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     i = 0
     while nbytes >= 1024 and i < len(suffixes)-1:
@@ -36,14 +36,14 @@ def __changeBytesToRegularMemoryFormat(nbytes: byteMemory) -> str:
     return '%s %s' % (f, suffixes[i])
 
 @genericLog
-def __getFileMemoryInBytes(filePath: str) -> int:
+def _getFileMemoryInBytes(filePath: str) -> int:
     return int(os.path.getsize(CSVFilePath))
     
 @genericLog
-def __getFileMemoryInFormat(filePath: str) -> str:
+def _getFileMemoryInFormat(filePath: str) -> str:
     
-    fileMemoryInBytes = __getFileMemoryInBytes(filePath)
-    formattedFileMemory = __changeBytesToRegularMemoryFormat(fileMemoryInBytes)
+    fileMemoryInBytes = _getFileMemoryInBytes(filePath)
+    formattedFileMemory = _changeBytesToRegularMemoryFormat(fileMemoryInBytes)
     return formattedFileMemory
     
 @genericLog
@@ -55,7 +55,7 @@ def updateFileMemory(currFileInfo: dict) -> dict:
     currFileInfoCopy = currFileInfo.copy()
     
     CSVFilePath = currFileInfo[CSV_PATH_KEY]
-    CSVFileStandardMemory = __getFileMemoryInFormat(CSVFilePath)   
+    CSVFileStandardMemory = _getFileMemoryInFormat(CSVFilePath)   
     
     currMemory = ""
     if FILE_SIZE_KEY in currFileInfo: 
@@ -67,11 +67,11 @@ def updateFileMemory(currFileInfo: dict) -> dict:
     return currFileInfoCopy
 
 @genericLog
-def __getFileLocalTime(filePath: str) -> rawLocalTime: 
+def _getFileLocalTime(filePath: str) -> rawLocalTime: 
     return time.localtime(os.path.getmtime(CSVFilePath))
 
 @genericLog
-def __getFormattedFileLocalTime(filePath: str) -> str: 
+def _getFormattedFileLocalTime(filePath: str) -> str: 
     
     FILE_TIME_FORMAT = othersHelper.getFileTimeFormat()
     
@@ -88,7 +88,7 @@ def updateFileDateModified(currFileInfo: dict):
     currFileInfoCopy = currFileInfo.copy() 
     
     CSVFilePath = currFileInfo[CSV_PATH_KEY]
-    formattedFileTime = __getFormattedFileLocalTime(CSVFilePath)
+    formattedFileTime = _getFormattedFileLocalTime(CSVFilePath)
     
     currFileTime = ""
     if FILE_MODIFY_DATE_KEY in currFileInfo: 
@@ -124,14 +124,14 @@ def refreshAndSaveAllFileInfo():
         refreshAndSaveFileInfo(CSVFileName)
     
 @genericLog
-def __getUpdatedAllFileInfoCSV(CSVFileName: str, allFileInfo: dict) -> dict: 
+def _getUpdatedAllFileInfoCSV(CSVFileName: str, allFileInfo: dict) -> dict: 
     
     allFileInfoCopy = allFileInfo.copy() 
     allFileInfoCopy.pop(CSVFileName)
     return allFileInfoCopy
     
 @genericLog
-def __getGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
+def _getGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     graphFilePaths = [] 
     currFileInfo = allFileInfo[CSVFileName]
@@ -147,7 +147,7 @@ def __getGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     return graphFilePaths
 
 @genericLog
-def __getNonGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
+def _getNonGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     currFileInfo = allFileInfo[CSVFileName]
     
@@ -162,24 +162,24 @@ def __getNonGraphFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[st
     return nonGraphFilePaths
 
 @genericLog
-def __getAllFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
+def _getAllFilePaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
-    nonGraphFilePaths = __getNonGraphFilePaths(CSVFileName, allFileInfo)
-    graphFilePaths = __getGraphFilePaths(CSVFileName, allFileInfo)
+    nonGraphFilePaths = _getNonGraphFilePaths(CSVFileName, allFileInfo)
+    graphFilePaths = _getGraphFilePaths(CSVFileName, allFileInfo)
     
     allFilePaths = nonGraphFilePaths + graphFilePaths
     
     return allFilePaths
 
 @genericLog
-def __clearAllRelatedFiles(CSVFileName: str, allFileInfo: dict):
+def _clearAllRelatedFiles(CSVFileName: str, allFileInfo: dict):
 
-    allFilePaths = __getAllFilePaths(CSVFileName, allFileInfo)
+    allFilePaths = _getAllFilePaths(CSVFileName, allFileInfo)
     for filePath in allFilePaths: 
         files.handlePathRemoval(filePath)
 
 @genericLog
-def __getRelatedGraphDirPaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
+def _getRelatedGraphDirPaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
     relatedGraphDirPaths = [] 
     
@@ -192,29 +192,29 @@ def __getRelatedGraphDirPaths(CSVFileName: str, allFileInfo: dict) -> Collection
     return relatedGraphDirPaths
         
 @genericLog
-def __getAllRelatedDirPaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
+def _getAllRelatedDirPaths(CSVFileName: str, allFileInfo: dict) -> Collection[str]:
     
-    relatedGraphDirPaths = __getRelatedGraphDirPaths(CSVFileName, allFileInfo)
+    relatedGraphDirPaths = _getRelatedGraphDirPaths(CSVFileName, allFileInfo)
     
     allRelatedDirPaths = relatedGraphDirPaths
 
     return allRelatedDirPaths
 
 @genericLog
-def __clearAllRelatedDirs(CSVFileName: str, allFileInfo: dict):
+def _clearAllRelatedDirs(CSVFileName: str, allFileInfo: dict):
     
-    dirPaths = __getAllRelatedDirPaths(CSVFileName, allFileInfo)
+    dirPaths = _getAllRelatedDirPaths(CSVFileName, allFileInfo)
     for dirPath in dirPaths: 
         files.handlePathRemoval(dirPath)
 
 @genericLog
-def __clearCSVFileRelatedItems(CSVFileName: str, allFileInfo: dict): 
+def _clearCSVFileRelatedItems(CSVFileName: str, allFileInfo: dict): 
     
-    __clearAllRelatedFiles(CSVFileName, allFileInfo)
-    __clearAllRelatedDirs(CSVFileName, allFileInfo)
+    _clearAllRelatedFiles(CSVFileName, allFileInfo)
+    _clearAllRelatedDirs(CSVFileName, allFileInfo)
 
 @genericLog
-def __getCSVFileNameFromPath(CSVFilePath: str, allFileInfo: dict):
+def _getCSVFileNameFromPath(CSVFilePath: str, allFileInfo: dict):
     
     CSV_PATH_KEY = keysHelper.getCSVPathKey()
 
@@ -227,16 +227,16 @@ def __getCSVFileNameFromPath(CSVFilePath: str, allFileInfo: dict):
     raise Exception(f"Could not find a file associated with the given CSV path ({CSVFilePath})")
 
 @genericLog
-def __updateDeletedCSVFile(CSVFilePath: str, allFileInfo: dict) -> bool:
+def _updateDeletedCSVFile(CSVFilePath: str, allFileInfo: dict) -> bool:
     
-    CSVFileName = __getCSVFileNameFromPath(CSVFilePath, allFileInfo)
-    __clearCSVFileRelatedItems(CSVFileName, allFileInfo)
-    allFileInfo = __getUpdatedAllFileInfoCSV(CSVFileName, allFileInfo)
+    CSVFileName = _getCSVFileNameFromPath(CSVFilePath, allFileInfo)
+    _clearCSVFileRelatedItems(CSVFileName, allFileInfo)
+    allFileInfo = _getUpdatedAllFileInfoCSV(CSVFileName, allFileInfo)
 
     return files.saveFileInfo(allFileInfo)
 
 @genericLog
-def __getUpdatedAllFileInfoHTML(HTMLFilePath: str, allFileInfo: dict):
+def _getUpdatedAllFileInfoHTML(HTMLFilePath: str, allFileInfo: dict):
 
     for fileName in allFileInfo: 
         currFileInfo = allFileInfo[fileName]
@@ -264,26 +264,26 @@ def __getUpdatedAllFileInfoHTML(HTMLFilePath: str, allFileInfo: dict):
     return allFileInfo
 
 @genericLog
-def __updateDeletedHTMLFile(HTMLFilePath: str, allFileInfo: dict) -> bool:      
+def _updateDeletedHTMLFile(HTMLFilePath: str, allFileInfo: dict) -> bool:      
 
-    updatedAllFileInfo = __getUpdatedAllFileInfoHTML(HTMLFilePath, allFileInfo)
+    updatedAllFileInfo = _getUpdatedAllFileInfoHTML(HTMLFilePath, allFileInfo)
     return files.saveFileInfo(updatedAllFileInfo)
 
 @genericLog
-def __getUpdateDeleteFile(filePath: str) -> Callable:
+def _getUpdateDeleteFile(filePath: str) -> Callable:
     isHTML = files.isFileHTML(filePath)
     isCSV = files.isFileCSV(filePath)    
     if (isHTML):
-        return __updateDeletedHTMLFile
+        return _updateDeletedHTMLFile
     if (isCSV):
-        return __updateDeletedCSVFile
+        return _updateDeletedCSVFile
 
     raise Exception(f"Given file path ({filePath}) could not be identified as HTML nor CSV")
 
 @genericLog
-def __handleDeleteUpdateByFileType(filePath: str) -> bool:
+def _handleDeleteUpdateByFileType(filePath: str) -> bool:
     
-    updateDeleteFile = __getUpdateDeleteFile(filePath)
+    updateDeleteFile = _getUpdateDeleteFile(filePath)
     allFileInfo = files.getAllFileInfo()
     updateSuccessful = updateDeleteFile(filePath, allFileInfo)
     
@@ -291,7 +291,7 @@ def __handleDeleteUpdateByFileType(filePath: str) -> bool:
 
 @genericLog
 def updateDeletedFileInfo(filePath: str): 
-    updateSuccessful = __handleDeleteUpdateByFileType(filePath)
+    updateSuccessful = _handleDeleteUpdateByFileType(filePath)
 
 if __name__ == "__main__":
     # print(main())
