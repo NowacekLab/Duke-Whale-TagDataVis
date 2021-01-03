@@ -13,8 +13,12 @@ from private.logs import logDecorator
 MODULE_NAME = "precalcs"
 genericLog = logDecorator.genericLog(MODULE_NAME)
 
+
 @genericLog
 def __haversine(lat1, long1, lat2, long2):
+    '''
+    ---NOTE---: Assumes N and W as positive cardinal directions
+    '''
     lat1 = lat1 * np.pi / 180
     lat2 = lat2 * np.pi / 180
     long1 = long1 * np.pi / 180
@@ -25,26 +29,56 @@ def __haversine(lat1, long1, lat2, long2):
     c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
     return c * 6371000
 
+@genericLog
+def __inverseHaversine(lat1, long1, d, tc): 
+    '''[Calculate Inverse Haversine - dLat/dLong given a distance and angle]
+    Sourced from: http://www.edwilliams.org/avform.htm#LL
+    ---NOTE---: Assumes N and W as positive cardinal directions
+    Parameters
+    ----------
+    lat1 : float
+        Initial Latitude (degrees)
+    long1 : float
+        Initial Longitude (degrees)
+    d : float
+        Distance (meters)
+    tc : float
+        Heading Angle (N is 0 rad) (radians)
+
+    Returns
+    -------
+    (finalLat, finalLong) : Tuple[float]
+        Resultant lat/long (degrees)
+    '''
+    d = d / 6378100
+    lat1 = lat1 * np.pi / 180
+    long1 = long1 * np.pi / 180
+    lat = np.arcsin(np.sin(lat1)*np.cos(d)+np.cos(lat1)*np.sin(d)*np.cos(tc))
+    dlon=np.arctan2(np.sin(tc)*np.sin(d)*np.cos(lat1),np.cos(d)-np.sin(lat1)*np.sin(lat))
+    lon = (long1 - dlon + np.pi) % (2 * np.pi) - np.pi
+    return (lat * 180 / np.pi, lon * 180 / np.pi)
+    
+
 #Calculate X-Y Displacement Between Two Lat. Long. Pts. (VW)
 @genericLog
 def __xydistance(lat1, long1, lat2, long2):
-    x1 = haversine(lat1, long1, lat1, long2)
+    x1 = __haversine(lat1, long1, lat1, long2)
     if(long2 > long1): #Direcional Correction Factors to convert 
         x1 = -x1
-    y1 = haversine(lat1, long1, lat2, long1)
+    y1 = __haversine(lat1, long1, lat2, long1)
     if(lat1 > lat2):
         y1 = -y1
-    x2 = haversine(lat2, long1, lat2, long2)
+    x2 = __haversine(lat2, long1, lat2, long2)
     if(long2 > long1):
         x2 = -x2
-    y2 = haversine(lat1, long2, lat2, long2)
+    y2 = __haversine(lat1, long2, lat2, long2)
     if(lat1 > lat2):
         y2 = -y2
     return (x1+x2)/2, (y1+y2)/2
 
 dateTime = Any 
 @genericLog
-def __xmlLogFileProcessor(logFilePath: str) -> dateTime: 
+def __xmlLogFileProcessor(logFilePath: str) -> datetime: 
     DOMTree = xml.dom.minidom.parse(logFilePath)
     collection = DOMTree.documentElement
     collection.getElementsByTagName("EVENT")
@@ -53,7 +87,7 @@ def __xmlLogFileProcessor(logFilePath: str) -> dateTime:
     return startTime 
 
 @genericLog
-def __txtLogFileProcessor(logFilePath: str) -> dateTime: 
+def __txtLogFileProcessor(logFilePath: str) -> datetime: 
     log = open(logFilePath, 'r').read()
     intTime = int(re.findall('[0-9a-f]{8}', log)[0], 16)
     originTime = datetime(1900, 1, 1, 0, 0, 0)
@@ -71,7 +105,7 @@ def __getLogProcessor(logFilePath: str) -> Callable:
     raise Exception(f"Log file must be .xml or .txt. Given file has extension: {ext}")
 
 @genericLog
-def __logProcessStartTime(logFilePath: str) -> dateTime:
+def __logProcessStartTime(logFilePath: str) -> datetime:
     """[Calculating tag start time from uploaded log file]
 
     Args:
@@ -127,7 +161,7 @@ def __savePreCalcDataFrame(df: PandasDataFrame, dataFileName: str) -> str:
     return preCalcDataPath
 
 @genericLog
-def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str) -> PandasDataFrame:
+def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitude: float, startLongitude: float) -> PandasDataFrame:
     csv = pd.read_csv(dataFilePath)
     data = csv.to_dict(orient = 'list')
     roll = np.array(data['Roll'])
@@ -147,6 +181,11 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str) -> PandasDa
     ts = 1 / fs
     t = np.linspace(0, length * ts, length + 1)
     forward_vec = np.array([0, 1, 0])
+    latArray = np.zeros(length + 1)
+    longArray = np.zeros(length + 1)
+    latArray[0] = startLatitude
+    longArray[0] = startLongitude
+
     
     
     startTime = __logProcessStartTime(logFilePath)
@@ -182,9 +221,9 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str) -> PandasDa
         longdata = gps['Location (Longitude)'].to_numpy() 
         latdata = [float(re.findall("[+-]?\d+\.\d+", i)[0]) for i in latdata]
         longdata = [float(re.findall("[+-]?\d+\.\d+", i)[0]) for i in longdata]
-        startlat = latdata[0]
-        startlong = longdata[0]
-        gps_xydata = np.array([xydistance(startlat, startlong, latdata[i], longdata[i]) for i in range(0, len(latdata))])
+        startlat = latArray[0]
+        startlong = longArray[0]
+        gps_xydata = np.array([__xydistance(startlat, startlong, latdata[i], longdata[i]) for i in range(0, len(latdata))])
         gps_xydata[:,0] = gps_xydata[:,0] + np.sin(gps['Bearing(MAGNETIC!)'].to_numpy() * np.pi / 180) * gps['Range(m)'].to_numpy()
         gps_xydata[:,1] = gps_xydata[:,1] + np.cos(gps['Bearing(MAGNETIC!)'].to_numpy() * np.pi / 180) * gps['Range(m)'].to_numpy()
         gps['XDisplacement'] = gps_xydata[:,0]
@@ -203,9 +242,14 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str) -> PandasDa
             project_vec = np.array([direc[0], direc[1], 0])
             angle = np.arccos(np.dot(direc, project_vec) / (np.linalg.norm(project_vec)))
             dv = v * np.cos(angle)
-            #print(i)
+            print(i)
             #Calculate new displacement for the current step
-            dx[i + 1] = [(dv * np.sin(yaw[i])) * ts + dx[i][0], (dv * np.cos(yaw[i])) * ts + dx[i][1]] #CHECK THIS STEPPPPPPPP
+            dx[i + 1] = [(dv * np.sin(yaw[i])) * ts + dx[i][0], (dv * np.cos(yaw[i])) * ts + dx[i][1]] #CHECK THIS STEP
+            
+            
+
+            
+            
             if (currentGPSTime < len(gps['Time'].to_numpy())) and (t[i] >= gps['Time'].to_numpy()[currentGPSTime]): # DO EDGE CASE CHECKING FOR THIS LINE AND BELOW
                 #calcDepth = calcDepth + [depth[i]]    
                 if currentGPSTime == 0:
@@ -221,12 +265,20 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str) -> PandasDa
                 currentGPSTime += 1
                 lastGPSIndex = i + 1
             
-        # Report Velocity for Verification
+        # Report Velocity for Verification and Calc. Long/Lat
         velocityComponents = np.zeros([length, 2])
         for i in range(length):    
+            #Calculate Long/Lat
+            d = np.sqrt(dx[i+1, 0] ** 2 + dx[i+1, 1] ** 2) #(meters)
+            tc = np.arctan2(dx[i+1, 1], dx[i+1, 0])
+            latArray[i + 1], longArray[i + 1] = __inverseHaversine(startlat, startlong, d, tc)
+            print(i)
             velocityComponents[i, 0] = dx[i + 1, 0] - dx[i, 0]
             velocityComponents[i, 1] = dx[i + 1, 1] - dx[i, 1]
         v_total = np.sqrt(velocityComponents[:, 0] ** 2 + velocityComponents[:, 1] ** 2)
+        
+        csv['Latitude'] = latArray
+        csv['Longitude'] = longArray
         
         # if max(v_total) * fs > v * maxVelocityScale:
 

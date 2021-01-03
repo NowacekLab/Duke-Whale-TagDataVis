@@ -8,7 +8,11 @@
     #Add option for manual selection of timezone
     #Make 3d Track mesh
     #Add optional input for maxVelocityScale
+    #Add date column to calculations
+    #Ask about more plots? (Next week)
 #Questions - Time Discrepancy Between GPS and Tag Start Date? Force Fit to GPS_Z as well if Values Don't fit exactly? Or should I do a 1-hour starttime sweep?
+            #-Just confirming, 0/0/0 RPY is a flat whale facing due north? -Ans, Yes
+            #-I assume there's no easy way to get the start long/lat at tag time = 0? -Ans, may have a datasheet
 
 #%%
 import xml.dom.minidom
@@ -49,6 +53,7 @@ def xydistance(lat1, long1, lat2, long2):
     if(lat1 > lat2):
         y2 = -y2
     return (x1+x2)/2, (y1+y2)/2
+
 
 #Calculate Tag Start Time
 def logProcessStarttime(logname):
@@ -172,17 +177,19 @@ def calculation(filename, logname, gpsname=''):
         v_total = np.sqrt(velocityComponents[:, 0] ** 2 + velocityComponents[:, 1] ** 2)
         if max(v_total) * fs > v * maxVelocityScale:
             print('Possible GPS Fit inaccuracy, maximum velocity of {0:.2f} is larger than the expected maximum of {1}'.format(max(v_total) * fs, v * maxVelocityScale))
+        csv['Latitude'] = latArray
+        csv['Longitude'] = longArray
     #calcDepth = np.array(calcDepth)
     #print(temp, ': ', sum(calcDepth ** 2) ** 0.5)
 #%% Export Data
     csv['X Position'] = dx[:-1, 0]
     csv['Y Position'] = dx[:-1, 1]
     csv['Z Position'] = depth
-    
     csv['Jerk_X'] = j[:,0]
     csv['Jerk_Y'] = j[:,1]
     csv['Jerk_Z'] = j[:,2]
     csv.to_csv('.'.join(filename.split('.')[0:-1]) + '_calculations.csv', index = False)
+    gps.to_csv('.'.join(gpsname.split('.')[0:-1]) + '_calculations.csv', index = False)
 
 #%% Main
 if __name__ == "__main__":

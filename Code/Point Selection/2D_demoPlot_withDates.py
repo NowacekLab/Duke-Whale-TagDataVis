@@ -103,7 +103,10 @@ def plot2D(filename, logname):
     fig.add_trace(go.Scattergl(x = sT, y = sRoll, mode = "lines", name = "Roll" ), row = 2, col = 1)
 
     # Update x-axis
-    fig.update_xaxes(title = "Time (hr)", row = 2, col = 1)
+    fig.update_xaxes(title = "Time (hr)",
+        rangeslider=dict(
+            visible=True
+        ), row = 2, col = 1)
 
     # Update y-axis
     fig.update_yaxes(title = "Depth (m)", autorange = "reversed", row = 1, col = 1)
@@ -134,9 +137,6 @@ def plot2D(filename, logname):
                      stepmode="backward"),
                 dict(step="all")
             ])
-        ),
-        rangeslider=dict(
-            visible=True
         ),
         type="date"
     ))
