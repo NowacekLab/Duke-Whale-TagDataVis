@@ -161,6 +161,7 @@ def __savePreCalcDataFrame(df: PandasDataFrame, dataFileName: str) -> str:
     return preCalcDataPath
 
 @genericLog
+#Reminder, requires startLat and startLong with convention of N-W as positive (rather than N-E)
 def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitude: float, startLongitude: float) -> PandasDataFrame:
     csv = pd.read_csv(dataFilePath)
     data = csv.to_dict(orient = 'list')
@@ -185,17 +186,17 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
     longArray = np.zeros(length + 1)
     latArray[0] = startLatitude
     longArray[0] = startLongitude
-
-    
     
     startTime = __logProcessStartTime(logFilePath)
+    time = np.array([startTime + timedelta(seconds = i * ts) for i in range(length)])
+    
         
         
     #%% GPS File Not Included, Calculate Manually
     if (gpsFilePath == ''):
         for i in range(length):
-            rollq = Quaternion(axis=[1, 0, 0], angle=roll[i])
-            pitchq = Quaternion(axis=[0, 1, 0], angle=pitch[i])
+            rollq = Quaternion(axis=[0, 1, 0], angle=roll[i])
+            pitchq = Quaternion(axis=[1, 0, 0], angle=pitch[i])
             yawq = Quaternion(axis=[0, 0, 1], angle=yaw[i])
             rotateq = (yawq * pitchq * rollq)
             direc = rotateq.rotate(forward_vec)
@@ -212,11 +213,18 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
     #%% GPS File Included, Fit to GPS Data
     if (gpsFilePath != ''):
         # Calculate and Reformat GPS Data
-        gps = pd.read_excel(gpsFilePath)
+        gps = pd.read_excel(gpsFilePath, engine='openpyxl')
         dates = [datetime.strptime(i, '%Y-%m-%dT%H:%M:%S') for i in gps['Date Created'].to_numpy()]
         timepass = [(i - startTime).seconds for i in dates]
         gps['Time'] = timepass
-        gps = gps[gps.FocalAvailability == 'Visual']
+        try:
+            gps = gps[gps.FocalAvailability == 'Visual']
+        except AttributeError:
+            pass
+        try:
+            gps = gps[gps['Focal Availability'] == 'Visual']
+        except KeyError:
+            pass
         latdata = gps['Location (Latitude)'].to_numpy()
         longdata = gps['Location (Longitude)'].to_numpy() 
         latdata = [float(re.findall("[+-]?\d+\.\d+", i)[0]) for i in latdata]
@@ -224,8 +232,24 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
         startlat = latArray[0]
         startlong = longArray[0]
         gps_xydata = np.array([__xydistance(startlat, startlong, latdata[i], longdata[i]) for i in range(0, len(latdata))])
-        gps_xydata[:,0] = gps_xydata[:,0] + np.sin(gps['Bearing(MAGNETIC!)'].to_numpy() * np.pi / 180) * gps['Range(m)'].to_numpy()
-        gps_xydata[:,1] = gps_xydata[:,1] + np.cos(gps['Bearing(MAGNETIC!)'].to_numpy() * np.pi / 180) * gps['Range(m)'].to_numpy()
+        try:
+            boatBearing = gps['Bearing(MAGNETIC!)']
+        except KeyError:
+            pass
+        try:
+            boatBearing = gps['Bearing']
+        except KeyError:
+            pass
+        try:
+            boatDistance = gps['Range']
+        except KeyError:
+            pass
+        try:
+            boatDistance = gps['Range(m)']
+        except KeyError:
+            pass
+        gps_xydata[:,0] = gps_xydata[:,0] + np.sin(boatBearing.to_numpy() * np.pi / 180) * boatDistance.to_numpy()
+        gps_xydata[:,1] = gps_xydata[:,1] + np.cos(boatBearing.to_numpy() * np.pi / 180) * boatDistance.to_numpy()
         gps['XDisplacement'] = gps_xydata[:,0]
         gps['YDisplacement'] = gps_xydata[:,1]
         gps = gps.dropna(subset=['XDisplacement', 'YDisplacement'])
@@ -245,8 +269,7 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
             print(i)
             #Calculate new displacement for the current step
             dx[i + 1] = [(dv * np.sin(yaw[i])) * ts + dx[i][0], (dv * np.cos(yaw[i])) * ts + dx[i][1]] #CHECK THIS STEP
-            
-            
+
 
             
             
@@ -277,8 +300,9 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
             velocityComponents[i, 1] = dx[i + 1, 1] - dx[i, 1]
         v_total = np.sqrt(velocityComponents[:, 0] ** 2 + velocityComponents[:, 1] ** 2)
         
-        csv['Latitude'] = latArray
-        csv['Longitude'] = longArray
+        csv['Latitude'] = latArray[:-1]
+        csv['Longitude'] = longArray[:-1]
+        csv['Time'] = time
         
         # if max(v_total) * fs > v * maxVelocityScale:
 
@@ -286,6 +310,8 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
         #     print('Possible GPS Fit inaccuracy, maximum velocity of {0:.2f} is larger than the expected maximum of {1}'.format(max(v_total) * fs, v * maxVelocityScale))
         #calcDepth = np.array(calcDepth)
         #print(temp, ': ', sum(calcDepth ** 2) ** 0.5)
+        
+        
     #%% Export Data
     csv['X Position'] = dx[:-1, 0]
     csv['Y Position'] = dx[:-1, 1]
