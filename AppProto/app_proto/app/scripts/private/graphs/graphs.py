@@ -14,7 +14,7 @@ MODULE_NAME = "graphs"
 genericLog = logDecorator.genericLog(MODULE_NAME)
 
 @genericLog
-def __getGraphDirPathFromType(graphType: str): 
+def _getGraphDirPathFromType(graphType: str): 
     
     GRAPHS_2D_DIR_PATH = pathsHelper.getGraphs2DDirPath()
     GRAPHS_3D_DIR_PATH = pathsHelper.getGraphs3DDirPath()
@@ -29,26 +29,26 @@ def __getGraphDirPathFromType(graphType: str):
     return graphDirPath 
 
 @genericLog
-def __getGraphFuncFromTup(grapherTuple: Tuple) -> Callable: 
+def _getGraphFuncFromTup(grapherTuple: Tuple) -> Callable: 
     
     return grapherTuple[0]
 
 @genericLog
-def __getGraphTypeFromTup(grapherTuple: Tuple) -> str:
+def _getGraphTypeFromTup(grapherTuple: Tuple) -> str:
     
     return grapherTuple[1]
 
 @genericLog
-def __getGraphNamesFromTup(grapherTuple: Tuple) -> List[str]:
+def _getGraphNamesFromTup(grapherTuple: Tuple) -> List[str]:
     
     return grapherTuple[2:]
 
 Graph = Any 
 @genericLog
-def __createGraphHTML(grapherTuple: Tuple, dataFileName: str): 
+def _createGraphHTML(grapherTuple: Tuple, dataFileName: str): 
     
-    graphType = __getGraphTypeFromTup(grapherTuple)
-    graphTypeDirPath = __getGraphDirPathFromType(graphType)
+    graphType = _getGraphTypeFromTup(grapherTuple)
+    graphTypeDirPath = _getGraphDirPathFromType(graphType)
     graphDirPath = os.path.join(graphTypeDirPath, dataFileName)
     
     for graph, name in zip(graphs, graphNames):
@@ -56,69 +56,69 @@ def __createGraphHTML(grapherTuple: Tuple, dataFileName: str):
         graph.write_html(HTMLPath)
         
 @genericLog
-def __createGraphs(grapherTuple: Tuple, graphInputs: Tuple) -> List[Graph]: \
+def _createGraphs(grapherTuple: Tuple, graphInputs: Tuple) -> List[Graph]: \
     
-    grapherFunc = __getGraphFuncFromTup(grapherTuple)
+    grapherFunc = _getGraphFuncFromTup(grapherTuple)
     
     graphs = grapherFunc(*graphInputs)
     return graphs 
 
 @genericLog
-def __handleGraphCreation(grapherTuple: Tuple, graphInputs: Tuple, dataFileName: str): 
-    graphs = __createGraphs(grapherTuple, graphInputs)
-    __createGraphHTML(grapherTuple, dataFileName)
+def _handleGraphCreation(grapherTuple: Tuple, graphInputs: Tuple, dataFileName: str): 
+    graphs = _createGraphs(grapherTuple, graphInputs)
+    _createGraphHTML(grapherTuple, dataFileName)
 
 GRAPHERS_DICT = graphers.GRAPHERS_DICT 
 @genericLog
-def __getAllGraphers() -> GRAPHERS_DICT:
+def _getAllGraphers() -> GRAPHERS_DICT:
     allGraphers = graphers.getAllGraphers()
     return allGraphers
 
 PandasDataFrame = Any
 @genericLog
-def __getXAxisFromPandasDataFrame(dataFrame: PandasDataFrame) -> List[int]:
-    indicesPair = __getIndicesFromPandasDataFrame(dataFrame)
+def _getXAxisFromPandasDataFrame(dataFrame: PandasDataFrame) -> List[int]:
+    indicesPair = _getIndicesFromPandasDataFrame(dataFrame)
     startIndex, endIndex = indicesPair
     xAxis = list(range(startIndex, endIndex))
     return xAxis 
 
 @genericLog
-def __getIndicesFromPandasDataFrame(dataFrame: PandasDataFrame) -> Tuple[int, int]:
+def _getIndicesFromPandasDataFrame(dataFrame: PandasDataFrame) -> Tuple[int, int]:
     indicesPair = pandasHelper.getIndicesPairFromPandasDataFrame(dataFrame)
     return indicesPair 
     
 @genericLog
-def __genericGetCSVFilePandasDataFrame(pathKey: str, graphKwargs: dict) -> PandasDataFrame: 
+def _genericGetCSVFilePandasDataFrame(pathKey: str, graphKwargs: dict) -> PandasDataFrame: 
     CSVFilePath = graphKwargs[pathKey]
     dataFrame = pandasHelper.getPandasDataFrameFromCSVPath(CSVFilePath)
     return dataFrame 
     
 @genericLog
-def __getPreCalcFilePandasDataFrame(graphKwargs: dict) -> PandasDataFrame:
+def _getPreCalcFilePandasDataFrame(graphKwargs: dict) -> PandasDataFrame:
     PRECALC_KEY = keysHelper.getPreCalcKey()
-    dataFrame = __genericGetCSVFilePandasDataFrame(PRECALC_KEY, graphKwargs)
+    dataFrame = _genericGetCSVFilePandasDataFrame(PRECALC_KEY, graphKwargs)
     return dataFrame 
     
 @genericLog
-def __getDataFilePandasDataFrame(graphKwargs: dict) -> PandasDataFrame:
+def _getDataFilePandasDataFrame(graphKwargs: dict) -> PandasDataFrame:
     DATA_FILE_PATH_KWARG = kwargsHelper.getDataFilePathKwarg()
-    dataFrame = __genericGetCSVFilePandasDataFrame(PRECALC_KEY, graphKwargs)
+    dataFrame = _genericGetCSVFilePandasDataFrame(PRECALC_KEY, graphKwargs)
     return dataFrame 
 
 GRAPHER_KWARG = str 
 GRAPHER_INPUTS = List[Any]
 @genericLog
-def __getGrapherKwargToInputs(graphKwargs: dict) -> Mapping[GRAPHER_KWARG, GRAPHER_INPUTS]: 
+def _getGrapherKwargToInputs(graphKwargs: dict) -> Mapping[GRAPHER_KWARG, GRAPHER_INPUTS]: 
     
     DATA_AXIS_INDICES_KWARG = kwargsHelper.getGrapherDataAxisIndicesKwarg()
     PRECALC_AXIS_INDICES_KWARG = kwargsHelper.getGrapherPreCalcAxisIndicesKwarg()
     DATA_FILE_KWARG = kwargsHelper.getGrapherDataFileKwarg()
     PRECALC_FILE_KWARG = kwargsHelper.getGrapherPrecalcFileKwarg()
     
-    dataFilePandasDataFrame = __getDataFilePandasDataFrame(graphKwargs)
-    preCalcFilePandasDataFrame = __getPreCalcFilePandasDataFrame(graphKwargs)
-    indicesPair = __getIndicesFromPandasDataFrame(dataFilePandasDataFrame)
-    xAxis = __getXAxisFromPandasDataFrame(dataFilePandasDataFrame)
+    dataFilePandasDataFrame = _getDataFilePandasDataFrame(graphKwargs)
+    preCalcFilePandasDataFrame = _getPreCalcFilePandasDataFrame(graphKwargs)
+    indicesPair = _getIndicesFromPandasDataFrame(dataFilePandasDataFrame)
+    xAxis = _getXAxisFromPandasDataFrame(dataFilePandasDataFrame)
     
     grapherKwargToInputs = {
         DATA_AXIS_INDICES_KWARG : [dataFilePandasDataFrame, xAxis, indicesPair],
@@ -130,33 +130,33 @@ def __getGrapherKwargToInputs(graphKwargs: dict) -> Mapping[GRAPHER_KWARG, GRAPH
     return grapherKwargToInputs
 
 @genericLog
-def __getDataFileName(graphKwargs: dict) -> str:
+def _getDataFileName(graphKwargs: dict) -> str:
     DATA_FILE_NAME_KWARG = kwargsHelper.getDataFileNameKwarg()
     dataFileName = graphKwargs[DATA_FILE_NAME_KWARG]
     return dataFileName
         
 @genericLog 
-def __createGrapherProcesses(graphKwargs: dict, grapherKwargToInputs: dict) -> List: 
-    dataFileName = __getDataFileName(graphKwargs)
+def _createGrapherProcesses(graphKwargs: dict, grapherKwargToInputs: dict) -> List: 
+    dataFileName = _getDataFileName(graphKwargs)
     
     all_processes = [] 
     
-    allGraphers = __getAllGraphers() 
+    allGraphers = _getAllGraphers() 
     for grapherKwarg in allGraphers: 
         
         grapherTuples = allGraphers[grapherKwarg]
         grapherInputs = grapherKwargToInputs[grapherKwarg]
         
         for grapherTuple in grapherTuples:
-            process = Process(target=__handleGraphCreation, args=(grapherTuples, grapherInputs, dataFileName))
+            process = Process(target=_handleGraphCreation, args=(grapherTuples, grapherInputs, dataFileName))
             all_processes.append(process)
             
     return all_processes 
             
 @genericLog
-def __generateAllGraphs(graphKwargs: dict):
-    grapherKwargToInputs = __getGrapherKwargToInputs(grapherKwargs)
-    grapherProcesses = __createGrapherProcesses(graphKwargs, grapherKwargToInputs)
+def _generateAllGraphs(graphKwargs: dict):
+    grapherKwargToInputs = _getGrapherKwargToInputs(grapherKwargs)
+    grapherProcesses = _createGrapherProcesses(graphKwargs, grapherKwargToInputs)
     
     for process in grapherProcesses: 
         process.start() 
@@ -164,8 +164,8 @@ def __generateAllGraphs(graphKwargs: dict):
         process.join() 
         
 @genericLog 
-def __getFileGraphDirsFromFileName(dataFileName: str) -> List[str]: 
-    dataFileName = __getDataFileName(graphKwargs)
+def _getFileGraphDirsFromFileName(dataFileName: str) -> List[str]: 
+    dataFileName = _getDataFileName(graphKwargs)
     
     allGraphDirs = pathsHelper.getAllGraphsDirPaths()
     
@@ -180,23 +180,23 @@ def __getFileGraphDirsFromFileName(dataFileName: str) -> List[str]:
     return fileGraphDirs
 
 @genericLog
-def __getFileGraphDirsFromKwargs(graphKwargs: dict) -> List[str]:
+def _getFileGraphDirsFromKwargs(graphKwargs: dict) -> List[str]:
 
-    dataFileName = __getDataFileName(graphKwargs)
-    fileGraphDirs = __getFileGraphDirsFromFileName(dataFileName)
+    dataFileName = _getDataFileName(graphKwargs)
+    fileGraphDirs = _getFileGraphDirsFromFileName(dataFileName)
     return fileGraphDirs 
     
 @genericLog 
-def __createGraphDirs(graphKwargs: dict):
+def _createGraphDirs(graphKwargs: dict):
         
-    fileGraphDirs = __getFileGraphDirsFromKwargs(graphKwargs)
+    fileGraphDirs = _getFileGraphDirsFromKwargs(graphKwargs)
     
     for fileGraphDir in fileGraphDirs: 
         filesHelper.createDirIfNotExist(fileGraphDir)
         graphDirs.append(fileGraphDir)
         
 @genericLog 
-def __getFoundHTMLFiles(fileGraphDir: str) -> dict: 
+def _getFoundHTMLFiles(fileGraphDir: str) -> dict: 
     
     foundHTMLFiles = {}
     
@@ -209,7 +209,7 @@ def __getFoundHTMLFiles(fileGraphDir: str) -> dict:
     return foundHTMLFiles 
 
 @genericLog 
-def __getGraphKeyToDirPathMapping() -> dict: 
+def _getGraphKeyToDirPathMapping() -> dict: 
     
     graphKeyToDirPathMapping = {}
     
@@ -224,17 +224,17 @@ def __getGraphKeyToDirPathMapping() -> dict:
     return graphKeyToDirPathMapping    
         
 @genericLog 
-def __addGeneratedGraphs(graphKwargs: dict): 
+def _addGeneratedGraphs(graphKwargs: dict): 
     
     graphKwargsCopy = graphKwargs.copy() 
     
-    graphKeyToDirPathMapping = __getGraphKeyToDirPathMapping()
+    graphKeyToDirPathMapping = _getGraphKeyToDirPathMapping()
     
     for graphKey in graphKeyToDirPathMapping: 
         
         graphDirPath = graphKeyToDirPathMapping[graphKey]
         
-        HTMLFilesAtDir = __getFoundHTMLFiles(graphDirPath)
+        HTMLFilesAtDir = _getFoundHTMLFiles(graphDirPath)
         
         graphKwargsCopy[graphKey] = HTMLFilesAtDir 
     
@@ -242,7 +242,7 @@ def __addGeneratedGraphs(graphKwargs: dict):
     
 @genericLog
 def handleGenerateAllGraphs(graphKwargs: dict):
-    __createGraphDirs(graphKwargs)
-    __generateAllGraphs(graphKwargs)
-    graphKwargs = __addGeneratedGraphs(graphKwargs)
+    _createGraphDirs(graphKwargs)
+    _generateAllGraphs(graphKwargs)
+    graphKwargs = _addGeneratedGraphs(graphKwargs)
     return graphKwargs 

@@ -8,17 +8,17 @@ MODULE_NAME = "upload.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)
 
 @genericLog 
-def __handleGeneratingGraphs(uploadArgs: dict) -> dict: 
+def _handleGeneratingGraphs(uploadArgs: dict) -> dict: 
     uploadArgs = graphs.handleGenerateAllGraphs(uploadArgs)
     return uploadArgs
 
 @genericLog
-def __handlePreCalculate(uploadArgs: dict) -> dict: 
+def _handlePreCalculate(uploadArgs: dict) -> dict: 
     uploadArgs = precalcs.handlePreCalculate(uploadArgs)
     return uploadArgs
 
 @genericLog
-def __saveNeededFiles(uploadArgs: dict) -> dict: 
+def _saveNeededFiles(uploadArgs: dict) -> dict: 
     """[Saves needed files locally as specified in settings and returns uploadArgs dict with new paths to saved files]
 
     Args:
@@ -40,7 +40,7 @@ def __saveNeededFiles(uploadArgs: dict) -> dict:
     return uploadArgsCopy
 
 @genericLog
-def __processAndAddNewPathName(uploadArgs: dict) -> dict: 
+def _processAndAddNewPathName(uploadArgs: dict) -> dict: 
     """[Processes data file to CSV and returns uploadArgs dict with new CSV path/name]
 
     Args:
@@ -67,17 +67,17 @@ def __processAndAddNewPathName(uploadArgs: dict) -> dict:
     return uploadArgsCopy
 
 @genericLog
-def __handleProcessDataToCSV(uploadArgs: dict):
-    uploadArgs = __processAndAddNewPathName(uploadArgs)
+def _handleProcessDataToCSV(uploadArgs: dict):
+    uploadArgs = _processAndAddNewPathName(uploadArgs)
     return uploadArgs
     
 @genericLog
 def uploadFile(uploadArgs: dict) -> dict:    
     
-    uploadArgs = __handleProcessDataToCSV(uploadArgs)
-    uploadArgs = __saveNeededFiles(uploadArgs)
-    uploadArgs = __handlePreCalculate(uploadArgs)
-    uploadArgs = __handleGeneratingGraphs(uploadArgs)
+    uploadArgs = _handleProcessDataToCSV(uploadArgs)
+    uploadArgs = _saveNeededFiles(uploadArgs)
+    uploadArgs = _handlePreCalculate(uploadArgs)
+    uploadArgs = _handleGeneratingGraphs(uploadArgs)
     
     return uploadArgs 
     

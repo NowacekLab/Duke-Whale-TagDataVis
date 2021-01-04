@@ -70,7 +70,7 @@ def get_download_path():
     else:
         return os.path.join(os.path.expanduser('~'), 'downloads')
 
-def __handleSave(cmdArgs: dict):
+def _handleSave(cmdArgs: dict):
     """
     Saves the file located at the path_ parameter
     to the downloads directory
@@ -98,7 +98,7 @@ def __handleSave(cmdArgs: dict):
     # except: 
     #     return False 
 
-def __handleEdit(cmdArgs: dict):
+def _handleEdit(cmdArgs: dict):
     """
     Opens the file located at the path_ parameter
     with the default application for the file 
@@ -112,7 +112,7 @@ def __handleEdit(cmdArgs: dict):
     #     subprocess.Popen(['xdg-open', path_])
     # return True 
 
-def __handleDelete(cmdArgs: dict):
+def _handleDelete(cmdArgs: dict):
     """
     Finds and deletes file located at path_ parameter 
     """
@@ -125,7 +125,7 @@ def __handleDelete(cmdArgs: dict):
     # except: 
     #     return False 
 
-def __handleReprocess(cmdArgs: dict):
+def _handleReprocess(cmdArgs: dict):
     """
     Reprocesses graphs for a .csv file
     """
@@ -137,22 +137,22 @@ def __handleReprocess(cmdArgs: dict):
     #     return False 
 
 @genericLog 
-def __addRemainingUploadFileInfo(fileInfo: dict) -> dict:
+def _addRemainingUploadFileInfo(fileInfo: dict) -> dict:
     
     fileInfo = updates.refreshFileInfo(fileInfo)
     return fileInfo 
     
 @genericLog 
-def __handleUpload(cmdArgs: dict):
+def _handleUpload(cmdArgs: dict):
     
     finalUploadArgs = upload.uploadFile(cmdArgs)
-    fileInfo = __addRemainingUploadFileInfo(finalUploadArgs)
+    fileInfo = _addRemainingUploadFileInfo(finalUploadArgs)
     filesHelper.addNewFileInfoEntry(fileInfo)
         
 @genericLog
-def __getActionExec(action: str) -> Callable: 
+def _getActionExec(action: str) -> Callable: 
     actionModules = {
-        "upload": __handleUpload,
+        "upload": _handleUpload,
         # "reprocess":,
         # "edit":,
         # "save":,    

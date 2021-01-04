@@ -20,7 +20,7 @@ GRAPHER_TUPS = List[GRAPHER_TUP]
 GRAPHERS_DICT = Mapping[GRAPHER_KWARG, GRAPHER_TUPS]
 
 @genericLog
-def __addGraphTypeMarkerToGrapherTups(grapherTups: GRAPHER_TUPS, graphType: str) -> GRAPHER_TUPS: 
+def _addGraphTypeMarkerToGrapherTups(grapherTups: GRAPHER_TUPS, graphType: str) -> GRAPHER_TUPS: 
     
     newGrapherTups = []
     
@@ -44,7 +44,7 @@ def getAllGraphers() -> GRAPHERS_DICT:
             if not grapherKwarg in allGraphers: 
                 allGraphers[grapherKwarg] = [] 
             grapherTups = grapher[graphersKwarg]
-            grapherTups = __addGraphTypeMarkerToGrapherTups(grapherTups, graphType)
+            grapherTups = _addGraphTypeMarkerToGrapherTups(grapherTups, graphType)
             allGraphers[grapherKwarg] += grapherTups 
     
     return allGraphers 

@@ -15,7 +15,7 @@ genericLog = logDecorator.genericLog(MODULE_NAME)
 
 
 @genericLog
-def __haversine(lat1, long1, lat2, long2):
+def _haversine(lat1, long1, lat2, long2):
     '''
     ---NOTE---: Assumes N and W as positive cardinal directions
     '''
@@ -30,7 +30,7 @@ def __haversine(lat1, long1, lat2, long2):
     return c * 6371000
 
 @genericLog
-def __inverseHaversine(lat1, long1, d, tc): 
+def _inverseHaversine(lat1, long1, d, tc): 
     '''[Calculate Inverse Haversine - dLat/dLong given a distance and angle]
     Sourced from: http://www.edwilliams.org/avform.htm#LL
     ---NOTE---: Assumes N and W as positive cardinal directions
@@ -61,24 +61,24 @@ def __inverseHaversine(lat1, long1, d, tc):
 
 #Calculate X-Y Displacement Between Two Lat. Long. Pts. (VW)
 @genericLog
-def __xydistance(lat1, long1, lat2, long2):
-    x1 = __haversine(lat1, long1, lat1, long2)
+def _xydistance(lat1, long1, lat2, long2):
+    x1 = _haversine(lat1, long1, lat1, long2)
     if(long2 > long1): #Direcional Correction Factors to convert 
         x1 = -x1
-    y1 = __haversine(lat1, long1, lat2, long1)
+    y1 = _haversine(lat1, long1, lat2, long1)
     if(lat1 > lat2):
         y1 = -y1
-    x2 = __haversine(lat2, long1, lat2, long2)
+    x2 = _haversine(lat2, long1, lat2, long2)
     if(long2 > long1):
         x2 = -x2
-    y2 = __haversine(lat1, long2, lat2, long2)
+    y2 = _haversine(lat1, long2, lat2, long2)
     if(lat1 > lat2):
         y2 = -y2
     return (x1+x2)/2, (y1+y2)/2
 
 dateTime = Any 
 @genericLog
-def __xmlLogFileProcessor(logFilePath: str) -> datetime: 
+def _xmlLogFileProcessor(logFilePath: str) -> datetime: 
     DOMTree = xml.dom.minidom.parse(logFilePath)
     collection = DOMTree.documentElement
     collection.getElementsByTagName("EVENT")
@@ -87,7 +87,7 @@ def __xmlLogFileProcessor(logFilePath: str) -> datetime:
     return startTime 
 
 @genericLog
-def __txtLogFileProcessor(logFilePath: str) -> datetime: 
+def _txtLogFileProcessor(logFilePath: str) -> datetime: 
     log = open(logFilePath, 'r').read()
     intTime = int(re.findall('[0-9a-f]{8}', log)[0], 16)
     originTime = datetime(1900, 1, 1, 0, 0, 0)
@@ -96,16 +96,16 @@ def __txtLogFileProcessor(logFilePath: str) -> datetime:
     return startTime 
 
 @genericLog
-def __getLogProcessor(logFilePath: str) -> Callable: 
+def _getLogProcessor(logFilePath: str) -> Callable: 
     ext = logFilePath.split('.')[-1]
     if ext == "txt":
-        return __txtLogFileProcessor
+        return _txtLogFileProcessor
     elif ext == "xml": 
-        return __xmlLogFileProcessor
+        return _xmlLogFileProcessor
     raise Exception(f"Log file must be .xml or .txt. Given file has extension: {ext}")
 
 @genericLog
-def __logProcessStartTime(logFilePath: str) -> datetime:
+def _logProcessStartTime(logFilePath: str) -> datetime:
     """[Calculating tag start time from uploaded log file]
 
     Args:
@@ -114,12 +114,12 @@ def __logProcessStartTime(logFilePath: str) -> datetime:
     Returns:
         dateTime: [datetime object]
     """
-    logProcessor = __getLogProcessor(logFilePath)
+    logProcessor = _getLogProcessor(logFilePath)
     startTime = logProcessor(logFilePath)
     return startTime 
 
 @genericLog
-def __getGPSFileTup(filesInfo: dict) -> Tuple[str]:
+def _getGPSFileTup(filesInfo: dict) -> Tuple[str]:
     
     GPS_PATH_KEY = keysHelper.getGPSPathKey()
     GPS_NAME_KEY = keysHelper.getGPSNameKey()
@@ -130,7 +130,7 @@ def __getGPSFileTup(filesInfo: dict) -> Tuple[str]:
     return (gpsFilePath, gpsNameKey)
     
 @genericLog
-def __getLogFileTup(filesInfo: dict) -> Tuple[str]: 
+def _getLogFileTup(filesInfo: dict) -> Tuple[str]: 
     
     LOG_PATH_KEY = keysHelper.getLogPathKey()
     LOG_NAME_KEY = keysHelper.getLogNameKey() 
@@ -141,7 +141,7 @@ def __getLogFileTup(filesInfo: dict) -> Tuple[str]:
     return (logFilePath, logFileName)
     
 @genericLog
-def __getDataFileTup(filesInfo: dict) -> Tuple[str]:    
+def _getDataFileTup(filesInfo: dict) -> Tuple[str]:    
     
     DATA_PATH_KEY = keysHelper.getOrigDataFilePathKey()
     DATA_NAME_KEY = keysHelper.getOrigDataFileNameKey()
@@ -153,13 +153,16 @@ def __getDataFileTup(filesInfo: dict) -> Tuple[str]:
 
 PandasDataFrame = Any 
 @genericLog
-def __savePreCalcDataFrame(df: PandasDataFrame, dataFileName: str) -> str: 
+def _savePreCalcDataFrame(df: PandasDataFrame, dataFileName: str) -> str: 
     PRECALCS_DIR_PATH = pathsHelper.getPreCalcsDirPath()
     
     preCalcDataPath = os.path.join(PRECALCS_DIR_PATH, dataFileName)
     files.savePandasDataFrame(df, preCalcDataPath)
     return preCalcDataPath
 
+
+
+# ! apparently startlat and startlong are hard-coded 
 @genericLog
 #Reminder, requires startLat and startLong with convention of N-W as positive (rather than N-E)
 def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitude: float, startLongitude: float) -> PandasDataFrame:
@@ -294,7 +297,7 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
             #Calculate Long/Lat
             d = np.sqrt(dx[i+1, 0] ** 2 + dx[i+1, 1] ** 2) #(meters)
             tc = np.arctan2(dx[i+1, 1], dx[i+1, 0])
-            latArray[i + 1], longArray[i + 1] = __inverseHaversine(startlat, startlong, d, tc)
+            latArray[i + 1], longArray[i + 1] = _inverseHaversine(startlat, startlong, d, tc)
             print(i)
             velocityComponents[i, 0] = dx[i + 1, 0] - dx[i, 0]
             velocityComponents[i, 1] = dx[i + 1, 1] - dx[i, 1]
@@ -324,18 +327,17 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
     return csv 
 
 @genericLog
-def __preCalcAndSave(filesInfo: dict):
-    dataFilePath, dataFileName = __getDataFileTup(filesInfo)
-    logFilePath, logFileName = __getLogFileTup(filesInfo)
-    gpsFilePath, gpsFileName = __getGPSFileTup(filesInfo)
-    dataFrame = __preCalc(dataFilePath, logFilePath, gpsFilePath)
-    preCalcDataPath = __savePreCalcDataFrame(dataFrame, dataFileName)
+def _preCalcAndSave(filesInfo: dict):
+    dataFilePath, dataFileName = _getDataFileTup(filesInfo)
+    logFilePath, logFileName = _getLogFileTup(filesInfo)
+    gpsFilePath, gpsFileName = _getGPSFileTup(filesInfo)
+    dataFrame = _preCalc(dataFilePath, logFilePath, gpsFilePath)
+    preCalcDataPath = _savePreCalcDataFrame(dataFrame, dataFileName)
     return preCalcDataPath
     
 @genericLog
 def handlePreCalculate(filesInfo: dict) -> dict:
-    dataFrame = __preCalc(filesInfo)
-    preCalcDataPath = __savePreCalcDataFrame(dataFrame, filesInfo)
+    preCalcDataPath = _preCalcAndSave(filesInfo)
     
     PRECALC_KEY = keysHelper.getPreCalcKey()
     filesInfoCopy = filesInfo.copy()

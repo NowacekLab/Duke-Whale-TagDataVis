@@ -23,7 +23,7 @@ PandasDataFrame = Any
 MatFileData = Any 
 
 @genericLog
-def __parseMatFileData(data: MatFileData) -> dict:
+def _parseMatFileData(data: MatFileData) -> dict:
 
     csv_header = {
         'fs':'fs',
@@ -70,7 +70,7 @@ def __parseMatFileData(data: MatFileData) -> dict:
     return d 
 
 @genericLog
-def __loadMatFileData(filePath: str) -> MatFileData:
+def _loadMatFileData(filePath: str) -> MatFileData:
 
     # 'rb' is necessary, look at https://stackoverflow.com/questions/42339876/error-unicodedecodeerror-utf-8-codec-cant-decode-byte-0xff-in-position-0-in
     with open(filePath, 'rb') as f: 
@@ -79,13 +79,13 @@ def __loadMatFileData(filePath: str) -> MatFileData:
     return matFileData 
 
 @genericLog
-def __getParsedMatFileData(filePath: str) -> MatFileData: 
-    rawMatFileData = __loadMatFileData(filePath)
-    parsedMatFileData = __parseMatFileData(rawMatFileData)
+def _getParsedMatFileData(filePath: str) -> MatFileData: 
+    rawMatFileData = _loadMatFileData(filePath)
+    parsedMatFileData = _parseMatFileData(rawMatFileData)
     return parsedMatFileData
 
 @genericLog
-def __newCSVFileNameAndPath(fileName: str) -> Tuple[str, str]:
+def _newCSVFileNameAndPath(fileName: str) -> Tuple[str, str]:
     
     DATA_FILE_DIR = pathsHelper.getDataFileDirPath()
     
@@ -95,22 +95,22 @@ def __newCSVFileNameAndPath(fileName: str) -> Tuple[str, str]:
     return (newCSVPath, newCSVName)
 
 @genericLog
-def __handleMATConversionToPandasDataFrame(filePath: str) -> PandasDataFrame:
-    parsedMatFileData = __getParsedMatFileData(filePath)
+def _handleMATConversionToPandasDataFrame(filePath: str) -> PandasDataFrame:
+    parsedMatFileData = _getParsedMatFileData(filePath)
     pandasDataFrame = pandasHelper.getPandasDataFrameFromMatData(parsedMatFileData)
 
     return pandasDataFrame
 
 @genericLog
 def convertToCSVAndSave(filePath: str, fileName: str) -> Tuple[str, str]:
-    newFilePath, newFileName = __newCSVFileNameAndPath(fileName)
+    newFilePath, newFileName = _newCSVFileNameAndPath(fileName)
     pandasDataFrame = __handleConversionToPandasDataFrame(filePath)
     files.savePandasDataFrame(pandasDataFrame, newFilePath)
 
     return (newFilePath, newFileName)
 
 @genericLog
-def __needProcessToCSV(dataFileName: str) -> bool: 
+def _needProcessToCSV(dataFileName: str) -> bool: 
     isCSV = files.isFileCSV(dataFileName)
     return not isCSV 
 
@@ -124,7 +124,7 @@ def handleProcessAndNewPathName(dataFilePath: str, dataFileName: str) -> Tuple[s
     Returns:
         Tuple[str]: [CSVFilePath, CSVFileName pairing as strings]
     """
-    needToProcess = __needProcessToCSV(dataFileName)
+    needToProcess = _needProcessToCSV(dataFileName)
     if not needToProcess: 
         return (dataFileName, dataFilePath)
     CSVFilePathAndName = convertToCSVAndSave(dataFilePath, dataFileName)
