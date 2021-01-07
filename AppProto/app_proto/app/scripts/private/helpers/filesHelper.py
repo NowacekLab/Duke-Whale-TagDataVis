@@ -6,28 +6,29 @@ import json
 import os 
 import shutil
 
-from private.logs import logDecorator
-from private.helpers import keysHelper
+from private.logs import logDecorator 
+from private.helpers import keysHelper, pathsHelper
 from typing import Callable 
-
 
 MODULE_NAME = "helper_json.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)
 
+FILE_INFO_PATH = pathsHelper.getFileInfoPath()
+
 @genericLog
-def __doesFileExist(filePath: str) -> bool: 
+def _doesFileExist(filePath: str) -> bool: 
     return os.path.isfile(filePath)
 
 @genericLog
-def __removeFile(filePath: str):
+def _removeFile(filePath: str):
     os.remove(filePath)
         
 @genericLog
-def __doesDirExist(dirPath: str) -> bool: 
+def _doesDirExist(dirPath: str) -> bool: 
     return os.path.isdir(dirPath)
 
 @genericLog
-def __removeDir(dirPath: str):
+def _removeDir(dirPath: str):
     shutil.rmtree(dirPath)
     
 @genericLog 
@@ -36,24 +37,24 @@ def createDir(dirPath: str):
     
 @genericLog
 def createDirIfNotExist(dirPath: str):
-    dirExists = __doesDirExist(dirPath)
+    dirExists = _doesDirExist(dirPath)
     if not dirExists: 
         createDir(dirPath)
 
 @genericLog
-def __getPathRemover(path: str) -> Callable:
-    isFile = __doesFileExist(path)
-    isDir = __doesDirExist(path)
+def _getPathRemover(path: str) -> Callable:
+    isFile = _doesFileExist(path)
+    isDir = _doesDirExist(path)
     if (isFile): 
-        return __removeFile
+        return _removeFile
     if (isDir):
-        return __removeDir
+        return _removeDir
 
     raise Exception(f"Given path ({path}) not found as a file nor as a directory.")
 
 @genericLog
 def handlePathRemoval(path: str):
-    pathRemover = __getPathRemover(path)
+    pathRemover = _getPathRemover(path)
     pathRemover(path)
 
 @genericLog
@@ -62,7 +63,7 @@ def JSON_read(filePath: str) -> dict:
     Reads and returns JSON file as dict 
     at file_path if it exists, else None 
     """
-    fileExists = doesFileExist(filePath)
+    fileExists = _doesFileExist(filePath)
     if not fileExists:
         return None 
 
@@ -119,7 +120,7 @@ def addNewFileInfoEntry(newFileInfo: dict):
     saveFileInfo(currFileInfo)
 
 @genericLog
-def __checkFileEndingGeneric(file_: str, ending: str) -> bool:
+def _checkFileEndingGeneric(file_: str, ending: str) -> bool:
     """
     generic function that checks if file_ ends with param 'ending' 
     """
@@ -135,7 +136,7 @@ def isFileMAT(file_: str):
     Returns:
         [bool]: [file_ param ends in .mat?]
     """
-    return checkFileEndingGeneric(file_, ".mat")
+    return _checkFileEndingGeneric(file_, ".mat")
 
 @genericLog
 def isFileHTML(file_: str) -> bool:
@@ -147,7 +148,7 @@ def isFileHTML(file_: str) -> bool:
     Returns:
         [bool]: [file_ param ends in .html?]
     """
-    return checkFileEndingGeneric(file_, "html")
+    return _checkFileEndingGeneric(file_, "html")
 
 @genericLog
 def isFileCSV(file_: str) -> bool:
@@ -159,22 +160,22 @@ def isFileCSV(file_: str) -> bool:
     Returns:
         [bool]: [file_ param ends in .csv?]
     """
-    return checkFileEndingGeneric(file_, "csv")
+    return _checkFileEndingGeneric(file_, "csv")
 
 @genericLog
-def __copyFileToNewDirPath(origFilePath: str, newDirPath: str) -> str: 
+def _copyFileToNewDirPath(origFilePath: str, newDirPath: str) -> str: 
 
     newPath = shutil.copy(origFilePath, newDirPath)
     return newPath
 
 @genericLog
-def __copyFileToNewFilePath(origFilePath: str, newFilePath: str) -> str: 
+def _copyFileToNewFilePath(origFilePath: str, newFilePath: str) -> str: 
     
     newPath = shutil.copyfile(origFilePath, newFilePath)
     return newPath
 
 @genericLog
-def __getFileCopier(destPath: str) -> Callable: 
+def _getFileCopier(destPath: str) -> Callable: 
     """[Gives appropriate file copier based on destination path of file]
 
     Args:
@@ -185,8 +186,8 @@ def __getFileCopier(destPath: str) -> Callable:
     """
     isDir = os.path.isdir(destPath)
     if isDir: 
-        return __copyFileToNewDirPath 
-    return __copyFileToNewFilePath
+        return _copyFileToNewDirPath 
+    return _copyFileToNewFilePath
 
 @genericLog
 def copyFileToNewPath(origFilePath: str, newPath: str) -> str:
@@ -199,7 +200,7 @@ def copyFileToNewPath(origFilePath: str, newPath: str) -> str:
     Returns:
         str: [new file path]
     """
-    fileCopier = __getFileCopier(newPath)
+    fileCopier = _getFileCopier(newPath)
     newFilePath = fileCopier(origFilePath, newPath)
     return newFilePath
 

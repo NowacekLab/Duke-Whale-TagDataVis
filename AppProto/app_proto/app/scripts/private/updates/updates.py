@@ -37,7 +37,7 @@ def _changeBytesToRegularMemoryFormat(nbytes: byteMemory) -> str:
 
 @genericLog
 def _getFileMemoryInBytes(filePath: str) -> int:
-    return int(os.path.getsize(CSVFilePath))
+    return int(os.path.getsize(filePath))
     
 @genericLog
 def _getFileMemoryInFormat(filePath: str) -> str:
@@ -68,14 +68,14 @@ def updateFileMemory(currFileInfo: dict) -> dict:
 
 @genericLog
 def _getFileLocalTime(filePath: str) -> rawLocalTime: 
-    return time.localtime(os.path.getmtime(CSVFilePath))
+    return time.localtime(os.path.getmtime(filePath))
 
 @genericLog
 def _getFormattedFileLocalTime(filePath: str) -> str: 
     
     FILE_TIME_FORMAT = othersHelper.getFileTimeFormat()
     
-    rawFileTime = __getFileLocalTime(filePath)
+    rawFileTime = _getFileLocalTime(filePath)
     formattedFileTime = time.strftime(FILE_TIME_FORMAT, rawFileTime)
     return formattedFileTime
 
@@ -101,7 +101,7 @@ def updateFileDateModified(currFileInfo: dict):
 
 @genericLog 
 def refreshFileInfo(currFileInfo: dict) -> dict: 
-    UPDATERS = [__updateFileDateModified, __updateFileMemory]
+    UPDATERS = [updateFileDateModified, updateFileMemory]
     for updater in UPDATERS: 
         currFileInfo = updater(currFileInfo)
     return currFileInfo 

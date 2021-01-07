@@ -12,7 +12,7 @@ MatFileData = Any
 
 @genericLog
 def getPandasDataFrameFromMatData(matFileData: MatFileData) -> PandasDataFrame:
-    dataFrame = pd.DataFrame(data=parsedData)
+    dataFrame = pd.DataFrame(data=matFileData)
     return dataFrame 
 
 @genericLog

@@ -1,7 +1,7 @@
 from typing import Tuple, Callable
 from private.logs import logDecorator
 from private.actions import csvmat, precalcs
-from private.helpers import pathsHelper, keysHelper, kwargsHelper
+from private.helpers import pathsHelper, keysHelper, kwargsHelper, filesHelper
 from private.graphs import graphs 
 
 MODULE_NAME = "upload.py"
@@ -34,7 +34,7 @@ def _saveNeededFiles(uploadArgs: dict) -> dict:
     
     for saveFilePathKey, saveFileDir in UPLOAD_MODULE_SAVE_FILE_PATH_KEYS:
         saveFilePath = uploadArgs[saveFilePathKey]
-        newFilePath = files.copyFileToNewPath(saveFilePath, saveFileDir)
+        newFilePath = filesHelper.copyFileToNewPath(saveFilePath, saveFileDir)
         uploadArgsCopy[saveFilePathKey] = newFilePath 
     
     return uploadArgsCopy
@@ -61,8 +61,8 @@ def _processAndAddNewPathName(uploadArgs: dict) -> dict:
     CSV_NAME_KEY = keysHelper.getCSVNameKey()
     
     uploadArgsCopy = uploadArgs.copy() 
-    uploadArgsCopy[CSV_PATH_KEY] = dataFilePath 
-    uploadArgsCopy[CSV_NAME_KEY] = dataFileName
+    uploadArgsCopy[CSV_PATH_KEY] = CSVFilePath 
+    uploadArgsCopy[CSV_NAME_KEY] = CSVFileName
     
     return uploadArgsCopy
 
@@ -74,7 +74,7 @@ def _handleProcessDataToCSV(uploadArgs: dict):
 @genericLog
 def uploadFile(uploadArgs: dict) -> dict:    
     
-    uploadArgs = _handleProcessDataToCSV(uploadArgs)
+    uploadArgs = _handleProcessDataToCSV(uploadArgs)    
     uploadArgs = _saveNeededFiles(uploadArgs)
     uploadArgs = _handlePreCalculate(uploadArgs)
     uploadArgs = _handleGeneratingGraphs(uploadArgs)

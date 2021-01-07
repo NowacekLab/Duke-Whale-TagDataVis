@@ -7,7 +7,7 @@ import xml.dom.minidom
 import re 
 
 from typing import Tuple, Callable, Any
-from private.helpers import keysHelper, pathsHelper, kwargsHelper
+from private.helpers import keysHelper, pathsHelper, kwargsHelper, pandasHelper
 from private.logs import logDecorator
 
 MODULE_NAME = "precalcs"
@@ -88,7 +88,10 @@ def _xmlLogFileProcessor(logFilePath: str) -> datetime:
 
 @genericLog
 def _txtLogFileProcessor(logFilePath: str) -> datetime: 
-    log = open(logFilePath, 'r').read()
+    
+    with open(logFilePath, 'r') as logFile: 
+        log = logFile.read()
+    
     intTime = int(re.findall('[0-9a-f]{8}', log)[0], 16)
     originTime = datetime(1900, 1, 1, 0, 0, 0)
     deltaTime = timedelta(seconds = intTime)
@@ -143,21 +146,41 @@ def _getLogFileTup(filesInfo: dict) -> Tuple[str]:
 @genericLog
 def _getDataFileTup(filesInfo: dict) -> Tuple[str]:    
     
-    DATA_PATH_KEY = keysHelper.getOrigDataFilePathKey()
-    DATA_NAME_KEY = keysHelper.getOrigDataFileNameKey()
+    CSV_PATH_KEY = keysHelper.getCSVPathKey()
+    CSV_NAME_KEY = keysHelper.getCSVNameKey()
     
-    dataFilePath = filesInfo[DATA_PATH_KEY]
-    dataFileName = filesInfo[DATA_NAME_KEY]
+    CSVDataFilePath = filesInfo[CSV_PATH_KEY]
+    CSVDataFileName = filesInfo[CSV_NAME_KEY]
     
-    return (dataFilePath, dataFileName)
+    return (CSVDataFilePath, CSVDataFileName)
+
+@genericLog 
+def _getStartLatLong(filesInfo: dict) -> Tuple[float]:
+    
+    START_LAT_KEY = keysHelper.getStartLatKey()
+    START_LONG_KEY = keysHelper.getStartLongKey()
+    
+    startLat = filesInfo[START_LAT_KEY]
+    startLong = filesInfo[START_LONG_KEY]
+    
+    return (startLat, startLong)
+
+@genericLog 
+def _convertToPreCalcFileName(dataFileName: str) -> str: 
+    dataFileNameParts = dataFileName.split(".")
+    dataFileNameParts[-1] = "_precalc.csv"
+    preCalcFileName = ''.join(dataFileNameParts)
+    return preCalcFileName
 
 PandasDataFrame = Any 
 @genericLog
 def _savePreCalcDataFrame(df: PandasDataFrame, dataFileName: str) -> str: 
     PRECALCS_DIR_PATH = pathsHelper.getPreCalcsDirPath()
     
-    preCalcDataPath = os.path.join(PRECALCS_DIR_PATH, dataFileName)
-    files.savePandasDataFrame(df, preCalcDataPath)
+    preCalcFileName = _convertToPreCalcFileName(dataFileName)
+    
+    preCalcDataPath = os.path.join(PRECALCS_DIR_PATH, preCalcFileName)
+    pandasHelper.savePandasDataFrame(df, preCalcDataPath)
     return preCalcDataPath
 
 
@@ -165,7 +188,7 @@ def _savePreCalcDataFrame(df: PandasDataFrame, dataFileName: str) -> str:
 # ! apparently startlat and startlong are hard-coded 
 @genericLog
 #Reminder, requires startLat and startLong with convention of N-W as positive (rather than N-E)
-def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitude: float, startLongitude: float) -> PandasDataFrame:
+def _preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitude: float, startLongitude: float) -> PandasDataFrame:    
     csv = pd.read_csv(dataFilePath)
     data = csv.to_dict(orient = 'list')
     roll = np.array(data['Roll'])
@@ -190,11 +213,9 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
     latArray[0] = startLatitude
     longArray[0] = startLongitude
     
-    startTime = __logProcessStartTime(logFilePath)
+    startTime = _logProcessStartTime(logFilePath)
     time = np.array([startTime + timedelta(seconds = i * ts) for i in range(length)])
     
-        
-        
     #%% GPS File Not Included, Calculate Manually
     if (gpsFilePath == ''):
         for i in range(length):
@@ -234,7 +255,7 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
         longdata = [float(re.findall("[+-]?\d+\.\d+", i)[0]) for i in longdata]
         startlat = latArray[0]
         startlong = longArray[0]
-        gps_xydata = np.array([__xydistance(startlat, startlong, latdata[i], longdata[i]) for i in range(0, len(latdata))])
+        gps_xydata = np.array([_xydistance(startlat, startlong, latdata[i], longdata[i]) for i in range(0, len(latdata))])
         try:
             boatBearing = gps['Bearing(MAGNETIC!)']
         except KeyError:
@@ -269,7 +290,6 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
             project_vec = np.array([direc[0], direc[1], 0])
             angle = np.arccos(np.dot(direc, project_vec) / (np.linalg.norm(project_vec)))
             dv = v * np.cos(angle)
-            print(i)
             #Calculate new displacement for the current step
             dx[i + 1] = [(dv * np.sin(yaw[i])) * ts + dx[i][0], (dv * np.cos(yaw[i])) * ts + dx[i][1]] #CHECK THIS STEP
 
@@ -298,7 +318,6 @@ def __preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitu
             d = np.sqrt(dx[i+1, 0] ** 2 + dx[i+1, 1] ** 2) #(meters)
             tc = np.arctan2(dx[i+1, 1], dx[i+1, 0])
             latArray[i + 1], longArray[i + 1] = _inverseHaversine(startlat, startlong, d, tc)
-            print(i)
             velocityComponents[i, 0] = dx[i + 1, 0] - dx[i, 0]
             velocityComponents[i, 1] = dx[i + 1, 1] - dx[i, 1]
         v_total = np.sqrt(velocityComponents[:, 0] ** 2 + velocityComponents[:, 1] ** 2)
@@ -331,7 +350,8 @@ def _preCalcAndSave(filesInfo: dict):
     dataFilePath, dataFileName = _getDataFileTup(filesInfo)
     logFilePath, logFileName = _getLogFileTup(filesInfo)
     gpsFilePath, gpsFileName = _getGPSFileTup(filesInfo)
-    dataFrame = _preCalc(dataFilePath, logFilePath, gpsFilePath)
+    startLat, startLong = _getStartLatLong(filesInfo)
+    dataFrame = _preCalc(dataFilePath, logFilePath, gpsFilePath, startLat, startLong)
     preCalcDataPath = _savePreCalcDataFrame(dataFrame, dataFileName)
     return preCalcDataPath
     

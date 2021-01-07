@@ -13,7 +13,7 @@ from typing import Tuple, Any
 # PACKAGE
 from private.updates import updates 
 from private.logs import logDecorator 
-from private.helpers import pathsHelper
+from private.helpers import pathsHelper, filesHelper, pandasHelper
 
 MODULE_NAME = "csvmat"
 genericLog = logDecorator.genericLog(MODULE_NAME)
@@ -104,14 +104,14 @@ def _handleMATConversionToPandasDataFrame(filePath: str) -> PandasDataFrame:
 @genericLog
 def convertToCSVAndSave(filePath: str, fileName: str) -> Tuple[str, str]:
     newFilePath, newFileName = _newCSVFileNameAndPath(fileName)
-    pandasDataFrame = __handleConversionToPandasDataFrame(filePath)
-    files.savePandasDataFrame(pandasDataFrame, newFilePath)
+    pandasDataFrame = _handleMATConversionToPandasDataFrame(filePath)
+    pandasHelper.savePandasDataFrame(pandasDataFrame, newFilePath)
 
     return (newFilePath, newFileName)
 
 @genericLog
 def _needProcessToCSV(dataFileName: str) -> bool: 
-    isCSV = files.isFileCSV(dataFileName)
+    isCSV = filesHelper.isFileCSV(dataFileName)
     return not isCSV 
 
 @genericLog

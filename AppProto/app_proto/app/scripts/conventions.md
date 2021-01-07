@@ -40,6 +40,8 @@
   * specifies name of the module without the .py
     * available modules:
       * 'actions' -- actions.py
+        * REQUIRED KWARG TO USE: 
+          * **ACTION_KWARG**
 * FOR UPLOADING 
   * '(PYTHON_EXEC) main.py actions CMD_LINE_SINGLE_STRING'
     * CMD_LINE_SINGLE_STRING must have... (**constants below in settings.py**)
@@ -49,3 +51,5 @@
       * LOG_FILE_PATH_KWARG 
       * GPS_FILE_NAME_KWARG 
       * GPS_FILE_PATH_KWARG 
+      * START_LAT 
+      * START_LONG 

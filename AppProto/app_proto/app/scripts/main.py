@@ -12,6 +12,7 @@ from private.actions import actions
 
 MODULE_NAME = "main.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)
+mainLog = logDecorator.mainLog(MODULE_NAME)
 
 __MODULES = {
     "actions": actions.handleAction, 
@@ -63,9 +64,9 @@ def _handleModuleExec(cmdArgs: dict) -> Any:
 
     moduleExec = _getModule(cmdArgs) 
     
-    return moduleExec() 
+    return moduleExec(cmdArgs) 
 
-@genericLog
+@mainLog
 def main() -> Any: 
     if not (len(sys.argv) == 2): 
         raise Exception(f"There must be exactly 2 cmd line args given. Was given {len(sys.argv)}. Check conventions.md")
@@ -77,6 +78,12 @@ def main() -> Any:
 
     # ! remember to create a central path creator near the start of the application
         # ! all in 'files' dir 
+        
+@mainLog 
+def main_test(testCMDLineArg: str) -> Any: 
+    
+    cmdArgs = _parseCMDLineArg(testCMDLineArg)
+    return _handleModuleExec(cmdArgs)
 
 if __name__ == "__main__":
     print(main())

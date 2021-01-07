@@ -7,6 +7,8 @@ genericLog = logDecorator.genericLog(MODULE_NAME)
 
 import settings 
 
+__moduleNameKey = settings.MODULE_NAME_KEY 
+__actionKey = settings.ACTION_KEY
 __origDataFilePathKey = settings.ORIG_DATAFILE_PATH_KEY
 __origDataFileNameKey = settings.ORIG_DATAFILE_NAME_KEY
 __GPSNameKey = settings.GPS_NAME_KEY
@@ -22,6 +24,16 @@ __pathKeys = settings.PATH_KEYS
 __uploadModuleSaveFilePathKeys = settings.UPLOAD_MODULE_SAVE_FILE_PATH_KEYS
 __graph2DKey = settings.GRAPH_2D_KEY
 __graph3DKey = settings.GRAPH_3D_KEY 
+__startLat = settings.START_LAT 
+__startLong = settings.START_LONG 
+
+@genericLog 
+def getModuleNameKey() -> str: 
+    return __moduleNameKey 
+
+@genericLog 
+def getActionKey() -> str: 
+    return __actionKey 
 
 @genericLog
 def getOrigDataFilePathKey() -> str: 
@@ -82,3 +94,11 @@ def getGraph2DKey() -> str:
 @genericLog 
 def getGraph3DKey() -> str: 
     return __graph3DKey
+
+@genericLog 
+def getStartLatKey() -> str: 
+    return __startLat 
+
+@genericLog 
+def getStartLongKey() -> str: 
+    return __startLong 

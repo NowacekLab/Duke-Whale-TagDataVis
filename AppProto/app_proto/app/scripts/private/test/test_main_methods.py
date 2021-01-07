@@ -1,17 +1,21 @@
 from private.helpers import kwargsHelper
 import unittest 
 import main 
+from . import helperTest 
     
 class TestMainMethod(unittest.TestCase):
     
     def test_parseCmdLineArg_basic(self):
         testCMDArgs = self.getTestCmdArgs()
         
+        
+        print() 
+        
         print("TEST COMMAND ARGS: ")
         print(testCMDArgs)
         print()
         
-        formattedTestCMDArgs = self.formatCMDLineArg(testCMDArgs)
+        formattedTestCMDArgs = helperTest.formatCMDLineArg(testCMDArgs)
         
         print("FORMATTED VERSION: ")
         print(formattedTestCMDArgs)
@@ -55,14 +59,3 @@ class TestMainMethod(unittest.TestCase):
         }
         
         return cmdArgs
-    
-    def formatCMDLineArg(self, cmdArgs: dict):
-        argsToJoin = [] 
-        for kwarg in cmdArgs: 
-            val = cmdArgs[kwarg]
-            formatted = f"{kwarg}:{val}"
-            argsToJoin.append(formatted)
-            
-        formattedArg = ";-;".join(argsToJoin)
-        
-        return formattedArg

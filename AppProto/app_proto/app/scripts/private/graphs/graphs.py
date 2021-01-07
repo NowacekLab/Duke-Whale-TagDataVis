@@ -45,11 +45,13 @@ def _getGraphNamesFromTup(grapherTuple: Tuple) -> List[str]:
 
 Graph = Any 
 @genericLog
-def _createGraphHTML(grapherTuple: Tuple, dataFileName: str): 
+def _createGraphHTML(grapherTuple: Tuple, graphs: List, dataFileName: str): 
     
     graphType = _getGraphTypeFromTup(grapherTuple)
     graphTypeDirPath = _getGraphDirPathFromType(graphType)
     graphDirPath = os.path.join(graphTypeDirPath, dataFileName)
+    
+    graphNames = _getGraphNamesFromTup(grapherTuple)
     
     for graph, name in zip(graphs, graphNames):
         HTMLPath = os.path.join(graphDirPath, name)
@@ -64,9 +66,11 @@ def _createGraphs(grapherTuple: Tuple, graphInputs: Tuple) -> List[Graph]: \
     return graphs 
 
 @genericLog
-def _handleGraphCreation(grapherTuple: Tuple, graphInputs: Tuple, dataFileName: str): 
-    graphs = _createGraphs(grapherTuple, graphInputs)
-    _createGraphHTML(grapherTuple, dataFileName)
+def _handleGraphCreation(grapherTuples: List[Tuple], graphInputs: Tuple, dataFileName: str): 
+    for grapherTuple in grapherTuples: 
+        graphs = _createGraphs(grapherTuple, graphInputs)
+        _createGraphHTML(grapherTuple, graphs, dataFileName)
+    
 
 GRAPHERS_DICT = graphers.GRAPHERS_DICT 
 @genericLog
@@ -89,7 +93,7 @@ def _getIndicesFromPandasDataFrame(dataFrame: PandasDataFrame) -> Tuple[int, int
     
 @genericLog
 def _genericGetCSVFilePandasDataFrame(pathKey: str, graphKwargs: dict) -> PandasDataFrame: 
-    CSVFilePath = graphKwargs[pathKey]
+    CSVFilePath = graphKwargs[pathKey]    
     dataFrame = pandasHelper.getPandasDataFrameFromCSVPath(CSVFilePath)
     return dataFrame 
     
@@ -101,8 +105,8 @@ def _getPreCalcFilePandasDataFrame(graphKwargs: dict) -> PandasDataFrame:
     
 @genericLog
 def _getDataFilePandasDataFrame(graphKwargs: dict) -> PandasDataFrame:
-    DATA_FILE_PATH_KWARG = kwargsHelper.getDataFilePathKwarg()
-    dataFrame = _genericGetCSVFilePandasDataFrame(PRECALC_KEY, graphKwargs)
+    CSV_PATH_KEY = keysHelper.getCSVPathKey()
+    dataFrame = _genericGetCSVFilePandasDataFrame(CSV_PATH_KEY, graphKwargs)
     return dataFrame 
 
 GRAPHER_KWARG = str 
@@ -116,6 +120,8 @@ def _getGrapherKwargToInputs(graphKwargs: dict) -> Mapping[GRAPHER_KWARG, GRAPHE
     PRECALC_FILE_KWARG = kwargsHelper.getGrapherPrecalcFileKwarg()
     
     dataFilePandasDataFrame = _getDataFilePandasDataFrame(graphKwargs)
+    # !preCalcFile below done in a hurry, can isolate to helpers with other paths too
+    preCalcFile = graphKwargs[keysHelper.getPreCalcKey()]
     preCalcFilePandasDataFrame = _getPreCalcFilePandasDataFrame(graphKwargs)
     indicesPair = _getIndicesFromPandasDataFrame(dataFilePandasDataFrame)
     xAxis = _getXAxisFromPandasDataFrame(dataFilePandasDataFrame)
@@ -124,20 +130,21 @@ def _getGrapherKwargToInputs(graphKwargs: dict) -> Mapping[GRAPHER_KWARG, GRAPHE
         DATA_AXIS_INDICES_KWARG : [dataFilePandasDataFrame, xAxis, indicesPair],
         PRECALC_AXIS_INDICES_KWARG : [preCalcFilePandasDataFrame, xAxis, indicesPair],
         DATA_FILE_KWARG : [dataFilePandasDataFrame],
-        PRECALC_FILE_KWARG : [preCalcFilePandasDataFrame]
+        PRECALC_FILE_KWARG : [preCalcFile]
     }
     
     return grapherKwargToInputs
 
 @genericLog
-def _getDataFileName(graphKwargs: dict) -> str:
-    DATA_FILE_NAME_KWARG = kwargsHelper.getDataFileNameKwarg()
-    dataFileName = graphKwargs[DATA_FILE_NAME_KWARG]
-    return dataFileName
+def _getCSVFileName(graphKwargs: dict) -> str:
+
+    CSV_FILE_NAME_KEY = keysHelper.getCSVNameKey()
+    CSVFileName = graphKwargs[CSV_FILE_NAME_KEY]
+    return CSVFileName
         
 @genericLog 
 def _createGrapherProcesses(graphKwargs: dict, grapherKwargToInputs: dict) -> List: 
-    dataFileName = _getDataFileName(graphKwargs)
+    CSVFileName = _getCSVFileName(graphKwargs)
     
     all_processes = [] 
     
@@ -148,14 +155,14 @@ def _createGrapherProcesses(graphKwargs: dict, grapherKwargToInputs: dict) -> Li
         grapherInputs = grapherKwargToInputs[grapherKwarg]
         
         for grapherTuple in grapherTuples:
-            process = Process(target=_handleGraphCreation, args=(grapherTuples, grapherInputs, dataFileName))
+            process = Process(target=_handleGraphCreation, args=(grapherTuples, grapherInputs, CSVFileName))
             all_processes.append(process)
             
     return all_processes 
             
 @genericLog
 def _generateAllGraphs(graphKwargs: dict):
-    grapherKwargToInputs = _getGrapherKwargToInputs(grapherKwargs)
+    grapherKwargToInputs = _getGrapherKwargToInputs(graphKwargs)
     grapherProcesses = _createGrapherProcesses(graphKwargs, grapherKwargToInputs)
     
     for process in grapherProcesses: 
@@ -164,9 +171,7 @@ def _generateAllGraphs(graphKwargs: dict):
         process.join() 
         
 @genericLog 
-def _getFileGraphDirsFromFileName(dataFileName: str) -> List[str]: 
-    dataFileName = _getDataFileName(graphKwargs)
-    
+def _getFileGraphDirsFromFileName(dataFileName: str) -> List[str]:     
     allGraphDirs = pathsHelper.getAllGraphsDirPaths()
     
     fileGraphDirs = [] 
@@ -182,8 +187,8 @@ def _getFileGraphDirsFromFileName(dataFileName: str) -> List[str]:
 @genericLog
 def _getFileGraphDirsFromKwargs(graphKwargs: dict) -> List[str]:
 
-    dataFileName = _getDataFileName(graphKwargs)
-    fileGraphDirs = _getFileGraphDirsFromFileName(dataFileName)
+    CSVFileName = _getCSVFileName(graphKwargs)
+    fileGraphDirs = _getFileGraphDirsFromFileName(CSVFileName)
     return fileGraphDirs 
     
 @genericLog 
@@ -193,10 +198,11 @@ def _createGraphDirs(graphKwargs: dict):
     
     for fileGraphDir in fileGraphDirs: 
         filesHelper.createDirIfNotExist(fileGraphDir)
-        graphDirs.append(fileGraphDir)
         
 @genericLog 
 def _getFoundHTMLFiles(fileGraphDir: str) -> dict: 
+    
+    print(f"FILE GRAPH DIRECTORY: {fileGraphDir}")
     
     foundHTMLFiles = {}
     
@@ -230,11 +236,15 @@ def _addGeneratedGraphs(graphKwargs: dict):
     
     graphKeyToDirPathMapping = _getGraphKeyToDirPathMapping()
     
+    CSV_FILE_NAME_KEY = keysHelper.getCSVNameKey()
+    CSVFileName = graphKwargs[CSV_FILE_NAME_KEY]
+    
     for graphKey in graphKeyToDirPathMapping: 
         
         graphDirPath = graphKeyToDirPathMapping[graphKey]
+        fileGraphDirPath = os.path.join(graphDirPath, CSVFileName)
         
-        HTMLFilesAtDir = _getFoundHTMLFiles(graphDirPath)
+        HTMLFilesAtDir = _getFoundHTMLFiles(fileGraphDirPath)
         
         graphKwargsCopy[graphKey] = HTMLFilesAtDir 
     

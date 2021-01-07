@@ -1,1 +1,37 @@
-{}
+{
+    "gm12_172aprh.csv": {
+        "moduleName": "actions",
+        "action": "upload",
+        "dataFileName": "gm12_172aprh.mat",
+        "dataFilePath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/manualTests/testFiles/batch1/gm12_172aprh.mat",
+        "logFileName": "gm172alog.txt",
+        "logFilePath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/logFiles/gm172alog.txt",
+        "gpsFileName": "20120620_Exocetus_Focal_Follow_Gm_12_172a.xlsx",
+        "gpsFilePath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/gpsFiles/20120620_Exocetus_Focal_Follow_Gm_12_172a.xlsx",
+        "startLat": "35.87998",
+        "startLong": "74.84635",
+        "CSVFilePath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/dataFiles/gm12_172aprh.csv",
+        "CSVFileName": "gm12_172aprh.csv",
+        "PrecalculationsPath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/precalcs/gm12_172aprh_precalc.csv",
+        "graphs2D": {
+            "xAccel.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/xAccel.html",
+            "pitch.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/pitch.html",
+            "yJerk.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/yJerk.html",
+            "xJerk.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/xJerk.html",
+            "plot_POI.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/plot_POI.html",
+            "heading.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/heading.html",
+            "pitchroll.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/pitchroll.html",
+            "plot_timeline.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/plot_timeline.html",
+            "yAccel.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/yAccel.html",
+            "all_graphs_separate.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/all_graphs_separate.html",
+            "roll.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/roll.html",
+            "zAccel.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/zAccel.html",
+            "zJerk.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/2D/gm12_172aprh.csv/zJerk.html"
+        },
+        "graphs3D": {
+            "trackplot.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/3D/gm12_172aprh.csv/trackplot.html"
+        },
+        "modified": "01/07/2021 01:56:04 PM",
+        "size": "130.59 MB"
+    }
+}

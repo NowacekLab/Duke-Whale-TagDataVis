@@ -172,7 +172,7 @@ def handleAction(cmdArgs: dict):
     
     action = cmdArgs[ACTION_KWARG]
     
-    actionExec = getActionExec(action)
+    actionExec = _getActionExec(action)
     
     return actionExec(cmdArgs)
 

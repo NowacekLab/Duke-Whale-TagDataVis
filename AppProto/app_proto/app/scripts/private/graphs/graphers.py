@@ -43,7 +43,7 @@ def getAllGraphers() -> GRAPHERS_DICT:
         for grapherKwarg in grapher: 
             if not grapherKwarg in allGraphers: 
                 allGraphers[grapherKwarg] = [] 
-            grapherTups = grapher[graphersKwarg]
+            grapherTups = grapher[grapherKwarg]
             grapherTups = _addGraphTypeMarkerToGrapherTups(grapherTups, graphType)
             allGraphers[grapherKwarg] += grapherTups 
     
