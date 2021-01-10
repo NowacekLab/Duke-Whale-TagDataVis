@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import PropTypes from "prop-types";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -50,15 +49,16 @@ const FileTable = (props: FileTableProps) => {
     const fs = window.require('fs');
     const path = require('path');
     const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
-    const scripts_files = path.resolve(path.join(scripts_path, 'scripts_files'));
-    const files = path.resolve(path.join(scripts_files, 'files.json'));
+    const files = path.resolve(path.join(scripts_path, 'files'));
+    const scripts_files = path.resolve(path.join(files, 'scripts_files'));
+    const filesJSON = path.resolve(path.join(scripts_files, 'files.json'));
 
     function createData(file: string, size: string, modified: string) {
     return { file, size, modified };
     }
 
     async function generate() {
-      fs.readFile(files, function(err: string, data: string) {
+      fs.readFile(filesJSON, function(err: string, data: string) {
         err;
 
         const fileInfo = JSON.parse(data);

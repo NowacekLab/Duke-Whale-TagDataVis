@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {useDispatch} from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import routes from '../scripts/scripts_files/routes.json';
+import routes from '../scripts/files/scripts_files/routes.json';
 import Container from '@material-ui/core/Container';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GraphicEqIcon from '@material-ui/icons/GraphicEq';
@@ -42,12 +42,12 @@ const useStyles = makeStyles({
         opacity: 1,
         textDecoration: "none",
     },
-    app: {
+    appIcon: {
         color: "rgba(1,33,105)",
         fontSize: "10em",
         cursor: "pointer",
     },
-    app_hover: {
+    appIconHover: {
         color: "rgba(1,33,105)",
         fontSize: "10em",
         cursor: "pointer",
@@ -57,6 +57,12 @@ const useStyles = makeStyles({
     apps: {
         display: "flex",
         justifyContent: "space-around",
+    },
+    app: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
     },
     app_title: {
         color: "black",
@@ -88,22 +94,22 @@ const Apps = () => {
 
     useEffect(() => {
         checkForGraphs();
-      }, [selectedGraphFile])
-      
+    }, [selectedGraphFile])
+    
     const fs = window.require('fs');
     const path = require('path');
     const isDev = process.env.NODE_ENV !== 'production';
     const remote = require('electron').remote;
     const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));    
-    const scripts_files = path.resolve(path.join(scripts_path, 'scripts_files'));
-    const files = path.resolve(path.join(scripts_files, 'files.json'));
+    const files = path.resolve(path.join(scripts_path, 'files'));
+    const scripts_files = path.resolve(path.join(files, 'scripts_files'));
+    const filesJSON = path.resolve(path.join(scripts_files, 'files.json'));
 
     // HOVER
     type truthMap = Record<string, boolean>; 
     const [hovers, setHovers] = useState<truthMap>({
         "2D": false,
         "3D": false,
-        "MIXED": false
     });
 
     const handleHover = (type: string, hovering: boolean) => {
@@ -119,7 +125,6 @@ const Apps = () => {
     const clickablesDisabled = {
         'graphs2D': false,
         'graphs3D': false,
-        'graphsMixed': false,
     }
     const [clickables, setClickables] = useState<truthMap>(clickablesDisabled);
 
@@ -145,36 +150,40 @@ const Apps = () => {
     // CLICKABILITY
     const checkForGraphs = () => {
         localStorage.setItem('selectedGraphFile', selectedGraphFile);
-        fs.readFile(files, function(err: string, data: string) {
-            err;
-
-            const info = JSON.parse(data);
-
-            if (!(info.hasOwnProperty(selectedGraphFile))) {
-                localStorage.setItem('selectedGraphFile', '');
-                return clickablesDisabled;
-            }
-            const graphs = ['graphs2D', 'graphs3D', 'graphsMixed'];
-
-            var obj: truthMap = {};
-
-            for (let key in graphs) {
-                if (info[selectedGraphFile].hasOwnProperty(graphs[key])) {
-                    let hasGraph = false;
-                    for (let name in info[selectedGraphFile][graphs[key]]) {
-                        if (info[selectedGraphFile][graphs[key]][name] !== "") {
-                            hasGraph = true;
-                            break;
-                        }
-                    }
-                    obj[graphs[key]] = hasGraph;
+        try {
+            fs.readFile(filesJSON, function(err: string, data: string) {
+                err;
+    
+                const info = JSON.parse(data);
+    
+                if (!(info.hasOwnProperty(selectedGraphFile))) {
+                    localStorage.setItem('selectedGraphFile', '');
+                    return clickablesDisabled;
                 }
-            }
-
-            isMountedRef.current && setClickables(obj);
-            
-            return;
-        })
+                const graphs = ['graphs2D', 'graphs3D'];
+    
+                var obj: truthMap = {};
+    
+                for (let key in graphs) {
+                    if (info[selectedGraphFile].hasOwnProperty(graphs[key])) {
+                        let hasGraph = false;
+                        for (let name in info[selectedGraphFile][graphs[key]]) {
+                            if (info[selectedGraphFile][graphs[key]][name] !== "") {
+                                hasGraph = true;
+                                break;
+                            }
+                        }
+                        obj[graphs[key]] = hasGraph;
+                    }
+                }
+    
+                isMountedRef.current && setClickables(obj);
+                
+                return;
+            })
+        } catch {
+            console.log("App.tsx error reading json file.")
+        }
     }
 
     const handleNav = (e: React.MouseEvent<HTMLElement>, graph_type: string) => {
@@ -189,24 +198,16 @@ const Apps = () => {
             "key": 0,
             "title": "2D Graph",
             "comp": <Link to={routes.GRAPHS} className={classes.link} onClick={(e) => {handleNav(e, 'graphs2D')}}>
-                            <TrendingUpIcon className={hovers['2D'] ? classes.app_hover : classes.app} onMouseEnter={() => handleHover("2D", true)} onMouseLeave={() => handleHover("2D", false)} />
-                       </Link>
+                            <TrendingUpIcon className={hovers['2D'] ? classes.appIconHover : classes.appIcon} onMouseEnter={() => handleHover("2D", true)} onMouseLeave={() => handleHover("2D", false)} />
+                    </Link>
         },
         {
             "key": 1,
             "title": "3D Graph",
             "comp": <Link to={routes.GRAPHS} className={classes.link} onClick={(e) => {handleNav(e, 'graphs3D')}}>
-                            <GraphicEqIcon className={hovers['3D'] ? classes.app_hover : classes.app} onMouseEnter={() => handleHover("3D", true)} onMouseLeave={() => handleHover("3D", false)}/>
+                            <GraphicEqIcon className={hovers['3D'] ? classes.appIconHover : classes.appIcon} onMouseEnter={() => handleHover("3D", true)} onMouseLeave={() => handleHover("3D", false)}/>
                         </Link>
         },
-        {
-            "key": 2,
-            "title": "Mixed Graph",
-            "comp": <Link to={routes.GRAPHS} className={classes.link} onClick={(e) => {handleNav(e, 'graphsMixed')}}>
-                            <MultilineChartIcon className={hovers['MIXED'] ? classes.app_hover : classes.app} onMouseEnter={() => handleHover("MIXED", true)} onMouseLeave={() => handleHover("MIXED", false)}/>
-                        </Link>
-        }
-
     ]
 
     return (
@@ -216,7 +217,10 @@ const Apps = () => {
                     <div className={classes.apps}>
                         {apps.map((obj) => {
                             return(
-                                <div key={obj['title']}>
+                                <div 
+                                    key={obj['title']}
+                                    className={classes.app}
+                                >
                                     {obj['comp']}
                                     <Typography className={classes.app_title}>
                                         {obj['title']}

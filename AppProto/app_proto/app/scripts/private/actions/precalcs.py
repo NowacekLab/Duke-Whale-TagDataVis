@@ -9,6 +9,7 @@ import re
 from typing import Tuple, Callable, Any
 from private.helpers import keysHelper, pathsHelper, kwargsHelper, pandasHelper
 from private.logs import logDecorator
+from . import reset 
 
 MODULE_NAME = "precalcs"
 genericLog = logDecorator.genericLog(MODULE_NAME)
@@ -160,8 +161,8 @@ def _getStartLatLong(filesInfo: dict) -> Tuple[float]:
     START_LAT_KEY = keysHelper.getStartLatKey()
     START_LONG_KEY = keysHelper.getStartLongKey()
     
-    startLat = filesInfo[START_LAT_KEY]
-    startLong = filesInfo[START_LONG_KEY]
+    startLat = float(filesInfo[START_LAT_KEY])
+    startLong = float(filesInfo[START_LONG_KEY])
     
     return (startLat, startLong)
 

@@ -32,6 +32,13 @@
     - specifies name of the module without the .py, limited available for public access
     - **available modules:**
       - 'actions' -- actions.py 
+- **Print statements**
+  - "Error" -- action failed, check errors.log 
+  - actions.py
+    - upload
+      - "converted"
+      - "processed "
+      - "graphs"
 
 ### Required Key Word Arguments
 

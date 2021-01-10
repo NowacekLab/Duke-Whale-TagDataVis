@@ -1,3 +1,4 @@
+import sys, time 
 from typing import Tuple, Callable
 from private.logs import logDecorator
 from private.actions import csvmat, precalcs
@@ -74,10 +75,29 @@ def _handleProcessDataToCSV(uploadArgs: dict):
 @genericLog
 def uploadFile(uploadArgs: dict) -> dict:    
     
-    uploadArgs = _handleProcessDataToCSV(uploadArgs)    
-    uploadArgs = _saveNeededFiles(uploadArgs)
-    uploadArgs = _handlePreCalculate(uploadArgs)
-    uploadArgs = _handleGeneratingGraphs(uploadArgs)
+    try: 
+        uploadArgs = _handleProcessDataToCSV(uploadArgs)   
+        
+        print('converted')
+        sys.stdout.flush()
+        time.sleep(3)
+        
+        uploadArgs = _saveNeededFiles(uploadArgs)
+        uploadArgs = _handlePreCalculate(uploadArgs)
+        
+        print('processed')
+        sys.stdout.flush()
+        time.sleep(3)
+        
+        uploadArgs = _handleGeneratingGraphs(uploadArgs)
+        
+        print('graphs')
+        sys.stdout.flush()
+        time.sleep(3)
+        
+    except Exception as e:
+        reset.resetUpload(uploadArgs)
+        raise Exception(e)
     
     return uploadArgs 
     

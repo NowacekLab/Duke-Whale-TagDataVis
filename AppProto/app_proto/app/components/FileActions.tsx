@@ -20,7 +20,9 @@ import Notification from "./Notification";
 import useIsMountedRef from "../functions/useIsMountedRef";
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHandler";
-
+import * as constants from "../app_files/constants";
+import {formatCMDLineArgs} from "../functions/exec/execHelpers";
+import handlePythonExec from "../functions/exec/pythonHandler";
 import * as child from 'child_process';
 
 const useStyles = makeStyles({
@@ -62,32 +64,23 @@ const FileActions = (props: FileActionsProps) => {
   const spawn = require("child_process").spawn; 
 
   const isWindows = process.platform === "win32";
-  const python3 = path.resolve(path.join(scripts_path, 'main', 'main'));
-  
-  
-  // isWindows ? path.resolve(path.join(scripts_path, 'windows_env', 'Scripts', 'python.exe')) : 
-  //                             path.resolve(path.join(scripts_path, 'mac_env', 'bin','python3'));
-
+  const exec_path = isWindows ? path.resolve(path.join(scripts_path, 'windows_exec', 'main.exe')) :
+                                path.resolve(path.join(scripts_path, 'mac_exec', 'main'));
+  const python3 = isDev ? "python3" : exec_path; 
   const [chosenFile, setChosenFile] = useState<string>(""); // this is table file selectedFile
 
-
-  type uploadInfoObj = {
-    "dataFileName": string, 
-    "dataFilePath": string, 
-    "logFileName": string,
-    "logFilePath": string, 
-    "gpsFileName": string,
-    "gpsFilePath": string, 
-  }
+  type uploadInfoObject = constants.uploadInfoObject;
   const defaultUploadInfoObj = {
     "dataFileName": "",
     "dataFilePath": "",
     "logFileName": "",
     "logFilePath": "",
     "gpsFileName": "",
-    "gpsFilePath": ""
+    "gpsFilePath": "",
+    "startLat": "",
+    "startLong": "",
   }
-  const [uploadInfoObj, setUploadInfoObject] = useState<uploadInfoObj>(defaultUploadInfoObj);
+  const [uploadInfoObj, setUploadInfoObject] = useState<uploadInfoObject>(defaultUploadInfoObj);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const handleUploadDialogClose = () => {
     setShowUploadDialog(false);
@@ -97,7 +90,7 @@ const FileActions = (props: FileActionsProps) => {
     setShowUploadDialog(true);
     forceLoadActionHandler.activateForceLoad();
   }
-  function beginProcessing(begin: boolean) {
+  function beginProcessing(begin: boolean, uploadInfoObj: uploadInfoObject) {
     if (!begin) cancelFileUpload();
     else handleConfirm("upload", uploadInfoObj.dataFileName);
   }
@@ -178,8 +171,14 @@ const FileActions = (props: FileActionsProps) => {
       file1 = file1.replace('.mat', '.csv');
     }
 
+
+    console.log(file1);
+
     for (const obj of props.fileRows) {
       let file2 = obj['file'];
+
+      console.log(file2);
+
       if (file1 === file2) {
         return true;
       }
@@ -191,15 +190,18 @@ const FileActions = (props: FileActionsProps) => {
     setPendingAction(action);
     
     if (action === 'upload') {
+
+      console.log("UPLOADED FILE: " + uploadFileName);
+
+      let obj;
       if (fileExists(uploadFileName ?? "")) {
-        const obj = confirmations['upload-exists'];
-        obj['title'] = obj['title'] + `${uploadFileName}?`;
-        setConfirmInfo(obj);
+        obj = confirmations['upload-exists'];
       } else {
-        const obj = confirmations['upload-new'];
-        obj['title'] = obj['title'] + `${uploadFileName}?`;
-        setConfirmInfo(obj);
+        obj = confirmations['upload-new'];
       }
+      obj['title'] = obj['title'] + `${uploadFileName}?`;
+
+      setConfirmInfo(obj);
     } else {
       const obj = confirmations[action];
       setConfirmInfo(obj);
@@ -308,90 +310,57 @@ const FileActions = (props: FileActionsProps) => {
     })
   }
   
-  // The below is very ugly! 
-  const [uploadingNotReprocessing, setUploadingNotReprocessing] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [updateUploadStateIndicator, setUpdateUploadStateIndicator] = useState(0);
   const [finishedUploading, setFinishedUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<Record<string, string>>({
+    "converted": "progress",
     "processed": "progress", 
-    "graphs2D": "progress",
-    "graphs3D": "progress",
+    "graphs": "progress",
   });
 
   const resetUploadState = () => {
     forceLoadActionHandler.deactivateForceLoad();
 
     setUploadProgress({
+      "converted": "progress",
       "processed": "progress", 
-      "graphs2D": "progress",
-      "graphs3D": "progress",
+      "graphs": "progress",
     })
-
-    setUpdateUploadStateIndicator(0);
-
     setFinishedUploading(false);
     setUploading(false);
   }
 
-  const handleProcess = (process: child.ChildProcess, action: string) => {
+  const handleUploadProcess = (process: child.ChildProcess) => {
 
     process && process.stdout && process.stdout.on('data', (data) => {
       let resp = data.toString().trim();
-      resp = resp.split(":");
 
       console.log(resp);
+      console.log(uploadProgress);
 
-      switch (resp[0]) {
-        case "processed":
-          if (resp[1].startsWith('success')) {
-            uploadProgress[resp[0]] = 'success';
-          } else {
-            uploadProgress[resp[0]] = 'fail';
-          }
-          setUploadProgress(uploadProgress);
-          setUpdateUploadStateIndicator(2); 
-          break;
-        case "graphs2D":
-          if (resp[1].startsWith('success')) {
-            uploadProgress[resp[0]] = 'success';
-          } else {
-            uploadProgress[resp[0]] = 'fail';
-          }
-          setUploadProgress(uploadProgress);
-          setUpdateUploadStateIndicator(3);
-          break;
-        case "graphs3D":
-          if (resp[1].startsWith('success')) {
-            uploadProgress[resp[0]] = 'success';
-          } else {
-            uploadProgress[resp[0]] = 'fail';
-          }
-          setUploadProgress(uploadProgress);
-          setFinishedUploading(true);
+      const error = resp === 'Error';
 
-          setUpdateUploadStateIndicator(4);
-          break;
-        default: 
-          const categories = ['processed', 'graphs2D', 'graphs3D'];
-          categories.forEach((name) => { // set to fail if it is finished but still in 'progress'
-            if (uploadProgress.hasOwnProperty(name) && uploadProgress[name] === 'progress') {
-              uploadProgress[name] = 'fail';
-            }
-          })
-          setUploadProgress(uploadProgress);
-
-          setFinishedUploading(true);
-          setUpdateUploadStateIndicator(6);
+      if (error) {
+        for (let key in uploadProgress) {
+          if (uploadProgress[key] === 'progress') {
+            uploadProgress[key] = 'fail';
+          }
+        }
+        setFinishedUploading(true);
+      } else if (uploadProgress.hasOwnProperty(resp)) {
+        uploadProgress[resp] = 'success';
       }
+
+
+      console.log(uploadProgress);
+      setUploadProgress({...uploadProgress});
     });
 
     process && process.stdout && process.stdout.on('error', (err: string) => {
-      console.log(err);
+      const action = "";
 
       handleResponse('false', action);
       resetUploadState();
-      setUpdateUploadStateIndicator(8);
     })
 
   }
@@ -401,27 +370,35 @@ const FileActions = (props: FileActionsProps) => {
     if (action !== "upload" && action !== "reprocess") return; 
 
     forceLoadActionHandler.activateForceLoad();
-
-    setUpdateUploadStateIndicator(1);
-
+    let cmdLineObj;
     if (action === 'upload') {
-      setUploadingNotReprocessing(true);
-      setUploading(true);
-
-      const {dataFileName, dataFilePath, logFileName, logFilePath, gpsFileName, gpsFilePath} = uploadInfoObj;
-      const pythonProcess = spawn(python3, ['csvmat', 
-                                            dataFilePath, dataFileName, 
-                                            logFilePath, logFileName,
-                                            gpsFilePath, gpsFileName]);
-      handleProcess(pythonProcess, action);
-
-    } else if (action === 'reprocess') {
-      setUploadingNotReprocessing(false);
-      setUploading(true);
-      const pythonProcess = spawn(python3, ['-u', main_script_path, 'actions', chosenFile, action], {shell: isWindows});
-      handleProcess(pythonProcess, action);
+      cmdLineObj = {
+        'moduleName': 'actions',
+        'action': 'upload',
+        ...uploadInfoObj,
+      }
+    } else {
+      cmdLineObj = {
+        'moduleName': 'actions',
+        'action': 'reprocess',
+        'fileName': chosenFile
+      }
     }
 
+    setUploading(true);
+    const cmdLineArg = formatCMDLineArgs(cmdLineObj);
+    const args = [cmdLineArg];
+    const process = handlePythonExec(handleUploadProcess, handleProcStartError, args);
+    process;
+          
+  }
+
+  function handleProcStartError() {
+    notifActionHandler.showErrorNotif("Scripts failed to execute. Contact developers.");
+
+    if (pendingAction === 'upload') {
+      resetUploadState();
+    }
   }
 
   const frequentStyle = {
@@ -429,16 +406,16 @@ const FileActions = (props: FileActionsProps) => {
   }
 
   const buttons = [
-    {
-      "key": 0,
-      "title": <h1>Comments</h1>,
-      "icon": <CommentIcon
-        color="primary"
-        fontSize="large"
-      />,
-      "style": frequentStyle,
-      "onClick": handleComment,
-    },
+    // {
+    //   "key": 0,
+    //   "title": <h1>Comments</h1>,
+    //   "icon": <CommentIcon
+    //     color="primary"
+    //     fontSize="large"
+    //   />,
+    //   "style": frequentStyle,
+    //   "onClick": handleComment,
+    // },
     {
       "key": 1,
       "title": <h1>Reprocess</h1>,
@@ -499,9 +476,7 @@ const FileActions = (props: FileActionsProps) => {
           <UploadProgress 
             uploadProgress = {uploadProgress} 
             uploading = {uploading} 
-            uploadingNotReprocessing = {uploadingNotReprocessing} 
             finishedUploading ={finishedUploading}
-            updateUploadStateIndicator = {updateUploadStateIndicator}
             refreshTableView = {props.refreshTableView} 
             resetUploadState = {resetUploadState}
           />
@@ -540,8 +515,8 @@ const FileActions = (props: FileActionsProps) => {
           <Confirmation 
             open={openConfirm}
             close={handleCloseConfirm}
-            title={confirmInfo['title'] ?? null}
-            desc={confirmInfo['description'] ?? null}
+            title={confirmInfo.hasOwnProperty('title') ? confirmInfo['title'] : null}
+            desc={confirmInfo.hasOwnProperty('description') ? confirmInfo['description'] : null}
             confirm={verifyConfirm}
             reject={rejectConfirm}
           />

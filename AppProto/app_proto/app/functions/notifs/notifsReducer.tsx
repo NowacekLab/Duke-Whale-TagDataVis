@@ -22,7 +22,7 @@ export default function notifsReducer(state = initialState, action: GenericUpdat
         case UPDATE_NOTIF_VISIBILITY:
             return {
                 ...state,
-                 visibility: action.payload,
+                visibility: action.payload,
             }
         case UPDATE_NOTIF_MSG: 
             return {

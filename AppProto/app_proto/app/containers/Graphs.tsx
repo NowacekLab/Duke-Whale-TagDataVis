@@ -98,28 +98,28 @@ const useStyles = makeStyles({
         marginTop: "10px",
     },
     bannerSuperCont: {
-      zIndex: 999998,
-      bottom: 20,
-      left: 200,
-      right: 0,
-      position: "fixed",
-      display: "flex",
-      alignItems: 'center',
-      justifyContent: 'center',
+        zIndex: 999998,
+        bottom: 20,
+        left: 200,
+        right: 0,
+        position: "fixed",
+        display: "flex",
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     bannerCont: {
-      width: "500px",
-      display: "none",
-      alignItems: "center",
-      justifyContent: "center",
-      animation: "all 1s ease-in",
+        width: "500px",
+        display: "none",
+        alignItems: "center",
+        justifyContent: "center",
+        animation: "all 1s ease-in",
     },
     bannerErrorCont: {
-      width: "500px",
-      alignItems: "center",
-      justifyContent: "center",
-      display: "none",
-      animation: "all 1s ease-in",
+        width: "500px",
+        alignItems: "center",
+        justifyContent: "center",
+        display: "none",
+        animation: "all 1s ease-in",
     },
 });
 
@@ -132,8 +132,9 @@ const Graphs = () => {
     const isDev: boolean = process.env.NODE_ENV !== 'production';
     const remote = require('electron').remote;
     const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
-    const scripts_files = path.resolve(path.join(scripts_path, 'scripts_files'));
-    const files= path.resolve(path.join(scripts_files, 'files.json'));
+    const files = path.resolve(path.join(scripts_path, 'files'));
+    const scripts_files = path.resolve(path.join(files, 'scripts_files'));
+    const filesJSON = path.resolve(path.join(scripts_files, 'files.json'));
     const file = localStorage.getItem('selectedGraphFile') ?? "";
     const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
     const spawn = require("child_process").spawn;
@@ -157,7 +158,7 @@ const Graphs = () => {
 
     useEffect(() => {
         getGraphs();
-      }, [update])
+    }, [update])
     
     type messagesObject = Record<string, Record<string, string>>
     const messages: messagesObject = {
@@ -254,31 +255,36 @@ const Graphs = () => {
 
         isMountedRef.current && setGraphType(graph_type);
 
-        fs.readFile(files, function(error: string, data: string) {
-            error;
-
-            const info = JSON.parse(data);
-            if (!(info.hasOwnProperty(file))) {
-                return;
-            }
-
-            const graph_key = graphChoices[graph_type]['key'];
-
-            if (info[file].hasOwnProperty(graph_key)) {
-                let new_graphs: Array<graphObject> = [];
-                for (let key in info[file][graph_key]) {
-                    let graph: graphObject = {};
-                    graph['name'] = key;
-                    graph['path'] = info[file][graph_key][key];
-                    if (graph['path'] !== "") {
-                        new_graphs.push(graph);
-                    }
+        console.log('hi');
+        console.log(filesJSON);
+        if (filesJSON) {
+            fs.readFile(filesJSON, function(error: string, data: string) {
+                error;
+    
+                const info = JSON.parse(data);
+    
+                if (!(info.hasOwnProperty(file))) {
+                    return;
                 }
-                setTimeout(() => {
-                    isMountedRef.current && setGraphs(new_graphs);
-                }, 300);
-            }
-        })
+    
+                const graph_key = graphChoices[graph_type]['key'];
+    
+                if (info[file].hasOwnProperty(graph_key)) {
+                    let new_graphs: Array<graphObject> = [];
+                    for (let key in info[file][graph_key]) {
+                        let graph: graphObject = {};
+                        graph['name'] = key;
+                        graph['path'] = info[file][graph_key][key];
+                        if (graph['path'] !== "") {
+                            new_graphs.push(graph);
+                        }
+                    }
+                    setTimeout(() => {
+                        isMountedRef.current && setGraphs(new_graphs);
+                    }, 300);
+                }
+            })
+        }
     }
 
     const createBrowserWindow = (name: string, path: string) => {
@@ -327,23 +333,23 @@ const Graphs = () => {
         let graphNumber = graphs ? graphs.length : 0;
 
         switch (graphNumber) {
-          case 0:
-            return `No Graphs`
-          case 1:
-            return `1 Graph`
-          default:
-            return `${graphNumber} Graphs`
+            case 0:
+                return `No Graphs`
+            case 1:
+                return `1 Graph`
+            default:
+                return `${graphNumber} Graphs`
         }
     }
 
     type buttonsArr = Array<Record<string, any>>;
     const buttons: buttonsArr = [
-        {
-            "key": 0,
-            "title": <h1>Comments</h1>,
-            "icon": <CommentIcon />,
-            "onClick": handleComment,
-        },
+        // {
+        //     "key": 0,
+        //     "title": <h1>Comments</h1>,
+        //     "icon": <CommentIcon />,
+        //     "onClick": handleComment,
+        // },
         {
             "key": 1,
             "title": <h1>Save</h1>,
@@ -372,47 +378,47 @@ const Graphs = () => {
     const loadingSmallerClass = loadingSmallerStyle();
 
 // CONFIRMATION
-  type confirmationsObject = Record<string, Record<string, string>>;
-  const confirmations: confirmationsObject = {
-    "delete": {
-      "title": `Delete `,
-      "description": `This will permanently delete the file. ${file} will need to be reprocessed
-      to get access again.`
-    },
-  }
-  type confirmInfoObject = Record<string, string>;
-  const [confirmInfo, setConfirmInfo] = useState<confirmInfoObject>({});
-  const [chosenObj, setChosenObj] = useState<graphObject>({});
-  const [pendingAction, setPendingAction] = useState("");
-  const [openConfirm, setOpenConfirm] = useState(false);
-  const handleOpenConfirm = () => {
-    setOpenConfirm(true);
-  }
-  const handleCloseConfirm = () => {
-    setOpenConfirm(false);
-  }
-  const verifyConfirm = () => {
-    if (pendingAction === 'delete') {
-      handleAction('delete', chosenObj);
+    type confirmationsObject = Record<string, Record<string, string>>;
+    const confirmations: confirmationsObject = {
+        "delete": {
+        "title": `Delete `,
+        "description": `This will permanently delete the file. ${file} will need to be reprocessed
+        to get access again.`
+        },
     }
-    handleCloseConfirm();
-    setPendingAction("");
-    setChosenObj({});
-  }
-  const rejectConfirm = () => {
-    handleCloseConfirm();
-    setPendingAction("");
-    setChosenObj({});
-  }
-  const handleConfirm = (action: string, obj: graphObject) => {
+    type confirmInfoObject = Record<string, string>;
+    const [confirmInfo, setConfirmInfo] = useState<confirmInfoObject>({});
+    const [chosenObj, setChosenObj] = useState<graphObject>({});
+    const [pendingAction, setPendingAction] = useState("");
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const handleOpenConfirm = () => {
+        setOpenConfirm(true);
+    }
+    const handleCloseConfirm = () => {
+        setOpenConfirm(false);
+    }
+    const verifyConfirm = () => {
+        if (pendingAction === 'delete') {
+        handleAction('delete', chosenObj);
+        }
+        handleCloseConfirm();
+        setPendingAction("");
+        setChosenObj({});
+    }
+    const rejectConfirm = () => {
+        handleCloseConfirm();
+        setPendingAction("");
+        setChosenObj({});
+    }
+    const handleConfirm = (action: string, obj: graphObject) => {
 
-    setPendingAction(action);
-    setChosenObj(obj);
-    const info = confirmations[action];
-    info['title'] = info['title'] + `${obj['name']}?`;
-    setConfirmInfo(info);
-    handleOpenConfirm();
-  }
+        setPendingAction(action);
+        setChosenObj(obj);
+        const info = confirmations[action];
+        info['title'] = info['title'] + `${obj['name']}?`;
+        setConfirmInfo(info);
+        handleOpenConfirm();
+    }
 
     return (
         <Container className={classes.root}>

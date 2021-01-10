@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
@@ -64,9 +64,7 @@ const useStyles = makeStyles({
 type UploadProgressProps = {
     uploadProgress: Record<string, string>,
     uploading: boolean,
-    uploadingNotReprocessing: boolean,
     finishedUploading: boolean, 
-    updateUploadStateIndicator: number, 
     refreshTableView: Function, 
     resetUploadState: Function, 
 }
@@ -76,6 +74,18 @@ const UploadProgress = (props: UploadProgressProps) => {
     const classes = useStyles();
 
     const isMountedRef = useIsMountedRef();
+
+    const [finishedUploading, setFinishedUploading] = useState(false);
+    const updateUploadStatus = () => {
+
+        let uploadFinished = true; 
+        for (let key in props.uploadProgress) {
+            if (props.uploadProgress[key] === 'progress') {
+                uploadFinished = false;
+            }
+        }
+        setFinishedUploading(uploadFinished);
+    }
 
     const handleLoading = () => {
         const loader = document.getElementById('loader');
@@ -88,7 +98,7 @@ const UploadProgress = (props: UploadProgressProps) => {
     }
 
     const handleClick = () => {
-        if (props.finishedUploading) {
+        if (finishedUploading) {
             props.resetUploadState ? props.resetUploadState() : null;
             props.refreshTableView ? props.refreshTableView() : null; // connection from FileAction --> HomeTable --> FileTable to refreshTableView rows 
         }
@@ -96,38 +106,42 @@ const UploadProgress = (props: UploadProgressProps) => {
 
     useEffect(() => {
         isMountedRef.current && handleLoading();
-    }, [props.updateUploadStateIndicator])
+    }, [props.uploading])
+
+    useEffect(() => {
+
+        console.log("In upload progress");
+
+        updateUploadStatus();
+    }, [props.uploadProgress])
 
     type timelineObject = Record<string, any>;
     var timeline: Array<timelineObject> = [
         {
             "key": 0,
-            "show": props.uploadProgress ? props.uploadProgress['processed'] : "progress",
+            "show": props.uploadProgress ? props.uploadProgress['converted'] : "progress",
             "title": "Conversion",
             "description-success": "File converted to .csv as needed.",
             "description-progress": "Converting file to .csv as needed.",
             "description-fail": "Conversion failed."
         },
         {
-            "key": 1, 
-            "show": props.uploadProgress ? props.uploadProgress['graphs2D'] : "progress",
-            "title": "2D Graphs",
-            "description-success": "2D Graphs generated.",
-            "description-progress": "Generating 2D Graphs.",
-            "description-fail": "2D Graph generation failed."
+            "key": 1,
+            "show": props.uploadProgress ? props.uploadProgress['processed'] : "progress",
+            "title": "Processed",
+            "description-success": "Necessary calculations processed.",
+            "description-progress": "Calculating necessary calculations.",
+            "description-fail": "Calculation processing failed."
         },
         {
             "key": 2, 
-            "show": props.uploadProgress ? props.uploadProgress['graphs3D'] : "progress",
-            "title": "3D Graphs",
-            "description-success": "3D Graphs generated.",
-            "description-progress": "Generating 3D Graphs.",
-            "description-fail": "3D Graph generation failed."
-        }
+            "show": props.uploadProgress ? props.uploadProgress['graphs'] : "progress",
+            "title": "Graphs",
+            "description-success": "Successfully generated graphs.",
+            "description-progress": "Generating graphs.",
+            "description-fail": "Failed generating graphs."
+        },
     ]
-    if (props.uploadingNotReprocessing === false) {
-        timeline.splice(0, 1);
-    }
 
 
     const description = (item: timelineObject) => {
@@ -139,11 +153,11 @@ const UploadProgress = (props: UploadProgressProps) => {
         }
     }
 
-  return (
-          <div className={classes.loading} id="loader">
+    return (
+        <div className={classes.loading} id="loader">
             <div className={classes.loadertext}>
-              <span className={classes.header}>This may take a while</span>
-              <span className={classes.headersubtext}>Do not close the page</span>
+                <span className={classes.header}>This will take a while</span>
+                <span className={classes.headersubtext}>Do not close the page</span>
             </div>
             <div style={{width: "100%"}}>
                 <Timeline>
@@ -154,7 +168,7 @@ const UploadProgress = (props: UploadProgressProps) => {
                                 <TimelineSeparator>
                                     <TimelineDot />
 
-                                    {item['title'] === "3D Graphs" ?
+                                    {item['title'] === "Graphs" ?
                                         <div style={{display: "none"}}></div>
 
                                         :
@@ -202,8 +216,8 @@ const UploadProgress = (props: UploadProgressProps) => {
                 </Timeline>
 
 
-                <div style={{width: "100%", display: "flex", justifyContent: "center", opacity: props.finishedUploading ? 1 : 0}}>
-                    <Fade in={props.finishedUploading} timeout={500}>
+                <div style={{width: "100%", display: "flex", justifyContent: "center", opacity: finishedUploading ? 1 : 0}}>
+                    <Fade in={finishedUploading} timeout={500}>
                         <Button className={classes.finishButton} onClick={handleClick}>
                             Done
                         </Button>
@@ -213,8 +227,8 @@ const UploadProgress = (props: UploadProgressProps) => {
             
 
             </div>
-          </div>
-  );
+        </div>
+    );
 
 };
 

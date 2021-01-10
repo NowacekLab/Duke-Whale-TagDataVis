@@ -8,8 +8,8 @@
         "logFilePath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/logFiles/gm172alog.txt",
         "gpsFileName": "20120620_Exocetus_Focal_Follow_Gm_12_172a.xlsx",
         "gpsFilePath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/gpsFiles/20120620_Exocetus_Focal_Follow_Gm_12_172a.xlsx",
-        "startLat": "35.87998",
-        "startLong": "74.84635",
+        "startLat": "74.84635",
+        "startLong": "35.87998",
         "CSVFilePath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/dataFiles/gm12_172aprh.csv",
         "CSVFileName": "gm12_172aprh.csv",
         "PrecalculationsPath": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/precalcs/gm12_172aprh_precalc.csv",
@@ -31,7 +31,7 @@
         "graphs3D": {
             "trackplot.html": "/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/files/user_files/user_graphs/3D/gm12_172aprh.csv/trackplot.html"
         },
-        "modified": "01/07/2021 01:56:04 PM",
+        "modified": "01/10/2021 01:21:16 PM",
         "size": "130.59 MB"
     }
 }

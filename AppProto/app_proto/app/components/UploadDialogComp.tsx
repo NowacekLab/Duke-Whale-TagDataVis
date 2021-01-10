@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -7,6 +7,8 @@ import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -24,7 +26,7 @@ const useStyles = makeStyles(() => ({
         backgroundColor: "#012069",
         color: "white",
         "&:hover": {
-          backgroundColor: "rgba(1,32,105,0.5)"
+            backgroundColor: "rgba(1,32,105,0.5)"
         }
     },
     uploadBtn: {
@@ -32,7 +34,7 @@ const useStyles = makeStyles(() => ({
         backgroundColor: "#012069",
         color: "white",
         "&:hover": {
-          backgroundColor: "rgba(1,32,105,0.5)"
+            backgroundColor: "rgba(1,32,105,0.5)"
         }
     },
     btnContainer: {
@@ -45,7 +47,7 @@ const useStyles = makeStyles(() => ({
         backgroundColor: "#012069",
         color: "white",
         "&:hover": {
-          backgroundColor: "rgba(1,32,105,0.5)"
+            backgroundColor: "rgba(1,32,105,0.5)"
         }
     },
     finalPromptContainer: {
@@ -138,28 +140,188 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
         }
     }
 
-    function getStepContent(index: number) {
+    function getStepTextContent(index: number) {
 
-        if (isFileRequired(index)) {
-            return (
-                <Typography>
-                    This file is <b>required</b>
-                </Typography>
-            )
+        if (stepNeedsFileObj(index)) {
+            if (isFileRequired(index)) {
+                return (
+                    <Typography>
+                        This file is <b>required</b>
+                    </Typography>
+                )
+            } else {
+                return (
+                    <Typography>
+                        This file is <b>optional</b>
+                    </Typography>
+                )
+            }
         } else {
+
+            // HARD-CODED
             return (
                 <Typography>
-                    This file is <b>optional</b>
+                    Required. Only positive or negative numbers. North and West are positive.
                 </Typography>
             )
         }
     }
 
-    function handleNextBtnDisabled(index: number): boolean {
-        return shouldDisableNextBtn(index);
+    const [latitude, setLatitude] = useState("");
+    const [latitudeDirection, setLatitudeDirection] = useState("W");
+    const [latInputError, setLatInputError] = useState(false);
+    const handleLatChange = (event: any) => {
+        const newLat = event && event.target && event.target.value ? event.target.value : "";
+
+        if (!isPositiveFloat(newLat) && newLat !== "") {
+            setLatInputError(true);
+        } else {
+            setLatInputError(false);
+        }
+
+        setLatitude(newLat);
+    }
+    const handleLatDirectionChange = (event: any) => {
+        const newLatDirection = event && event.target && event.target.value ? event.target.value : "";
+        setLatitudeDirection(newLatDirection);
     }
 
-    function shouldDisableNextBtn(index: number): boolean {
+    const [longitude, setLongitude] = useState("");
+    const [longitudeDirection, setLongitudeDirection] = useState("N");
+    const handleLongChange = (event: any) => {
+        const newLong = event && event.target && event.target.value ? event.target.value : "";
+        setLongitude(newLong);
+    }
+    const handleLongDirectionChange = (event: any) => {
+        const newLongDirection = event && event.target && event.target.value ? event.target.value : "";
+        setLongitudeDirection(newLongDirection);
+    }
+
+    function isPositiveFloat(s: string) {
+        const float = parseFloat(s);
+        return !isNaN(float) && Number(float) >= 0;
+    }
+
+    function getStepContent(index: number) {
+
+        if (stepNeedsFileObj(index)) {
+            return (
+                <Button
+                    variant="contained"
+                    className={classes.containedBtn}
+                    onClick={() => handleUploadBtnClick(index)}
+                >
+                    Upload
+                </Button>
+            )
+        }
+
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "space-between"
+                    }}
+                >
+                    {
+                        latInputError ? 
+
+                        <TextField 
+                            error 
+                            label="Latitude"
+                            value={latitude}
+                            onChange={handleLatChange}
+                            helperText="Must be a valid number."
+                        />
+
+                        :
+
+                        <TextField 
+                            label="Latitude"
+                            value={latitude}  
+                            onChange={handleLatChange}  
+                        />
+                    }
+
+                    <TextField
+                        select 
+                        label="Direction"
+                        value={latitudeDirection}
+                        onChange={handleLatDirectionChange}
+                    >
+
+                        <MenuItem key={"W"} value={"W"}>
+                            W
+                        </MenuItem>
+
+                        <MenuItem key={"E"} value={"E"}>
+                            E
+                        </MenuItem>
+
+                    </TextField>
+                </div>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "space-between"
+                    }}
+                >
+                    <TextField 
+                        label="Longitude"
+                        value={longitude}
+                        onChange={handleLongChange}
+                    />
+
+                    <TextField
+                        select 
+                        label="Direction"
+                        value={longitudeDirection}
+                        onChange={handleLongDirectionChange}
+                    >
+                        <MenuItem key={"N"} value={"N"}>
+                            N
+                        </MenuItem>
+
+                        <MenuItem key={"S"} value={"S"}>
+                            S
+                        </MenuItem>
+
+                    </TextField>
+                </div>
+            </div>
+        )
+
+    }
+
+
+    const stepNeedsFileObj = (idx: number) => {
+        return idx < 3; 
+    }
+
+    function handleNextBtnDisabled(index: number): boolean {
+
+        if (stepNeedsFileObj(index)) {
+            return shouldDisableNextBtnFileStep(index);
+        }
+
+        return shouldDisableNextBtnInputStep(index);
+    }
+
+    function shouldDisableNextBtnInputStep(index: number): boolean {
+        return !(latitude.length > 0 && longitude.length > 0);
+    }
+
+    function shouldDisableNextBtnFileStep(index: number): boolean {
         if (!isFileRequired(index)) return false;
         return !isFileUploaded(index);
     }
@@ -179,12 +341,19 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
         return !isGraphFile;
     }
 
-    const steps = ['Upload the data file', 'Upload the log file', 'Upload the GPS file'];
+    const steps = ['Upload the data file', 'Upload the log file', 'Upload the GPS file', 'Enter starting lat and long'];
     function getStepLabel(index: number) {
         const uploadText = steps[index];
-        const placeholder = "No file uploaded";
+        let stepLabel;
 
-        return `${uploadText} [${getFileNameOrDefault(index, placeholder)}]`
+        if (stepNeedsFileObj(index)) {
+            const placeholder = "No file uploaded";
+            stepLabel = `${uploadText} [${getFileNameOrDefault(index, placeholder)}]`
+        } else {
+            stepLabel = uploadText; 
+        }
+
+        return stepLabel;
     }
 
     function getFileNameOrDefault(index: number, placeholder: string) {
@@ -205,6 +374,16 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
     // }
 
     const handleUploadStart = () => {
+
+        let trueLat = latitude; 
+        if (latitudeDirection === 'e') {
+            trueLat = "-" + latitude; 
+        }
+        let trueLong = longitude; 
+        if (longitudeDirection === 's') {
+            trueLong = "-" + longitude;
+        }
+
         const uploadInfoObj = {
             "dataFileName": uploadDataFileObj.name, 
             "dataFilePath": uploadDataFileObj.path, 
@@ -212,9 +391,16 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
             "logFilePath": uploadLogFileObj.path, 
             "gpsFileName": uploadGPSFileObj.name,
             "gpsFilePath": uploadGPSFileObj.path, 
+            "startLat": trueLat, 
+            "startLong": trueLong 
         }
+
+        console.log("UPLOAD INFO");
+        console.log(uploadInfoObj);
+
         setUploadInfoObject(uploadInfoObj);
-        beginProcessing(true);
+
+        beginProcessing(true, uploadInfoObj);
     }
 
     return ( 
@@ -244,7 +430,7 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
                                 <StepContent
                                     className={classes.step}
                                 >
-                                    {getStepContent(index)}
+                                    {getStepTextContent(index)}
                                     <div className={classes.btnContainer}>
                                         <Button
                                             variant="contained"
@@ -254,13 +440,7 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
                                         >
                                             Back
                                         </Button>
-                                        <Button
-                                            variant="contained"
-                                            className={classes.containedBtn}
-                                            onClick={() => handleUploadBtnClick(index)}
-                                        >
-                                            Upload
-                                        </Button>
+                                        {getStepContent(index)}
                                         <Button
                                             variant="contained"
                                             className={classes.containedBtn}
@@ -274,8 +454,6 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
 
                             </Step>
                         )
-
-
                     })}
 
                 </Stepper>

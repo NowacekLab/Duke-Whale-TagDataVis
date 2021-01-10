@@ -122,14 +122,6 @@ const Settings = () => {
 
   const resets = [
     {
-      value: 'everything',
-      label: 'Everything',
-    },
-    {
-      value: 'graphs',
-      label: 'Graphs',
-    },
-    {
       value: 'files',
       label: 'Files',
     },
@@ -152,7 +144,7 @@ const Settings = () => {
     console.log("no");
   }
 
-  const [reset, setReset] = useState('everything');
+  const [reset, setReset] = useState('files');
   const handleReset = (e: any) => {
     setReset(e.target.value);
   }

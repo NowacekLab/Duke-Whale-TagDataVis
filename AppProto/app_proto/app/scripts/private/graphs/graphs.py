@@ -202,8 +202,6 @@ def _createGraphDirs(graphKwargs: dict):
 @genericLog 
 def _getFoundHTMLFiles(fileGraphDir: str) -> dict: 
     
-    print(f"FILE GRAPH DIRECTORY: {fileGraphDir}")
-    
     foundHTMLFiles = {}
     
     foundFiles = os.scandir(fileGraphDir)
