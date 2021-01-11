@@ -26,6 +26,8 @@ import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHand
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import useIsMountedRef from "../functions/useIsMountedRef";
 
+import {MAIN_SCRIPT_PATH, isWindows, spawn, python3, fs, FILES_JSON} from "../functions/exec/pythonHandler";
+
 const useStyles = makeStyles({
     root: {
         position: 'relative',
@@ -126,25 +128,9 @@ const useStyles = makeStyles({
 const Graphs = () => {
 
     const classes = useStyles();
-    
-    const fs = window.require('fs');
-    const path = require('path');
-    const isDev: boolean = process.env.NODE_ENV !== 'production';
-    const remote = require('electron').remote;
-    const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
-    const files = path.resolve(path.join(scripts_path, 'files'));
-    const scripts_files = path.resolve(path.join(files, 'scripts_files'));
-    const filesJSON = path.resolve(path.join(scripts_files, 'files.json'));
+
     const file = localStorage.getItem('selectedGraphFile') ?? "";
-    const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
-    const spawn = require("child_process").spawn;
-
-
-    const isWindows = process.platform === "win32";
-    const python3 = isWindows ? path.resolve(path.join(scripts_path, 'windows_env', 'Scripts', 'python.exe')) : 
-                                path.resolve(path.join(scripts_path, 'mac_env', 'bin','python3'));
-
-
+    
     type graphObject = Record<string, string>;
     const [graphs, setGraphs] = useState<Array<graphObject>>([]); 
 
@@ -192,7 +178,7 @@ const Graphs = () => {
 
         const FILE = obj['name'];
 
-        const args = new Array(main_script_path, 'actions', FILE, action, file);
+        const args = new Array(MAIN_SCRIPT_PATH, 'actions', FILE, action, file);
 
         const loadingSmaller = document.getElementById('loader-smaller');
 
@@ -256,9 +242,9 @@ const Graphs = () => {
         isMountedRef.current && setGraphType(graph_type);
 
         console.log('hi');
-        console.log(filesJSON);
-        if (filesJSON) {
-            fs.readFile(filesJSON, function(error: string, data: string) {
+        console.log(FILES_JSON);
+        if (FILES_JSON) {
+            fs.readFile(FILES_JSON, function(error: string, data: string) {
                 error;
     
                 const info = JSON.parse(data);
@@ -319,7 +305,7 @@ const Graphs = () => {
 
     const handleClick = () => {
         if (selected.length === 0) {
-            notifActionHandler.showErrorNotif("No graphs ahve been selected.");
+            notifActionHandler.showErrorNotif("No graphs have been selected.");
         } else {
             selected.forEach((obj, i) => {
                 i;

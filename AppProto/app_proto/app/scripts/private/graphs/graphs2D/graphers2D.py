@@ -243,6 +243,7 @@ def plot_timeline(df: "data frame"):
 
     return [fig]
 
+# ! skipping this because it did not work
 @genericLog
 def all_graphs_sep(df: "data frame", xAxis: List[int], indices: Tuple[int]):
     startIndex, endIndex = indices
@@ -385,7 +386,7 @@ PRECALC_AXIS_INDICES_KWARG = kwargsHelper.getGrapherPreCalcAxisIndicesKwarg()
 DATA_FILE_KWARG = kwargsHelper.getGrapherDataFileKwarg()
 
 GRAPHERS = {
-    DATA_AXIS_INDICES_KWARG: [(all_graphs_sep, 'all_graphs_separate.html'), (head, 'heading.html'),
+    DATA_AXIS_INDICES_KWARG: [(head, 'heading.html'),
             (pitch, 'roll.html', 'pitch.html', 'pitchroll.html'), (accelerationX, 'xAccel.html'),
             (accelerationY, 'yAccel.html'), (accelerationZ, 'zAccel.html')],
     PRECALC_AXIS_INDICES_KWARG: [(jerkX,'xJerk.html'),

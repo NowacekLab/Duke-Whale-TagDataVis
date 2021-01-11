@@ -9,6 +9,7 @@ import sys
 from typing import Any, Callable
 from private.logs import logDecorator 
 from private.actions import actions 
+import multiprocessing 
 
 MODULE_NAME = "main.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)
@@ -69,7 +70,7 @@ def _handleModuleExec(cmdArgs: dict) -> Any:
 @mainLog
 def main() -> Any: 
     if not (len(sys.argv) == 2): 
-        raise Exception(f"There must be exactly 2 cmd line args given. Was given {len(sys.argv)}. Check conventions.md")
+        raise Exception(f"There must be exactly 2 cmd line args given. Was given {len(sys.argv)} = {' '.join(sys.argv)}. Check conventions.md")
 
     cmdLineArg = sys.argv[1]
     cmdArgs = _parseCMDLineArg(cmdLineArg) 
@@ -86,6 +87,9 @@ def main_test(testCMDLineArg: str) -> Any:
     return _handleModuleExec(cmdArgs)
 
 if __name__ == "__main__":
+    
+    multiprocessing.freeze_support()
+    
     print(main())
     sys.stdout.flush()
     # print('hi')

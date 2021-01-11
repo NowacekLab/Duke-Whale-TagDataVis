@@ -24,6 +24,7 @@ import * as constants from "../app_files/constants";
 import {formatCMDLineArgs} from "../functions/exec/execHelpers";
 import handlePythonExec from "../functions/exec/pythonHandler";
 import * as child from 'child_process';
+import {spawn, isWindows, python3, MAIN_SCRIPT_PATH} from "../functions/exec/pythonHandler";
 
 const useStyles = makeStyles({
   buttonCont: {
@@ -56,17 +57,6 @@ const FileActions = (props: FileActionsProps) => {
   const forceLoadActionHandler = new forceLoadActionsHandler(dispatch);
 
   // **TO INTERACT WITH PYTHON**
-  const path = require('path');
-  const isDev = process.env.NODE_ENV !== 'production';
-  const remote = require('electron').remote;
-  const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
-  const main_script_path = path.resolve(path.join(scripts_path, 'main.py'));
-  const spawn = require("child_process").spawn; 
-
-  const isWindows = process.platform === "win32";
-  const exec_path = isWindows ? path.resolve(path.join(scripts_path, 'windows_exec', 'main.exe')) :
-                                path.resolve(path.join(scripts_path, 'mac_exec', 'main'));
-  const python3 = isDev ? "python3" : exec_path; 
   const [chosenFile, setChosenFile] = useState<string>(""); // this is table file selectedFile
 
   type uploadInfoObject = constants.uploadInfoObject;
@@ -284,7 +274,7 @@ const FileActions = (props: FileActionsProps) => {
       }
     }
 
-    const args = new Array('-u', main_script_path, 'actions', chosenFile, action);
+    const args = new Array('-u', MAIN_SCRIPT_PATH, 'actions', chosenFile, action);
 
     const pythonProcess = spawn(python3, args, {shell: isWindows});
 

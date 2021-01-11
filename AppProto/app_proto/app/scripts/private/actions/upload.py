@@ -4,6 +4,7 @@ from private.logs import logDecorator
 from private.actions import csvmat, precalcs
 from private.helpers import pathsHelper, keysHelper, kwargsHelper, filesHelper
 from private.graphs import graphs 
+from . import reset 
 
 MODULE_NAME = "upload.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)

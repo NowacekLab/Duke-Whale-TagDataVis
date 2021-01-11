@@ -8,10 +8,10 @@ import os
 
 # * DIRECTORIES 
 # for package:
-# BASE_DIR_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # for dev:
-BASE_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
+# BASE_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 
 FILES_DIR_PATH = os.path.join(BASE_DIR_PATH, 'files')
 

@@ -68,6 +68,7 @@ def _createGraphs(grapherTuple: Tuple, graphInputs: Tuple) -> List[Graph]: \
 @genericLog
 def _handleGraphCreation(grapherTuples: List[Tuple], graphInputs: Tuple, dataFileName: str): 
     for grapherTuple in grapherTuples: 
+            
         graphs = _createGraphs(grapherTuple, graphInputs)
         _createGraphHTML(grapherTuple, graphs, dataFileName)
     
@@ -153,23 +154,34 @@ def _createGrapherProcesses(graphKwargs: dict, grapherKwargToInputs: dict) -> Li
         
         grapherTuples = allGraphers[grapherKwarg]
         grapherInputs = grapherKwargToInputs[grapherKwarg]
-        
-        for grapherTuple in grapherTuples:
-            process = Process(target=_handleGraphCreation, args=(grapherTuples, grapherInputs, CSVFileName))
-            all_processes.append(process)
+            
+        process = Process(target=_handleGraphCreation, args=(grapherTuples, grapherInputs, CSVFileName))
+        all_processes.append(process)
             
     return all_processes 
             
 @genericLog
 def _generateAllGraphs(graphKwargs: dict):
     grapherKwargToInputs = _getGrapherKwargToInputs(graphKwargs)
-    grapherProcesses = _createGrapherProcesses(graphKwargs, grapherKwargToInputs)
+    # grapherProcesses = _createGrapherProcesses(graphKwargs, grapherKwargToInputs)
     
-    for process in grapherProcesses: 
-        process.start() 
-    for process in grapherProcesses: 
-        process.join() 
+    # for process in grapherProcesses: 
+    #     process.start() 
+    # for process in grapherProcesses: 
+    #     process.join() 
+    
+    CSVFileName = _getCSVFileName(graphKwargs)
+    
+    all_processes = [] 
+    
+    allGraphers = _getAllGraphers() 
+    for grapherKwarg in allGraphers: 
         
+        grapherTuples = allGraphers[grapherKwarg]
+        grapherInputs = grapherKwargToInputs[grapherKwarg]
+        
+        _handleGraphCreation(grapherTuples, grapherInputs, CSVFileName)
+                        
 @genericLog 
 def _getFileGraphDirsFromFileName(dataFileName: str) -> List[str]:     
     allGraphDirs = pathsHelper.getAllGraphsDirPaths()

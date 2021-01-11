@@ -10,6 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import useIsMountedRef from "../functions/useIsMountedRef";
+import {fs, FILES_JSON} from "../functions/exec/pythonHandler";
 
 const useStyles = makeStyles({
   table: {
@@ -43,22 +44,12 @@ const FileTable = (props: FileTableProps) => {
     const [rows, setFileRows] = useState<Array<Row>>([]);
     const [choice, setChoice] = useState(props.selectedFile ? props.selectedFile : "");
 
-
-    const isDev = process.env.NODE_ENV !== 'production';
-    const remote = require('electron').remote;
-    const fs = window.require('fs');
-    const path = require('path');
-    const scripts_path = isDev ? path.resolve(path.join(__dirname, 'scripts')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts'));
-    const files = path.resolve(path.join(scripts_path, 'files'));
-    const scripts_files = path.resolve(path.join(files, 'scripts_files'));
-    const filesJSON = path.resolve(path.join(scripts_files, 'files.json'));
-
     function createData(file: string, size: string, modified: string) {
     return { file, size, modified };
     }
 
     async function generate() {
-      fs.readFile(filesJSON, function(err: string, data: string) {
+      fs.readFile(FILES_JSON, function(err: string, data: string) {
         err;
 
         const fileInfo = JSON.parse(data);
