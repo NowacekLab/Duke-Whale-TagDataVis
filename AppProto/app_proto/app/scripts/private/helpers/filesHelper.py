@@ -22,6 +22,17 @@ def _doesFileExist(filePath: str) -> bool:
 @genericLog
 def _removeFile(filePath: str):
     os.remove(filePath)
+    
+@genericLog 
+def createFile(filePath: str): 
+    with open(filePath, 'x') as f: 
+        pass 
+    
+@genericLog 
+def createFileIfNotExist(filePath: str): 
+    fileExists = _doesFileExist(filePath)
+    if not fileExists: 
+        createFile(filePath)
         
 @genericLog
 def _doesDirExist(dirPath: str) -> bool: 
@@ -97,10 +108,21 @@ def JSON_create(filePath: str, info: dict) -> bool:
     """
     with open(filePath, 'w') as f: 
         f.write(json.dumps(info, indent=4))
-
+        
 @genericLog
 def saveFileInfo(info: dict): 
     return JSON_create(FILE_INFO_PATH, info) 
+
+@genericLog 
+def fillEmptyFileInfo():
+    return JSON_create(FILE_INFO_PATH, {})
+
+@genericLog 
+def fillFileIfEmpty():
+    try:
+        fileInfo = JSON_read(FILE_INFO_PATH)
+    except: 
+        fillEmptyFileInfo()
 
 @genericLog 
 def addNewFileInfoEntry(newFileInfo: dict): 

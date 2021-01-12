@@ -10,7 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import useIsMountedRef from "../functions/useIsMountedRef";
-import {fs, FILES_JSON} from "../functions/exec/pythonHandler";
+import {fs, FILES, SCRIPTS_FILES, FILES_JSON} from "../functions/exec/pythonHandler";
 
 const useStyles = makeStyles({
   table: {
@@ -49,6 +49,7 @@ const FileTable = (props: FileTableProps) => {
     }
 
     async function generate() {
+
       fs.readFile(FILES_JSON, function(err: string, data: string) {
         err;
 

@@ -9,7 +9,8 @@ import sys
 from typing import Any, Callable
 from private.logs import logDecorator 
 from private.actions import actions 
-import multiprocessing 
+from private.helpers import filesHelper
+import settings 
 
 MODULE_NAME = "main.py"
 genericLog = logDecorator.genericLog(MODULE_NAME)
@@ -67,33 +68,66 @@ def _handleModuleExec(cmdArgs: dict) -> Any:
     
     return moduleExec(cmdArgs) 
 
-@mainLog
-def main() -> Any: 
+@genericLog 
+def _createRequiredFiles():
+    REQUIRED_FILES = settings.REQUIRED_FILES 
+    for requiredFile in REQUIRED_FILES: 
+        filesHelper.createFileIfNotExist(requiredFile)
+    filesHelper.fillFileIfEmpty()
+
+@genericLog 
+def _createRequiredDirs():
+    REQUIRED_DIRS = settings.REQUIRED_DIRS
+    for requiredDir in REQUIRED_DIRS: 
+        filesHelper.createDirIfNotExist(requiredDir)
+
+@genericLog 
+def _createRequiredPaths():
+    _createRequiredDirs() 
+    _createRequiredFiles() 
+
+@genericLog 
+def _saveBaseDirPath(cmdArgs: dict):
+    if not 'baseDirPath' in cmdArgs: 
+        raise Exception("base dir path not given")
+
+    BASE_DIR_PATH = cmdArgs['baseDirPath']
+
+    pass 
+    
+
+@genericLog 
+def _saveCriticalPaths(cmdArgs: dict):
+    _saveBaseDirPath(cmdArgs)
+
+@genericLog 
+def _handleRequiredSetup():
+    _createRequiredPaths()
+        
+@genericLog
+def _handleCMDArgs():
     if not (len(sys.argv) == 2): 
         raise Exception(f"There must be exactly 2 cmd line args given. Was given {len(sys.argv)} = {' '.join(sys.argv)}. Check conventions.md")
 
     cmdLineArg = sys.argv[1]
-    cmdArgs = _parseCMDLineArg(cmdLineArg) 
-    
+    cmdArgs = _parseCMDLineArg(cmdLineArg)     
+    return cmdArgs 
+
+
+# ! remember, need to finish creating reset.py 
+
+@mainLog
+def main() -> Any: 
+    cmdArgs = _handleCMDArgs()    
+    _handleRequiredSetup()
     return _handleModuleExec(cmdArgs)
 
-    # ! remember to create a central path creator near the start of the application
-        # ! all in 'files' dir 
-        
 @mainLog 
 def main_test(testCMDLineArg: str) -> Any: 
-    
+    _handleRequiredSetup()
     cmdArgs = _parseCMDLineArg(testCMDLineArg)
     return _handleModuleExec(cmdArgs)
 
-if __name__ == "__main__":
-    
-    multiprocessing.freeze_support()
-    
+if __name__ == "__main__":    
     print(main())
     sys.stdout.flush()
-    # print('hi')
-
-    # python3 main.py csvmat /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/gm14_279aprh.mat gm14_279aprh.mat /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/gm279alog.txt gm279alog.txt /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/20141006_Barber_Focal_Follow_Gm_14_279a.xlsx 20141006_Barber_Focal_Follow_Gm_14_279a.xlsx
-
-    # ./main/main csvmat /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/gm14_279aprh.mat gm14_279aprh.mat /Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/test_files/gm279alog.txt gm279alog.txt 

@@ -12,7 +12,7 @@ from typing import Callable
 
 # PACKAGE
 from private.updates import updates 
-from private.actions import upload
+from private.actions import upload, infoRequests
 from private.helpers import filesHelper, kwargsHelper
 from private.logs import logDecorator
 
@@ -141,6 +141,11 @@ def _addRemainingUploadFileInfo(fileInfo: dict) -> dict:
     
     fileInfo = updates.refreshFileInfo(fileInfo)
     return fileInfo 
+
+@genericLog
+def _handleInfoRequest(cmdArgs: dict):
+    
+    return infoRequests.handleInfoRequest(cmdArgs)
     
 @genericLog 
 def _handleUpload(cmdArgs: dict):
@@ -156,6 +161,7 @@ def _getActionExec(action: str) -> Callable:
         # "reprocess":,
         # "edit":,
         # "save":,    
+        "request": _handleInfoRequest, 
     }
     
     actionExec = actionModules[action]

@@ -4,7 +4,7 @@ import SideBarContent from "../components/SideBarContent";
 
 type Props = {
     Page: any;
-  };
+};
 
 export default function Base({Page}: Props) {
 

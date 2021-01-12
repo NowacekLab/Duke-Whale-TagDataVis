@@ -20,7 +20,7 @@ import Notification from "./Notification";
 import useIsMountedRef from "../functions/useIsMountedRef";
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHandler";
-import * as constants from "../app_files/constants";
+import * as constants from "../files/constants";
 import {formatCMDLineArgs} from "../functions/exec/execHelpers";
 import handlePythonExec from "../functions/exec/pythonHandler";
 import * as child from 'child_process';

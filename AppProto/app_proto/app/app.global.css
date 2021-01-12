@@ -2,6 +2,7 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
+@import './components/EditorCont/react-chart-editor.css';
 @import '~@fortawesome/fontawesome-free/css/all.css';
 
 body {
@@ -23,7 +24,7 @@ body {
 }
 
 p {
-  font-size: 24px;
+  font-size: 12px;
 }
 
 li {

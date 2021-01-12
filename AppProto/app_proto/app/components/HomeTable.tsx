@@ -33,7 +33,8 @@ const useStyles = makeStyles({
   },
   tableHeaderElem: {
     alignSelf: "flex-end",
-    color: "black"
+    color: "black",
+    fontWeight: "normal"
   },
   tableHeaderButton: {
     height: "50px",
@@ -85,11 +86,10 @@ const HomeTable = ({setFileNum, fileNum}: HomeTableProps) => {
     <div className={classes.mainContainer}>
     
         <div className={classes.tableHeader}>
-            <p className={classes.tableHeaderElem}>{fileNumber()}</p>
+            <h2 className={classes.tableHeaderElem}>{fileNumber()}</h2>
             <FileActions refreshTableView={refreshTableView} selectedFile={selectedFile} fileRows={fileRows}/>
         </div>
 
-        //TODO: CHANGE -- 'selection' here is a function, above it is the variable
         <FileTable updateTableView={updateTableView} fileNum={setFileNum} setSelectedFile={setSelectedFile} setFileRows={setFileRows}/>
 
     </div>

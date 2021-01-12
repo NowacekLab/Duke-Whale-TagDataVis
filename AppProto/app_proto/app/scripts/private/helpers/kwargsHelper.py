@@ -23,6 +23,7 @@ __grapherDataAxisIndicesKwarg = settings.GRAPHERS_DATA_AXIS_INDICES_KWARG
 __graphersPreCalcAxisIndicesKwarg = settings.GRAPHERS_PRECALC_AXIS_INDICES_KWARG
 __graphersDataFileKwarg = settings.GRAPHERS_DATA_FILE_KWARG 
 __graphersPreCalcFileKwarg = settings.GRAPHERS_PRECALC_FILE_KWARG 
+__requestKwarg = settings.REQUEST_KWARG
 
 @genericLog
 def getDataFileNameKwarg() -> str: 
@@ -67,3 +68,7 @@ def getGrapherDataFileKwarg() -> str:
 @genericLog
 def getGrapherPrecalcFileKwarg() -> str: 
     return __graphersPreCalcFileKwarg
+
+@genericLog
+def getRequestKwarg() -> str: 
+    return __requestKwarg

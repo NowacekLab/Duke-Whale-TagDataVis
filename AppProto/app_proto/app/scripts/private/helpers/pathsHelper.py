@@ -1,6 +1,6 @@
 from typing import List 
 
-from private.logs import logDecorator 
+from private.logs import logDecorator, loggerSettings
 
 MODULE_NAME = "pathsHelper"
 
@@ -11,7 +11,7 @@ __FilesDirPath = settings.FILES_DIR_PATH
 __UserFilesDirPath = settings.USER_FILES_DIR_PATH
 __DataFileDirPath = settings.DATA_FILE_DIR_PATH 
 __GPSFileDirPath = settings.GPS_FILE_DIR_PATH 
-__LogFileDirPath = settings.LOG_FILE_DIR_PATH 
+__LogFileDirPath = settings.LOG_FILE_DIR_PATH # ! this is likely deprecated
 __ScriptsFilesPath = settings.SCRIPTS_FILES_PATH
 __FileInfoPath = settings.FILE_INFO_PATH 
 __GraphsDirPath = settings.GRAPHS_DIR_PATH 
@@ -19,6 +19,7 @@ __Graphs2DDirPath = settings.GRAPHS_2D_DIR_PATH
 __Graphs3DDirPath = settings.GRAPHS_3D_DIR_PATH
 __PreCalcsDirPath = settings.PRECALCS_DIR_PATH 
 __allGraphsDirPaths = settings.ALL_GRAPHS_DIR_PATHS
+__logsDirPath = loggerSettings.LOGS_DIR
 
 genericLog = logDecorator.genericLog(MODULE_NAME)
 
@@ -73,3 +74,7 @@ def getPreCalcsDirPath() -> str:
 @genericLog
 def getAllGraphsDirPaths() -> List[str]: 
     return __allGraphsDirPaths
+
+@genericLog 
+def getLogsDirPath() -> str: 
+    return __logsDirPath

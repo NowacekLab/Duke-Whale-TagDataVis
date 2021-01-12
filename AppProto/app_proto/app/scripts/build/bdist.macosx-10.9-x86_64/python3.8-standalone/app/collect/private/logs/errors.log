@@ -1,0 +1,49 @@
+2021-01-10 23:12:36,052 - ERROR - main.py:main method exception. Detailed: Exception(ValueError('The first argument to the plotly.graph_objs.layout.Template \nconstructor must be a dict or \nan instance of :class:`plotly.graph_objs.layout.Template`'))
+Traceback (most recent call last):
+  File "plotly/express/_core.py", line 877, in apply_default_cascade
+  File "plotly/io/_templates.py", line 89, in __getitem__
+  File "pkgutil.py", line 637, in get_data
+  File "/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PyInstaller/loader/pyimod03_importers.py", line 341, in get_data
+    with open(path, 'rb') as fp:
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts/mac_exec/plotly/package_data/templates/plotly.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "private/actions/upload.py", line 93, in uploadFile
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/actions/upload.py", line 14, in _handleGeneratingGraphs
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/graphs/graphs.py", line 266, in handleGenerateAllGraphs
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/graphs/graphs.py", line 183, in _generateAllGraphs
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/graphs/graphs.py", line 72, in _handleGraphCreation
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/graphs/graphs.py", line 65, in _createGraphs
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/graphs/graphs2D/graphers2D.py", line 300, in head
+  File "plotly/express/_chart_types.py", line 252, in line
+  File "plotly/express/_core.py", line 1831, in make_figure
+  File "plotly/express/_core.py", line 880, in apply_default_cascade
+  File "plotly/graph_objs/layout/_template.py", line 302, in __init__
+ValueError: The first argument to the plotly.graph_objs.layout.Template 
+constructor must be a dict or 
+an instance of :class:`plotly.graph_objs.layout.Template`
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "private/logs/logDecorator.py", line 18, in wrapper
+  File "main.py", line 78, in main
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "main.py", line 68, in _handleModuleExec
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/actions/actions.py", line 177, in handleAction
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/actions/actions.py", line 148, in _handleUpload
+  File "private/logs/logDecorator.py", line 39, in wrapper
+  File "private/actions/upload.py", line 101, in uploadFile
+Exception: The first argument to the plotly.graph_objs.layout.Template 
+constructor must be a dict or 
+an instance of :class:`plotly.graph_objs.layout.Template`

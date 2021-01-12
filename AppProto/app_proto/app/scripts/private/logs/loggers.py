@@ -32,18 +32,32 @@ def _logFileTypeExist(logFileType: str):
     logFilePath = _logFilePathFromType(logFileType)
     return os.path.exists(logFilePath)
 
+def _createLogFilePath(logFilePath: str):
+    os.remove(logFilePath)
+    with open(logFilePath, 'x'):
+        pass 
+
+def _logFileDirExists():
+    return os.path.isdir(LOGS_DIR)
+
+def _createLogFileDir():
+    os.mkdir(LOGS_DIR)
+
 def _createLogFilePathsIfNotExist():
     """
     Checks if log file paths exist from the log file types
     If not, creates them 
     """
+    
+    # there is a helper @ helpers/filesHelper 
+    # but every module uses the loggers, so it will result in improper import error 
+    if not _logFileDirExists():
+        _createLogFileDir()
 
     for logFileType in LOG_FILE_TYPES: 
         logFileExists = _logFileTypeExist(logFileType)
-        if not logFileExists: 
-            logFilePath = _logFilePathFromType(logFileType)
-            with open(logFilePath, 'x'):
-                pass 
+        logFilePath = _logFilePathFromType(logFileType)
+        _createLogFilePath(logFilePath)
 
 def _getLogFilePathsByType() -> dict:
     """

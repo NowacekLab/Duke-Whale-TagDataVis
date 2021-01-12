@@ -27,11 +27,6 @@
   - Key-value args joined as key:value
 - Unless otherwise needed by the JavaScript (e.g. for FileActions and UploadProgress components extra 'prints' are needed)...
   - The only form of communication will be "Error" (see Error Handling above) if there is an error or another form communicated by a function
-- **REQUIRED KWARGS**:
-  - 'moduleName' 
-    - specifies name of the module without the .py, limited available for public access
-    - **available modules:**
-      - 'actions' -- actions.py 
 - **Print statements**
   - "Error" -- action failed, check errors.log 
   - actions.py
@@ -42,21 +37,32 @@
 
 ### Required Key Word Arguments
 
+* **'baseDirPath'**
+
 * '**moduleName**'
   * required globally
   * specifies name of the module without the .py
     * available modules:
-      * 'actions' -- actions.py
+      * **'actions' -- actions.py**
         * REQUIRED KWARG TO USE: 
           * **ACTION_KWARG**
 * FOR UPLOADING 
-  * '(PYTHON_EXEC) main.py actions CMD_LINE_SINGLE_STRING'
-    * CMD_LINE_SINGLE_STRING must have... (**constants below in settings.py**)
-      * DATA_FILE_NAME_KWARG 
-      * DATA_FILE_PATH_KWARG
-      * LOG_FILE_NAME_KWARG
-      * LOG_FILE_PATH_KWARG 
-      * GPS_FILE_NAME_KWARG 
-      * GPS_FILE_PATH_KWARG 
-      * START_LAT 
-      * START_LONG 
+  * CMD_LINE_SINGLE_STRING must have... (**constants below in settings.py**)
+    * moduleName (actions)
+    * action (for actions.py, must be 'upload')
+    * DATA_FILE_NAME_KWARG 
+    * DATA_FILE_PATH_KWARG
+    * LOG_FILE_NAME_KWARG
+    * LOG_FILE_PATH_KWARG 
+    * GPS_FILE_NAME_KWARG 
+    * GPS_FILE_PATH_KWARG 
+    * START_LAT 
+    * START_LONG 
+
+* FOR REQUESTING INFORMATION
+  * CMD_LINE_SINGLE_STRING must have...
+    * moduleName (actions)
+    * action (request)
+    * REQUEST_KWARG 
+      * 'fileDirPath' --> path to base 'files' directory 
+      * 'logDirPath' --> path to base 'logs' directory

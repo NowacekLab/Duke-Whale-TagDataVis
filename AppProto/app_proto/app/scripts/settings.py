@@ -8,10 +8,10 @@ import os
 
 # * DIRECTORIES 
 # for package:
-BASE_DIR_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # for dev:
-# BASE_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 
 FILES_DIR_PATH = os.path.join(BASE_DIR_PATH, 'files')
 
@@ -32,22 +32,40 @@ GRAPHS_3D_DIR_PATH = os.path.join(GRAPHS_DIR_PATH, '3D')
 PRECALCS_DIR_PATH = os.path.join(GRAPHS_DIR_PATH, 'precalcs')
 ALL_GRAPHS_DIR_PATHS = [GRAPHS_2D_DIR_PATH, GRAPHS_3D_DIR_PATH]
 
+# ! for main.py path creator 
+REQUIRED_DIRS = [FILES_DIR_PATH, USER_FILES_DIR_PATH, 
+                DATA_FILE_DIR_PATH, GPS_FILE_DIR_PATH, LOG_FILE_DIR_PATH,
+                SCRIPTS_FILES_PATH, 
+                GRAPHS_DIR_PATH, GRAPHS_2D_DIR_PATH, GRAPHS_3D_DIR_PATH,
+                PRECALCS_DIR_PATH]
+REQUIRED_FILES = [FILE_INFO_PATH]
+
 # * KWARGS (1) 
+
+# for main.py 
+MODULE_NAME_KWARG = 'moduleName'
+
+# for actions.py 
+ACTION_KWARG = "action"
+
+# for actions.py / uploading 
 DATA_FILE_NAME_KWARG = "dataFileName"
 DATA_FILE_PATH_KWARG = "dataFilePath"
 LOG_FILE_NAME_KWARG = "logFileName"
 LOG_FILE_PATH_KWARG = "logFilePath"
 GPS_FILE_NAME_KWARG = "gpsFileName"
 GPS_FILE_PATH_KWARG = "gpsFilePath"
+START_LAT_KWARG = 'startLat'
+START_LONG_KWARG = 'startLong'
 
-ACTION_KWARG = "action"
-
+# for graphers 
 GRAPHERS_DATA_AXIS_INDICES_KWARG = "DATA_AXIS_INDICES"
 GRAPHERS_PRECALC_AXIS_INDICES_KWARG = "PRECALC_AXIS_INDICES"
 GRAPHERS_DATA_FILE_KWARG = "DATA_FILE_DF"
 GRAPHERS_PRECALC_FILE_KWARG = "PRECALC_FILE_DF"
 
-MODULE_NAME_KWARG = 'moduleName'
+# for actions.py / request 
+REQUEST_KWARG = "request"
 
 # * FILES.JSON ENTRY KEYS 
 # for main.py module name
@@ -55,6 +73,7 @@ MODULE_NAME_KEY = MODULE_NAME_KWARG
 # for actions.py module 
 ACTION_KEY = ACTION_KWARG 
 
+# for files.json / uploading 
 ORIG_DATAFILE_NAME_KEY = DATA_FILE_NAME_KWARG
 ORIG_DATAFILE_PATH_KEY = DATA_FILE_PATH_KWARG
 GPS_NAME_KEY = GPS_FILE_NAME_KWARG
@@ -66,8 +85,8 @@ CSV_PATH_KEY = "CSVFilePath"
 PRECALC_KEY = "PrecalculationsPath"
 GRAPH_2D_KEY = 'graphs2D'
 GRAPH_3D_KEY = 'graphs3D'
-START_LAT = 'startLat'
-START_LONG = 'startLong'
+START_LAT = START_LAT_KWARG
+START_LONG = START_LONG_KWARG
 FILE_SIZE_KEY = "size"
 FILE_MODIFY_DATE_KEY = "modified"
 
