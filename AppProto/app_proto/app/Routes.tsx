@@ -1,7 +1,7 @@
 /* eslint react/jsx-props-no-spreading: off */
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import routes from './files/routes.json';
+import routes from './app_files/routes.json';
 import App from './pages/App';
 import HomePage from './pages/HomePage';
 import AppsPage from "./pages/AppsPage";

@@ -57,6 +57,7 @@
     "asar": false,
     "files": [
       "scripts/",
+      "app_files/",
       "dist/",
       "node_modules/",
       "app.html",

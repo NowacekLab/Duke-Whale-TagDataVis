@@ -1,0 +1,11 @@
+{
+  "base_url": "/",
+  "hostname": "localhost",
+  "notebook_dir": "/Users/joonyounglee",
+  "password": false,
+  "pid": 56730,
+  "port": 8888,
+  "secure": false,
+  "token": "ab3a8969a03ec3874e891dd450112e616f1378a0f3541859",
+  "url": "http://localhost:8888/"
+}

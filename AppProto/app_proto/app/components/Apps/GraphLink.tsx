@@ -1,7 +1,7 @@
 import React from "react";
 import GraphicEqIcon from '@material-ui/icons/GraphicEq';
 import AppLink from "./AppLink";
-import routes from "../../files/routes.json";
+import routes from "../../app_files/routes.json";
 
 
 export default function GraphLink() {
