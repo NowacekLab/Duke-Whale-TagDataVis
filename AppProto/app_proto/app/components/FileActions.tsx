@@ -21,10 +21,11 @@ import useIsMountedRef from "../functions/useIsMountedRef";
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHandler";
 import * as constants from "../app_files/constants";
-import {formatCMDLineArgs} from "../functions/exec/execHelpers";
-import handlePythonExec from "../functions/exec/pythonHandler";
+import {formatCMDLineArgs} from "../functions/exec/helpers";
+import handlePythonExec from "../functions/exec/python_exec";
 import * as child from 'child_process';
-import {spawn, isWindows, python3, MAIN_SCRIPT_PATH} from "../functions/exec/pythonHandler";
+import {spawn, isWindows, python3} from "../functions/exec/constants";
+import {processTest} from "../functions/exec/process";
 
 const useStyles = makeStyles({
   buttonCont: {
@@ -77,8 +78,11 @@ const FileActions = (props: FileActionsProps) => {
     cancelFileUpload();
   }
   function handleFileUpload() {
-    setShowUploadDialog(true);
-    forceLoadActionHandler.activateForceLoad();
+
+    processTest();
+
+    // setShowUploadDialog(true);
+    // forceLoadActionHandler.activateForceLoad();
   }
   function beginProcessing(begin: boolean, uploadInfoObj: uploadInfoObject) {
     if (!begin) cancelFileUpload();
@@ -274,7 +278,8 @@ const FileActions = (props: FileActionsProps) => {
       }
     }
 
-    const args = new Array('-u', MAIN_SCRIPT_PATH, 'actions', chosenFile, action);
+    const args: any[] = [];
+    // const args = new Array('-u', MAIN_SCRIPT_PATH, 'actions', chosenFile, action);
 
     const pythonProcess = spawn(python3, args, {shell: isWindows});
 
@@ -378,8 +383,6 @@ const FileActions = (props: FileActionsProps) => {
     setUploading(true);
     const cmdLineArg = formatCMDLineArgs(cmdLineObj);
     const args = [cmdLineArg];
-    const process = handlePythonExec(handleUploadProcess, handleProcStartError, args);
-    process;
           
   }
 

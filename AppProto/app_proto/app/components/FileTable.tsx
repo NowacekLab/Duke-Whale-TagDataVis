@@ -10,7 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import useIsMountedRef from "../functions/useIsMountedRef";
-import {fs, FILES, SCRIPTS_FILES, FILES_JSON} from "../functions/exec/pythonHandler";
+import {fs} from "../functions/exec/constants";
 
 const useStyles = makeStyles({
   table: {
@@ -50,23 +50,23 @@ const FileTable = (props: FileTableProps) => {
 
     async function generate() {
 
-      fs.readFile(FILES_JSON, function(err: string, data: string) {
-        err;
+      // fs.readFile(FILES_JSON, function(err: string, data: string) {
+      //   err;
 
-        const fileInfo = JSON.parse(data);
+      //   const fileInfo = JSON.parse(data);
       
-        const realRows: Array<Row> = []; 
-        for (var key in fileInfo) {
-          realRows.push(createData(key, fileInfo[key]["size"], fileInfo[key]["modified"]));
-        }
+      //   const realRows: Array<Row> = []; 
+      //   for (var key in fileInfo) {
+      //     realRows.push(createData(key, fileInfo[key]["size"], fileInfo[key]["modified"]));
+      //   }
 
-        if (isMountedRef.current) {
-          setFileRows(realRows);
-          props.fileNum && props.fileNum(realRows.length);
-          props.setFileRows && props.setFileRows(realRows);
-        }
+      //   if (isMountedRef.current) {
+      //     setFileRows(realRows);
+      //     props.fileNum && props.fileNum(realRows.length);
+      //     props.setFileRows && props.setFileRows(realRows);
+      //   }
 
-      })
+      // })
     }
 
 

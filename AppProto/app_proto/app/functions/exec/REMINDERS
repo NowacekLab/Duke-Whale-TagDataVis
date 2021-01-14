@@ -1,0 +1,4 @@
+* new data file path, other paths (e.g. logging, graphs)
+can either be static constants or be passed in after being
+determined externally, don't know which to prefer
+    * might make sense to just add it to constants.tsx 

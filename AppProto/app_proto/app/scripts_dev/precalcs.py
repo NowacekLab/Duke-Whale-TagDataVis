@@ -7,15 +7,22 @@ import xml.dom.minidom
 import re 
 
 from typing import Tuple, Callable, Any
-from private.helpers import keysHelper, pathsHelper, kwargsHelper, pandasHelper
-from private.logs import logDecorator
-from . import reset 
+from helpers import keysHelper, pandasHelper, cmdArgs
+import logger 
 
-MODULE_NAME = "precalcs"
-genericLog = logDecorator.genericLog(MODULE_NAME)
+PandasDataFrame = Any 
 
+def _savePandasDataFrame(dataFrame, newDataFilePath: str):
+    pandasHelper.savePandasDataFrame(dataFrame, newDataFilePath)
 
-@genericLog
+def _getNewDataFilePath(cmdLineArgs: dict) -> str:
+    newDataFilePathKey = keysHelper.getNewDataFilePathKey()
+    return cmdLineArgs[newDataFilePathKey]
+
+def _savePreCalcDataFrame(preProcessDataFrame, cmdLineArgs: dict): 
+    newDataFilePath = _getNewDataFilePath(cmdLineArgs)    
+    _savePandasDataFrame(preProcessDataFrame, newDataFilePath)
+
 def _haversine(lat1, long1, lat2, long2):
     '''
     ---NOTE---: Assumes N and W as positive cardinal directions
@@ -30,7 +37,6 @@ def _haversine(lat1, long1, lat2, long2):
     c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
     return c * 6371000
 
-@genericLog
 def _inverseHaversine(lat1, long1, d, tc): 
     '''[Calculate Inverse Haversine - dLat/dLong given a distance and angle]
     Sourced from: http://www.edwilliams.org/avform.htm#LL
@@ -59,9 +65,6 @@ def _inverseHaversine(lat1, long1, d, tc):
     lon = (long1 - dlon + np.pi) % (2 * np.pi) - np.pi
     return (lat * 180 / np.pi, lon * 180 / np.pi)
     
-
-#Calculate X-Y Displacement Between Two Lat. Long. Pts. (VW)
-@genericLog
 def _xydistance(lat1, long1, lat2, long2):
     x1 = _haversine(lat1, long1, lat1, long2)
     if(long2 > long1): #Direcional Correction Factors to convert 
@@ -77,8 +80,6 @@ def _xydistance(lat1, long1, lat2, long2):
         y2 = -y2
     return (x1+x2)/2, (y1+y2)/2
 
-dateTime = Any 
-@genericLog
 def _xmlLogFileProcessor(logFilePath: str) -> datetime: 
     DOMTree = xml.dom.minidom.parse(logFilePath)
     collection = DOMTree.documentElement
@@ -87,7 +88,6 @@ def _xmlLogFileProcessor(logFilePath: str) -> datetime:
     startTime = datetime.strptime(dateStr, '%Y,%m,%d,%H,%M,%S')
     return startTime 
 
-@genericLog
 def _txtLogFileProcessor(logFilePath: str) -> datetime: 
     
     with open(logFilePath, 'r') as logFile: 
@@ -99,7 +99,6 @@ def _txtLogFileProcessor(logFilePath: str) -> datetime:
     startTime = originTime + deltaTime + timedelta(hours = 4) #HARDCODED FROM UTC-4 TO UTC
     return startTime 
 
-@genericLog
 def _getLogProcessor(logFilePath: str) -> Callable: 
     ext = logFilePath.split('.')[-1]
     if ext == "txt":
@@ -108,7 +107,6 @@ def _getLogProcessor(logFilePath: str) -> Callable:
         return _xmlLogFileProcessor
     raise Exception(f"Log file must be .xml or .txt. Given file has extension: {ext}")
 
-@genericLog
 def _logProcessStartTime(logFilePath: str) -> datetime:
     """[Calculating tag start time from uploaded log file]
 
@@ -122,73 +120,43 @@ def _logProcessStartTime(logFilePath: str) -> datetime:
     startTime = logProcessor(logFilePath)
     return startTime 
 
-@genericLog
-def _getGPSFileTup(filesInfo: dict) -> Tuple[str]:
-    
-    GPS_PATH_KEY = keysHelper.getGPSPathKey()
-    GPS_NAME_KEY = keysHelper.getGPSNameKey()
-    
-    gpsFilePath = filesInfo[GPS_PATH_KEY]
-    gpsNameKey = filesInfo[GPS_NAME_KEY]
-    
-    return (gpsFilePath, gpsNameKey)
-    
-@genericLog
-def _getLogFileTup(filesInfo: dict) -> Tuple[str]: 
-    
-    LOG_PATH_KEY = keysHelper.getLogPathKey()
-    LOG_NAME_KEY = keysHelper.getLogNameKey() 
-    
-    logFilePath = filesInfo[LOG_PATH_KEY]
-    logFileName = filesInfo[LOG_NAME_KEY]
-    
-    return (logFilePath, logFileName)
-    
-@genericLog
-def _getDataFileTup(filesInfo: dict) -> Tuple[str]:    
-    
-    CSV_PATH_KEY = keysHelper.getCSVPathKey()
-    CSV_NAME_KEY = keysHelper.getCSVNameKey()
-    
-    CSVDataFilePath = filesInfo[CSV_PATH_KEY]
-    CSVDataFileName = filesInfo[CSV_NAME_KEY]
-    
-    return (CSVDataFilePath, CSVDataFileName)
+def _getStartLong(cmdLineArgs: dict) -> str:
+    startLongKey = keysHelper.getStartLongKey()
+    return cmdLineArgs[startLongKey]
 
-@genericLog 
-def _getStartLatLong(filesInfo: dict) -> Tuple[float]:
-    
-    START_LAT_KEY = keysHelper.getStartLatKey()
-    START_LONG_KEY = keysHelper.getStartLongKey()
-    
-    startLat = float(filesInfo[START_LAT_KEY])
-    startLong = float(filesInfo[START_LONG_KEY])
-    
-    return (startLat, startLong)
+def _getStartLat(cmdLineArgs: dict) -> str:
+    startLatKey = keysHelper.getStartLatKey()
+    return cmdLineArgs[startLatKey]
 
-@genericLog 
-def _convertToPreCalcFileName(dataFileName: str) -> str: 
-    dataFileNameParts = dataFileName.split(".")
-    dataFileNameParts[-1] = "_precalc.csv"
-    preCalcFileName = ''.join(dataFileNameParts)
-    return preCalcFileName
+def _getStartLatLong(cmdLineArgs: dict) -> Tuple[str]:
+    startLat = _getStartLat(cmdLineArgs)
+    startLong = _getStartLong(cmdLineArgs)
+    return [startLat, startLong]
 
-PandasDataFrame = Any 
-@genericLog
-def _savePreCalcDataFrame(df: PandasDataFrame, dataFileName: str) -> str: 
-    PRECALCS_DIR_PATH = pathsHelper.getPreCalcsDirPath()
+# ! gps file path is not mandatory 
+def _getGPSFilePath(cmdLineArgs: dict) -> str:
+    gpsFilePathKey = keysHelper.getGPSFilePathKey()
+    return cmdLineArgs[gpsFilePathKey]
     
-    preCalcFileName = _convertToPreCalcFileName(dataFileName)
-    
-    preCalcDataPath = os.path.join(PRECALCS_DIR_PATH, preCalcFileName)
-    pandasHelper.savePandasDataFrame(df, preCalcDataPath)
-    return preCalcDataPath
+def _getLogFilePath(cmdLineArgs: dict) -> str:
+    logFilePathKey = keysHelper.getLogFilePathKey()
+    return cmdLineArgs[logFilePathKey]
 
+def _getOrigDataFilePandasDataFrame(cmdLineArgs: dict) -> str:
+    origDataFileDataFrameKey = keysHelper.getOldDataFileDataFrameKey()
+    return cmdLineArgs[origDataFileDataFrameKey]
 
-@genericLog
 #Reminder, requires startLat and startLong with convention of N-W as positive (rather than N-E)
-def _preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitude: float, startLongitude: float) -> PandasDataFrame:    
-    csv = pd.read_csv(dataFilePath)
+def _preCalc(cmdLineArgs: dict) -> PandasDataFrame:   
+
+    dataFrame = _getOrigDataFilePandasDataFrame(cmdLineArgs)
+    logFilePath = _getLogFilePath(cmdLineArgs) 
+    gpsFilePath = _getGPSFilePath(cmdLineArgs)
+    startLatLong = _getStartLatLong(cmdLineArgs)    
+    startLatitude, startLongitude = startLatLong
+    
+    # ! csv is a pandasDataFrame, assigned it here to not have to change everything 
+    csv = dataFrame
     data = csv.to_dict(orient = 'list')
     roll = np.array(data['Roll'])
     pitch = np.array(data['Pitch'])
@@ -344,22 +312,17 @@ def _preCalc(dataFilePath: str, logFilePath: str, gpsFilePath: str, startLatitud
     
     return csv 
 
-@genericLog
-def _preCalcAndSave(filesInfo: dict):
-    dataFilePath, dataFileName = _getDataFileTup(filesInfo)
-    logFilePath, logFileName = _getLogFileTup(filesInfo)
-    gpsFilePath, gpsFileName = _getGPSFileTup(filesInfo)
-    startLat, startLong = _getStartLatLong(filesInfo)
-    dataFrame = _preCalc(dataFilePath, logFilePath, gpsFilePath, startLat, startLong)
-    preCalcDataPath = _savePreCalcDataFrame(dataFrame, dataFileName)
-    return preCalcDataPath
+def _preCalcAndSave(cmdLineArgs: dict):
+    dataFrame = _preCalc(cmdLineArgs)   
+    _savePreCalcDataFrame(dataFrame, cmdLineArgs) 
+
+def handlePreCalculate(cmdLineArgs: dict) -> dict:
+    preCalcDataPath = _preCalcAndSave(cmdLineArgs)
     
-@genericLog
-def handlePreCalculate(filesInfo: dict) -> dict:
-    preCalcDataPath = _preCalcAndSave(filesInfo)
+def _getCMDLineArgs() -> dict: 
+    return cmdArgs.getCMDLineArgs()
     
-    PRECALC_KEY = keysHelper.getPreCalcKey()
-    filesInfoCopy = filesInfo.copy()
-    filesInfoCopy[PRECALC_KEY] = preCalcDataPath
-    
-    return filesInfoCopy 
+@logger.getLogger("precalcs.py", _getLogFilePath(_getCMDLineArgs()))
+def main():
+    cmdLineArgs = _getCMDLineArgs()
+    handlePreCalculate(cmdLineArgs)

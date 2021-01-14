@@ -27,7 +27,7 @@ const SideBarComp = (props: SideBarCompProps) => {
 
     const isDev = process.env.NODE_ENV !== 'production';
     const remote = require('electron').remote;
-    const img_path = isDev ? path.resolve(path.join(__dirname, 'scripts', 'duke.png')) : path.resolve(path.join(remote.app.getAppPath(), 'scripts', 'duke.png'));
+    const img_path = isDev ? path.resolve(path.join(__dirname, 'app_files', 'duke.png')) : path.resolve(path.join(remote.app.getAppPath(), 'app_files', 'duke.png'));
 
     return (
         <div className={classes.root}>

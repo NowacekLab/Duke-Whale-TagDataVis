@@ -12,6 +12,7 @@ import json
 
 # PACKAGE
 from helpers import cmdArgs, pandasHelper, pathHelper, keysHelper 
+import precalcs 
 import logger 
 
 # TYPE ALIASES  
@@ -64,10 +65,6 @@ def _parseMatFileData(data: MatFileData) -> dict:
 
     return d 
 
-def _savePandasDataFrame(pandasDataFrame: PandasDataFrame, newDataFilePath: str) -> str: 
-    pandasHelper.savePandasDataFrame(pandasDataFrame, newDataFilePath)
-    return newDataFilePath
-
 def _loadMatFileData(filePath: str) -> MatFileData:
     # 'rb' is necessary, look at https://stackoverflow.com/questions/42339876/error-unicodedecodeerror-utf-8-codec-cant-decode-byte-0xff-in-position-0-in
     with open(filePath, 'rb') as f: 
@@ -88,67 +85,84 @@ def _handleMATConversionToPandasDataFrame(filePath: str) -> PandasDataFrame:
     pandasDataFrame = _getPandasDataFrameFromMatData(parsedMatFileData)
     return pandasDataFrame
 
-def convertToCSVAndSave(origDataFilePath: str, newDataFilePath: str) -> str:
-    pandasDataFrame = _handleMATConversionToPandasDataFrame(origDataFilePath)
-    _savePandasDataFrame(pandasDataFrame, newDataFilePath)
-
-def _saveFile(origDataFilePath: str, newDataFilePath: str):
-    pathHelper.copyFileToNewPath(origDataFilePath, newDataFilePath)
-
-def _isFileCSV(dataFileName: str) -> bool: 
-    return pathHelper.isFileCSV(dataFileName)
-
-def _filePathBaseName(filePath: str) -> str: 
-    return pathHelper.filePathBaseName(filePath)
-
-def _needProcessToCSV(dataFilePath: str) -> bool: 
-    dataFileName = _filePathBaseName(dataFilePath)
-    isCSV = _isFileCSV(dataFileName)
-    return not isCSV 
-
-def _getProcessor(origDataFilePath) -> Callable:
-    needToProcess = _needProcessToCSV(origDataFilePath)
-    if needToProcess: 
-        return convertToCSVAndSave
-    else: 
-        return _saveFile 
-
-def _handleProcessToCSV(origDataFilePath: str, newDataFilePath: str) -> str:     
-    processor = _getProcessor(origDataFilePath)
-    processor(origDataFilePath, newDataFilePath)
+def _handleCSVConversionToPandasDataFrame(filePath: str) -> PandasDataFrame:
+    return pandasHelper.getPandasDataFrameFromCSVPath(filePath)
 
 def _getNewDataFilePath(args: dict) -> str: 
     newDataFilePathKey = keysHelper.getNewDataFilePathKey()
-    return args[newDataFilePathKey]
+    return args[newDataFilePathKey]   
+
+def _fileExists(filePath: str) -> bool: 
+    return pathHelper.doesFileExist(filePath)
+
+
+def _isFileMAT(filePath: str):
+    return pathHelper.isFileMAT(filePath)
+
+def _isFileCSV(filePath: str):
+    return pathHelper.isFileCSV(filePath)
+
+def _getPandasDataFrameProcessor(filePath: str):
+    isCSV = _isFileCSV(filePath)
+    isMAT = _isFileMAT(filePath)
+    
+    if (isMAT):
+        return _handleMATConversionToPandasDataFrame
+    
+    if (isCSV):
+        return _handleCSVConversionToPandasDataFrame
+    
+def _getPandasDataFrameFromFile(filePath: str):
+    
+    pandasDataFrameProcessor = _getPandasDataFrameProcessor(filePath)
+
+    return pandasDataFrameProcessor(filePath)
 
 def _getOrigDataFilePath(args: dict) -> str:
     origDataFilePathKey = keysHelper.getOldDataFilePathKey()
     return args[origDataFilePathKey]
 
-def _getCMDLineArgs():
-    return cmdArgs.getCMDLineArgs()    
+def _getOrigFilePandasDataFrame(cmdLineArgs: dict):
+    origDataFilePath = _getOrigDataFilePath(cmdLineArgs)
+    return _getPandasDataFrameFromFile(origDataFilePath)
 
-def _fileExists(filePath: str) -> bool: 
-    return pathHelper.doesFileExist(filePath)
-
-def _verifyProcessSuccess(newDataFilePath: str):
+def _verifyProcessSuccess(cmdLineArgs: dict):
+    newDataFilePath = _getNewDataFilePath(cmdLineArgs)
     successful = _fileExists(newDataFilePath)
     if not successful: 
         raise Exception("File conversion failed. File was not found at its new path.")
+
+def _handlePreCalculate(cmdLineArgs: dict): 
+    return precalcs.handlePreCalculate(cmdLineArgs)
+
+def _addOrigFilePandasDataFrame(cmdLineArgs: dict) -> dict:
+    cmdLineArgsCopy = cmdLineArgs.copy()
+    
+    origFileDataFrameKey = keysHelper.getOldDataFileDataFrameKey()
+    origFilePandasDataFrame = _getOrigFilePandasDataFrame(cmdLineArgs)
+    
+    cmdLineArgsCopy[origFileDataFrameKey] = origFilePandasDataFrame
+    
+    return cmdLineArgsCopy
+
+def _getCMDLineArgs():
+    return cmdArgs.getCMDLineArgs() 
 
 def _getLogFilePath(cmdLineArgs: dict):
     logFilePathKey = keysHelper.getLogPathKey()
     return cmdLineArgs[logFilePathKey]
 
-def getPandasDataFrame():
+def processFile(cmdLineArgs: dict):
+    cmdLineArgs = _addOrigFilePandasDataFrame(cmdLineArgs)    
+    _handlePreCalculate(cmdLineArgs)
+    _verifyProcessSuccess(cmdLineArgs)
+
+@logger.getLogger("csvmat.py", _getLogFilePath(_getCMDLineArgs()))
+def main():
     cmdLineArgs = _getCMDLineArgs()
-    origDataFilePath = _getOrigDataFilePath(cmdLineArgs)
-    newDataFilePath = _getNewDataFilePath(cmdLineArgs)
-    _handleProcessToCSV(origDataFilePath, newDataFilePath)
-    _verifyProcessSuccess(newDataFilePath) 
-    
+    processFile(cmdLineArgs)
     return "SUCCESS"
 
 if __name__ == "__main__":
-    print(processToCSV())
+    print(main())
     sys.stdout.flush()

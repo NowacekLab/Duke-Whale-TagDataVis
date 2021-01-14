@@ -26,7 +26,7 @@ import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHand
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import useIsMountedRef from "../functions/useIsMountedRef";
 
-import {MAIN_SCRIPT_PATH, isWindows, spawn, python3, fs, FILES_JSON} from "../functions/exec/pythonHandler";
+import {isWindows, spawn, python3, fs} from "../functions/exec/constants";
 
 const useStyles = makeStyles({
     root: {
@@ -174,35 +174,35 @@ const Graphs = () => {
 
     function handleAction(action: string, obj: graphObject) {
 
-        forceLoadActionHandler.activateForceLoad();
+        // forceLoadActionHandler.activateForceLoad();
 
-        const FILE = obj['name'];
+        // const FILE = obj['name'];
 
-        const args = new Array(MAIN_SCRIPT_PATH, 'actions', FILE, action, file);
+        // const args = new Array(MAIN_SCRIPT_PATH, 'actions', FILE, action, file);
 
-        const loadingSmaller = document.getElementById('loader-smaller');
+        // const loadingSmaller = document.getElementById('loader-smaller');
 
-        loadingSmaller ? loadingSmaller.style.display = 'flex' : null;
+        // loadingSmaller ? loadingSmaller.style.display = 'flex' : null;
 
-        const pythonProcess = spawn(python3, args, {shell: isWindows});
+        // const pythonProcess = spawn(python3, args, {shell: isWindows});
 
-        pythonProcess.stdout.on('data', (data: any) => {
+        // pythonProcess.stdout.on('data', (data: any) => {
 
-            let resp = data.toString().trim();
+        //     let resp = data.toString().trim();
 
-            console.log(resp);
+        //     console.log(resp);
 
-            handleResponse(resp, action);
+        //     handleResponse(resp, action);
 
-            if (action === 'delete') {
-                setUpdater(!update);
-            }
+        //     if (action === 'delete') {
+        //         setUpdater(!update);
+        //     }
 
-            loadingSmaller ? loadingSmaller.style.display = 'none' : null;
+        //     loadingSmaller ? loadingSmaller.style.display = 'none' : null;
 
-            forceLoadActionHandler.deactivateForceLoad();
+        //     forceLoadActionHandler.deactivateForceLoad();
 
-        })
+        // })
     }
 
     function handleDelete(obj: graphObject) {
@@ -237,40 +237,40 @@ const Graphs = () => {
     }
     const getGraphs = () => {
 
-        let graph_type: string = localStorage.getItem('app') ?? "2D";
+        // let graph_type: string = localStorage.getItem('app') ?? "2D";
 
-        isMountedRef.current && setGraphType(graph_type);
+        // isMountedRef.current && setGraphType(graph_type);
 
-        console.log('hi');
-        console.log(FILES_JSON);
-        if (FILES_JSON) {
-            fs.readFile(FILES_JSON, function(error: string, data: string) {
-                error;
+        // console.log('hi');
+        // console.log(FILES_JSON);
+        // if (FILES_JSON) {
+        //     fs.readFile(FILES_JSON, function(error: string, data: string) {
+        //         error;
     
-                const info = JSON.parse(data);
+        //         const info = JSON.parse(data);
     
-                if (!(info.hasOwnProperty(file))) {
-                    return;
-                }
+        //         if (!(info.hasOwnProperty(file))) {
+        //             return;
+        //         }
     
-                const graph_key = graphChoices[graph_type]['key'];
+        //         const graph_key = graphChoices[graph_type]['key'];
     
-                if (info[file].hasOwnProperty(graph_key)) {
-                    let new_graphs: Array<graphObject> = [];
-                    for (let key in info[file][graph_key]) {
-                        let graph: graphObject = {};
-                        graph['name'] = key;
-                        graph['path'] = info[file][graph_key][key];
-                        if (graph['path'] !== "") {
-                            new_graphs.push(graph);
-                        }
-                    }
-                    setTimeout(() => {
-                        isMountedRef.current && setGraphs(new_graphs);
-                    }, 300);
-                }
-            })
-        }
+        //         if (info[file].hasOwnProperty(graph_key)) {
+        //             let new_graphs: Array<graphObject> = [];
+        //             for (let key in info[file][graph_key]) {
+        //                 let graph: graphObject = {};
+        //                 graph['name'] = key;
+        //                 graph['path'] = info[file][graph_key][key];
+        //                 if (graph['path'] !== "") {
+        //                     new_graphs.push(graph);
+        //                 }
+        //             }
+        //             setTimeout(() => {
+        //                 isMountedRef.current && setGraphs(new_graphs);
+        //             }, 300);
+        //         }
+        //     })
+        // }
     }
 
     const createBrowserWindow = (name: string, path: string) => {

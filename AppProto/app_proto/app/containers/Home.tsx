@@ -117,7 +117,8 @@ const useStyles = makeStyles({
 const Home = () => {
   const classes = useStyles();
 
-  const [fileNum, setFileNum] = useState(-1);
+  // TODO: was originally -1, changed for testing
+  const [fileNum, setFileNum] = useState(0);
 
   const isMountedRef = useIsMountedRef();
 
