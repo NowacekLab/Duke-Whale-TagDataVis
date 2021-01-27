@@ -1,22 +1,20 @@
-import {isDev, EXEC_DIR, 
-        python3, path, 
-        SCRIPTS_PATH, dataFilePathKey,
-        newDataFilePathKey, loggingFilePathKey,
-        logFilePathKey, gpsFilePathKey, startLatitudeKey,
-        startLongitudeKey} from "../exec/constants";
+import {isDev, python3} from "../constants";
 import handlePythonExec from "../exec/python_exec";
-import {formatCMDLineArgs} from "../exec/helpers";
+import {formatCMDLineArgs} from "./cmdArgs";
+import {getDevPythonScriptPath, getProdPythonScriptPath, addLoggingErrorFilePath} from "../paths";
+import {failResponse} from "../responses"
+import {getDataFilePathKey, getNewDataFilePathKey,
+        getLoggingFilePathKey, getLogFilePathKey,
+        getGPSFilePathKey, getStartLatitudeKey, getStartLongitudeKey} from "../keys";
 
-export type cmdLineArgs = Record<string, string>;
+export type cmdLineArgs = any;
 export async function processGeneric(pythonScriptName: string, scriptName: string, cmdLineArgs: cmdLineArgs) {
 
     const cmdLineString = formatCMDLineArgs(cmdLineArgs);
-    const pythonScriptPath = path.resolve(path.join(SCRIPTS_PATH, pythonScriptName));
-    const scriptDir = path.resolve(path.join(EXEC_DIR, scriptName));
-    const scriptPath = path.resolve(path.join(scriptDir, scriptName));
-    const executor = isDev ? python3 : scriptPath;
-
-    const args = isDev ? [pythonScriptPath, cmdLineString] : [cmdLineString];
+    const devPythonScriptPath = getDevPythonScriptPath(pythonScriptName);
+    const prodPythonScriptPath = getProdPythonScriptPath(scriptName);
+    const executor = isDev ? python3 : prodPythonScriptPath;
+    const args = isDev ? [devPythonScriptPath, cmdLineString] : [cmdLineString];
 
     const res = await handlePythonExec(executor, args);
     const responseObj = res ?? {success: false, response: "handlePythonExec() did not return valid response object"};
@@ -24,12 +22,29 @@ export async function processGeneric(pythonScriptName: string, scriptName: strin
     return responseObj;
 }
 
+const dataFilePathKey = getDataFilePathKey();
+const newDataFilePathKey = getNewDataFilePathKey();
+const loggingFilePathKey = getLoggingFilePathKey();
+const logFilePathKey = getLogFilePathKey();
+const gpsFilePathKey = getGPSFilePathKey();
+const startLatitudeKey = getStartLatitudeKey();
+const startLongitudeKey = getStartLongitudeKey();
+
 export type processFileKey = string;
 export const processFileKeys: Array<processFileKey> = [dataFilePathKey, newDataFilePathKey,
                                 loggingFilePathKey, logFilePathKey,
                                 gpsFilePathKey, startLatitudeKey,
                                 startLongitudeKey]
-export type processFileCMDLineArgs = Record<processFileKey, string>;
+interface processFileCMDLineArgs {
+    [index: string] : string,
+    dataFilePathKey: string, 
+    newDataFilePathKey: string, 
+    loggingFilePathKey: string, 
+    logFilePathKey: string, 
+    gpsFilePathKey: string, 
+    startLatitudeKey: string, 
+    startLongitudeKey: string
+}
 
 async function processFile(cmdLineArgs: processFileCMDLineArgs) {
     const pythonScriptName = "process.py";
@@ -42,13 +57,15 @@ async function processFile(cmdLineArgs: processFileCMDLineArgs) {
 
 export function getProcessFileArgs(args: processFileCMDLineArgs) {
 
+    const modArgs = addLoggingErrorFilePath(args);
+
     const processFileArgs = {} as processFileCMDLineArgs;
 
     for (const processFileKey of processFileKeys) {
-        if (!args.hasOwnProperty(processFileKey)) {
+        if (!modArgs.hasOwnProperty(processFileKey)) {
             throw Error("Given arguments @getProcessFileArgs does not contain all required keys.");
         }
-        const val = args[processFileKey];
+        const val = modArgs[processFileKey];
         processFileArgs[processFileKey] = val;
     }
 
@@ -68,28 +85,7 @@ export async function handleProcessFile(args: processFileCMDLineArgs) {
         const processResp = processFile(processFileArgs);
         return processResp;
     } catch (error) {
-        return {
-            success: false,
-            response: error,
-        }
+        return failResponse(error);
     }
 
-}
-
-const manualTestsDir = path.resolve(path.join(SCRIPTS_PATH, 'manualTests'));
-const testFilesDir = path.resolve(path.join(manualTestsDir, 'testFiles'));
-const batch1dir = path.resolve(path.join(testFilesDir, 'batch1'));
-const newbatch1dir = path.resolve(path.join(batch1dir, 'new'));
-const cmdArgsTest = {
-    dataFilePath: path.resolve(path.join(batch1dir, 'DATA_gm12_172aprh.mat')),
-    newDataFilePath: path.resolve(path.join(newbatch1dir, 'DATA_gm12_172aprh_precalcs.csv')),
-    loggingFilePath: path.resolve(path.join(newbatch1dir, 'errors.log')),
-    logFilePath: path.resolve(path.join(batch1dir, "LOG_gm172alog.txt")),
-    gpsFilePath: path.resolve(path.join(batch1dir, 'GPS_20120620_Exocetus_Focal_Follow_Gm_12_172a.xlsx')),
-    startLatitude: "35.87998",
-    startLongitude: "74.84635"
-}
-const handle = (resp:any) => {console.log(resp)};
-export const processTest = () => {
-    return processFile(cmdArgsTest);
 }

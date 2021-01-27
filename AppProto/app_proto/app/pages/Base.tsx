@@ -1,6 +1,6 @@
 import React from 'react';
-import Sidebar from 'react-sidebar';
-import SideBarContent from "../components/SideBarContent";
+import SideBarContent from "../components/Sidebar/SideBarContent";
+import Sidebar from "react-sidebar";
 
 type Props = {
     Page: any;
@@ -9,9 +9,9 @@ type Props = {
 export default function Base({Page}: Props) {
 
     return ( 
-        <Sidebar 
-            sidebar = {<SideBarContent/>}
-            docked = {true}
+        <Sidebar
+            sidebar={<SideBarContent />}
+            docked={true}
         >
             <Page />
         </Sidebar>

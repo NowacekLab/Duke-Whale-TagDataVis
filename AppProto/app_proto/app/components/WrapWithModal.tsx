@@ -32,7 +32,7 @@ export default function WrapWithModal({showModal, handleClose, children}: WrapWi
 
         <Modal
             className={classes.modal}
-            style={{left: "200px"}} 
+            style={{left: "50px"}} 
             open={showModal}
             onClose={handleClose}
             closeAfterTransition
@@ -41,7 +41,7 @@ export default function WrapWithModal({showModal, handleClose, children}: WrapWi
                 timeout: 500, 
                 style: {
                     position: "fixed",
-                    left: 200
+                    left: 50
                 }
             }}
         >   

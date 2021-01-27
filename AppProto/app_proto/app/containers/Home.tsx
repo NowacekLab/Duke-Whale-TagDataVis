@@ -2,22 +2,57 @@ import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import useIsMountedRef from "../functions/useIsMountedRef";
-
+import Fab from "@material-ui/core/Fab";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Skeleton from '@material-ui/lab/Skeleton';
-
+import ListIcon from '@material-ui/icons/List';
 import HomeTable from "../components/HomeTable";
+import Paper from "@material-ui/core/Paper";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+
+import UploadsPaper from "../components/Upload/UploadsPaper";
 
 const useStyles = makeStyles({
   root: {
     fontFamily: "HelveticaNeue-Light",
     height: "100%",
-    display: "grid",
-    gridTemplateRows: "20% 80%",
-    gridTemplateColumns: "100%",
-    gridTemplateAreas:`
-    'header'
-    'main'`,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  uploadPaper: {
+    height: "80%",
+    width: "80%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "20px",
+    gap: "10px"
+  },
+  uploadPaperTitle: {
+    fontSize: "2em",
+    fontWeight: "bold",
+    width: "100%",
+    justifyContent: "flex-start",
+    margin: 0,
+  },
+  uploadTopBarContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    width: "100%"
+  },
+  uploadTabsContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "10px"
+  },
+  uploadTabInactive: {
+    padding: 0,
+    textTransform: "none"
   },
   header: {
     color: "black",
@@ -93,7 +128,6 @@ const useStyles = makeStyles({
   },
   tableContainer: {
     overflow: "scroll",
-    display: "none"
   },
   table: {
     width: "80%",
@@ -111,6 +145,12 @@ const useStyles = makeStyles({
     left: 200, 
     right: 0,
     height: 5,
+  },
+  hide: {
+    display: "none"
+  },
+  show: {
+    display: ""
   }
 });
 
@@ -144,21 +184,19 @@ const Home = () => {
     }
   }, [fileNum]);
 
+
+  const [tabVal, setTabVal] = useState(0);
+  const handleChange = (event: any, newValue: any) => {
+    setTabVal(newValue);
+  }
+
+
   return (
     <Container className={classes.root}>
-      <p className={classes.header}>{"Home"}</p>
+      
+      <UploadsPaper />
 
-      <LinearProgress id="loader-smaller" color="primary" className={classes.loadingSmaller}/>
 
-      <div className={classes.table} id="loading-table">
-        <Skeleton variant="text" width="100%" height={30} />
-        <Skeleton variant="rect" height={500} />
-      </div>
-
-      <div className={classes.tableContainer} id="home-table">
-        <HomeTable fileNum={fileNum} setFileNum={setFileNum}/>
-
-      </div>
     </Container>
   );
 };

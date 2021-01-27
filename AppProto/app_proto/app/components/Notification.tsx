@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     bannerSuperCont: {
         zIndex: 999998,
         bottom: 20,
-        left: 200,
+        left: 100,
         right: 0,
         position: "fixed",
         display: "flex",

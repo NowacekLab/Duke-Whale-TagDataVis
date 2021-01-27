@@ -1,5 +1,5 @@
 import React from "react";
-import routes from "../../app_files/routes.json";
+import routes from "../../routes.json";
 import AppLink from "./AppLink";
 import EditIcon from '@material-ui/icons/Edit';
 

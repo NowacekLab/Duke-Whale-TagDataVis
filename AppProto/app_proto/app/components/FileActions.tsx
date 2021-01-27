@@ -10,22 +10,17 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
-
-import UploadDialogCont from "./UploadDialogCont";
-import UploadProgress from './UploadProgress';
 import Confirmation from "./Confirmation";
-import {useDispatch} from 'react-redux';
 import Notification from "./Notification";
 
 import useIsMountedRef from "../functions/useIsMountedRef";
-import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
-import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHandler";
-import * as constants from "../app_files/constants";
-import {formatCMDLineArgs} from "../functions/exec/helpers";
-import handlePythonExec from "../functions/exec/python_exec";
+import {notifsActionsHandler, forceLoadActionsHandler, useDispatch} from "../functions/reduxHandlers/handlers";
+import {formatCMDLineArgs} from "../functions/exec/cmdArgs";
 import * as child from 'child_process';
-import {spawn, isWindows, python3} from "../functions/exec/constants";
-import {processTest} from "../functions/exec/process";
+
+import UploadProgress from "./Upload/UploadProgress";
+import UploadDialog from "./Upload/UploadDialog";
+import useUpload, {uploadArgs, resetUploadProgress} from "../functions/hooks/useUpload";
 
 const useStyles = makeStyles({
   buttonCont: {
@@ -57,44 +52,8 @@ const FileActions = (props: FileActionsProps) => {
   const notifActionHandler = new notifsActionsHandler(dispatch);
   const forceLoadActionHandler = new forceLoadActionsHandler(dispatch);
 
-  // **TO INTERACT WITH PYTHON**
-  const [chosenFile, setChosenFile] = useState<string>(""); // this is table file selectedFile
 
-  type uploadInfoObject = constants.uploadInfoObject;
-  const defaultUploadInfoObj = {
-    "dataFileName": "",
-    "dataFilePath": "",
-    "logFileName": "",
-    "logFilePath": "",
-    "gpsFileName": "",
-    "gpsFilePath": "",
-    "startLat": "",
-    "startLong": "",
-  }
-  const [uploadInfoObj, setUploadInfoObject] = useState<uploadInfoObject>(defaultUploadInfoObj);
-  const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const handleUploadDialogClose = () => {
-    setShowUploadDialog(false);
-    cancelFileUpload();
-  }
-  function handleFileUpload() {
-
-    processTest();
-
-    // setShowUploadDialog(true);
-    // forceLoadActionHandler.activateForceLoad();
-  }
-  function beginProcessing(begin: boolean, uploadInfoObj: uploadInfoObject) {
-    if (!begin) cancelFileUpload();
-    else handleConfirm("upload", uploadInfoObj.dataFileName);
-  }
-  function cancelFileUpload() {
-    forceLoadActionHandler.deactivateForceLoad();
-    setUploadInfoObject(defaultUploadInfoObj);
-    setShowUploadDialog(false);
-  }
-
-
+  const selectedFile = props.selectedFile;
   const color = createMuiTheme({
     palette: {
         primary: {
@@ -103,10 +62,43 @@ const FileActions = (props: FileActionsProps) => {
     },
   });
 
+  const [uploadProgress, setUploadProgress, beginUpload] = useUpload();
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const handleUploadDialogOpen = () => {
+    setShowUploadDialog(true);
+  }
+  const handleUploadDialogClose = () => {
+    setShowUploadDialog(false);
+  }
+
+  const [showUploadProgress, setShowUploadProgress] = useState(false);
+  const uploadProgressStart = () => {
+  
+  }
+  const uploadProgressEnd = () => {
+    setShowUploadProgress(false);
+  }
+  const resetProgress = () => {
+    resetUploadProgress(setUploadProgress);
+  }
+
+  const beginUploadWrapper = (uploadArgs: uploadArgs) => {
+    //@ts-ignore
+    beginUpload(uploadArgs, uploadProgressStart);
+
+  }
+  const uploadProgressFinish = () => {
+    resetProgress();
+  }
+
+  //TODO: make sure upload progress closes if there is an error in uploading 
+
+
+
   // CONFIRMATION
   const confirmations: Record<string, Record<string, string>> = {
     "delete": {
-      "title": `Delete ${chosenFile}?`,
+      "title": `Delete ${selectedFile}?`,
       "description": "This will permanently delete the file and its graphs."
     },
     "upload-exists": {
@@ -119,7 +111,7 @@ const FileActions = (props: FileActionsProps) => {
       "description": `Uploading may take a long time to process the file appropriately.`
     },
     "reprocess": {
-      "title": `Reprocess ${chosenFile}?`,
+      "title": `Reprocess ${selectedFile}?`,
       "description": "It may take a long time to process the file appropriately."
     }
   }
@@ -139,11 +131,11 @@ const FileActions = (props: FileActionsProps) => {
         handleAction('delete');
         break;
       case "upload":
-        handleUpload('upload');
-        cancelFileUpload();
+        // handleUpload('upload');
+        // cancelFileUpload();
         break;
       case "reprocess":
-        handleUpload('reprocess');
+        // handleUpload('reprocess');
     }
 
     handleCloseConfirm();
@@ -152,7 +144,7 @@ const FileActions = (props: FileActionsProps) => {
   }
   const rejectConfirm = () => {
     if (pendingAction === 'upload') {
-      cancelFileUpload();
+      // cancelFileUpload();
     }
     handleCloseConfirm();
     setPendingAction("");
@@ -203,14 +195,6 @@ const FileActions = (props: FileActionsProps) => {
     handleOpenConfirm();
   }
 
-  // Executes whenever props.selectedFile changes (interact with table)
-  useEffect(() => {
-
-    if (isMountedRef.current) {
-      setChosenFile(props.selectedFile);
-    }
-  }, [props.selectedFile, props.fileRows])
-
   const showSuccessMsg = (msg: string) => {
     notifActionHandler.showSuccessNotif(msg);
   }
@@ -224,8 +208,8 @@ const FileActions = (props: FileActionsProps) => {
       'func': showSuccessMsg,
       'upload': 'Successfully uploaded and processed.',
       'regenerate': 'Successfully regenerated graphs.',
-      'delete': `${chosenFile} deleted.`,
-      'edit': `Successfully opened ${chosenFile}`,
+      'delete': `${selectedFile} deleted.`,
+      'edit': `Successfully opened ${selectedFile}`,
       'save': 'Saved in data_visualization folder in Downloads!'
     },
     'False': {
@@ -273,142 +257,21 @@ const FileActions = (props: FileActionsProps) => {
 
     if (action === 'delete') {
       const currentGraphFile = localStorage.getItem('selectedGraphFile') || "";
-      if (currentGraphFile === chosenFile) {
+      if (currentGraphFile === selectedFile) {
         localStorage.setItem('selectedGraphFile', "");
       }
     }
 
-    const args: any[] = [];
-    // const args = new Array('-u', MAIN_SCRIPT_PATH, 'actions', chosenFile, action);
-
-    const pythonProcess = spawn(python3, args, {shell: isWindows});
-
     //TODO: abstract away this into another function
     const loaderSmaller: HTMLElement | null = document.getElementById('loader-smaller');
     loaderSmaller  && loaderSmaller.style ? loaderSmaller.style.display='flex' : null;
-
-    pythonProcess.stdout.on('data', (data: any) => {
-      let resp = data.toString().trim();
-
-      if (action === 'save' && resp !== 'False') {
-        // shell.showItemInFolder(resp); --> convert this to opening downloads folder in preferences.json when it is made!!!
-        console.log('placeholder');
-      }
-
-      handleResponse(resp, action);
-
-      loaderSmaller && loaderSmaller.style ? loaderSmaller.style.display = 'none' : null;
-
-      props.refreshTableView();
-      forceLoadActionHandler.deactivateForceLoad();
-
-    })
-  }
-  
-  const [uploading, setUploading] = useState(false);
-  const [finishedUploading, setFinishedUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<Record<string, string>>({
-    "converted": "progress",
-    "processed": "progress", 
-    "graphs": "progress",
-  });
-
-  const resetUploadState = () => {
-    forceLoadActionHandler.deactivateForceLoad();
-
-    setUploadProgress({
-      "converted": "progress",
-      "processed": "progress", 
-      "graphs": "progress",
-    })
-    setFinishedUploading(false);
-    setUploading(false);
-  }
-
-  const handleUploadProcess = (process: child.ChildProcess) => {
-
-    process && process.stdout && process.stdout.on('data', (data) => {
-      let resp = data.toString().trim();
-
-      console.log(resp);
-      console.log(uploadProgress);
-
-      const error = resp === 'Error';
-
-      if (error) {
-        for (let key in uploadProgress) {
-          if (uploadProgress[key] === 'progress') {
-            uploadProgress[key] = 'fail';
-          }
-        }
-        setFinishedUploading(true);
-      } else if (uploadProgress.hasOwnProperty(resp)) {
-        uploadProgress[resp] = 'success';
-      }
-
-
-      console.log(uploadProgress);
-      setUploadProgress({...uploadProgress});
-    });
-
-    process && process.stdout && process.stdout.on('error', (err: string) => {
-      const action = "";
-
-      handleResponse('false', action);
-      resetUploadState();
-    })
-
-  }
-
-  const handleUpload = (action = 'upload') => { 
-
-    if (action !== "upload" && action !== "reprocess") return; 
-
-    forceLoadActionHandler.activateForceLoad();
-    let cmdLineObj;
-    if (action === 'upload') {
-      cmdLineObj = {
-        'moduleName': 'actions',
-        'action': 'upload',
-        ...uploadInfoObj,
-      }
-    } else {
-      cmdLineObj = {
-        'moduleName': 'actions',
-        'action': 'reprocess',
-        'fileName': chosenFile
-      }
-    }
-
-    setUploading(true);
-    const cmdLineArg = formatCMDLineArgs(cmdLineObj);
-    const args = [cmdLineArg];
-          
-  }
-
-  function handleProcStartError() {
-    notifActionHandler.showErrorNotif("Scripts failed to execute. Contact developers.");
-
-    if (pendingAction === 'upload') {
-      resetUploadState();
-    }
   }
 
   const frequentStyle = {
-    display: chosenFile === "" ? "none" : "flex"
+    display: selectedFile === "" ? "none" : "flex"
   }
 
   const buttons = [
-    // {
-    //   "key": 0,
-    //   "title": <h1>Comments</h1>,
-    //   "icon": <CommentIcon
-    //     color="primary"
-    //     fontSize="large"
-    //   />,
-    //   "style": frequentStyle,
-    //   "onClick": handleComment,
-    // },
     {
       "key": 1,
       "title": <h1>Reprocess</h1>,
@@ -459,26 +322,18 @@ const FileActions = (props: FileActionsProps) => {
       "style": {
         display: "flex",
       },
-      "onClick": handleFileUpload, 
+      "onClick": handleUploadDialogOpen, 
     },
   ]
 
   return (
 
     <ThemeProvider theme={color}>
-          <UploadProgress 
-            uploadProgress = {uploadProgress} 
-            uploading = {uploading} 
-            finishedUploading ={finishedUploading}
-            refreshTableView = {props.refreshTableView} 
-            resetUploadState = {resetUploadState}
-          />
 
-          <UploadDialogCont 
+          <UploadDialog
             showUploadDialog={showUploadDialog}
-            setUploadInfoObject={setUploadInfoObject}
-            beginProcessing={beginProcessing}
             handleUploadDialogClose={handleUploadDialogClose}
+            beginUpload={beginUploadWrapper}
           />
 
           <LinearProgress id="loader-smaller" color="primary" className={classes.loadingSmaller}/>
@@ -502,8 +357,6 @@ const FileActions = (props: FileActionsProps) => {
             })}
 
           </div>
-
-
 
           <Confirmation 
             open={openConfirm}

@@ -3,7 +3,7 @@ export function formatCMDLineArgs(cmdArgs: any) {
     const keyPairJoiner = ":";
 
     const keyPairs = [];
-    for (var key in cmdArgs) {
+    for (let key in cmdArgs) {
         if (!cmdArgs.hasOwnProperty(key)) continue; 
         const val = cmdArgs[key];
         const keyPair = `${key}${keyPairJoiner}${val}`;

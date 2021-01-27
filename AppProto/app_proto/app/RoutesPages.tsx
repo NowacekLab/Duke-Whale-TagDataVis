@@ -1,7 +1,7 @@
 /* eslint react/jsx-props-no-spreading: off */
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import routes from './app_files/routes.json';
+import routes from './routes.json';
 import App from './pages/App';
 import HomePage from './pages/HomePage';
 import AppsPage from "./pages/AppsPage";
@@ -10,6 +10,7 @@ import GraphsPage from './pages/GraphsPage';
 import SettingsPage from "./pages/SettingsPage";
 import InfoPage from "./pages/InfoPage";
 import EditorPage from "./pages/EditorPage";
+import UploadPage from "./pages/UploadPage";
 
 export default function Routes() {
   return (
@@ -41,7 +42,10 @@ export default function Routes() {
           return <Base Page={EditorPage} />
         }} />
 
-
+        <Route path={routes.UPLOAD} 
+          render={() => {
+            return <Base Page={UploadPage} />
+        }} />
 
         <Route path={routes.HOME}
           render={() => {

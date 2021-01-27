@@ -1,4 +1,7 @@
-import {spawn} from "./constants";
+import {successResponse, failResponse} from "../responses";
+
+export const spawn = require("child_process").spawn; 
+
 
 export default async function handlePythonExec(executor: string, args: Array<string>) {
     
@@ -16,10 +19,7 @@ export default async function handlePythonExec(executor: string, args: Array<str
                     }
 
                     if (resp.startsWith("SUCCESS")) {
-                        resolve({
-                            success: true, 
-                            response: resp
-                        })
+                        resolve(successResponse(resp))
                     }
                 })
 
@@ -33,10 +33,7 @@ export default async function handlePythonExec(executor: string, args: Array<str
 
             } catch (error) {
 
-                reject({
-                    success: false, 
-                    response: error,
-                })
+                reject(failResponse(error))
 
             }
 

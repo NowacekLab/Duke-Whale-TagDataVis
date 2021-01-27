@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
+import {getNewDataFilePath, getLoggingErrorFilePath} from "../../functions/paths";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -58,12 +59,11 @@ const useStyles = makeStyles(() => ({
     }
 }))
 
-type UploadDialogCompProps = {
-    setUploadInfoObject: Function, 
-    beginProcessing: Function,
+type UploadStepperProps = {
+    beginUpload: Function,
 }
 
-export default function UploadDialogComp({setUploadInfoObject, beginProcessing} : UploadDialogCompProps) {
+export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
@@ -368,11 +368,6 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
         return uploadFileObjects[index];
     }
 
-    // const handleCancel = () => {
-    //     resetFileObjs();
-    //     beginProcessing(false);
-    // }
-
     const handleUploadStart = () => {
 
         let trueLat = latitude; 
@@ -384,25 +379,23 @@ export default function UploadDialogComp({setUploadInfoObject, beginProcessing} 
             trueLong = "-" + longitude;
         }
 
+        const dataFileName = uploadDataFileObj.name; 
+        const newDataFilePath = getNewDataFilePath(dataFileName);
+        const loggingErrorFilePath = getLoggingErrorFilePath();
+
         const uploadInfoObj = {
-            "dataFileName": uploadDataFileObj.name, 
             "dataFilePath": uploadDataFileObj.path, 
-            "logFileName": uploadLogFileObj.name,
+            "newDataFilePath": newDataFilePath,
+            "loggingFilePath": loggingErrorFilePath,
             "logFilePath": uploadLogFileObj.path, 
-            "gpsFileName": uploadGPSFileObj.name,
             "gpsFilePath": uploadGPSFileObj.path, 
-            "startLat": trueLat, 
-            "startLong": trueLong 
+            "startLatitude": trueLat, 
+            "startLongitude": trueLong 
         }
 
-        console.log("UPLOAD INFO");
-        console.log(uploadInfoObj);
-
-        setUploadInfoObject(uploadInfoObj);
-
-        beginProcessing(true, uploadInfoObj);
+        beginUpload(uploadInfoObj);
     }
-
+    
     return ( 
 
         <div className={classes.root}>

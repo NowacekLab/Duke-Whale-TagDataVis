@@ -26,8 +26,6 @@ import forceLoadActionsHandler from "../functions/forceLoad/forceLoadActionsHand
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import useIsMountedRef from "../functions/useIsMountedRef";
 
-import {isWindows, spawn, python3, fs} from "../functions/exec/constants";
-
 const useStyles = makeStyles({
     root: {
         position: 'relative',
@@ -508,6 +506,6 @@ const Graphs = () => {
             </div>
         </Container>
     );
-  };
+};
 
-  export default Graphs;
+export default Graphs;

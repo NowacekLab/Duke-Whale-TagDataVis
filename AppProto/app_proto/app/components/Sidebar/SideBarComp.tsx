@@ -1,6 +1,6 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import path from "path";
+import {getDukeImgPath} from "../../functions/paths";
 
 const useStyles = makeStyles({
     root: {
@@ -9,7 +9,7 @@ const useStyles = makeStyles({
         height: "100%",
         backgroundColor: "#012069",
         position: "relative",
-        width: 200
+        width: 50
     },
     logo: {
         width: "12em",
@@ -25,13 +25,11 @@ type SideBarCompProps = {
 const SideBarComp = (props: SideBarCompProps) => {
     const classes = useStyles();
 
-    const isDev = process.env.NODE_ENV !== 'production';
-    const remote = require('electron').remote;
-    const img_path = isDev ? path.resolve(path.join(__dirname, 'app_files', 'duke.png')) : path.resolve(path.join(remote.app.getAppPath(), 'app_files', 'duke.png'));
+    const dukeImgPath = getDukeImgPath();
 
     return (
         <div className={classes.root}>
-            <img src={img_path} className={classes.logo}/>
+            {/* <img src={dukeImgPath} className={classes.logo}/> */}
             {props.children}
         </div>
     );

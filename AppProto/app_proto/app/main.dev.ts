@@ -58,13 +58,13 @@ const createWindow = async () => {
 
   const RESOURCES_PATH = path.join(__dirname, '../resources');
 
-  // const RESOURCES_PATH = app.isPackaged
-  //   ? path.join(process.resourcesPath, 'resources')
-  //   : path.join(__dirname, '../resources');
-
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
   };
+
+
+
+  //TODO: load user settings from json file using something in functions/
 
   mainWindow = new BrowserWindow({
     show: false,

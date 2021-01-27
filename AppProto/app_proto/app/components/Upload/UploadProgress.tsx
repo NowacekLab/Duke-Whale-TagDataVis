@@ -11,7 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
-import useIsMountedRef from "../functions/useIsMountedRef";
+import useIsMountedRef from "../../functions/useIsMountedRef";
 
 const useStyles = makeStyles({
     header: {
@@ -37,7 +37,7 @@ const useStyles = makeStyles({
         bottom: 0,
         top: 0,
         right: 0,
-        left: 200,
+        left: 100,
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
@@ -62,11 +62,9 @@ const useStyles = makeStyles({
     });
 
 type UploadProgressProps = {
-    uploadProgress: Record<string, string>,
+    uploadProgress: any,
     uploading: boolean,
-    finishedUploading: boolean, 
-    refreshTableView: Function, 
-    resetUploadState: Function, 
+    onFinish: Function,
 }
 
 const UploadProgress = (props: UploadProgressProps) => {
@@ -99,8 +97,7 @@ const UploadProgress = (props: UploadProgressProps) => {
 
     const handleClick = () => {
         if (finishedUploading) {
-            props.resetUploadState ? props.resetUploadState() : null;
-            props.refreshTableView ? props.refreshTableView() : null; // connection from FileAction --> HomeTable --> FileTable to refreshTableView rows 
+            props.onFinish();
         }
     }
 
@@ -116,30 +113,38 @@ const UploadProgress = (props: UploadProgressProps) => {
     }, [props.uploadProgress])
 
     type timelineObject = Record<string, any>;
+
+    // const defaultUploadProgress: uploadProgress = {
+    //     processing: "progress",
+    //     generating: "progress",
+    //     saving: "progress"
+    // }
+
+
     var timeline: Array<timelineObject> = [
         {
             "key": 0,
-            "show": props.uploadProgress ? props.uploadProgress['converted'] : "progress",
-            "title": "Conversion",
-            "description-success": "File converted to .csv as needed.",
-            "description-progress": "Converting file to .csv as needed.",
-            "description-fail": "Conversion failed."
+            "show": props.uploadProgress ? props.uploadProgress['processing'] : "progress",
+            "title": "Processing",
+            "description-success": "Chosen data file processed successfully.",
+            "description-progress": "Processing chosen data file.",
+            "description-fail": "Failed processing chosen data file."
         },
         {
             "key": 1,
-            "show": props.uploadProgress ? props.uploadProgress['processed'] : "progress",
-            "title": "Processed",
-            "description-success": "Necessary calculations processed.",
-            "description-progress": "Calculating necessary calculations.",
-            "description-fail": "Calculation processing failed."
+            "show": props.uploadProgress ? props.uploadProgress['generating'] : "progress",
+            "title": "Generating",
+            "description-success": "Sucessfully generated graphs and required files.",
+            "description-progress": "Generating graphs and required files.",
+            "description-fail": "Failed generating graphs."
         },
         {
             "key": 2, 
-            "show": props.uploadProgress ? props.uploadProgress['graphs'] : "progress",
-            "title": "Graphs",
-            "description-success": "Successfully generated graphs.",
-            "description-progress": "Generating graphs.",
-            "description-fail": "Failed generating graphs."
+            "show": props.uploadProgress ? props.uploadProgress['saving'] : "progress",
+            "title": "Saving",
+            "description-success": "Successfully saved processed files.",
+            "description-progress": "Saving processed files.",
+            "description-fail": "Failed saving processed files."
         },
     ]
 
