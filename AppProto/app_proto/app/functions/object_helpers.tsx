@@ -43,3 +43,7 @@ export function mergeObjs(obj1: any, obj2: any) {
         ...obj2,
     }
 }
+
+export function deepCopyObjectOnlyProps(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
+}

@@ -12,6 +12,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Notification from "../components/Notification";
 
 import UploadsPaper from "../components/Upload/UploadsPaper";
 
@@ -196,6 +197,7 @@ const Home = () => {
       
       <UploadsPaper />
 
+      <Notification />
 
     </Container>
   );

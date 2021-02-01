@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import FinishedUploads from "./FinishedUploads";
+import ProgressUploads from "./ProgressUploads";
 
 const useStyles = makeStyles({
     uploadPaper: {
@@ -109,7 +111,15 @@ const Home = () => {
             <div
                 className={classes.mainBody}
             >
+                {
+                    finishedTabActive &&
+                    <FinishedUploads />
+                }
 
+                {
+                    progressTabActive &&
+                    <ProgressUploads />
+                }
 
 
             </div>

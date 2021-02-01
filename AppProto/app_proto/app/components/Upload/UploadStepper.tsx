@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {getNewDataFilePath, getLoggingErrorFilePath} from "../../functions/paths";
+import {fileNameFromPath} from "../../functions/paths";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -61,11 +62,13 @@ const useStyles = makeStyles(() => ({
 
 type UploadStepperProps = {
     beginUpload: Function,
+    uploadState: any
 }
 
-export default function UploadStepper({beginUpload} : UploadStepperProps) {
+export default function UploadStepper({beginUpload, uploadState} : UploadStepperProps) {
 
     const classes = useStyles();
+
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -156,15 +159,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
                     </Typography>
                 )
             }
-        } else {
-
-            // HARD-CODED
-            return (
-                <Typography>
-                    Required. Only positive or negative numbers. North and West are positive.
-                </Typography>
-            )
-        }
+        } 
     }
 
     const [latitude, setLatitude] = useState("");
@@ -202,6 +197,58 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         return !isNaN(float) && Number(float) >= 0;
     }
 
+
+
+    const [batchName, setBatchName] = useState("");
+    const [batchNameError, setBatchNameError] = useState(false);
+    const [batchNextEnabled, setBatchNextEnabled] = useState(false);
+    const handleBatchNameChange = (event: any) => {
+        const newBatchName = event && event.target && event.target.value ? event.target.value : "";
+        setBatchName(newBatchName);
+    }
+
+    useEffect(() => {
+        handleBatchErrorNext(batchName);
+    }, [batchName])
+    const handleBatchErrorNext = (newBatchName: string) => {
+        console.log("new batch name");
+        console.log(newBatchName);
+
+        const batchNameDup = isBatchNameDup(newBatchName);
+        if (batchNameDup || batchName === "") {
+
+            console.log("batcherrornext 1")
+            setBatchNextEnabled(false);
+            setBatchNameError(true);
+        } else {
+
+            console.log("batcherrornext 2")
+            setBatchNextEnabled(true);
+            setBatchNameError(false);
+        }
+    }
+    const isBatchNameDup = (newBatchName: string): boolean => {
+        const batchNames = getBatchNames();
+
+        console.log("BATCH NAMES");
+        console.log(batchNames);
+        console.log(batchNames.has(newBatchName));
+
+        return batchNames.has(newBatchName);
+    }
+    const getBatchNames = () => {
+        const batchNamesArr = [];
+
+        for (let idx in uploadState) {
+            const uploadProgObj = uploadState[idx];
+            if (uploadProgObj && uploadProgObj["uploadInfo"] && uploadProgObj["batchName"]) {
+                const batchName = uploadProgObj["uploadInfo"]["batchName"];
+                batchNamesArr.push(batchName);
+            }
+        }
+        return new Set(batchNamesArr);
+    }
+
     function getStepContent(index: number) {
 
         if (stepNeedsFileObj(index)) {
@@ -216,90 +263,120 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             )
         }
 
-        return (
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}
-            >
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "space-between"
-                    }}
-                >
+        const isLatLong = index === 3;
+        if (!isLatLong) {
+
+            return (
+                <div>
                     {
-                        latInputError ? 
-
+                        batchNameError ?
                         <TextField 
-                            error 
-                            label="Latitude"
-                            value={latitude}
-                            onChange={handleLatChange}
-                            helperText="Must be a valid number."
+                            error
+                            label="Batch Name"
+                            value={batchName}
+                            onChange={handleBatchNameChange}
+                            helperText="Provide a unique, non-empty name for your upload."
                         />
-
                         :
-
                         <TextField 
-                            label="Latitude"
-                            value={latitude}  
-                            onChange={handleLatChange}  
+                            label="Batch Name"
+                            value={batchName}
+                            onChange={handleBatchNameChange}
                         />
                     }
 
-                    <TextField
-                        select 
-                        label="Direction"
-                        value={latitudeDirection}
-                        onChange={handleLatDirectionChange}
-                    >
-
-                        <MenuItem key={"W"} value={"W"}>
-                            W
-                        </MenuItem>
-
-                        <MenuItem key={"E"} value={"E"}>
-                            E
-                        </MenuItem>
-
-                    </TextField>
                 </div>
+            )
+
+        }
+
+        if (isLatLong) {
+            return (
                 <div
                     style={{
                         display: "flex",
+                        flexDirection: "column",
                         justifyContent: "center",
-                        alignItems: "space-between"
+                        alignItems: "center"
                     }}
                 >
-                    <TextField 
-                        label="Longitude"
-                        value={longitude}
-                        onChange={handleLongChange}
-                    />
-
-                    <TextField
-                        select 
-                        label="Direction"
-                        value={longitudeDirection}
-                        onChange={handleLongDirectionChange}
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "space-between"
+                        }}
                     >
-                        <MenuItem key={"N"} value={"N"}>
-                            N
-                        </MenuItem>
-
-                        <MenuItem key={"S"} value={"S"}>
-                            S
-                        </MenuItem>
-
-                    </TextField>
+                        {
+                            latInputError ? 
+    
+                            <TextField 
+                                error 
+                                label="Latitude"
+                                value={latitude}
+                                onChange={handleLatChange}
+                                helperText="Must be a valid number."
+                            />
+    
+                            :
+    
+                            <TextField 
+                                label="Latitude"
+                                value={latitude}  
+                                onChange={handleLatChange}  
+                            />
+                        }
+    
+                        <TextField
+                            select 
+                            label="Direction"
+                            value={latitudeDirection}
+                            onChange={handleLatDirectionChange}
+                        >
+    
+                            <MenuItem key={"W"} value={"W"}>
+                                W
+                            </MenuItem>
+    
+                            <MenuItem key={"E"} value={"E"}>
+                                E
+                            </MenuItem>
+    
+                        </TextField>
+                    </div>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "space-between"
+                        }}
+                    >
+                        <TextField 
+                            label="Longitude"
+                            value={longitude}
+                            onChange={handleLongChange}
+                        />
+    
+                        <TextField
+                            select 
+                            label="Direction"
+                            value={longitudeDirection}
+                            onChange={handleLongDirectionChange}
+                        >
+                            <MenuItem key={"N"} value={"N"}>
+                                N
+                            </MenuItem>
+    
+                            <MenuItem key={"S"} value={"S"}>
+                                S
+                            </MenuItem>
+    
+                        </TextField>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
+
 
     }
 
@@ -314,10 +391,19 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             return shouldDisableNextBtnFileStep(index);
         }
 
-        return shouldDisableNextBtnInputStep(index);
+        const latLongStep = index === 3;
+        if (!latLongStep) {
+            return shouldDisableNextBtnBatchName();
+        }  
+
+        return shouldDisableNextBtnInputStepLatLong(index);
     }
 
-    function shouldDisableNextBtnInputStep(index: number): boolean {
+    function shouldDisableNextBtnBatchName() {
+        return !batchNextEnabled;
+    }
+
+    function shouldDisableNextBtnInputStepLatLong(index: number): boolean {
         return !(latitude.length > 0 && longitude.length > 0);
     }
 
@@ -341,16 +427,20 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         return !isGraphFile;
     }
 
-    const steps = ['Upload the data file', 'Upload the log file', 'Upload the GPS file', 'Enter starting lat and long'];
+    const steps = ['Upload the data file', 'Upload the log file', 'Upload the GPS file', 'Enter starting lat and long', 'Enter a unique name for this upload'];
     function getStepLabel(index: number) {
         const uploadText = steps[index];
         let stepLabel;
+        const isLatLong = index === 3;
 
         if (stepNeedsFileObj(index)) {
             const placeholder = "No file uploaded";
             stepLabel = `${uploadText} [${getFileNameOrDefault(index, placeholder)}]`
+        } else if (isLatLong) {
+            stepLabel = `${uploadText} [Lat: ${latitude} ${latitudeDirection} Longitude: ${longitude} ${longitudeDirection}]`
         } else {
-            stepLabel = uploadText; 
+            stepLabel = `${uploadText} [${batchName}]`
+
         }
 
         return stepLabel;
@@ -392,8 +482,37 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             "startLatitude": trueLat, 
             "startLongitude": trueLong 
         }
+        
+        const batchInfoArr = function infoToBatch() {
+            const arr = [
+                {
+                    title: "Data File Name",
+                    info: fileNameFromPath(uploadDataFileObj.path)
+                },
+                {
+                    title: "Log File Name",
+                    info: fileNameFromPath(uploadLogFileObj.path)
+                },
+                {
+                    title: "GPS File Name",
+                    info: fileNameFromPath(uploadGPSFileObj.path)
+                },
+                {
+                    title: "Start Lat & Long",
+                    info: `Lat (${trueLat}), Long (${trueLong})`
+                }
 
-        beginUpload(uploadInfoObj);
+            ];
+
+            return arr;
+        }();
+
+        const batchInfo = {
+            "batchName": batchName,
+            "batchInfo": batchInfoArr
+        }
+
+        beginUpload(uploadInfoObj, batchInfo);
     }
     
     return ( 

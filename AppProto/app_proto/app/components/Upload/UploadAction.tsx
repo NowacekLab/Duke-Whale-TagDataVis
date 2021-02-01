@@ -1,14 +1,23 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
+import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import UploadDialog from "./UploadDialog";
-import useUpload, {uploadArgs, resetUploadProgress} from "../../functions/hooks/useUpload";
-
+import {notifsActionsHandler, uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
+import {uploadArgs, uploadInfo} from "../../functions/uploads/uploadsTypes";
+import {throwErrIfFail} from "../../functions/responses";
 
 export default function UploadAction() {
 
-    const [uploadProgress, setUploadProgress, beginUpload] = useUpload();
+    const dispatch = useDispatch();
+    const uploadHandler = new uploadsActionsHandler(dispatch);
+    const notifHandler = new notifsActionsHandler(dispatch);
+
+    //@ts-ignore
+    const uploadState = useSelector(state => state.uploads);
+
     const [showUploadDialog, setShowUploadDialog] = useState(false);
     const handleUploadDialogOpen = () => {
         setShowUploadDialog(true);
@@ -17,25 +26,45 @@ export default function UploadAction() {
         setShowUploadDialog(false);
     }
 
-    const [showUploadProgress, setShowUploadProgress] = useState(false);
-    const uploadProgressStart = () => {
+    async function beginUploadWrapper(uploadArgs: uploadArgs, uploadInfo: uploadInfo) {
 
-    }
-    const uploadProgressEnd = () => {
-        setShowUploadProgress(false);
-    }
-    const resetProgress = () => {
-        resetUploadProgress(setUploadProgress);
+        try {
+            const newIdx = uploadHandler.nextOpenIdx(uploadState);
+
+            function updateUploadProgress(progStep: string, newProgStepVal: string) {
+                uploadHandler.updateUploadProgress(newIdx, progStep, newProgStepVal);
+            } 
+
+            try {
+                uploadHandler.addNewUploadProgress(uploadInfo, uploadState);
+            } catch {
+                throw Error("Failed to add new upload `In Progress`.")
+            }
+            const uploadResponseObj = await uploadHandler.startUpload(uploadArgs, uploadInfo, updateUploadProgress);
+            throwErrIfFail(uploadResponseObj);
+            const uploadResponse = uploadResponseObj.response;
+            notifHandler.showSuccessNotif(uploadResponse);
+        
+            try {
+                uploadHandler.refreshAllUploads(uploadState);
+            } catch {
+                throw Error("Failed to refresh `Uploads` view.")
+            }
+
+        } catch (error) {
+            if (typeof error === "string") {
+                notifHandler.showErrorNotif(error);
+            } else {
+                notifHandler.showErrorNotif("An unexpected error occurred");
+            }
+        }
+            
     }
 
-    const beginUploadWrapper = (uploadArgs: uploadArgs) => {
-        //@ts-ignore
-        beginUpload(uploadArgs, uploadProgressStart);
 
-    }
-    const uploadProgressFinish = () => {
-        resetProgress();
-    }
+    useEffect(() => {
+        uploadHandler.refreshAllUploads(uploadState);
+    }, [])
 
     return (
 
@@ -44,6 +73,7 @@ export default function UploadAction() {
                 <UploadDialog
                         showUploadDialog={showUploadDialog}
                         handleUploadDialogClose={handleUploadDialogClose}
+                        uploadState={uploadState}
                         beginUpload={beginUploadWrapper}
                 />
 
@@ -54,6 +84,9 @@ export default function UploadAction() {
                 >
                     <IconButton
                         onClick={handleUploadDialogOpen}
+                        style={{
+                            color: "white"
+                        }}
                     >
                         <AddCircleIcon />
                     </IconButton>

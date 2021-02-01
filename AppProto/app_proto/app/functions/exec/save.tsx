@@ -1,10 +1,11 @@
 import {handleSaveGeneratedGraphs} from "./graphs/graphs";
 import {handleSaveGeneratedColumns} from "./graphs/columns";
 import {emptyObjAsError, failResponse, successResponse, successResponseAny, throwErrIfFail} from "../responses";
-import {getFileInfoPath, fileNameFromPath, getGraphSaveDirPath, getColSaveDirPath} from "../paths";
-import {writeObjToPath, getObjFromPath} from "../files";
+import {getFileInfoPath, fileNameFromPath, getGraphSaveDirPath, getColSaveDirPath, getSaveDirPath} from "../paths";
+import {writeObjToPath, getObjFromPath, createDirIfNotExist, createPathIfNotExist} from "../files";
 import {getDataFilePathFromObj, getNewDataFilePathFromObj} from "../keys";
 import {mergeObjs} from "../object_helpers";
+import {uploadInfo} from "../uploads/uploadsTypes";
 
 const SAVE_HANDLERS: any = {
     'genGraphs': handleSaveGeneratedGraphs,
@@ -12,31 +13,46 @@ const SAVE_HANDLERS: any = {
 }
 
 export type initSaveArgs = {
-    dataFilePath: string,
-    newDataFilePath: string, 
+    dataFilePath: string, 
+    newDataFilePath: string,
+    loggingFilePath: string, 
+    logFilePath: string,
+    gpsFilePath: string, 
+    startLatitude: string, 
+    startLongitude: string, 
 }
 export type saveArgs = {
     dataFilePath: string,
     dataFileName: string, 
     newDataFilePath: string,
     newDataFileName: string,
+    logFilePath: string,
+    gpsFilePath: string,
+    startLatitude: string, 
+    startLongitude: string,
     graphSaveDir: string, 
     colSaveDir: string,
 }
 
 // can probs be key (matching a key above)
     // have separate save function for each? 
-export async function handleGenSave(genRes: any, initSaveArgs: initSaveArgs) {
+export async function handleGenSave(genRes: any, uploadInfo: uploadInfo, initSaveArgs: initSaveArgs) {
     try {
         // ! want to extract formatting of extra file arguments 
         const saveArgs = addReqSaveArgs(initSaveArgs);
         const savedGraphsObj = await execSaveHandlers(genRes, saveArgs);
-        const saveObj = formatSaveJSON(savedGraphsObj, saveArgs);
+        const saveObj = formatSaveJSON(savedGraphsObj, uploadInfo, saveArgs);
     
         await addToFileInfo(saveObj);
 
+        console.log("Handle gen past saving")
+
         return successResponse("Successfully executed post-generation save.");
     } catch (error) {
+
+        console.log("Handle gen save error")
+        console.log(error)
+
         return failResponse(error);
     }
 }
@@ -67,7 +83,7 @@ function addReqSaveArgs(initSaveArgs: initSaveArgs) {
     return saveArgs;
 }
 
-function formatSaveJSON(existingObj: any, saveArgs: saveArgs) {
+function formatSaveJSON(existingObj: any, uploadInfo: uploadInfo, saveArgs: saveArgs) {
 
     const newDataFilePathResp = getNewDataFilePathFromObj(saveArgs);
     throwErrIfFail(newDataFilePathResp);
@@ -75,6 +91,19 @@ function formatSaveJSON(existingObj: any, saveArgs: saveArgs) {
     const dataFileName = saveArgs['dataFileName'];
 
     existingObj['calcFilePath'] = newDataFilePath;
+
+    const batchInfo = {
+        batchName: uploadInfo["batchName"],
+        batchInfo: {
+            dataFilePath: saveArgs["dataFilePath"],
+            logFilePath: saveArgs["logFilePath"],
+            gpsFilePath: saveArgs["gpsFilePath"],
+            startLatitude: saveArgs["startLatitude"],
+            startLongitude: saveArgs["startLongitude"]
+        }
+    }
+    existingObj["uploadInfo"] = batchInfo;
+
     const saveObj: any = {};
     saveObj[dataFileName] = existingObj;
 
@@ -85,6 +114,7 @@ function formatSaveJSON(existingObj: any, saveArgs: saveArgs) {
 }
 
 async function addToFileInfo(addInfo: any) {
+    await createFileInfoIfNotExist();
     const existingFileInfo = await getFileInfo();
     const mergedInfo = mergeObjs(existingFileInfo, addInfo);
     await saveFileInfo(mergedInfo);
@@ -98,6 +128,20 @@ async function getFileInfo() {
 async function saveFileInfo(saveObj: any) {
     const savePath = getFileInfoPath();
     return await writeObjToPath(savePath, saveObj);
+}
+
+async function createFileInfoIfNotExist() {
+
+    console.log("CREATE DIR IF NOT EXIST")
+
+    const saveDir = getSaveDirPath();
+    console.log(saveDir);
+    await createDirIfNotExist(saveDir);
+
+    console.log("CREATE PATH IF NOT EXIST")
+    const savePath = getFileInfoPath();
+    console.log(savePath);
+    await createPathIfNotExist(savePath);
 }
 
 async function execSaveHandlers(genRes: any, saveArgs: saveArgs) {

@@ -5,6 +5,7 @@ import UploadStepper from "./UploadStepper";
 type UploadDialogContProps = {
     showUploadDialog: boolean, 
     handleUploadDialogClose: any, // Callback}
+    uploadState: any,
     beginUpload: any, //Callback
 }
 
@@ -17,6 +18,7 @@ export default function UploadDialogCont(props: UploadDialogContProps) {
             handleClose={props.handleUploadDialogClose}
         >
             <UploadStepper 
+                uploadState={props.uploadState}
                 beginUpload={props.beginUpload}
             />
         </WrapWithModal>

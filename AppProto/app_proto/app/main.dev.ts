@@ -58,18 +58,20 @@ const createWindow = async () => {
 
   const RESOURCES_PATH = path.join(__dirname, '../resources');
 
+  // const RESOURCES_PATH = app.isPackaged
+  //   ? path.join(process.resourcesPath, 'resources')
+  //   : path.join(__dirname, '../resources');
+
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
   };
-
-
-
-  //TODO: load user settings from json file using something in functions/
 
   mainWindow = new BrowserWindow({
     show: false,
     width: 1142,
     height: 784,
+    frame: false,
+    titleBarStyle: "hidden",
     icon: getAssetPath('icon.png'),
     webPreferences:
       (process.env.NODE_ENV === 'development' ||
@@ -87,8 +89,6 @@ const createWindow = async () => {
           },
   });
 
-  // getAssetPath('icon.png'),
-
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
   // @TODO: Use 'ready-to-show' event
@@ -103,6 +103,8 @@ const createWindow = async () => {
       mainWindow.show();
       mainWindow.focus();
     }
+
+    // "#012069"
   });
 
   mainWindow.on('closed', () => {

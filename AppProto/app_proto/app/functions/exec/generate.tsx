@@ -29,8 +29,15 @@ export async function handleGenerate(genArgs: genFileArgs) {
             genResult[genType] = res;
         }
 
+        console.log("Handle generate result")
+        console.log(genResult)
+
         return successResponseAny(genResult);
     } catch (error) {
+
+        console.log("Handle generate error")
+        console.log(error)
+
         return failResponse(error);
     }
 }

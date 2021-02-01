@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { NavLink, useLocation, useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {makeStyles} from '@material-ui/core/styles';
 import routes from '../../routes.json';
 import SideBarComp from "./SideBarComp";
@@ -10,7 +10,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import AppsIcon from '@material-ui/icons/Apps';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import useUpload, {uploadArgs, resetUploadProgress} from "../../functions/hooks/useUpload";
 import UploadDialog from "../Upload/UploadDialog";
 import Divider from "@material-ui/core/Divider";
 import { Typography } from '@material-ui/core';
@@ -20,6 +19,8 @@ import HelpIcon from '@material-ui/icons/Help';
 import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from "@material-ui/core/Tooltip";
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import uploadsActionsHandler from "../../functions/uploads/uploadsActionsHandler";
+import UploadAction from "../Upload/UploadAction";
 
 const useStyles = makeStyles({
     content: {
@@ -95,80 +96,18 @@ const SideBarContent = () => {
     const classes = useStyles();
     const history = useHistory();
 
-    const [uploadProgress, setUploadProgress, beginUpload] = useUpload();
-    const [showUploadDialog, setShowUploadDialog] = useState(false);
-    const handleUploadDialogOpen = () => {
-        setShowUploadDialog(true);
-    }
-    const handleUploadDialogClose = () => {
-        setShowUploadDialog(false);
-    }
-    const toggleUploadDialog = () => {
-        setShowUploadDialog(!showUploadDialog);
-    }
-
-    const [showUploadProgress, setShowUploadProgress] = useState(false);
-    const uploadProgressStart = () => {
-
-    }
-    const uploadProgressEnd = () => {
-        setShowUploadProgress(false);
-    }
-    const resetProgress = () => {
-        resetUploadProgress(setUploadProgress);
-    }
-
-    const beginUploadWrapper = (uploadArgs: uploadArgs) => {
-        //@ts-ignore
-        beginUpload(uploadArgs, uploadProgressStart);
-
-    }
-    const uploadProgressFinish = () => {
-        resetProgress();
-    }
-
     //@ts-ignore
     const forceLoad = useSelector(state => state.forceLoad);
-
-    const handleNav = (e: any) => {
-        forceLoad.shouldForceLoad ? e.preventDefault() : null;
-    };
-
-
-    const uploadClick = (e: any) => {
-        e.preventDefault();
-        toggleUploadDialog();
-    }
-
-
 
     const {pathname} = useLocation();
 
     return(
         <SideBarComp>
             <div>
-
-
-                <UploadDialog
-                        showUploadDialog={showUploadDialog}
-                        handleUploadDialogClose={handleUploadDialogClose}
-                        beginUpload={beginUploadWrapper}
-                />
-
                 <div className={classes.content}>
 
-                    <Tooltip
-                        title="Upload"
-                        placement="right"
-                        arrow
-                    >
-                        <IconButton
-                            onClick={uploadClick}
-                        >
-                            <AddCircleIcon className={showUploadDialog ? classes.btnActive : classes.btnInactive} />
-                        </IconButton>
-                    </Tooltip>
 
+                    <UploadAction />
 
                     <Divider 
                         style={{background: "white"}}

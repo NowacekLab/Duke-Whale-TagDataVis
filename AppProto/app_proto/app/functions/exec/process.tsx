@@ -82,9 +82,17 @@ export async function handleProcessFile(args: processFileCMDLineArgs) {
 
     try {
         const processFileArgs = getProcessFileArgs(args);
-        const processResp = processFile(processFileArgs);
+        const processResp = await processFile(processFileArgs);
+
+        console.log("HANDLE PROCESS FILE RESPONSE")
+        console.log(processResp)
+
         return processResp;
     } catch (error) {
+
+        console.log("HANDLE PROCESS FILE ERROR");
+        console.log(error);
+
         return failResponse(error);
     }
 

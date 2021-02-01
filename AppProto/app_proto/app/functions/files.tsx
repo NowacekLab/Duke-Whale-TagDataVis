@@ -42,20 +42,46 @@ export function getFileContentsSync(filePath: string) {
     return content;
 }
 
-export function pathExists(checkPath: string) {
+export async function pathExists(checkPath: string) {
     return fs.existsSync(checkPath);
 }
 
-export function dirExists(dirPath: string) {
-    return pathExists(dirPath);
+export async function dirExists(dirPath: string) {
+    return await pathExists(dirPath);
 }
 
-export function createDirSync(dirPath: string) {
-    return fs.mkdirSync(dirPath);
+export async function createPath(path: string) {
+    return await fs.promises.writeFile(path, JSON.stringify({}));
 }
 
-export function createDirIfNotExist(dirPath: string) {
-    if (!dirExists(dirPath)) {
-        createDirSync(dirPath);
+export async function createPathIfNotExist(path: string) {
+
+    console.log("CREATE PATH IF NOT EXISTS")
+    console.log(path);
+
+    const pathExists_ = await pathExists(path);
+
+    console.log(pathExists_)
+
+    if (!pathExists_) {
+        await createPath(path);
+    }
+}
+
+export async function createDir(dirPath: string) {
+    return await fs.promises.mkdir(dirPath);
+}
+
+export async function createDirIfNotExist(dirPath: string) {
+
+    console.log("CREATE DIR IF NOT EXISTS")
+    console.log(dirPath);
+
+    const pathExists = await dirExists(dirPath);
+
+    console.log(pathExists);
+
+    if (!pathExists) {
+        await createDir(dirPath);
     }
 }
