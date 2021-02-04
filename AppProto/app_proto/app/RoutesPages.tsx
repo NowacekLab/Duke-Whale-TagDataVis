@@ -41,12 +41,7 @@ export default function Routes() {
           render={() => {
           return <Base Page={EditorPage} />
         }} />
-
-        <Route path={routes.UPLOAD} 
-          render={() => {
-            return <Base Page={UploadPage} />
-        }} />
-
+        
         <Route path={routes.HOME}
           render={() => {
           return <Base Page={HomePage} />

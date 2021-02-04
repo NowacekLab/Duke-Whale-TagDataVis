@@ -6,6 +6,32 @@ import {uploadFinishedObjects, uploadFinishedObj, uploadArgs, uploadInfo} from "
 import {getFileInfoPath, fileNameFromPath} from "../paths";
 import {pathExists, getObjFromPath} from "../files";
 
+export async function loadFileInfoArr() {
+    console.log("Load File Info Array");
+
+    const fileInfoPath = getFileInfoPath();
+    const fileInfoExists = await pathExists(fileInfoPath);
+    if (!fileInfoExists) {
+        console.log("NO FILE INFO OBJECT FOUND.")
+        return {};
+    }
+
+    const fileInfoObj = await getObjFromPath(fileInfoPath);
+
+    console.log("FILE INFO OBJECT: ");
+    console.log(fileInfoObj);
+
+    const arr = [];
+
+    for (let batchName in fileInfoObj) {
+
+        const fileInfo = fileInfoObj[batchName];
+        arr.push(fileInfo);
+    }       
+
+    return arr;
+}
+
 export async function loadFinishedUploads() {
     const fileInfoPath = getFileInfoPath();
     const fileInfoExists = await pathExists(fileInfoPath);
@@ -44,15 +70,15 @@ export async function loadFinishedUploads() {
         const batchInfoArr = [
                 {
                     title: "Data File Name",
-                    info: fileNameFromPath(batchInfo["dataFilePath"])
+                    info: batchInfo["dataFileName"]
                 },
                 {   
                     title: "Log File Name",
-                    info: fileNameFromPath(batchInfo["logFilePath"])
+                    info: batchInfo["logFileName"]
                 },
                 {
                     title: "GPS File Name",
-                    info: fileNameFromPath(batchInfo["gpsFilePath"])
+                    info: batchInfo["gpsFileName"]
                 },
                 {
                     title: "Starting Latitude and Longitude",

@@ -21,6 +21,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import uploadsActionsHandler from "../../functions/uploads/uploadsActionsHandler";
 import UploadAction from "../Upload/UploadAction";
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles({
     content: {
@@ -131,18 +132,32 @@ const SideBarContent = () => {
                     </Tooltip>
 
                     <Tooltip
-                        title="Editor"
+                        title="Graph View"
                         placement="right"
                         arrow 
+                    >
+                        <IconButton
+                            onClick={() => {
+                                history.push(routes.GRAPHS)
+                            }}
+                        >
+                            <EqualizerIcon className={pathname === routes.GRAPHS ? classes.btnActive : classes.btnInactive} />
+                        </IconButton>
+                    </Tooltip>
+
+                    <Tooltip
+                        title="Editor"
+                        placement="right"
+                        arrow
                     >
                         <IconButton
                             onClick={() => {
                                 history.push(routes.EDITOR)
                             }}
                         >
-
-                            <EqualizerIcon className={pathname === routes.EDITOR ? classes.btnActive : classes.btnInactive} />
+                            <EditIcon className={pathname === routes.EDITOR ? classes.btnActive : classes.btnInactive} />
                         </IconButton>
+
                     </Tooltip>
 
                 </div>

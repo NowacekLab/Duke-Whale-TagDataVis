@@ -39,7 +39,7 @@ export type saveArgs = {
 export async function handleGenSave(genRes: any, uploadInfo: uploadInfo, initSaveArgs: initSaveArgs) {
     try {
         // ! want to extract formatting of extra file arguments 
-        const saveArgs = addReqSaveArgs(initSaveArgs);
+        const saveArgs = addReqSaveArgs(initSaveArgs, uploadInfo);
         const savedGraphsObj = await execSaveHandlers(genRes, saveArgs);
         const saveObj = formatSaveJSON(savedGraphsObj, uploadInfo, saveArgs);
     
@@ -57,7 +57,7 @@ export async function handleGenSave(genRes: any, uploadInfo: uploadInfo, initSav
     }
 }
 
-function addReqSaveArgs(initSaveArgs: initSaveArgs) {
+function addReqSaveArgs(initSaveArgs: initSaveArgs, uploadInfo: uploadInfo) {
 
     const saveArgs = Object.assign(initSaveArgs);
 
@@ -74,8 +74,9 @@ function addReqSaveArgs(initSaveArgs: initSaveArgs) {
     saveArgs['dataFileName'] = dataFileName;
     saveArgs['newDataFileName'] = newDataFileName; 
 
-    const graphSaveDir = getGraphSaveDirPath(dataFileName);
-    const colSaveDir = getColSaveDirPath(dataFileName);
+    const batchName = uploadInfo["batchName"];
+    const graphSaveDir = getGraphSaveDirPath(batchName);
+    const colSaveDir = getColSaveDirPath(batchName);
 
     saveArgs['graphSaveDir'] = graphSaveDir;
     saveArgs['colSaveDir'] = colSaveDir;
@@ -89,15 +90,22 @@ function formatSaveJSON(existingObj: any, uploadInfo: uploadInfo, saveArgs: save
     throwErrIfFail(newDataFilePathResp);
     const newDataFilePath = newDataFilePathResp.response; 
     const dataFileName = saveArgs['dataFileName'];
+    const logFileName = fileNameFromPath(saveArgs['logFilePath']);
+    const gpsFileName = fileNameFromPath(saveArgs['gpsFilePath']);
 
     existingObj['calcFilePath'] = newDataFilePath;
+
+
 
     const batchInfo = {
         batchName: uploadInfo["batchName"],
         batchInfo: {
             dataFilePath: saveArgs["dataFilePath"],
+            dataFileName: dataFileName,
             logFilePath: saveArgs["logFilePath"],
+            logFileName: logFileName,
             gpsFilePath: saveArgs["gpsFilePath"],
+            gpsFileName: gpsFileName,
             startLatitude: saveArgs["startLatitude"],
             startLongitude: saveArgs["startLongitude"]
         }

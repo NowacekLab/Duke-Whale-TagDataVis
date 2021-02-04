@@ -84,10 +84,7 @@ const HomeTable = ({setFileNum, fileNum}: HomeTableProps) => {
   return (
 
     <div className={classes.mainContainer}>
-  
-
         <FileTable updateTableView={updateTableView} fileNum={setFileNum} setSelectedFile={setSelectedFile} setFileRows={setFileRows}/>
-
     </div>
   );
 };

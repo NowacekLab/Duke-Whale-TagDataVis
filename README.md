@@ -67,10 +67,6 @@ Make sure yarn and npm are installed.
        2. One way is...
           
           1. Go to the scripts_dev folder and try to run a script like process.py. Python will automatically keep failing if you are missing dependencies. So, install, then repeat, until you get a response from the script. Once you get a response, then you know you have all the required dependencies. 
-    
-    
-
-
 
 # Licenses
 

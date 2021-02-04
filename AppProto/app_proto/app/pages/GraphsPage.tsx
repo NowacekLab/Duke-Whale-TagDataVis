@@ -1,7 +1,7 @@
 import React from 'react';
-import Graphs from '../containers/Graphs';
+import Graph from "../containers/Graph";
 
 export default function GraphsPage() {
 
-  return <Graphs />;
+  return <Graph />;
 }

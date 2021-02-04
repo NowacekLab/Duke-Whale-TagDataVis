@@ -116,25 +116,30 @@ export function fileNameFromPath(filePath: string) {
     return baseFileName;
 }
 
-export function getGraphSaveDirPath(dataFileName: string) {
-    return getSaveDirPathGeneric(dataFileName);
+export function getGraphSaveDirPath(batchFileName: string) {
+    return getAndCreateSaveDirPathGeneric(batchFileName);
 }
 
-export function getColSaveDirPath(dataFileName: string) {
-    return getSaveDirPathGeneric(dataFileName);
+export function getColSaveDirPath(batchFileName: string) {
+    return getAndCreateSaveDirPathGeneric(batchFileName);
 }
 
-export function getSaveDirPathGeneric(dataFileName: string) {
+export function getAndCreateSaveDirPathGeneric(batchFileName: string) {
     const saveDirPath = getSaveDirPath();
     createDirIfNotExist(saveDirPath)
-    const newDirPath = addToPath(saveDirPath, dataFileName);
+    const newDirPath = addToPath(saveDirPath, batchFileName);
     createDirIfNotExist(newDirPath);
     return newDirPath;
 }
 
-export function getNewDataFilePath(dataFileName: string) {
-    const dir = getSaveDirPathGeneric(dataFileName);
-    const baseFileName = fileNameFromPath(dataFileName);
+export function getNewDataFilePath(batchName: string, dataFileName: string) {
+    const dir = getAndCreateSaveDirPathGeneric(batchName);
+    let baseFileName = dataFileName;
+    if (dataFileName.endsWith(".mat") || dataFileName.endsWith(".csv")) {
+        baseFileName = baseFileName.replace(".mat", "");
+        baseFileName = baseFileName.replace(".csv", "");
+    }
+
     const newDataFileName = baseFileName + "calcs.csv";
     const newPath = path.resolve(path.join(dir, newDataFileName));
     return newPath;

@@ -20,7 +20,6 @@ import * as child from 'child_process';
 
 import UploadProgress from "./Upload/UploadProgress";
 import UploadDialog from "./Upload/UploadDialog";
-import useUpload, {uploadArgs, resetUploadProgress} from "../functions/hooks/useUpload";
 
 const useStyles = makeStyles({
   buttonCont: {
@@ -62,7 +61,6 @@ const FileActions = (props: FileActionsProps) => {
     },
   });
 
-  const [uploadProgress, setUploadProgress, beginUpload] = useUpload();
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const handleUploadDialogOpen = () => {
     setShowUploadDialog(true);
@@ -77,18 +75,6 @@ const FileActions = (props: FileActionsProps) => {
   }
   const uploadProgressEnd = () => {
     setShowUploadProgress(false);
-  }
-  const resetProgress = () => {
-    resetUploadProgress(setUploadProgress);
-  }
-
-  const beginUploadWrapper = (uploadArgs: uploadArgs) => {
-    //@ts-ignore
-    beginUpload(uploadArgs, uploadProgressStart);
-
-  }
-  const uploadProgressFinish = () => {
-    resetProgress();
   }
 
   //TODO: make sure upload progress closes if there is an error in uploading 
@@ -329,12 +315,6 @@ const FileActions = (props: FileActionsProps) => {
   return (
 
     <ThemeProvider theme={color}>
-
-          <UploadDialog
-            showUploadDialog={showUploadDialog}
-            handleUploadDialogClose={handleUploadDialogClose}
-            beginUpload={beginUploadWrapper}
-          />
 
           <LinearProgress id="loader-smaller" color="primary" className={classes.loadingSmaller}/>
 

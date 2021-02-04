@@ -470,7 +470,7 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
         }
 
         const dataFileName = uploadDataFileObj.name; 
-        const newDataFilePath = getNewDataFilePath(dataFileName);
+        const newDataFilePath = getNewDataFilePath(batchName, dataFileName);
         const loggingErrorFilePath = getLoggingErrorFilePath();
 
         const uploadInfoObj = {
