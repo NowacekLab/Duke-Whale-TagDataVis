@@ -40,6 +40,8 @@ export default function UploadAction() {
             } catch {
                 throw Error("Failed to add new upload `In Progress`.")
             }
+
+            handleUploadDialogClose();
             const uploadResponseObj = await uploadHandler.startUpload(uploadArgs, uploadInfo, updateUploadProgress);
             throwErrIfFail(uploadResponseObj);
             const uploadResponse = uploadResponseObj.response;

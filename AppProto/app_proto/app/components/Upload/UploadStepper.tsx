@@ -76,10 +76,6 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     }
-    const handleReset = () => {
-        setActiveStep(0);
-        resetFileObjs();
-    }
 
     type uploadFileObj = {
         name: string,
@@ -107,12 +103,6 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
     const uploadGPSFileEndingsArr = [".xls", ".xlsx", ".xlsm", '.xlsb', '.odf', '.ods', '.odt'];
     const uploadGPSFileEndings = uploadGPSFileEndingsArr.join(",");
     const uploadFileEndings = [uploadDataFileEndings, uploadLogFileEndings, uploadGPSFileEndings];
-
-    const resetFileObjs = () => {
-        setUploadDataFileObj(defaultFileObj);
-        setUploadLogFileObj(defaultFileObj);
-        setUploadGPSFileObj(defaultFileObj);
-    }
 
 
     const uploadFileRefs = [uploadDataFileRef, uploadLogFileRef, uploadGPSFileRef];
@@ -227,26 +217,59 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
             setBatchNameError(false);
         }
     }
-    const isBatchNameDup = (newBatchName: string): boolean => {
-        const batchNames = getBatchNames();
 
+    const batchNames = function(){
+
+        const batch_names = new Set();
+
+        console.log("GETTING BATCH NAMES: ");
+        console.log("UPLOAD STATE IS: ")
+        console.log(uploadState);
+
+        const finishedUploads = uploadState["finished"];
+        const progressUploads = uploadState["progress"];
+
+        console.log("FINISHED UPLOADS: ")
+        console.log(finishedUploads);
+        console.log("PROGRESS UPLOADS: ")
+        console.log(progressUploads)
+
+        if (finishedUploads) {
+            for (let idx in finishedUploads) {
+                const uploadObj = finishedUploads[idx];
+                if (uploadObj && uploadObj.hasOwnProperty("uploadInfo")) {
+                    const uploadObjInfo = uploadObj['uploadInfo'];
+                    const batchName = uploadObjInfo["batchName"];
+                    if (batchName && (typeof batchName === "string")) {
+                        batch_names.add(batchName);
+                    }
+                }
+            }
+        }
+
+        if (progressUploads) {
+            for (let idx in progressUploads) {
+                const uploadObj = progressUploads[idx]; 
+                if (uploadObj && uploadObj.hasOwnProperty("uploadInfo")) {
+                    const uploadObjInfo = uploadObj["uploadInfo"];
+                    const batchName = uploadObjInfo["batchName"];
+                    if (batchName && (typeof batchName === "string")) {
+                        batch_names.add(batchName);
+                    }
+                }
+            }
+        }
+
+        return batch_names;
+
+    }();
+
+    const isBatchNameDup = (newBatchName: string): boolean => {
         console.log("BATCH NAMES");
         console.log(batchNames);
         console.log(batchNames.has(newBatchName));
 
         return batchNames.has(newBatchName);
-    }
-    const getBatchNames = () => {
-        const batchNamesArr = [];
-
-        for (let idx in uploadState) {
-            const uploadProgObj = uploadState[idx];
-            if (uploadProgObj && uploadProgObj["uploadInfo"] && uploadProgObj["batchName"]) {
-                const batchName = uploadProgObj["uploadInfo"]["batchName"];
-                batchNamesArr.push(batchName);
-            }
-        }
-        return new Set(batchNamesArr);
     }
 
     function getStepContent(index: number) {
@@ -267,7 +290,11 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
         if (!isLatLong) {
 
             return (
-                <div>
+                <div
+                    style={{
+                        padding: "10px"
+                    }}
+                >
                     {
                         batchNameError ?
                         <TextField 
@@ -297,7 +324,8 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "center",
-                        alignItems: "center"
+                        alignItems: "center",
+                        padding: "10px"
                     }}
                 >
                     <div
@@ -458,6 +486,23 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
         return uploadFileObjects[index];
     }
 
+
+
+    const handleReset = () => {
+        setActiveStep(0);
+        resetFileObjs();
+    }
+    const resetFileObjs = () => {
+        setUploadDataFileObj(defaultFileObj);
+        setUploadLogFileObj(defaultFileObj);
+        setUploadGPSFileObj(defaultFileObj);
+        setLatitude("");
+        setLongitude("");
+        setBatchName("");
+    }
+
+
+
     const handleUploadStart = () => {
 
         let trueLat = latitude; 
@@ -512,8 +557,16 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
             "batchInfo": batchInfoArr
         }
 
+
+
+
         beginUpload(uploadInfoObj, batchInfo);
+
+        resetFileObjs();
     }
+
+
+
     
     return ( 
 

@@ -7,10 +7,6 @@ import useIsMountedRef from "../functions/useIsMountedRef";
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 
 const useStyles = makeStyles({
-    banner: {
-        boxShadow: "5px 10px",
-        marginTop: "10px",
-    },
     bannerSuperCont: {
         zIndex: 999998,
         bottom: 20,
@@ -20,12 +16,14 @@ const useStyles = makeStyles({
         display: "flex",
         alignItems: 'center',
         justifyContent: 'center',
+        background: "none"
     },
     bannerCont: {
         width: "500px",
         alignItems: "center",
         justifyContent: "center",
         animation: "all 1s ease-in",
+        background: "none"
     },
 });
 
@@ -72,7 +70,7 @@ const Notification = () => {
                     {
                         notif.status === "error" &&
                         <Fade in={notif.status==="error"} timeout={500}>
-                            <Alert variant="filled" severity="error" className={classes.banner}> 
+                            <Alert severity="error" className={classes.banner}> 
                                 {getMessage()}
                             </Alert>
                         </Fade>
@@ -80,7 +78,7 @@ const Notification = () => {
                     {
                         notif.status === "success" &&
                         <Fade in={notif.status==="success"} timeout={500}>
-                            <Alert variant="filled" severity="success" className={classes.banner}>
+                            <Alert severity="success" className={classes.banner}>
                                 {getMessage()}
                             </Alert>
                         </Fade>

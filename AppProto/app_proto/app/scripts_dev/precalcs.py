@@ -293,12 +293,12 @@ def _preCalc(cmdLineArgs: dict) -> PandasDataFrame:
         csv['Longitude'] = longArray[:-1]
         csv['Time'] = time
         
-        if max(v_total) * fs > v * maxVelocityScale:
+        # if max(v_total) * fs > v * maxVelocityScale:
 
-            # TODO: get this message into the app 
-            # print('Possible GPS Fit inaccuracy, maximum velocity of {0:.2f} is larger than the expected maximum of {1}'.format(max(v_total) * fs, v * maxVelocityScale))
-            calcDepth = np.array(calcDepth)
-            # print(temp, ': ', sum(calcDepth ** 2) ** 0.5)
+        #     # TODO: get this message into the app 
+        #     # print('Possible GPS Fit inaccuracy, maximum velocity of {0:.2f} is larger than the expected maximum of {1}'.format(max(v_total) * fs, v * maxVelocityScale))
+        #     calcDepth = np.array(calcDepth)
+        #     # print(temp, ': ', sum(calcDepth ** 2) ** 0.5)
         
         
     #%% Export Data

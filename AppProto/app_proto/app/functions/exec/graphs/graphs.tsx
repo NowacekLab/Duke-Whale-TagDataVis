@@ -47,10 +47,11 @@ function generateGraphs(graphGenerators: graphGenerators, dataFrame: dataFrame) 
         graphGenerator = graphGenerators[graphName];
         try {
             const graphJSON = graphGenerator(dataFrame);
-            if (isEmptyObj(graphJSON)) throw Error(`Failed to generate ${graphName}`);
+            if (isEmptyObj(graphJSON)) throw new Error(`Failed to generate ${graphName}`);
             generatedGraphs[graphName] = graphJSON;
         } catch (error) {
             // TODO: remove console error  
+            console.log("GRAPHING ERROR")
             console.log(error);
         }
 

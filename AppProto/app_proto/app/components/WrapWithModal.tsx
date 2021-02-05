@@ -32,7 +32,7 @@ export default function WrapWithModal({showModal, handleClose, children}: WrapWi
 
         <Modal
             className={classes.modal}
-            style={{left: "50px"}} 
+            style={{left: "50px", outline:"none"}} 
             open={showModal}
             onClose={handleClose}
             closeAfterTransition

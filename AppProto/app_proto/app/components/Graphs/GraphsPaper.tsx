@@ -10,6 +10,7 @@ const useStyles = makeStyles({
         height: "80%",
         width: "80%",
         display: "table",
+        padding: "20px"
     },
     uploadPaperTitle: {
         fontSize: "2em",

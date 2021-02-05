@@ -123,6 +123,8 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
+app.commandLine.appendSwitch('js-flags', '--max-old-space-size=4096');
+
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed

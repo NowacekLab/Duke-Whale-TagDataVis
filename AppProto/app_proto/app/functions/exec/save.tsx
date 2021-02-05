@@ -113,7 +113,9 @@ function formatSaveJSON(existingObj: any, uploadInfo: uploadInfo, saveArgs: save
     existingObj["uploadInfo"] = batchInfo;
 
     const saveObj: any = {};
-    saveObj[dataFileName] = existingObj;
+
+    const batchName = uploadInfo["batchName"];
+    saveObj[batchName] = existingObj;
 
     console.log("format save json")
     console.log(saveObj);

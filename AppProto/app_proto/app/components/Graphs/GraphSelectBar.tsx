@@ -8,24 +8,46 @@ import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles({
     root: {
-        width: "50%",
+        width: "100%",
         height: "20%",
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "center",
+        gap: "10px",
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0
+    },
+    paperWrapper: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        outline: "none"
+    },
+    paperTreeCont: {
+        outline: "none",
+        maxHeight: "40%",
+        overflow: "auto"
+    },
+    treeItem: {
+        color: "black"
     },
     btn: {
         backgroundColor: "#012069",
-        color: "white"
+        color: "white",
+        "&:hover": {
+            backgroundColor: "#012069",
+            opacity: 0.8
+        }
     }
 })
 
 type GraphSelectBarProps = {
-    chosenBatch: string,
-    onBatchChoiceChange: any,
     onGraphSelect: any,
     fileInfoArr: any
 }
@@ -34,7 +56,8 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
 
     const classes = useStyles();
 
-    const batchBtnVal = props.chosenBatch === "" ? "No batch chosen" : props.chosenBatch;
+    const [batchName, setBatchName] = useState("");
+    const batchBtnVal = batchName === "" ? "No batch chosen" : batchName;
 
     const [showBatchModal, setShowBatchModal] = useState(false);
     const [showGraphModal, setShowGraphModal] = useState(false);
@@ -48,7 +71,9 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
         setShowBatchModal(!showBatchModal);
     }
     const toggleGraphModal = () => {
-        setShowGraphModal(!showGraphModal);
+        if (batchName && batchName !== "") {
+            setShowGraphModal(!showGraphModal);
+        }
     }
 
     const availGraphs = {} as any;
@@ -106,18 +131,18 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
     }();
     
     const onBatchNameSelect = (batchName: string) => {
-        props.onBatchChoiceChange(batchName);
+        setBatchName(batchName);
     }
 
     const availableGraphs = function(){
         console.log("AVAILABLE GRAPHS FUNCTION CALL")
         console.log(availGraphs)
 
-        if (!availGraphs.hasOwnProperty(props.chosenBatch)) {
+        if (!availGraphs.hasOwnProperty(batchName)) {
             return [];
         }
 
-        return availGraphs[props.chosenBatch];
+        return availGraphs[batchName];
 
     }();
 
@@ -162,51 +187,61 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                 showModal={showBatchModal}
                 handleClose={handleBatchModalClose}
             >
-                <div>
-                    <TreeView
-                        defaultCollapseIcon={<ExpandMoreIcon />}
-                        defaultExpandIcon={<ChevronRightIcon />}
+                <div
+                    className={classes.paperWrapper}
+                >
+                    <Paper
+                        elevation={3}
+                        className={classes.paperTreeCont}
                     >
+                        <TreeView
+                            defaultCollapseIcon={<ExpandMoreIcon />}
+                            defaultExpandIcon={<ChevronRightIcon />}
+                        >
 
-                        {
-                            batchItems.map((batchItem, idx) => {
-                                curr_tree_item_i++;
-                                return ( 
-                                    <TreeItem 
-                                        nodeId={`${curr_tree_item_i}`} 
-                                        label={batchItem["batchName"] ?? "Name not found"}
-                                        onLabelClick={() => onBatchNameSelect(batchItem["batchName"] ?? "")}
-                                    >
-                                        {
-                                            batchItem['labels'] ? 
-                                            batchItem['labels'].map((label, label_idx) => {
-                                                curr_tree_item_i++;
+                            {
+                                batchItems.map((batchItem, idx) => {
+                                    curr_tree_item_i++;
+                                    return ( 
+                                        <TreeItem 
+                                            nodeId={`${curr_tree_item_i}`} 
+                                            label={batchItem["batchName"] ?? "Name not found"}
+                                            onLabelClick={() => onBatchNameSelect(batchItem["batchName"] ?? "")}
+                                            className={classes.treeItem}
+                                        >
+                                            {
+                                                batchItem['labels'] ? 
+                                                batchItem['labels'].map((label, label_idx) => {
+                                                    curr_tree_item_i++;
 
-                                                return (
-                                                    <TreeItem 
-                                                        nodeId={`${curr_tree_item_i}`} 
-                                                        label={label} 
-                                                        onLabelClick={() => onBatchNameSelect(batchItem["batchName"] ?? "")}
-                                                    />
-                                                )
-                                            })
+                                                    return (
+                                                        <TreeItem 
+                                                            nodeId={`${curr_tree_item_i}`} 
+                                                            label={label} 
+                                                            onLabelClick={() => onBatchNameSelect(batchItem["batchName"] ?? "")}
+                                                        />
+                                                    )
+                                                })
 
-                                            :
+                                                :
 
-                                            undefined
-                                        }
-                                    </TreeItem>
-                                )
+                                                undefined
+                                            }
+                                        </TreeItem>
+                                    )
 
-                            })
+                                })
 
 
-                        }
-                        
-                    </TreeView>
+                            }
+                            
+                        </TreeView>
+
+                    </Paper>
+
 
                     {
-                        props.chosenBatch === ""
+                        batchName === ""
 
                         ?
 
@@ -218,9 +253,10 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                             className={classes.btn}
                             onClick={() => handleBatchModalClose()}
                         >
-                            {`Select ${props.chosenBatch}?`}
+                            {`Select ${batchName}?`}
                         </Button>
                     }
+
                 </div>
             </WrapWithModal>
 
@@ -229,26 +265,42 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                 handleClose={handleGraphModalClose}
             >
 
-                <div>
-                    <TreeView>
-                        {
-                            availableGraphs && 
-                            availableGraphs.map((availGraph: any) => {
-                                curr_tree_item_i++;
+                <div
+                    style={{
+                        outline: "none",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px"
+                    }}
+                >
 
-                                return (
+                    <Paper
+                        elevation={3}
+                        style={{
+                            outline: "none"
+                        }}
+                    >
+                        <TreeView>
+                            {
+                                availableGraphs && 
+                                availableGraphs.map((availGraph: any) => {
+                                    curr_tree_item_i++;
 
-                                    <TreeItem 
-                                        nodeId={`${curr_tree_item_i}`}
-                                        label={availGraph["name"] ?? "Name not found"}
-                                        onLabelClick={() => {onGraphNameSelect(availGraph["name"] ?? "", availGraph["path"] ?? "")}}
-                                    />
+                                    return (
 
-                                )
+                                        <TreeItem 
+                                            nodeId={`${curr_tree_item_i}`}
+                                            label={availGraph["name"] ?? "Name not found"}
+                                            onLabelClick={() => {onGraphNameSelect(availGraph["name"] ?? "", availGraph["path"] ?? "")}}
+                                            className={classes.treeItem}
+                                        />
 
-                            })
-                        }
-                    </TreeView>
+                                    )
+
+                                })
+                            }
+                        </TreeView>
+                    </Paper>
 
                     {
                         chosenGraph === ""
@@ -266,6 +318,7 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                             {`Select ${chosenGraph}?`}
                         </Button>
                     }
+
                 </div>
 
             </WrapWithModal>

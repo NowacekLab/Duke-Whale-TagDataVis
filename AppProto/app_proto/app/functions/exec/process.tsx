@@ -16,7 +16,14 @@ export async function processGeneric(pythonScriptName: string, scriptName: strin
     const executor = isDev ? python3 : prodPythonScriptPath;
     const args = isDev ? [devPythonScriptPath, cmdLineString] : [cmdLineString];
 
-    const res = await handlePythonExec(executor, args);
+    const res = await handlePythonExec(executor, args).catch((err) => {
+        console.log("PYTHON EXEC ERROR");
+        console.log(err);
+        return {
+            success: false,
+            response: err 
+        }
+    });
     const responseObj = res ?? {success: false, response: "handlePythonExec() did not return valid response object"};
 
     return responseObj;

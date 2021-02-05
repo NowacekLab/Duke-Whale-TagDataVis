@@ -16,9 +16,19 @@ import WrapWithModal from "../WrapWithModal";
 import InfoIcon from '@material-ui/icons/Info';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from "@material-ui/core/Typography";
+import Typography from "@material-ui/core/Typography"; 
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles({
+    root: {
+        height: "100%",
+        width: "100%"
+    },
+    list: { 
+        width: "100%", 
+        height: "100%",
+        overflow: "auto"
+    },
     batchInfoText: {
         primary: {
             color: "white"
@@ -52,15 +62,20 @@ export default function FinishedUploads() {
 
     const [currBatchInfo, setCurrBatchInfo] = useState([]);
     const handleCurrBatchInfo = (batchInfo: any) => {
+
+        console.log(uploadsFinished);
+
         setCurrBatchInfo(batchInfo);
         handleInfoToggle();
     }
 
     return (
-        <div>
+        <div
+            className={classes.root}
+        >
 
             <List
-
+                className={classes.list}
             >
                 {
                     uploadsFinished.map((uploadFinished) => {
@@ -99,48 +114,55 @@ export default function FinishedUploads() {
                     showModal={infoOpen}
                     handleClose={handleCloseInfo}
                 >
-                    <List>
-                            {
-                                currBatchInfo.map((batchInfoObj: Record<string, string>) => {
-                                    const title = batchInfoObj["title"];
-                                    const info = batchInfoObj["info"];
+                    <Paper
+                        elevation={3}
+                        style={{
+                            outline: "none"
+                        }}
+                    >
+                        <List>
+                                {
+                                    currBatchInfo.map((batchInfoObj: Record<string, string>) => {
+                                        const title = batchInfoObj["title"];
+                                        const info = batchInfoObj["info"];
 
-                                    return (
+                                        return (
 
-                                        <ListItem>
-                                            
-                                            <ListItemText
-                                                disableTypography
-                                                primary={
-                                                    <Typography
-                                                        style={{
-                                                            color: "white",
-                                                            fontWeight: "bold"
-                                                        }}
-                                                    >
-                                                        {title}
-                                                    </Typography>
-                                                }
-                                                secondary={
-                                                    <Typography
-                                                        style={{
-                                                            color: "white"
-                                                        }}
-                                                    >
-                                                        {info}
-                                                    </Typography>
-                                                }
-                                            >
+                                            <ListItem>
+                                                
+                                                <ListItemText
+                                                    disableTypography
+                                                    primary={
+                                                        <Typography
+                                                            style={{
+                                                                color: "black",
+                                                                fontWeight: "bold"
+                                                            }}
+                                                        >
+                                                            {title}
+                                                        </Typography>
+                                                    }
+                                                    secondary={
+                                                        <Typography
+                                                            style={{
+                                                                color: "black"
+                                                            }}
+                                                        >
+                                                            {info}
+                                                        </Typography>
+                                                    }
+                                                >
 
-                                            </ListItemText>
+                                                </ListItemText>
 
 
-                                        </ListItem>
+                                            </ListItem>
 
-                                    )
-                                })
-                            }
+                                        )
+                                    })
+                                }
                         </List>
+                    </Paper>
                 </WrapWithModal>
 
             </List>

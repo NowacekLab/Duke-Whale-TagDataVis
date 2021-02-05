@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import {makeStyles} from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
 import GraphSelectBar from "../components/Graphs/GraphSelectBar";
 import GraphsPaper from "../components/Graphs/GraphsPaper";
@@ -6,7 +7,22 @@ import {loadFileInfoArr} from "../functions/uploads/upload";
 import {getObjFromPath} from "../functions/files";
 import {deepCopyObjectOnlyProps} from "../functions/object_helpers";
 
+const useStyles = makeStyles({
+    root: {
+        fontFamily: "HelveticaNeue-Light",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+        position: "relative"
+    },
+})
+
 export default function Graph() {
+
+    const classes = useStyles();
 
     const defaultGraphState = {
         data: [],
@@ -29,11 +45,6 @@ export default function Graph() {
         console.log(newGraphState);
         setGraphState(newGraphState);
     }
-
-    const [chosenBatchName, setChosenBatchName] = useState("");
-    const onBatchChoiceChange = (batchName: string) => {
-        setChosenBatchName(batchName);
-    }
     const onGraphSelect = (graphName: string, graphPath: string) => {
         console.log("GRAPH SELECTED");
         console.log(graphPath);
@@ -43,8 +54,8 @@ export default function Graph() {
             console.log(obj);
 
             if (obj) {
-                let data;
-                let layout;
+                let data = [];
+                let layout = {};
                 if (obj.hasOwnProperty("data")) {
                     data = obj["data"];
                 }
@@ -81,7 +92,9 @@ export default function Graph() {
 
     return (
 
-        <Container>
+        <Container
+            className={classes.root}
+        >
 
 
             <GraphsPaper
@@ -90,8 +103,6 @@ export default function Graph() {
             />
 
             <GraphSelectBar 
-                chosenBatch={chosenBatchName}
-                onBatchChoiceChange={onBatchChoiceChange}
                 onGraphSelect={onGraphSelect}
                 fileInfoArr={fileInfoArr}
             />
