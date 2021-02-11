@@ -1,6 +1,7 @@
 import {ADD_PROGRESS, REMOVE_PROGRESS,uploadProgressObjects, uploadProgressObj, uploadInfo, uploadProgress,
         UpdateProgressPayload, REMOVE_PROGRESSES, uploadFinishedObjects, REFRESH_FINISHED, uploadProgressState} from "./uploadsTypes";
 import {uploadFile, loadFinishedUploads} from "./upload";
+import {fileNameFromPath} from "../paths";
 
 export const defaultUploadProgress: uploadProgress = {
     processing: "process",
@@ -64,15 +65,15 @@ export default class uploadsActionsHandler {
         const uploadInfoArr = [
             {
                 title: "Data File Name",
-                info: uploadInfo["dataFileName"]
+                info: fileNameFromPath(uploadInfo["dataFilePath"])
             },
             {   
                 title: "Log File Name",
-                info: uploadInfo["logFileName"]
+                info: fileNameFromPath(uploadInfo["loggingFilePath"])
             },
             {
                 title: "GPS File Name",
-                info: uploadInfo["gpsFileName"]
+                info: fileNameFromPath(uploadInfo["gpsFilePath"])
             },
             {
                 title: "Starting Latitude and Longitude",
@@ -89,6 +90,10 @@ export default class uploadsActionsHandler {
     }
 
     public addNewUploadProgress(uploadInfo: uploadInfo) {
+
+        console.log("ADD NEW UPLOAD PROGFRESS");
+        console.log(uploadInfo);
+
         const uploadProgObj = {} as uploadProgressObj;
         const uploadInfoArr = this.getUploadInfoArr(uploadInfo);
 

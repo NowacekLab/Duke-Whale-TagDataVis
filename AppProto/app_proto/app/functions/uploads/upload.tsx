@@ -195,30 +195,27 @@ export async function uploadFile(uploadInfo: uploadInfo) {
 async function handleProcStep(uploadInfo: uploadInfo) {
 
     const handler = handleProcessFile;
-    const progKey = "processing";
 
-    return await handleUploadStepGeneric(handler, progKey, uploadInfo);
+    return await handleUploadStepGeneric(handler, uploadInfo);
 }
 
 async function handleGenStep(uploadInfo: uploadInfo) {
 
     const handler = handleGenerate;
-    const progKey = "generating";
 
-    return await handleUploadStepGeneric(handler, progKey, uploadInfo);
+    return await handleUploadStepGeneric(handler, uploadInfo);
 }
 
 async function handleSaveStep(uploadInfo: uploadInfo, genRes: any) {
 
     const handler = handleGenSave;
-    const progKey = "saving";
     const addArgs = [genRes]
 
-    return await handleUploadStepGeneric(handler, progKey, uploadInfo, addArgs);
+    return await handleUploadStepGeneric(handler, uploadInfo, addArgs);
 
 }
 
-async function handleUploadStepGeneric(handler: Function, progKey: string, uploadInfo: uploadInfo, addArgs?: Array<any>) {
+async function handleUploadStepGeneric(handler: Function, uploadInfo: uploadInfo, addArgs?: Array<any>) {
     let resp;
     if (addArgs === undefined) {
         resp = await handler(uploadInfo);

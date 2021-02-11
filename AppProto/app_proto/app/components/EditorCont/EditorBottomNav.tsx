@@ -243,7 +243,9 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
 
                                             return (
 
-                                                <ListItem>
+                                                <ListItem
+                                                    key={title}
+                                                >
                                                     
                                                     <ListItemText
                                                         disableTypography
@@ -326,6 +328,7 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
                                                 <ListItem
                                                     button
                                                     onClick={() => {viewCurrBatchInfo(batchName, colPath, uploadInfoArr)}}
+                                                    key={batchName}
                                                 >
                                                     <ListItemText
                                                         primary={batchName}

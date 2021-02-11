@@ -70,7 +70,7 @@ const Notification = () => {
                     {
                         notif.status === "error" &&
                         <Fade in={notif.status==="error"} timeout={500}>
-                            <Alert severity="error" className={classes.banner}> 
+                            <Alert severity="error"> 
                                 {getMessage()}
                             </Alert>
                         </Fade>
@@ -78,7 +78,7 @@ const Notification = () => {
                     {
                         notif.status === "success" &&
                         <Fade in={notif.status==="success"} timeout={500}>
-                            <Alert severity="success" className={classes.banner}>
+                            <Alert severity="success">
                                 {getMessage()}
                             </Alert>
                         </Fade>

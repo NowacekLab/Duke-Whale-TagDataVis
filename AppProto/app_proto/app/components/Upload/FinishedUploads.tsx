@@ -18,6 +18,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from "@material-ui/core/Typography"; 
 import Paper from "@material-ui/core/Paper";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles({
     root: {
@@ -56,8 +57,11 @@ export default function FinishedUploads() {
     const handleCloseInfo = () => {
         setInfoOpen(false);
     }
+
+    const [tempBatchName, setTempBatchName] = useState("");
     const [currBatchInfo, setCurrBatchInfo] = useState([]);
-    const handleCurrUploadInfoArr = (uploadInfoArr: any) => {
+    const handleCurrUploadInfoArr = (batchName: string, uploadInfoArr: any) => {
+        setTempBatchName(batchName);
         setCurrBatchInfo(uploadInfoArr);
         handleInfoToggle();
     }
@@ -79,16 +83,14 @@ export default function FinishedUploads() {
 
                         return (
                             <>
-
                                 <ListItem
                                     button
-                                    onClick={() => {handleCurrUploadInfoArr(uploadInfoArr)}}
+                                    onClick={() => {handleCurrUploadInfoArr(batchName, uploadInfoArr)}}
+                                    key={batchName}
                                 >
                                     <ListItemText
                                         primary={batchName}
                                     />
-
-                                    
 
                                 </ListItem>
 
@@ -121,48 +123,94 @@ export default function FinishedUploads() {
                             outline: "none"
                         }}
                     >
-                        <List>
-                                {
-                                    currBatchInfo.map((batchInfoObj: Record<string, string>) => {
-                                        const title = batchInfoObj["title"];
-                                        const info = batchInfoObj["info"];
+                        <div
+                            style={{
+                                height: "100%",
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "5px",
+                                padding: "10px"
+                            }}
+                        >
 
-                                        return (
+                            <div
+                                style={{
+                                    width: "100%",
+                                }}
+                            >
+                                <IconButton
+                                    onClick={() => setInfoOpen(false)}
+                                    style={{
+                                        justifySelf: "flex-start",
+                                        alignSelf: "center"
+                                    }}
+                                >
+                                    <ArrowBackIcon 
+                                        style={{
+                                            color: "black"
+                                        }}
+                                    />
+                                </IconButton>
+                            </div>
 
-                                            <ListItem>
-                                                
-                                                <ListItemText
-                                                    disableTypography
-                                                    primary={
-                                                        <Typography
-                                                            style={{
-                                                                color: "black",
-                                                                fontWeight: "bold"
-                                                            }}
-                                                        >
-                                                            {title}
-                                                        </Typography>
-                                                    }
-                                                    secondary={
-                                                        <Typography
-                                                            style={{
-                                                                color: "black"
-                                                            }}
-                                                        >
-                                                            {info}
-                                                        </Typography>
-                                                    }
+                            <div
+                                style={{
+                                    width: "100%",
+                                    display: "flex", 
+                                    justifyContent: "center",
+                                    alignItems: "center"
+                                }}
+                            >
+                                <h3>
+                                    {tempBatchName}
+                                </h3>
+                            </div>
+                            <List>
+                                    {
+                                        currBatchInfo.map((batchInfoObj: Record<string, string>) => {
+                                            const title = batchInfoObj["title"];
+                                            const info = batchInfoObj["info"];
+
+                                            return (
+
+                                                <ListItem
+                                                    key={title}
                                                 >
+                                                    
+                                                    <ListItemText
+                                                        disableTypography
+                                                        primary={
+                                                            <Typography
+                                                                style={{
+                                                                    color: "black",
+                                                                    fontWeight: "bold"
+                                                                }}
+                                                            >
+                                                                {title}
+                                                            </Typography>
+                                                        }
+                                                        secondary={
+                                                            <Typography
+                                                                style={{
+                                                                    color: "black"
+                                                                }}
+                                                            >
+                                                                {info}
+                                                            </Typography>
+                                                        }
+                                                    >
 
-                                                </ListItemText>
+                                                    </ListItemText>
 
 
-                                            </ListItem>
+                                                </ListItem>
 
-                                        )
-                                    })
-                                }
-                        </List>
+                                            )
+                                        })
+                                    }
+                            </List>
+                        </div>
                     </Paper>
                 </WrapWithModal>
 

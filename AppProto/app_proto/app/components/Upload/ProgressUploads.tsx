@@ -17,6 +17,8 @@ import InfoIcon from '@material-ui/icons/Info';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles({
     root: {
@@ -53,9 +55,11 @@ export default function ProgressUploads() {
         setInfoOpen(false);
     }
 
+    const [tempBatchName, setTempBatchName] = useState("");
     const [currBatchInfo, setCurrBatchInfo] = useState([]);
-    const handleCurrUploadInfoArr = (uploadInfoArr: any) => {
+    const handleCurrUploadInfoArr = (batchName: string, uploadInfoArr: any) => {
         setCurrBatchInfo(uploadInfoArr);
+        setTempBatchName(batchName);
         handleInfoToggle();
     }
 
@@ -75,12 +79,17 @@ export default function ProgressUploads() {
                         const uploadProgObj = uploadsProgress[batchName];
                         const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
 
+                        console.log("UPLOAD PROGRESS");
+                        console.log(batchName);
+                        console.log(uploadInfoArr);
+
                         return (
                             <>
 
                                 <ListItem
                                     button
-                                    onClick={() => {handleCurrUploadInfoArr(uploadInfoArr)}}
+                                    onClick={() => {handleCurrUploadInfoArr(batchName, uploadInfoArr)}}
+                                    key={batchName}
                                 >
                                     <ListItemText
                                         primary={batchName}
@@ -113,49 +122,101 @@ export default function ProgressUploads() {
                     showModal={infoOpen}
                     handleClose={handleCloseInfo}
                 >
-                    <List>
-                            {
-                                currBatchInfo.map((batchInfoObj: Record<string, string>) => {
-                                    const title = batchInfoObj["title"];
-                                    const info = batchInfoObj["info"];
+                    <Paper
+                        elevation={3} 
+                        style={{
+                            outline: "none"
+                        }}
+                    >
+                        <div
+                            style={{
+                                height: "100%",
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "5px",
+                                padding: "10px"
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: "100%",
+                                }}
+                            >
+                                <IconButton
+                                    onClick={() => setInfoOpen(false)}
+                                    style={{
+                                        justifySelf: "flex-start",
+                                        alignSelf: "center"
+                                    }}
+                                >
+                                    <ArrowBackIcon 
+                                        style={{
+                                            color: "black"
+                                        }}
+                                    />
+                                </IconButton>
+                            </div>
 
-                                    return (
+                            <div
+                                style={{
+                                    width: "100%",
+                                    display: "flex", 
+                                    justifyContent: "center",
+                                    alignItems: "center"
+                                }}
+                            >
+                                <h3>
+                                    {tempBatchName}
+                                </h3>
+                            </div>
+                            <List>
+                                    {
+                                        currBatchInfo.map((batchInfoObj: Record<string, string>) => {
+                                            const title = batchInfoObj["title"];
+                                            const info = batchInfoObj["info"];
 
-                                        <ListItem>
-                                            
-                                            <ListItemText
-                                                disableTypography
-                                                primary={
-                                                    <Typography
-                                                        style={{
-                                                            color: "white",
-                                                            fontWeight: "bold"
-                                                        }}
+                                            return (
+
+                                                <ListItem
+                                                    key={title}
+                                                >
+                                                    
+                                                    <ListItemText
+                                                        disableTypography
+                                                        primary={
+                                                            <Typography
+                                                                style={{
+                                                                    color: "black",
+                                                                    fontWeight: "bold"
+                                                                }}
+                                                            >
+                                                                {title}
+                                                            </Typography>
+                                                        }
+                                                        secondary={
+                                                            <Typography
+                                                                style={{
+                                                                    color: "black"
+                                                                }}
+                                                            >
+                                                                {info}
+                                                            </Typography>
+                                                        }
                                                     >
-                                                        {title}
-                                                    </Typography>
-                                                }
-                                                secondary={
-                                                    <Typography
-                                                        style={{
-                                                            color: "white"
-                                                        }}
-                                                    >
-                                                        {info}
-                                                    </Typography>
-                                                }
-                                            >
 
-                                        </ListItemText>
+                                                </ListItemText>
 
 
 
-                                        </ListItem>
+                                                </ListItem>
 
-                                    )
-                                })
-                            }
-                        </List>
+                                            )
+                                        })
+                                    }
+                                </List>
+                            </div>
+                        </Paper>
                 </WrapWithModal>
 
             </List>

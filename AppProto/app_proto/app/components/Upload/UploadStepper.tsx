@@ -497,6 +497,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         const loggingErrorFilePath = getLoggingErrorFilePath();
 
         const uploadInfoObj = {
+            "batchName": batchName,
             "dataFilePath": uploadDataFileObj.path, 
             "newDataFilePath": newDataFilePath,
             "loggingFilePath": loggingErrorFilePath,
@@ -530,12 +531,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             return arr;
         }();
 
-        const batchInfo = {
-            "batchName": batchName,
-            "batchInfo": batchInfoArr
-        }
-
-        beginUpload(uploadInfoObj, batchInfo);
+        beginUpload(uploadInfoObj);
 
         resetFileObjs();
     }

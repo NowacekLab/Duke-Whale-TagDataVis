@@ -241,7 +241,9 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
 
                                             return (
 
-                                                <ListItem>
+                                                <ListItem
+                                                    key={title}
+                                                >
                                                     
                                                     <ListItemText
                                                         disableTypography
@@ -323,6 +325,7 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                                                 <ListItem
                                                     button
                                                     onClick={() => {viewCurrBatchInfo(batchName, uploadInfoArr)}}
+                                                    key={batchName}
                                                 >
                                                     <ListItemText
                                                         primary={batchName}
@@ -491,6 +494,7 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                                                     <ListItem
                                                         button
                                                         onClick={() => {viewCurrGraphInfo(graphName, graphPath)}}
+                                                        key={graphName}
                                                     >
                                                         <ListItemText
                                                             primary={graphName}
