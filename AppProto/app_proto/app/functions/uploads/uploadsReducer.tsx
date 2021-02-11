@@ -5,7 +5,7 @@ import {
     GenericUpdateProgress,
     ADD_PROGRESS,
     REMOVE_PROGRESS,
-    UPDATE_PROGRESS,
+    REMOVE_PROGRESSES,
     uploadProgressState,
     REFRESH_FINISHED
 } from "./uploadsTypes";
@@ -30,63 +30,35 @@ export default function uploadProgressReducer(state = initialState, action: Gene
     console.log("ACTION")
     console.log(action);
 
+    const newState = deepCopyObjectOnlyProps(state);
+
     switch (action.type) {
         case ADD_PROGRESS: 
             const progObj = action.payload;
-            const objIdx = progObj["index"];
-
-            const newAddState = deepCopyObjectOnlyProps(state);
-            const newAddStateProgress = newAddState["progress"];
-            newAddStateProgress[objIdx] = progObj;
-            return newAddState;
+            
+            const addUploadInfo = progObj["uploadInfo"];
+            const addBatchName = addUploadInfo["batchName"];
+            const newAddStateProgress = newState["progress"];
+            newAddStateProgress[addBatchName] = addUploadInfo;
+            return newState;
         case REMOVE_PROGRESS:
-            const removeIdx = action.payload;
-
-            const newRemState = deepCopyObjectOnlyProps(state);
-            const newRemProgState = newRemState["progress"];
-            delete newRemProgState[removeIdx];
-
-            return newRemState;
-        case UPDATE_PROGRESS: 
-            const updateProgObj = action.payload; 
-
-            console.log(updateProgObj);
-
-
-            const updateIdx = updateProgObj.index;
-
-            console.log(updateIdx);
-
-            const progStep = updateProgObj.progressStep;
-
-            console.log(progStep);
-
-            const newProgStepVal = updateProgObj.newProgress;
-
-            console.log(newProgStepVal);
-
-            const newUpdateState = deepCopyObjectOnlyProps(state);
-
-            console.log(newUpdateState);
-
-            const newProgObj = newUpdateState["progress"][updateIdx];
-
-            console.log(newProgObj);
-
-            const newUploadProgress = newProgObj["progress"];
-
-            console.log(newUploadProgress);
-
-            newUploadProgress[progStep] = newProgStepVal;
-
-            return newUpdateState; 
+            const remBatchName = action.payload;
+            const newRemStateProgress = newState["progress"];
+            delete newRemStateProgress[remBatchName];
+            return newState;
+        case REMOVE_PROGRESSES: 
+            const remBatchNames = action.payload;
+            const newRemMultStateProgress = newState["progress"];
+            remBatchNames.map((batchName) => {  
+                if (newRemMultStateProgress.hasOwnProperty(batchName)) {
+                    delete newRemMultStateProgress[batchName];
+                }
+            })
+            return newState;
         case REFRESH_FINISHED:
             const uploadFinishedObjects = action.payload;
-
-            const newFinishState = deepCopyObjectOnlyProps(state);
-            newFinishState["finished"] = uploadFinishedObjects;
-
-            return newFinishState;
+            newState["finished"] = uploadFinishedObjects;
+            return newState;
 
         default:
             return state; 

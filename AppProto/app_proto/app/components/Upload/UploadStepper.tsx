@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -11,6 +12,7 @@ import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {getNewDataFilePath, getLoggingErrorFilePath} from "../../functions/paths";
 import {fileNameFromPath} from "../../functions/paths";
+import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -62,12 +64,19 @@ const useStyles = makeStyles(() => ({
 
 type UploadStepperProps = {
     beginUpload: Function,
-    uploadState: any
 }
 
-export default function UploadStepper({beginUpload, uploadState} : UploadStepperProps) {
+export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
     const classes = useStyles();
+
+    const dispatch = useDispatch();
+    //@ts-ignore
+    const uploadProgState = useSelector(state => state["uploads"]);
+    const uploadProgHandler = new uploadsActionsHandler(dispatch);
+    const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
+    const uploadsProgress = uploadProgHandler.getUploadsProgress(uploadProgState);
+
 
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = () => {
@@ -222,46 +231,15 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
 
         const batch_names = new Set();
 
-        console.log("GETTING BATCH NAMES: ");
-        console.log("UPLOAD STATE IS: ")
-        console.log(uploadState);
-
-        const finishedUploads = uploadState["finished"];
-        const progressUploads = uploadState["progress"];
-
-        console.log("FINISHED UPLOADS: ")
-        console.log(finishedUploads);
-        console.log("PROGRESS UPLOADS: ")
-        console.log(progressUploads)
-
-        if (finishedUploads) {
-            for (let idx in finishedUploads) {
-                const uploadObj = finishedUploads[idx];
-                if (uploadObj && uploadObj.hasOwnProperty("uploadInfo")) {
-                    const uploadObjInfo = uploadObj['uploadInfo'];
-                    const batchName = uploadObjInfo["batchName"];
-                    if (batchName && (typeof batchName === "string")) {
-                        batch_names.add(batchName);
-                    }
-                }
-            }
+        for (let batchName in uploadsFinished) {
+            batch_names.add(batchName);
         }
 
-        if (progressUploads) {
-            for (let idx in progressUploads) {
-                const uploadObj = progressUploads[idx]; 
-                if (uploadObj && uploadObj.hasOwnProperty("uploadInfo")) {
-                    const uploadObjInfo = uploadObj["uploadInfo"];
-                    const batchName = uploadObjInfo["batchName"];
-                    if (batchName && (typeof batchName === "string")) {
-                        batch_names.add(batchName);
-                    }
-                }
-            }
+        for (let batchName in uploadsProgress) {
+            batch_names.add(batchName);
         }
 
         return batch_names;
-
     }();
 
     const isBatchNameDup = (newBatchName: string): boolean => {
@@ -556,9 +534,6 @@ export default function UploadStepper({beginUpload, uploadState} : UploadStepper
             "batchName": batchName,
             "batchInfo": batchInfoArr
         }
-
-
-
 
         beginUpload(uploadInfoObj, batchInfo);
 

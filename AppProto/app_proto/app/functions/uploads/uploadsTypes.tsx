@@ -4,14 +4,16 @@ export interface uploadProgressState {
 }
 
 export interface uploadProgressObjects {
-    [index: number] : uploadProgressObj,
+    [index: string] : uploadProgressObj,
 }
 
 export interface uploadFinishedObjects {
-    [index: number] : uploadFinishedObj
+    [index: string] : uploadFinishedObj,
 }
 
-export interface uploadArgs {
+export interface uploadInfo {
+    [index: string]: string,
+    batchName: string,
     dataFilePath: string, 
     newDataFilePath: string,
     loggingFilePath: string, 
@@ -23,16 +25,18 @@ export interface uploadArgs {
 
 export interface uploadFinishedObj {
     [index: string] : any,
-    index: number,
-    uploadInfo: uploadInfo
+    graphs: any,
+    cols: any,
+    calcPath: string,
+    uploadInfo: uploadInfo,
+    uploadInfoArr: uploadInfoArr
 }
 
 export interface uploadProgressObj {
     // simply the currLength of uploadProgressObjects keys + 1 (index)
     [index: string] : any,
-    index: number, 
-    progress: uploadProgress, 
-    uploadInfo: uploadInfo
+    uploadInfo: uploadInfo,
+    uploadInfoArr: uploadInfoArr
 }
 
 export interface uploadProgress {
@@ -42,18 +46,7 @@ export interface uploadProgress {
     saving: string 
 }
 
-export interface uploadInfo {
-    [index: string] : any, 
-    batchName: string,
-    batchInfo: batchInfoArr
-    // dataFileName: string, 
-    // logFileName: string,
-    // GPSFileName: string, 
-    // startLatitude: string,
-    // startLongitude: string,
-}
-
-export type batchInfoArr = Array<batchInfo>;
+export type uploadInfoArr = Array<batchInfo>;
 
 export interface batchInfo { 
     [index: string] : string, 
@@ -61,7 +54,7 @@ export interface batchInfo {
     info: string
 }
 
-export type GenericUpdateProgress = AddProgress | RemoveProgress | UpdateProgress | RefreshFinished; 
+export type GenericUpdateProgress = AddProgress | RemoveProgress | RemoveProgresses | RefreshFinished; 
 
 export interface AddProgress {
     type: typeof ADD_PROGRESS, 
@@ -73,10 +66,11 @@ export interface RemoveProgress {
     payload: number 
 }
 
-export interface UpdateProgress {
-    type: typeof UPDATE_PROGRESS, 
-    payload: UpdateProgressPayload
+export interface RemoveProgresses {
+    type: typeof REMOVE_PROGRESSES,
+    payload: Array<string>
 }
+
 export interface UpdateProgressPayload {
     [index: string]: any,
     index: number, 
@@ -91,7 +85,7 @@ export interface RefreshFinished {
 
 export const ADD_PROGRESS = 'ADD_PROGRESS';
 export const REMOVE_PROGRESS = 'REMOVE_PROGRESS'; 
-export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
+export const REMOVE_PROGRESSES = 'REMOVE_PROGRESSES';
 export const REFRESH_FINISHED = 'REFRESH_FINISHED';
 
 // class that returns mapping of upload progress number : upload progress info

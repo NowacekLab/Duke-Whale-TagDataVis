@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
 import GraphSelectBar from "../components/Graphs/GraphSelectBar";
 import GraphsPaper from "../components/Graphs/GraphsPaper";
-import {loadFileInfoArr} from "../functions/uploads/upload";
 import {getObjFromPath} from "../functions/files";
 import {deepCopyObjectOnlyProps} from "../functions/object_helpers";
+import uploadsActionsHandler from "../functions/uploads/uploadsActionsHandler";
+import useIsMountedRef from "../functions/useIsMountedRef";
 
 const useStyles = makeStyles({
     root: {
@@ -30,6 +32,15 @@ export default function Graph() {
         frames: [],
         config: {}
     }
+
+    const isMounted = useIsMountedRef();
+
+    const dispatch = useDispatch();
+    //@ts-ignore
+    const uploadProgState = useSelector(state => state["uploads"]);
+    const uploadProgHandler = new uploadsActionsHandler(dispatch);
+    const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
+
     const [graphState, setGraphState] = useState(defaultGraphState)
     const onGraphUpdate = (figure: any) => {
         const newData = figure['data'] ?? [];
@@ -48,7 +59,9 @@ export default function Graph() {
     const onGraphSelect = (graphName: string, graphPath: string) => {
         console.log("GRAPH SELECTED");
         console.log(graphPath);
-        getObjFromPath(graphPath).then((obj) => {
+        isMounted && getObjFromPath(graphPath).then((obj) => {
+
+            if (!isMounted) return;
 
             console.log("OBJECT FROM PATH: ");
             console.log(obj);
@@ -79,17 +92,6 @@ export default function Graph() {
 
     }
 
-
-    const [fileInfoArr, setFileInfoArr] = useState([]);
-    useEffect(() => {
-        loadFileInfoArr().then((fileInfoArr) => {
-
-            //@ts-ignore
-            setFileInfoArr(fileInfoArr);
-        })
-    }, [])
-
-
     return (
 
         <Container
@@ -104,7 +106,6 @@ export default function Graph() {
 
             <GraphSelectBar 
                 onGraphSelect={onGraphSelect}
-                fileInfoArr={fileInfoArr}
             />
 
         </Container>

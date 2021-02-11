@@ -52,13 +52,10 @@ export default function ProgressUploads() {
     const handleCloseInfo = () => {
         setInfoOpen(false);
     }
-    const removeProgress = (idx: number) => {
-        uploadProgHandler.removeProgress(idx);
-    }
 
     const [currBatchInfo, setCurrBatchInfo] = useState([]);
-    const handleCurrBatchInfo = (batchInfo: any) => {
-        setCurrBatchInfo(batchInfo);
+    const handleCurrUploadInfoArr = (uploadInfoArr: any) => {
+        setCurrBatchInfo(uploadInfoArr);
         handleInfoToggle();
     }
 
@@ -71,44 +68,44 @@ export default function ProgressUploads() {
                 className={classes.list}
             >
                 {
-                    uploadsProgress.map((uploadProgress) => {
 
-                        const uploadInfo = uploadProgHandler.getUploadInfo(uploadProgress);
-                        const batchName = uploadInfo["batchName"];
-                        const batchInfo = uploadInfo["batchInfo"];
-
-                        const uploadProgObj = uploadProgress["progress"];
-                        const singleStatus = uploadProgHandler.getUploadStatusDesc(uploadProgObj);
-
-                        const idx = uploadProgress["index"];
+                    Object.keys(uploadsProgress) ? 
+                    Object.keys(uploadsProgress).map((batchName) => {
+                         //@ts-ignore
+                        const uploadProgObj = uploadsProgress[batchName];
+                        const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
 
                         return (
                             <>
-                                <ListItem 
-                                    button 
-                                    onClick={() => {handleCurrBatchInfo(batchInfo)}}
-                                    className={classes.listItem}
-                                >
 
-                                    <ListItemText 
+                                <ListItem
+                                    button
+                                    onClick={() => {handleCurrUploadInfoArr(uploadInfoArr)}}
+                                >
+                                    <ListItemText
                                         primary={batchName}
-                                        secondary={singleStatus}
                                     />
 
-                                    <ListItemSecondaryAction>
-                                        <IconButton 
-                                            onClick={() => removeProgress(idx)}
-                                        >
-                                            <CloseIcon style={{marginLeft: "5px", color: "red"}}/> 
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-
                                     
+
                                 </ListItem>
+
                             </>
                         )
 
-                    })
+                    })  
+                    :
+                    null
+                    
+                    // CAN BE USED FOR CANCELLING UPLOAD
+                    //                 {/* <ListItemSecondaryAction>
+                    //                     <IconButton 
+                    //                         onClick={() => removeProgress(idx)}
+                    //                     >
+                    //                         <CloseIcon style={{marginLeft: "5px", color: "red"}}/> 
+                    //                     </IconButton>
+                    //                 </ListItemSecondaryAction> */}
+
 
                 }
 

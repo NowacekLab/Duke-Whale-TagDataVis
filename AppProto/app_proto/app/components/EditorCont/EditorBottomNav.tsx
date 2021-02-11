@@ -1,4 +1,6 @@
 import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete"; 
@@ -9,6 +11,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Paper from "@material-ui/core/Paper";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from "@material-ui/core/Typography";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles({
     root: {
@@ -22,12 +31,15 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "column",
         gap: "10px",
-        outline: "none"
+        outline: "none",
+        maxHeight: "80%",
+        width: "50%"
     },
     paperTreeCont: {
         outline: "none",
-        maxHeight: "40%",
-        overflow: "auto"
+        overflow: "auto",
+        maxHeight: "100%",
+        width: "100%",
     },
     rangeFieldCont: {
         display: "flex",
@@ -52,26 +64,36 @@ const useStyles = makeStyles({
 type EditorBottomNavProps = {
     onBatchSelect: any,
     onRangeConfirm: any,
-    fileInfoArr: any
 }
 
 export default function EditorBottomNav(props: EditorBottomNavProps) {
 
     const classes = useStyles();
 
+
+    const dispatch = useDispatch();
+    //@ts-ignore
+    const uploadProgState = useSelector(state => state["uploads"]);
+    const uploadProgHandler = new uploadsActionsHandler(dispatch);
+    const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
+
+
+
     const [chosenColPath, setChosenColPath] = useState("");
-    const [chosenBatch, setChosenBatch] = useState("");
-    const batchBtnVal = chosenBatch === "" ? "No batch chosen" : chosenBatch;
+    const [tempColPath, setTempColPath] = useState("");
 
-    const onBatchNameSelect = (batchName: string, colPath: string) => {
-        setChosenBatch(batchName);
-        setChosenColPath(colPath);
-    }
-    const onBatchSelect = () => {
+    const [tempBatchName, setTempBatchName] = useState("");
+    const [chosenBatchName, setChosenBatchName] = useState("");
+    const confirmTempBatchName = () => {
+        setChosenBatchName(tempBatchName);
+        setChosenColPath(tempColPath);
         handleBatchModalClose();
-        props.onBatchSelect(chosenBatch, chosenColPath);
+        props.onBatchSelect(tempBatchName, tempColPath);
     }
+    const batchBtnVal = chosenBatchName === "" ? "No batch chosen" : chosenBatchName;
 
+
+    const [currBatchInfo, setCurrBatchInfo] = useState([]);
     const [showBatchModal, setShowBatchModal] = useState(false);
     const handleBatchModalClose = () => {
         setShowBatchModal(false);
@@ -79,6 +101,16 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
     const toggleBatchModal = () => {
         setShowBatchModal(!showBatchModal);
     }
+
+    const [infoOpen, setInfoOpen] = useState(false);
+    
+    const viewCurrBatchInfo = (batchName: string, colPath: string, uploadInfoArr: any) => {
+        setTempBatchName(batchName);
+        setTempColPath(colPath);
+        setCurrBatchInfo(uploadInfoArr);
+        setInfoOpen(true);
+    }
+
 
 
     const [inputMinRange, setInputMinRange] = useState("0");
@@ -122,50 +154,6 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
     }
 
 
-    // TODO: a lot of this code is copied from uploads.tsx 
-    const batchItems = function(){
-        const arr = [];
-
-        console.log("FILE INFO ARR");
-        console.log(props.fileInfoArr);
-
-        for (let idx in props.fileInfoArr) {
-            const fileInfoObj = props.fileInfoArr[idx];
-
-            const colObj = fileInfoObj.hasOwnProperty("genCols") ? fileInfoObj['genCols'] : "";
-            const colPath = colObj.hasOwnProperty("cols.json") ? colObj['cols.json'] : "";
-
-            console.log("FILE INFO OBJ IN ARR");
-            console.log(fileInfoObj);
-            console.log(colPath);
-
-            if (fileInfoObj.hasOwnProperty("uploadInfo")) {
-                const uploadInfo = fileInfoObj['uploadInfo'];
-                if (uploadInfo.hasOwnProperty("batchInfo")) {
-                    const batchInfo = uploadInfo["batchInfo"];
-                    const batchItem = {
-                        batchName: uploadInfo["batchName"],
-                        colPath: colPath,
-                        labels: [
-                            `Data File Name: ${batchInfo["dataFileName"]}`,
-                            `Log File Name: ${batchInfo['logFileName']}`,
-                            `GPS File Name: ${batchInfo['gpsFileName']}`,
-                            `Lat (${batchInfo["startLatitude"]}), Long (${batchInfo["startLongitude"]})`
-                        ]
-                    }
-                    arr.push(batchItem);
-
-                }
-            }
-
-        }
-
-        return arr;
-    }();
-
-
-    let curr_tree_item_i = 0;
-
     return (
         <div
             className={classes.root}
@@ -196,71 +184,170 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
                 <div
                     className={classes.paperWrapper}
                 >
-
                     <Paper
-                        elevation={3} 
+                        elevation={3}
                         className={classes.paperTreeCont}
-                    >
-                        <TreeView
-                            defaultCollapseIcon={<ExpandMoreIcon />}
-                            defaultExpandIcon={<ChevronRightIcon />}
-                        >
+                    >   
+                        {
 
-                            {
-                                batchItems.map((batchItem, idx) => {
-                                    curr_tree_item_i++;
-                                    return ( 
-                                        <TreeItem 
-                                            nodeId={`${curr_tree_item_i}`} 
-                                            label={batchItem["batchName"] ?? "Name not found"}
-                                            onLabelClick={() => onBatchNameSelect(batchItem["batchName"] ?? "", batchItem['colPath'] ?? "")}
+                            infoOpen ? 
+                    
+                            <div
+                                style={{
+                                    height: "100%",
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "5px",
+                                    padding: "10px"
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <IconButton
+                                        onClick={() => setInfoOpen(false)}
+                                        style={{
+                                            justifySelf: "flex-start",
+                                            alignSelf: "center"
+                                        }}
+                                    >
+                                        <ArrowBackIcon 
+                                            style={{
+                                                color: "black"
+                                            }}
+                                        />
+                                    </IconButton>
+                                </div>
+
+                                <div
+                                    style={{
+                                        width: "100%",
+                                        display: "flex", 
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <h3>
+                                        {tempBatchName}
+                                    </h3>
+                                </div>
+
+                                <List>
+                                    {
+                                        currBatchInfo.map((batchInfoObj: Record<string, string>) => {
+                                            const title = batchInfoObj["title"];
+                                            const info = batchInfoObj["info"];
+
+                                            return (
+
+                                                <ListItem>
+                                                    
+                                                    <ListItemText
+                                                        disableTypography
+                                                        primary={
+                                                            <Typography
+                                                                style={{
+                                                                    color: "black",
+                                                                    fontWeight: "bold"
+                                                                }}
+                                                            >
+                                                                {title}
+                                                            </Typography>
+                                                        }
+                                                        secondary={
+                                                            <Typography
+                                                                style={{
+                                                                    color: "black"
+                                                                }}
+                                                            >
+                                                                {info}
+                                                            </Typography>
+                                                        }
+                                                    >
+
+                                                    </ListItemText>
+
+
+                                                </ListItem>
+
+                                            )
+                                        })
+                                    }
+                                </List>
+
+
+
+                                {
+                                    tempBatchName === ""
+
+                                    ?
+
+                                    undefined
+
+                                    :
+
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        <Button
+                                            className={classes.btn}
+                                            onClick={confirmTempBatchName}
                                         >
-                                            {
-                                                batchItem['labels'] ? 
-                                                batchItem['labels'].map((label, label_idx) => {
-                                                    curr_tree_item_i++;
+                                            {`Select`}
+                                        </Button>
+                                    </div>
+                                }
 
-                                                    return (
-                                                        <TreeItem 
-                                                            nodeId={`${curr_tree_item_i}`} 
-                                                            label={label} 
-                                                            onLabelClick={() => onBatchNameSelect(batchItem["batchName"] ?? "", batchItem['colPath'] ?? "")}
-                                                        />
-                                                    )
-                                                })
+                            </div>
 
-                                                :
+                            :
 
-                                                undefined
-                                            }
-                                        </TreeItem>
-                                    )
+                            <List>
+                                {
+                                    Object.keys(uploadsFinished) ?
+                                    Object.keys(uploadsFinished).map((batchName) => {
+                                        
+                                        //@ts-ignore
+                                        const uploadProgObj = uploadsFinished[batchName];
+                                        const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
+                                        const colPath = uploadProgObj["cols"] && uploadProgObj["cols"]["cols.json"] ? uploadProgObj["cols"]["cols.json"] : "";
+                
+                                        return (
+                                            <>
+                
+                                                <ListItem
+                                                    button
+                                                    onClick={() => {viewCurrBatchInfo(batchName, colPath, uploadInfoArr)}}
+                                                >
+                                                    <ListItemText
+                                                        primary={batchName}
+                                                    />
 
-                                })
+                                                </ListItem>
+                
+                                            </>
+                                        )            
 
+                                    })  
 
-                            }
-                            
-                        </TreeView>
+                                    :
+
+                                    null
+                                }
+
+                            </List>
+                        }
                     </Paper>
 
-                    {
-                        chosenBatch === ""
 
-                        ?
-
-                        undefined
-
-                        :
-
-                        <Button
-                            className={classes.btn}
-                            onClick={() => onBatchSelect()}
-                        >
-                            {`Select ${chosenBatch}?`}
-                        </Button>
-
-                    }
                 </div>
             </WrapWithModal>
 

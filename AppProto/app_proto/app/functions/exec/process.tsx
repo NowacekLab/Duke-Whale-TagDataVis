@@ -38,12 +38,13 @@ const startLatitudeKey = getStartLatitudeKey();
 const startLongitudeKey = getStartLongitudeKey();
 
 export type processFileKey = string;
-export const processFileKeys: Array<processFileKey> = [dataFilePathKey, newDataFilePathKey,
+export const processFileKeys: Array<processFileKey> = ["batchName", dataFilePathKey, newDataFilePathKey,
                                 loggingFilePathKey, logFilePathKey,
                                 gpsFilePathKey, startLatitudeKey,
                                 startLongitudeKey]
 interface processFileCMDLineArgs {
-    [index: string] : string,
+    [index: string] : string, 
+    batchName: string,
     dataFilePathKey: string, 
     newDataFilePathKey: string, 
     loggingFilePathKey: string, 

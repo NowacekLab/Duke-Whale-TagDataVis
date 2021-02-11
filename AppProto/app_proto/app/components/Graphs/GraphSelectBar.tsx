@@ -1,4 +1,6 @@
 import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete"; 
@@ -9,6 +11,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Paper from "@material-ui/core/Paper";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from "@material-ui/core/Typography";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles({
     root: {
@@ -27,12 +36,15 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "column",
         gap: "10px",
-        outline: "none"
+        outline: "none",
+        maxHeight: "80%",
+        width: "50%"
     },
     paperTreeCont: {
         outline: "none",
-        maxHeight: "40%",
-        overflow: "auto"
+        overflow: "auto",
+        maxHeight: "100%",
+        width: "100%",
     },
     treeItem: {
         color: "black"
@@ -49,26 +61,57 @@ const useStyles = makeStyles({
 
 type GraphSelectBarProps = {
     onGraphSelect: any,
-    fileInfoArr: any
 }
 
 export default function GraphSelectButtons(props: GraphSelectBarProps) {
 
     const classes = useStyles();
 
+    const dispatch = useDispatch();
+    //@ts-ignore
+    const uploadProgState = useSelector(state => state["uploads"]);
+    const uploadProgHandler = new uploadsActionsHandler(dispatch);
+    const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
+    const [currBatchInfo, setCurrBatchInfo] = useState([]);
+
+
+    const viewCurrBatchInfo = (batchName: string, uploadInfoArr: any) => {
+        setTempBatchName(batchName);
+        setCurrBatchInfo(uploadInfoArr);
+        handleInfoToggle();
+    }
+    const [infoOpen, setInfoOpen] = useState(false);
+    const handleInfoToggle = () => {
+        setInfoOpen(!infoOpen);
+    }
+    const handleCloseInfo = () => {
+        setInfoOpen(false);
+    }
+
+    const [tempBatchName, setTempBatchName] = useState("");
+    const confirmTempBatchName = () => {
+        onBatchNameSelect(tempBatchName);
+        handleBatchModalClose();
+    }
+
     const [batchName, setBatchName] = useState("");
     const batchBtnVal = batchName === "" ? "No batch chosen" : batchName;
-
     const [showBatchModal, setShowBatchModal] = useState(false);
-    const [showGraphModal, setShowGraphModal] = useState(false);
+    const onBatchNameSelect = (batchName: string) => {
+        setBatchName(batchName);
+        getAvailGraphs(batchName);
+    }
     const handleBatchModalClose = () => {
         setShowBatchModal(false);
     }
-    const handleGraphModalClose = () => {
-        setShowGraphModal(false);
-    }
     const toggleBatchModal = () => {
         setShowBatchModal(!showBatchModal);
+    }
+
+
+    const [showGraphModal, setShowGraphModal] = useState(false);
+    const handleGraphModalClose = () => {
+        setShowGraphModal(false);
     }
     const toggleGraphModal = () => {
         if (batchName && batchName !== "") {
@@ -76,93 +119,43 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
         }
     }
 
-    const availGraphs = {} as any;
-    // TODO: a lot of this code is copied from uploads.tsx 
-    const batchItems = function(){
-        const arr = [];
-
-        console.log("FILE INFO ARR");
-        console.log(props.fileInfoArr);
-
-        for (let idx in props.fileInfoArr) {
-            const fileInfoObj = props.fileInfoArr[idx];
-
-            console.log("FILE INFO OBJ IN ARR");
-            console.log(fileInfoObj);
-
-            if (fileInfoObj.hasOwnProperty("uploadInfo")) {
-                const uploadInfo = fileInfoObj['uploadInfo'];
-                if (uploadInfo.hasOwnProperty("batchInfo")) {
-                    const batchInfo = uploadInfo["batchInfo"];
-                    const batchItem = {
-                        batchName: uploadInfo["batchName"],
-                        labels: [
-                            `Data File Name: ${batchInfo["dataFileName"]}`,
-                            `Log File Name: ${batchInfo['logFileName']}`,
-                            `GPS File Name: ${batchInfo['gpsFileName']}`,
-                            `Lat (${batchInfo["startLatitude"]}), Long (${batchInfo["startLongitude"]})`
-                        ]
-                    }
-                    arr.push(batchItem);
-
-                    if (fileInfoObj.hasOwnProperty("genGraphs")) {
-                        const genGraphs = fileInfoObj['genGraphs'];
-                        const genGraphArr = function(){
-                            const arr = [];
-
-                            for (let graphName in genGraphs) {
-                                const graphPath = genGraphs[graphName];
-                                arr.push({
-                                    name: graphName,
-                                    path: graphPath
-                                })
-                            }
-
-                            return arr;
-                        }();
-                        availGraphs[uploadInfo["batchName"] ?? "Undefined"] = genGraphArr;
-                    }
-                }
-            }
-
+    const [availGraphs, setAvailGraphs] = useState({} as any);
+    const getAvailGraphs = (batchName: string) => {
+         //@ts-ignore
+        if (!uploadsFinished.hasOwnProperty(batchName) && !uploadsFinished[batchName]['graphs']) {
+            return {}; 
         }
-
-        return arr;
-    }();
-    
-    const onBatchNameSelect = (batchName: string) => {
-        setBatchName(batchName);
+        //@ts-ignore
+        setAvailGraphs(uploadsFinished[batchName]['graphs']);
     }
 
-    const availableGraphs = function(){
-        console.log("AVAILABLE GRAPHS FUNCTION CALL")
-        console.log(availGraphs)
 
-        if (!availGraphs.hasOwnProperty(batchName)) {
-            return [];
-        }
-
-        return availGraphs[batchName];
-
-    }();
-
-
-    // TODO: with careful object creation, below two can be combined
+    const [graphInfoOpen, setGraphInfoOpen] = useState(false);
+    const handleGraphInfoToggle = () => {
+        setGraphInfoOpen(!graphInfoOpen);
+    }
     const [chosenGraph, setChosenGraph] = useState("");
     const [chosenGraphPath, setChosenGraphPath] = useState("");
+    const [tempChosenGraph, setTempChosenGraph] = useState("");
+    const [tempChosenGraphPath, setTempChosenGraphPath] = useState("");
     const onGraphNameSelect = (graphName: string, graphPath: string) => {
         setChosenGraph(graphName);
         setChosenGraphPath(graphPath);
     }   
-    const onGraphSelection = () => {
-        handleGraphModalClose(); 
-        if (chosenGraph === "" || chosenGraphPath === "") return;
-        props.onGraphSelect(chosenGraph, chosenGraphPath);
+    
+    const viewCurrGraphInfo = (graphName: string, graphPath: string) => {
+        setGraphInfoOpen(true);
+        setTempChosenGraph(graphName);
+        setTempChosenGraphPath(graphPath);
+    }
+    const onConfirmChosenGraph = () => { 
+        setChosenGraph(tempChosenGraph);
+        setChosenGraphPath(tempChosenGraphPath);
+        props.onGraphSelect(tempChosenGraph, tempChosenGraphPath);
+        setShowGraphModal(false);
     }
 
     const graphBtnVal = chosenGraph === "" ? "No graph chosen" : chosenGraph;
-
-    let curr_tree_item_i = 0;
 
     return (
         <div
@@ -170,7 +163,6 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
         >   
             <Button
                 onClick={toggleBatchModal}
-                onChange={props.onBatchChoiceChange}
                 className={classes.btn}
             >
                 {batchBtnVal}
@@ -193,72 +185,171 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                     <Paper
                         elevation={3}
                         className={classes.paperTreeCont}
-                    >
-                        <TreeView
-                            defaultCollapseIcon={<ExpandMoreIcon />}
-                            defaultExpandIcon={<ChevronRightIcon />}
-                        >
+                    >   
+                        {
 
-                            {
-                                batchItems.map((batchItem, idx) => {
-                                    curr_tree_item_i++;
-                                    return ( 
-                                        <TreeItem 
-                                            nodeId={`${curr_tree_item_i}`} 
-                                            label={batchItem["batchName"] ?? "Name not found"}
-                                            onLabelClick={() => onBatchNameSelect(batchItem["batchName"] ?? "")}
-                                            className={classes.treeItem}
+                            infoOpen ? 
+                    
+                            <div
+                                style={{
+                                    height: "100%",
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "5px",
+                                    padding: "10px"
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <IconButton
+                                        onClick={() => setInfoOpen(false)}
+                                        style={{
+                                            justifySelf: "flex-start",
+                                            alignSelf: "center"
+                                        }}
+                                    >
+                                        <ArrowBackIcon 
+                                            style={{
+                                                color: "black"
+                                            }}
+                                        />
+                                    </IconButton>
+                                </div>
+
+                                <div
+                                    style={{
+                                        width: "100%",
+                                        display: "flex", 
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <h3>
+                                        {tempBatchName}
+                                    </h3>
+                                </div>
+
+                                <List>
+                                    {
+                                        currBatchInfo.map((batchInfoObj: Record<string, string>) => {
+                                            const title = batchInfoObj["title"];
+                                            const info = batchInfoObj["info"];
+
+                                            return (
+
+                                                <ListItem>
+                                                    
+                                                    <ListItemText
+                                                        disableTypography
+                                                        primary={
+                                                            <Typography
+                                                                style={{
+                                                                    color: "black",
+                                                                    fontWeight: "bold"
+                                                                }}
+                                                            >
+                                                                {title}
+                                                            </Typography>
+                                                        }
+                                                        secondary={
+                                                            <Typography
+                                                                style={{
+                                                                    color: "black"
+                                                                }}
+                                                            >
+                                                                {info}
+                                                            </Typography>
+                                                        }
+                                                    >
+
+                                                    </ListItemText>
+
+
+                                                </ListItem>
+
+                                            )
+                                        })
+                                    }
+                                </List>
+
+
+
+                                {
+                                    tempBatchName === ""
+
+                                    ?
+
+                                    undefined
+
+                                    :
+
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        <Button
+                                            className={classes.btn}
+                                            onClick={confirmTempBatchName}
                                         >
-                                            {
-                                                batchItem['labels'] ? 
-                                                batchItem['labels'].map((label, label_idx) => {
-                                                    curr_tree_item_i++;
+                                            {`Select`}
+                                        </Button>
+                                    </div>
+                                }
 
-                                                    return (
-                                                        <TreeItem 
-                                                            nodeId={`${curr_tree_item_i}`} 
-                                                            label={label} 
-                                                            onLabelClick={() => onBatchNameSelect(batchItem["batchName"] ?? "")}
-                                                        />
-                                                    )
-                                                })
+                            </div>
 
-                                                :
+                            :
 
-                                                undefined
-                                            }
-                                        </TreeItem>
-                                    )
+                            <List>
+                                {
+                                    Object.keys(uploadsFinished) ?
+                                    Object.keys(uploadsFinished).map((batchName) => {
+                                        
+                                        //@ts-ignore
+                                        const uploadProgObj = uploadsFinished[batchName];
+                                        const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
+                
+                                        return (
+                                            <>
+                
+                                                <ListItem
+                                                    button
+                                                    onClick={() => {viewCurrBatchInfo(batchName, uploadInfoArr)}}
+                                                >
+                                                    <ListItemText
+                                                        primary={batchName}
+                                                    />
 
-                                })
+                                                </ListItem>
+                
+                                            </>
+                                        )            
 
+                                    })  
 
-                            }
-                            
-                        </TreeView>
+                                    :
 
+                                    null
+                                }
+
+                            </List>
+                        }
                     </Paper>
 
 
-                    {
-                        batchName === ""
-
-                        ?
-
-                        undefined
-
-                        :
-
-                        <Button
-                            className={classes.btn}
-                            onClick={() => handleBatchModalClose()}
-                        >
-                            {`Select ${batchName}?`}
-                        </Button>
-                    }
-
                 </div>
             </WrapWithModal>
+
+
+
 
             <WrapWithModal
                 showModal={showGraphModal}
@@ -266,58 +357,161 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
             >
 
                 <div
-                    style={{
-                        outline: "none",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "10px"
-                    }}
+                    className={classes.paperWrapper}
                 >
 
                     <Paper
                         elevation={3}
-                        style={{
-                            outline: "none"
-                        }}
+                        className={classes.paperTreeCont}
                     >
-                        <TreeView>
-                            {
-                                availableGraphs && 
-                                availableGraphs.map((availGraph: any) => {
-                                    curr_tree_item_i++;
-
-                                    return (
-
-                                        <TreeItem 
-                                            nodeId={`${curr_tree_item_i}`}
-                                            label={availGraph["name"] ?? "Name not found"}
-                                            onLabelClick={() => {onGraphNameSelect(availGraph["name"] ?? "", availGraph["path"] ?? "")}}
-                                            className={classes.treeItem}
-                                        />
-
-                                    )
-
-                                })
-                            }
-                        </TreeView>
-                    </Paper>
 
                     {
-                        chosenGraph === ""
 
-                        ?
+                        
+                        graphInfoOpen ? 
+                        
+                            <div
+                                style={{
+                                    height: "100%",
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "5px",
+                                    padding: "10px"
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <IconButton
+                                        onClick={() => setGraphInfoOpen(false)}
+                                        style={{
+                                            justifySelf: "flex-start",
+                                            alignSelf: "center"
+                                        }}
+                                    >
+                                        <ArrowBackIcon 
+                                            style={{
+                                                color: "black"
+                                            }}
+                                        />
+                                    </IconButton>
+                                </div>
 
-                        null
+                                <div
+                                    style={{
+                                        width: "100%",
+                                        display: "flex", 
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <h3>
+                                        {tempChosenGraph}
+                                    </h3>
+                                </div>
 
-                        :
+                                <List>
+                                    {
+                                        <ListItem>
+                                            
+                                            <ListItemText
+                                                disableTypography
+                                                // primary={
+                                                //     <Typography
+                                                //         style={{
+                                                //             color: "black",
+                                                //             fontWeight: "bold"
+                                                //         }}
+                                                //     >
+                                                //         {"Graph Path"}
+                                                //     </Typography>
+                                                // }
+                                                // secondary={
+                                                //     <Typography
+                                                //         style={{
+                                                //             color: "black"
+                                                //         }}
+                                                //     >
+                                                //         {tempChosenGraphPath}
+                                                //     </Typography>
+                                                // }
+                                            >
 
-                        <Button
-                            className={classes.btn}
-                            onClick={() => onGraphSelection()}
-                        >
-                            {`Select ${chosenGraph}?`}
-                        </Button>
-                    }
+                                            </ListItemText>
+
+
+                                        </ListItem>
+
+                                    }
+                                </List>
+
+                                {
+                                    tempChosenGraph === ""
+
+                                    ?
+
+                                    undefined
+
+                                    :
+
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        <Button
+                                            className={classes.btn}
+                                            onClick={onConfirmChosenGraph}
+                                        >
+                                            {`Select`}
+                                        </Button>
+                                    </div>
+                                }
+
+                            </div>
+
+                            :
+
+                                <List>
+                                    {
+                                        Object.keys(availGraphs) ?
+                                        Object.keys(availGraphs).map((graphName) => {
+                                            
+                                            const graphPath = availGraphs[graphName];
+                    
+                                            return (
+                                                <>
+                    
+                                                    <ListItem
+                                                        button
+                                                        onClick={() => {viewCurrGraphInfo(graphName, graphPath)}}
+                                                    >
+                                                        <ListItemText
+                                                            primary={graphName}
+                                                        />
+
+                                                    </ListItem>
+                    
+                                                </>
+                                            )            
+
+                                        })  
+
+                                        :
+
+                                        null
+                                    }
+
+                                </List>
+
+                        }
+                    </Paper>
 
                 </div>
 

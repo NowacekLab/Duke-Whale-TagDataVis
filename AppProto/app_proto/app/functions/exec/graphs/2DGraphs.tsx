@@ -1,4 +1,4 @@
-
+//@ts-nocheck
 
 export const graphingFuncs2D = {
     "depth_vs_time": time_depth,
@@ -21,7 +21,7 @@ function getAxisLabel(axis: string) {
     return axisLabels[axis];
 }
 
-type DataFrame = Any;
+type DataFrame = any;
 function generic2DPlot(df: DataFrame, x: string, y: string) {
 
     const selectorOptions = {

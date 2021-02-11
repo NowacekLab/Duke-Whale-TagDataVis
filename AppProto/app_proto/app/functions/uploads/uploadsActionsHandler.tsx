@@ -1,5 +1,5 @@
-import {ADD_PROGRESS, REMOVE_PROGRESS,uploadProgressObjects, uploadProgressObj, uploadInfo, uploadArgs, uploadProgress,
-        UpdateProgressPayload, UPDATE_PROGRESS, batchInfoArr, uploadFinishedObjects, REFRESH_FINISHED, uploadProgressState} from "./uploadsTypes";
+import {ADD_PROGRESS, REMOVE_PROGRESS,uploadProgressObjects, uploadProgressObj, uploadInfo, uploadProgress,
+        UpdateProgressPayload, REMOVE_PROGRESSES, uploadFinishedObjects, REFRESH_FINISHED, uploadProgressState} from "./uploadsTypes";
 import {uploadFile, loadFinishedUploads} from "./upload";
 
 export const defaultUploadProgress: uploadProgress = {
@@ -46,7 +46,6 @@ export default class uploadsActionsHandler {
 
         let singleStatus;
 
-        
         for (let uploadStep in uploadProgress) {
             const status = uploadProgress[uploadStep];
             if (status === "fail") {
@@ -61,57 +60,60 @@ export default class uploadsActionsHandler {
         return singleStatus;
     }
 
-    //@ts-ignore
-    public async startUpload(uploadArgs: uploadArgs, uploadInfo: uploadInfo, updateUploadProgress: Function) {
-        return await uploadFile(uploadArgs, uploadInfo, updateUploadProgress);
+    private getUploadInfoArr(uploadInfo: uploadInfo) {
+        const uploadInfoArr = [
+            {
+                title: "Data File Name",
+                info: uploadInfo["dataFileName"]
+            },
+            {   
+                title: "Log File Name",
+                info: uploadInfo["logFileName"]
+            },
+            {
+                title: "GPS File Name",
+                info: uploadInfo["gpsFileName"]
+            },
+            {
+                title: "Starting Latitude and Longitude",
+                info: `Lat (${uploadInfo["startLatitude"]}), Long (${uploadInfo["startLongitude"]})`
+            }
+        ];
+
+        return uploadInfoArr;
     }
 
-    public updateUploadProgress(idx: number, progStep: string, newProg: string) {
-        const updateProgressObj = {} as UpdateProgressPayload;
-        updateProgressObj["index"] = idx;
-        updateProgressObj["progressStep"] = progStep;
-        updateProgressObj["newProgress"] = newProg;
-        this.changeUpload(updateProgressObj);
-    }   
+    //@ts-ignore
+    public async startUpload(uploadInfo: uploadInfo) {
+        return await uploadFile(uploadInfo);
+    }
 
-    public addNewUploadProgress(uploadInfo: uploadInfo, uploadState: any) {
-        const newIdx = this.nextOpenIdx(uploadState);
+    public addNewUploadProgress(uploadInfo: uploadInfo) {
         const uploadProgObj = {} as uploadProgressObj;
-        uploadProgObj["index"] = newIdx;
-        uploadProgObj["progress"] = defaultUploadProgress;
+        const uploadInfoArr = this.getUploadInfoArr(uploadInfo);
+
         uploadProgObj["uploadInfo"] = uploadInfo;
+        uploadProgObj["uploadInfoArr"] = uploadInfoArr;
         this.addProgress(uploadProgObj);
     }
 
-    public async refreshAllUploads(uploadState: uploadProgressState) {
-        const progressUploads = this.getUploadsProgress(uploadState);
+    public async refreshAllUploads() {
+
+        console.log("REFRESH ALL UPLOADS");
+
         const finishedUploads = await loadFinishedUploads();
 
-        const finishedUploadBatchNames = function() {
-            const batchNamesSet = new Set();
-            for (let idx in finishedUploads) {
-                const finishedUploadObj = finishedUploads[idx];
-                const uploadInfo = finishedUploadObj["uploadInfo"];
-                const batchName = uploadInfo["batchName"];
-                batchNamesSet.add(batchName);
-            }
-            return batchNamesSet; 
-        }();
-
-        for (let idx in progressUploads) {
-            const progUploadObj = progressUploads[idx];
-            const obj_index = progUploadObj["index"];
-            const progUploadInfo = progUploadObj["uploadInfo"];
-            const progBatchName = progUploadInfo["batchName"];
-            const progIsFinished = finishedUploadBatchNames.has(progBatchName);
-            if (progIsFinished) {
-                this.removeProgress(obj_index);
-            }
-        }
-
-        console.log("FINISHED UPLOADS");
         console.log(finishedUploads);
 
+        const finishedUploadBatchNames = function() {
+            let batchNamesArr = Object.keys(finishedUploads);
+            batchNamesArr = batchNamesArr ? batchNamesArr : [];
+            return batchNamesArr;
+        }();
+
+        console.log(finishedUploadBatchNames);
+
+        this.removeProgresses(finishedUploadBatchNames);
         this.changeFinished(finishedUploads);
     }
 
@@ -122,17 +124,17 @@ export default class uploadsActionsHandler {
         })
     }
 
-    public removeProgress(idx: number) {
+    public removeProgresses(batchNames: Array<string>) {
         this.dispatch({
-            type: REMOVE_PROGRESS,
-            payload: idx
+            type: REMOVE_PROGRESSES,
+            payload: batchNames
         })
     }
 
-    public changeUpload(updateProgressInfo: UpdateProgressPayload) {
+    public removeProgress(batchName: string) {
         this.dispatch({
-            type: UPDATE_PROGRESS,
-            payload: updateProgressInfo
+            type: REMOVE_PROGRESS,
+            payload: batchName
         })
     }
 
@@ -141,22 +143,6 @@ export default class uploadsActionsHandler {
             type: REFRESH_FINISHED,
             payload: uploadFinishedObjs
         })
-    }
-
-    public nextOpenIdx(uploadState: any) {
-
-
-        const allIdxs = function() {
-            const arr = [];
-            for (let idx in uploadState) {
-                arr.push(Number.isInteger(idx) ? Number(idx) : 0);
-            }
-            return arr;
-        }();
-    
-        const maxIdx = Math.max(...allIdxs);
-
-        return maxIdx + 1;
     }
 
     public getUploadInfoByIdx(idx: number, uploadState: any) {
@@ -173,30 +159,13 @@ export default class uploadsActionsHandler {
     }
 
     public getUploadsProgress(uploadState: uploadProgressState) {
-        const uploadProgressObjs = uploadState["progress"];
-        const uploadProgressArr = function(){
-            const arr = [];
-            for (let idx in uploadProgressObjs) {
-                const uploadProgObj = uploadProgressObjs[idx];
-                arr.push(uploadProgObj);
-            }
-            return arr;
-        }();
-
-        return uploadProgressArr;
+        const uploadProgress = uploadState ? uploadState["progress"] : [];
+        return uploadProgress;
     }
 
     public getUploadsFinished(uploadState: uploadProgressState) {
-        const uploadFinishedObjs = uploadState["finished"];
-        const uploadFinishedArr = function(){
-            const arr = [];
-            for (let idx in uploadFinishedObjs) {
-                const uploadFinishObj = uploadFinishedObjs[idx];
-                arr.push(uploadFinishObj);
-            }
-            return arr;
-        }();
-        return uploadFinishedArr;
+        const uploadFinished = uploadState ? uploadState['finished'] : [];
+        return uploadFinished;
     }
 
 }

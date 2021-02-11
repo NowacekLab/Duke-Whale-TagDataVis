@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 const Quaternion = require('quaternion');
 //ts-ignore
 const Math = require("mathjs");
@@ -13,36 +15,36 @@ type DataFrame = any;
 function Sideroll(df: DataFrame){
     var datajson={
         'data': [{'mode': 'lines',
-                  'name': 'Depth',
-                  'type': 'scattergl',
-                  'x': null,
-                  'xaxis': 'x',
-                  'y': null,
-                  'yaxis': 'y'},
-                 {'line': {'color': 'black'},
-                  'mode': 'lines',
-                  'name': 'Roll',
-                  'type': 'scattergl',
-                  'x': null,
-                  'xaxis': 'x2',
-                  'y': null,
-                  'yaxis': 'y2'},
-                 {'line': {'color': 'red'},
-                  'mode': 'lines',
-                  'name': 'Side Roll(degree>40)',
-                  'type': 'scattergl',
-                  'x': null,
-                  'xaxis': 'x2',
-                  'y': null,
-                  'yaxis': 'y2'}],
+                    'name': 'Depth',
+                    'type': 'scattergl',
+                    'x': null,
+                    'xaxis': 'x',
+                    'y': null,
+                    'yaxis': 'y'},
+                    {'line': {'color': 'black'},
+                    'mode': 'lines',
+                    'name': 'Roll',
+                    'type': 'scattergl',
+                    'x': null,
+                    'xaxis': 'x2',
+                    'y': null,
+                    'yaxis': 'y2'},
+                    {'line': {'color': 'red'},
+                    'mode': 'lines',
+                    'name': 'Side Roll(degree>40)',
+                    'type': 'scattergl',
+                    'x': null,
+                    'xaxis': 'x2',
+                    'y': null,
+                    'yaxis': 'y2'}],
         'layout': {'template': '...',
-                   'xaxis': {'anchor': 'y', 'domain': [0.0, 1.0], 'matches': 'x2', 'showticklabels': false},
-                   'xaxis2': {'anchor': 'y2',
-                              'domain': [0.0, 1.0],
-                              'rangeslider': {'visible': true},
-                              'title': {'text': 'Time (hr)'}},
-                   'yaxis': {'anchor': 'x', 'autorange': 'reversed', 'domain': [0.575, 1.0], 'title': {'text': 'Depth'}},
-                   'yaxis2': {'anchor': 'x2', 'domain': [0.0, 0.425], 'title': {'text': 'Roll (degree)'}}}
+                    'xaxis': {'anchor': 'y', 'domain': [0.0, 1.0], 'matches': 'x2', 'showticklabels': false},
+                    'xaxis2': {'anchor': 'y2',
+                                'domain': [0.0, 1.0],
+                                'rangeslider': {'visible': true},
+                                'title': {'text': 'Time (hr)'}},
+                    'yaxis': {'anchor': 'x', 'autorange': 'reversed', 'domain': [0.575, 1.0], 'title': {'text': 'Depth'}},
+                    'yaxis2': {'anchor': 'x2', 'domain': [0.0, 0.425], 'title': {'text': 'Roll (degree)'}}}
     }
 
             //calculation

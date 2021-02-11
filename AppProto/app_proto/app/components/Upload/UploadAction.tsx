@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import UploadDialog from "./UploadDialog";
 import {notifsActionsHandler, uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
-import {uploadArgs, uploadInfo} from "../../functions/uploads/uploadsTypes";
+import {uploadInfo} from "../../functions/uploads/uploadsTypes";
 import {throwErrIfFail} from "../../functions/responses";
 
 export default function UploadAction() {
@@ -26,29 +26,23 @@ export default function UploadAction() {
         setShowUploadDialog(false);
     }
 
-    async function beginUploadWrapper(uploadArgs: uploadArgs, uploadInfo: uploadInfo) {
+    async function beginUploadWrapper(uploadInfo: uploadInfo) {
 
         try {
-            const newIdx = uploadHandler.nextOpenIdx(uploadState);
-
-            function updateUploadProgress(progStep: string, newProgStepVal: string) {
-                uploadHandler.updateUploadProgress(newIdx, progStep, newProgStepVal);
-            } 
-
             try {
-                uploadHandler.addNewUploadProgress(uploadInfo, uploadState);
+                uploadHandler.addNewUploadProgress(uploadInfo);
             } catch {
                 throw Error("Failed to add new upload `In Progress`.")
             }
 
             handleUploadDialogClose();
-            const uploadResponseObj = await uploadHandler.startUpload(uploadArgs, uploadInfo, updateUploadProgress);
+            const uploadResponseObj = await uploadHandler.startUpload(uploadInfo);
             throwErrIfFail(uploadResponseObj);
             const uploadResponse = uploadResponseObj.response;
             notifHandler.showSuccessNotif(uploadResponse);
         
             try {
-                uploadHandler.refreshAllUploads(uploadState);
+                uploadHandler.refreshAllUploads();
             } catch {
                 throw Error("Failed to refresh `Uploads` view.")
             }
@@ -65,7 +59,7 @@ export default function UploadAction() {
 
 
     useEffect(() => {
-        uploadHandler.refreshAllUploads(uploadState);
+        uploadHandler.refreshAllUploads();
     }, [])
 
     return (
@@ -75,7 +69,6 @@ export default function UploadAction() {
                 <UploadDialog
                         showUploadDialog={showUploadDialog}
                         handleUploadDialogClose={handleUploadDialogClose}
-                        uploadState={uploadState}
                         beginUpload={beginUploadWrapper}
                 />
 

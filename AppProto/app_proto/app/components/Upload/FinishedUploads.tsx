@@ -56,16 +56,9 @@ export default function FinishedUploads() {
     const handleCloseInfo = () => {
         setInfoOpen(false);
     }
-    const removeProgress = (idx: number) => {
-        uploadProgHandler.removeProgress(idx);
-    }
-
     const [currBatchInfo, setCurrBatchInfo] = useState([]);
-    const handleCurrBatchInfo = (batchInfo: any) => {
-
-        console.log(uploadsFinished);
-
-        setCurrBatchInfo(batchInfo);
+    const handleCurrUploadInfoArr = (uploadInfoArr: any) => {
+        setCurrBatchInfo(uploadInfoArr);
         handleInfoToggle();
     }
 
@@ -78,35 +71,43 @@ export default function FinishedUploads() {
                 className={classes.list}
             >
                 {
-                    uploadsFinished.map((uploadFinished) => {
+                    Object.keys(uploadsFinished) ? 
+                    Object.keys(uploadsFinished).map((batchName) => {
+                         //@ts-ignore
+                        const uploadProgObj = uploadsFinished[batchName];
+                        const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
 
-                        const uploadInfo = uploadProgHandler.getUploadInfo(uploadFinished);
-                        const batchName = uploadInfo["batchName"];
-                        const batchInfo = uploadInfo["batchInfo"];
-                        const idx = uploadFinished["index"];
-                        
                         return (
                             <>
-                                <ListItem button onClick={() => {handleCurrBatchInfo(batchInfo)}}>
 
-                                    <ListItemText 
+                                <ListItem
+                                    button
+                                    onClick={() => {handleCurrUploadInfoArr(uploadInfoArr)}}
+                                >
+                                    <ListItemText
                                         primary={batchName}
                                     />
 
-                                    {/* <ListItemSecondaryAction>
-                                        <IconButton 
-                                            onClick={() => removeProgress(idx)}
-                                        >
-                                            <CloseIcon style={{marginLeft: "5px", color: "red"}}/> 
-                                        </IconButton>
-                                    </ListItemSecondaryAction> */}
-
                                     
+
                                 </ListItem>
+
                             </>
                         )
 
-                    })
+                    })  
+                    :
+                    null
+                    
+                    // CAN BE USED FOR CANCELLING UPLOAD
+                    //                 {/* <ListItemSecondaryAction>
+                    //                     <IconButton 
+                    //                         onClick={() => removeProgress(idx)}
+                    //                     >
+                    //                         <CloseIcon style={{marginLeft: "5px", color: "red"}}/> 
+                    //                     </IconButton>
+                    //                 </ListItemSecondaryAction> */}
+
 
                 }
 

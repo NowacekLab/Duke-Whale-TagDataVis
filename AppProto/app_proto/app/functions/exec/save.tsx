@@ -13,6 +13,7 @@ const SAVE_HANDLERS: any = {
 }
 
 export type initSaveArgs = {
+    batchName: string,
     dataFilePath: string, 
     newDataFilePath: string,
     loggingFilePath: string, 
@@ -22,6 +23,7 @@ export type initSaveArgs = {
     startLongitude: string, 
 }
 export type saveArgs = {
+    batchName: string,
     dataFilePath: string,
     dataFileName: string, 
     newDataFilePath: string,
@@ -36,12 +38,12 @@ export type saveArgs = {
 
 // can probs be key (matching a key above)
     // have separate save function for each? 
-export async function handleGenSave(genRes: any, uploadInfo: uploadInfo, initSaveArgs: initSaveArgs) {
+export async function handleGenSave(genRes: any, initSaveArgs: initSaveArgs) {
     try {
         // ! want to extract formatting of extra file arguments 
-        const saveArgs = addReqSaveArgs(initSaveArgs, uploadInfo);
+        const saveArgs = addReqSaveArgs(initSaveArgs);
         const savedGraphsObj = await execSaveHandlers(genRes, saveArgs);
-        const saveObj = formatSaveJSON(savedGraphsObj, uploadInfo, saveArgs);
+        const saveObj = formatSaveJSON(savedGraphsObj, saveArgs);
     
         await addToFileInfo(saveObj);
 
@@ -57,7 +59,7 @@ export async function handleGenSave(genRes: any, uploadInfo: uploadInfo, initSav
     }
 }
 
-function addReqSaveArgs(initSaveArgs: initSaveArgs, uploadInfo: uploadInfo) {
+function addReqSaveArgs(initSaveArgs: initSaveArgs) {
 
     const saveArgs = Object.assign(initSaveArgs);
 
@@ -74,7 +76,7 @@ function addReqSaveArgs(initSaveArgs: initSaveArgs, uploadInfo: uploadInfo) {
     saveArgs['dataFileName'] = dataFileName;
     saveArgs['newDataFileName'] = newDataFileName; 
 
-    const batchName = uploadInfo["batchName"];
+    const batchName = initSaveArgs["batchName"];
     const graphSaveDir = getGraphSaveDirPath(batchName);
     const colSaveDir = getColSaveDirPath(batchName);
 
@@ -84,7 +86,7 @@ function addReqSaveArgs(initSaveArgs: initSaveArgs, uploadInfo: uploadInfo) {
     return saveArgs;
 }
 
-function formatSaveJSON(existingObj: any, uploadInfo: uploadInfo, saveArgs: saveArgs) {
+function formatSaveJSON(existingObj: any, saveArgs: saveArgs) {
 
     const newDataFilePathResp = getNewDataFilePathFromObj(saveArgs);
     throwErrIfFail(newDataFilePathResp);
@@ -95,10 +97,8 @@ function formatSaveJSON(existingObj: any, uploadInfo: uploadInfo, saveArgs: save
 
     existingObj['calcFilePath'] = newDataFilePath;
 
-
-
     const batchInfo = {
-        batchName: uploadInfo["batchName"],
+        batchName: saveArgs["batchName"],
         batchInfo: {
             dataFilePath: saveArgs["dataFilePath"],
             dataFileName: dataFileName,
@@ -114,7 +114,7 @@ function formatSaveJSON(existingObj: any, uploadInfo: uploadInfo, saveArgs: save
 
     const saveObj: any = {};
 
-    const batchName = uploadInfo["batchName"];
+    const batchName = saveArgs["batchName"];
     saveObj[batchName] = existingObj;
 
     console.log("format save json")

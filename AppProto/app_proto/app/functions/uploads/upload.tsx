@@ -2,7 +2,7 @@ import {handleProcessFile} from "../exec/process";
 import {throwErrIfFail, failResponse, successResponse} from "../responses";
 import {handleGenerate} from "../exec/generate";
 import {handleGenSave} from "../exec/save";
-import {uploadFinishedObjects, uploadFinishedObj, uploadArgs, uploadInfo} from "../uploads/uploadsTypes";
+import {uploadFinishedObjects, uploadFinishedObj, uploadInfo} from "../uploads/uploadsTypes";
 import {getFileInfoPath, fileNameFromPath} from "../paths";
 import {pathExists, getObjFromPath} from "../files";
 
@@ -32,77 +32,115 @@ export async function loadFileInfoArr() {
     return arr;
 }
 
+function getUploadInfoArr(uploadInfo: uploadInfo) {
+    const uploadInfoArr = [
+        {
+            title: "Data File Name",
+            info: uploadInfo["dataFileName"]
+        },
+        {   
+            title: "Log File Name",
+            info: uploadInfo["logFileName"]
+        },
+        {
+            title: "GPS File Name",
+            info: uploadInfo["gpsFileName"]
+        },
+        {
+            title: "Starting Latitude and Longitude",
+            info: `Lat (${uploadInfo["startLatitude"]}), Long (${uploadInfo["startLongitude"]})`
+        }
+    ];
+
+    return uploadInfoArr; 
+}
+
 export async function loadFinishedUploads() {
+
+    const fileInfoObj = await getFileInfo();
+    console.log("FILE INFO OBJ");
+    console.log(fileInfoObj);
+    const finishedUploads = {} as uploadFinishedObjects;
+
+    for (let batchName in fileInfoObj) {
+
+        console.log("batchname: ");
+        console.log(batchName);
+
+        let fileInfo = fileInfoObj[batchName];
+        if (!fileInfo) {
+            fileInfo = {};
+        }
+        const graphs = fileInfo['genGraphs'];
+        const cols = fileInfo['genCols'];
+        const calcFilePath = fileInfo['calcFilePath'];
+        const uploadInfo = fileInfo['uploadInfo'];
+        const batchInfo = uploadInfo ? uploadInfo['batchInfo'] : {};
+        const uploadInfoArr = getUploadInfoArr(batchInfo);
+
+        const finishedUpload = {} as uploadFinishedObj;
+        finishedUpload["graphs"] = graphs;
+        finishedUpload["cols"] = cols;
+        finishedUpload["calcPath"] = calcFilePath;
+        finishedUpload["uploadInfo"] = batchInfo;
+        finishedUpload["uploadInfoArr"] = uploadInfoArr;
+
+        finishedUploads[batchName] = finishedUpload;
+    }
+
+    console.log("FINISHED UPLOADS OBJ");
+    console.log(finishedUploads);
+
+    return finishedUploads;
+}
+
+export async function loadUploadsForGraph() {
+
+    const uploads = {} as Record<string, any>;
+
+    const fileInfoObj = await getFileInfo();
+    for (let batchName in fileInfoObj) {
+
+        let fileInfo = fileInfoObj[batchName];
+        const graphs = fileInfo["genGraphs"];
+
+        const uploadObj = {} as Record<string, any>;
+        uploadObj['graphs'] = graphs ? graphs: {};
+        uploads[batchName] = uploadObj;
+    }
+
+    return uploads;
+}
+
+export async function loadUploadsForEditor() {
+    const uploads = {} as Record<string, any>;
+    const fileInfoObj = await getFileInfo();
+    for (let batchName in fileInfoObj) {
+        let fileInfo = fileInfoObj[batchName];
+        const cols = fileInfo['cols'];
+        if (!cols || !cols.hasOwnProperty("cols.json")) {
+            return {};
+        }
+        const colPath = cols["cols.json"];
+
+        const uploadObj = {} as Record<string, any>;
+        uploadObj['colPath'] = colPath;
+        uploads[batchName] = uploadObj;
+    }
+
+    return uploads;
+}
+
+async function getFileInfo() {
     const fileInfoPath = getFileInfoPath();
     const fileInfoExists = await pathExists(fileInfoPath);
     if (!fileInfoExists) {
         return {};
     }
 
-
-    console.log("Load finished uploads")
-
     const fileInfoObj = await getObjFromPath(fileInfoPath);
 
-    console.log(fileInfoObj);
-
-
-    const finishedUploads = {} as uploadFinishedObjects;
-    let curr_i = 0;
-    for (let fileName in fileInfoObj) {
-
-
-        console.log("filename: ");
-        console.log(fileName);
-
-
-        const finishedUpload = {} as uploadFinishedObj;
-        finishedUpload["index"] = curr_i;
-        const fileInfo = fileInfoObj[fileName];
-        
-
-        console.log("file info")
-        console.log(fileInfo)
-
-
-        const uploadInfo = fileInfo["uploadInfo"];
-        const batchInfo = uploadInfo["batchInfo"];
-        const batchInfoArr = [
-                {
-                    title: "Data File Name",
-                    info: batchInfo["dataFileName"]
-                },
-                {   
-                    title: "Log File Name",
-                    info: batchInfo["logFileName"]
-                },
-                {
-                    title: "GPS File Name",
-                    info: batchInfo["gpsFileName"]
-                },
-                {
-                    title: "Starting Latitude and Longitude",
-                    info: `Lat (${batchInfo["startLatitude"]}), Long (${batchInfo["startLongitude"]})`
-                }
-            ];
-
-
-        const batchName = uploadInfo["batchName"];
-
-        const realUploadInfo = {
-            batchName: batchName,
-            batchInfo: batchInfoArr
-        }
-
-        //@ts-ignore 
-        finishedUpload["uploadInfo"] = realUploadInfo;
-
-        finishedUploads[curr_i] = finishedUpload;
-
-        curr_i++;
-    }
-
-    return finishedUploads;
+    return fileInfoObj;
 }
 
 export function uploadArgKeyToTitle(key: string) {
@@ -124,24 +162,24 @@ export function uploadArgKeyToInfo(key: string, info: string) {
 
 }
 
-export async function uploadFile(uploadArgs: uploadArgs, uploadInfo: uploadInfo, updateUploadProgress: Function) {
+export async function uploadFile(uploadInfo: uploadInfo) {
     const batchName = uploadInfo["batchName"];
     try {
-        console.log("Upload Args");
-        console.log(uploadArgs);
+        console.log("Upload Info");
+        console.log(uploadInfo);
 
         //@ts-ignore
-        const procResult = await handleProcStep(uploadArgs, updateUploadProgress);
+        const procResult = await handleProcStep(uploadInfo);
 
         console.log("Process result");
         console.log(procResult);
 
-        const genResult = await handleGenStep(uploadArgs, updateUploadProgress);
+        const genResult = await handleGenStep(uploadInfo);
 
         console.log("Generate result");
         console.log(genResult);
 
-        const saveResult = await handleSaveStep(uploadArgs, updateUploadProgress, genResult, uploadInfo);
+        const saveResult = await handleSaveStep(uploadInfo, genResult);
 
         console.log("Save result");
         console.log(saveResult);
@@ -150,66 +188,46 @@ export async function uploadFile(uploadArgs: uploadArgs, uploadInfo: uploadInfo,
 
     } catch (error) {
         console.log(error);
-        failUploadProgress(updateUploadProgress);
         return failResponse(`Failed to upload batch ${batchName}`);
     }
 }
 
-async function handleProcStep(uploadArgs: uploadArgs, updateUploadProgress: Function) {
+async function handleProcStep(uploadInfo: uploadInfo) {
 
     const handler = handleProcessFile;
     const progKey = "processing";
 
-    return await handleUploadStepGeneric(handler, progKey, uploadArgs, updateUploadProgress);
+    return await handleUploadStepGeneric(handler, progKey, uploadInfo);
 }
 
-async function handleGenStep(uploadArgs: uploadArgs, updateUploadProgress: Function) {
+async function handleGenStep(uploadInfo: uploadInfo) {
 
     const handler = handleGenerate;
     const progKey = "generating";
 
-    return await handleUploadStepGeneric(handler, progKey, uploadArgs, updateUploadProgress);
+    return await handleUploadStepGeneric(handler, progKey, uploadInfo);
 }
 
-async function handleSaveStep(uploadArgs: uploadArgs, updateUploadProgress: Function, genRes: any, uploadInfo: uploadInfo) {
+async function handleSaveStep(uploadInfo: uploadInfo, genRes: any) {
 
     const handler = handleGenSave;
     const progKey = "saving";
-    const addArgs = [genRes, uploadInfo]
+    const addArgs = [genRes]
 
-    return await handleUploadStepGeneric(handler, progKey, uploadArgs, updateUploadProgress, addArgs);
+    return await handleUploadStepGeneric(handler, progKey, uploadInfo, addArgs);
 
 }
 
-async function handleUploadStepGeneric(handler: Function, progKey: string, uploadArgs: uploadArgs, updateUploadProgress: Function, addArgs?: Array<any>) {
+async function handleUploadStepGeneric(handler: Function, progKey: string, uploadInfo: uploadInfo, addArgs?: Array<any>) {
     let resp;
     if (addArgs === undefined) {
-        resp = await handler(uploadArgs);
+        resp = await handler(uploadInfo);
     } else {
-        resp = await handler(...addArgs, uploadArgs);
+        resp = await handler(...addArgs, uploadInfo);
     }
     throwErrIfFail(resp);
 
-    updateUploadProgressWrapper(progKey, resp.success, updateUploadProgress);
-
     return resp.response;
-}
-
-function failUploadProgress(updateUploadProgress: Function) {
-    const progKeys = ["processing", "generating", "saving"];
-    for (let idx in progKeys) {
-        const progKey = progKeys[idx];
-        updateUploadProgress(progKey, "fail");
-    }
-}
-
-function updateUploadProgressWrapper(progKey: string, success: boolean, updateUploadProgress: Function) {
-
-    const newProgKeyVal = getNewProgVal(success);
-    
-    updateUploadProgress(progKey, newProgKeyVal);
-
-    return newProgKeyVal; 
 }
 
 function getNewProgVal(success: boolean) {
