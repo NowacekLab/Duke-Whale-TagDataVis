@@ -57,7 +57,6 @@ export default function UploadAction() {
             
     }
 
-
     useEffect(() => {
         uploadHandler.refreshAllUploads();
     }, [])
