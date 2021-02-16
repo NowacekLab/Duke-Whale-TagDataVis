@@ -37,7 +37,6 @@ app/style.css.map
 app/server/files.json
 app/server/user_files
 app/server/user_graphs
-dist
 dll
 main.js
 main.js.map
