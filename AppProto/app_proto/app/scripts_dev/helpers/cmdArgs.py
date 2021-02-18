@@ -2,7 +2,7 @@ import sys
 import logger 
 
 __KEY_VAL_PAIRS_SEPARATOR = "KEYPAIRSEP"
-__KEY_VAL_JOINER = ":"    
+__KEY_VAL_JOINER = "KEYVALSEP"    
 
 def formatCMDLineArg(cmdArgs: dict):
     argsToJoin = [] 

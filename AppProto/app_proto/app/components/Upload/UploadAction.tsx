@@ -8,28 +8,12 @@ import UploadDialog from "./UploadDialog";
 import {notifsActionsHandler, uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import {uploadInfo} from "../../functions/uploads/uploadsTypes";
 import {throwErrIfFail} from "../../functions/responses";
-import {exec} from "child_process";
-import {getProdPythonScriptPath} from "../../functions/paths";
-import {isWindows} from "../../functions/constants";
 
 export default function UploadAction() {
 
     const dispatch = useDispatch();
     const uploadHandler = new uploadsActionsHandler(dispatch);
     const notifHandler = new notifsActionsHandler(dispatch);
-
-    useEffect(() => {
-        console.log("UPLOAD ACTION");
-        const prodPath = getProdPythonScriptPath("process");
-        !isWindows && exec(`codesign --remove-signature ${prodPath}`, (error, stdout, stderr) => {
-            if (error) {
-                console.log(error);
-            }
-            if (stderr) {
-                console.log(stderr);
-            }
-        })
-    }, [])
 
     //@ts-ignore
     const uploadState = useSelector(state => state.uploads);
