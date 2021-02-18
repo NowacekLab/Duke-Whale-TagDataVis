@@ -16,10 +16,15 @@ export async function processGeneric(pythonScriptName: string, scriptName: strin
     const executor = isDev ? python3 : prodPythonScriptPath;
     const args = isDev ? [devPythonScriptPath, cmdLineString] : [cmdLineString];
 
+    console.log("PROCESS GENERIC")
+    console.log(python3);
+    console.log(isDev);
     console.log(`EXECUTOR: ${executor}`)
 
     const res = await handlePythonExec(executor, args).catch((err) => {
         console.log("PYTHON EXEC ERROR");
+        console.log(python3);
+        console.log(isDev);
         console.log(err);
         return {
             success: false,

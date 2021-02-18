@@ -1,8 +1,9 @@
 import sys 
 import logger 
+from typing import List
 
 __KEY_VAL_PAIRS_SEPARATOR = "KEYPAIRSEP"
-__KEY_VAL_JOINER = ":"    
+__KEY_VAL_JOINER = "KEYVALSEP"    
 
 def formatCMDLineArg(cmdArgs: dict):
     argsToJoin = [] 
@@ -33,7 +34,7 @@ def parseCMDLineArg(cmdLineArg: str) -> dict:
         elif len(keyValPairLst) == 1: 
             val = "" 
             key = keyValPairLst[0]
-        else: 
+        else:
             key, val = keyValPairLst
         
         cmdArgs[key] = val 

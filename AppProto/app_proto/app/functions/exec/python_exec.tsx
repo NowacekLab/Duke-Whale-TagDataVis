@@ -1,4 +1,5 @@
 import {successResponse, failResponse} from "../responses";
+import {isWindows} from "../constants";
 
 export const spawn = require("child_process").spawn; 
 
@@ -8,7 +9,11 @@ export default async function handlePythonExec(executor: string, args: Array<str
     return new Promise<{success:boolean, response:string}>((resolve, reject) => {
             try {
 
-                const pythonProcess =  spawn(executor, args);
+                console.log("handle python exec");
+                console.log(executor);
+                console.log(args);
+
+                const pythonProcess =  spawn(executor, args, {shell:isWindows});
 
                 pythonProcess && pythonProcess.stdout && pythonProcess.stdout.on('data', (data: any) => {
 
@@ -28,6 +33,7 @@ export default async function handlePythonExec(executor: string, args: Array<str
                 pythonProcess && pythonProcess.on('error', (err: any) => {
 
                     console.log('PYTHON EXEC ON ERROR')
+                    console.log(executor);
                     console.log(err);
 
                     reject(failResponse("Error in Python process, check errors.log."))

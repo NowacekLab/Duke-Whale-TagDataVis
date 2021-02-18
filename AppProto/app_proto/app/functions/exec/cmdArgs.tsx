@@ -1,6 +1,6 @@
 export function formatCMDLineArgs(cmdArgs: any) {
     const keyValArgSeparator = "KEYPAIRSEP";
-    const keyPairJoiner = ":";
+    const keyPairJoiner = "KEYVALSEP";
 
     const keyPairs = [];
     for (let key in cmdArgs) {
