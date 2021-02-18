@@ -3,8 +3,8 @@ import {throwErrIfFail, failResponse, successResponse} from "../responses";
 import {handleGenerate} from "../exec/generate";
 import {handleGenSave} from "../exec/save";
 import {uploadFinishedObjects, uploadFinishedObj, uploadInfo} from "../uploads/uploadsTypes";
-import {getFileInfoPath, fileNameFromPath} from "../paths";
-import {pathExists, getObjFromPath} from "../files";
+import {getFileInfoPath, getSaveDirPath} from "../paths";
+import {pathExists, getObjFromPath, createDirIfNotExist, createPathIfNotExist} from "../files";
 
 export async function loadFileInfoArr() {
     console.log("Load File Info Array");
@@ -168,6 +168,8 @@ export async function uploadFile(uploadInfo: uploadInfo) {
         console.log("Upload Info");
         console.log(uploadInfo);
 
+        await createPreRequFileAndDirs();
+
         //@ts-ignore
         const procResult = await handleProcStep(uploadInfo);
 
@@ -190,6 +192,26 @@ export async function uploadFile(uploadInfo: uploadInfo) {
         console.log(error);
         return failResponse(`Failed to upload batch ${batchName}`);
     }
+}
+
+async function createPreRequFileAndDirs() {
+
+    // TODO: This can be refactored. Read below to understand what really happens.
+    // Creates... 
+        // This is EXTRA insurance
+            // In paths.tsx, save directory & new batch directory within are created when new batch file is retrieved
+            // Files.JSON is created here
+
+    console.log("CREATE DIR IF NOT EXIST")
+
+    const saveDir = getSaveDirPath();
+    console.log(saveDir);
+    await createDirIfNotExist(saveDir);
+
+    console.log("CREATE PATH IF NOT EXIST")
+    const savePath = getFileInfoPath();
+    console.log(savePath);
+    await createPathIfNotExist(savePath);
 }
 
 async function handleProcStep(uploadInfo: uploadInfo) {

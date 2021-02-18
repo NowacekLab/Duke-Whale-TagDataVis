@@ -127,16 +127,16 @@ export function getColSaveDirPath(batchFileName: string) {
     return getAndCreateSaveDirPathGeneric(batchFileName);
 }
 
-export function getAndCreateSaveDirPathGeneric(batchFileName: string) {
+export async function getAndCreateSaveDirPathGeneric(batchFileName: string) {
     const saveDirPath = getSaveDirPath();
-    createDirIfNotExist(saveDirPath)
+    await createDirIfNotExist(saveDirPath)
     const newDirPath = addToPath(saveDirPath, batchFileName);
-    createDirIfNotExist(newDirPath);
+    await createDirIfNotExist(newDirPath);
     return newDirPath;
 }
 
-export function getNewDataFilePath(batchName: string, dataFileName: string) {
-    const dir = getAndCreateSaveDirPathGeneric(batchName);
+export async function getNewDataFilePath(batchName: string, dataFileName: string) {
+    const dir = await getAndCreateSaveDirPathGeneric(batchName);
     let baseFileName = dataFileName;
     if (dataFileName.endsWith(".mat") || dataFileName.endsWith(".csv")) {
         baseFileName = baseFileName.replace(".mat", "");

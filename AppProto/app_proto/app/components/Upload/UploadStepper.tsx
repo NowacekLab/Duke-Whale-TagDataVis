@@ -481,7 +481,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
 
 
-    const handleUploadStart = () => {
+    async function handleUploadStart() {
 
         let trueLat = latitude; 
         if (latitudeDirection === 'e') {
@@ -493,7 +493,9 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         }
 
         const dataFileName = uploadDataFileObj.name; 
-        const newDataFilePath = getNewDataFilePath(batchName, dataFileName);
+
+        // Creates the new data file path as well 
+        const newDataFilePath = await getNewDataFilePath(batchName, dataFileName);
         const loggingErrorFilePath = getLoggingErrorFilePath();
 
         const uploadInfoObj = {
