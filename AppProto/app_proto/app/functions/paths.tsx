@@ -100,7 +100,10 @@ export function getDevPythonScriptPath(pythonScriptName: string) {
 }
 
 export function getProdPythonScriptPath(pythonScriptName: string) {
-    const prodPythonScriptPath = path.resolve(path.join(EXEC_DIR_PATH, pythonScriptName));
+    const prodPythonScriptDirPath = path.resolve(path.join(EXEC_DIR_PATH, pythonScriptName));
+
+    // it is usually mac or win_exec/script_name/script_name
+    const prodPythonScriptPath = path.resolve(path.join(prodPythonScriptDirPath, pythonScriptName));
     return prodPythonScriptPath;
 }
 

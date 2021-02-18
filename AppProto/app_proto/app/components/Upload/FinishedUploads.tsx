@@ -27,7 +27,7 @@ const useStyles = makeStyles({
     },
     list: { 
         width: "100%", 
-        height: "100%",
+        height: "80%",
         overflow: "auto"
     },
     batchInfoText: {

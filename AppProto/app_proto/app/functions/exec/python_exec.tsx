@@ -15,7 +15,9 @@ export default async function handlePythonExec(executor: string, args: Array<str
                     const resp = data.toString().trim();
 
                     if (resp.startsWith("ERROR")) {
-                        reject(failResponse("Error in Python process, check errors.log."))
+                        console.log("RESPONSE STARTED WITH ERROR: ");
+                        console.log(resp);
+                        reject(failResponse("Error in Python process, check errors.log."));
                     }
 
                     if (resp.startsWith("SUCCESS")) {
@@ -26,6 +28,7 @@ export default async function handlePythonExec(executor: string, args: Array<str
                 pythonProcess && pythonProcess.on('error', (err: any) => {
 
                     console.log('PYTHON EXEC ON ERROR')
+                    console.log(err);
 
                     reject(failResponse("Error in Python process, check errors.log."))
                 })
@@ -50,6 +53,7 @@ export default async function handlePythonExec(executor: string, args: Array<str
             } catch (error) {
 
                 console.log("REJECT SECTION");
+                console.log(error);
 
                 reject(failResponse("Error in Python process, check errors.log."))
 

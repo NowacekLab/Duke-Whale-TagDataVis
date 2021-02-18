@@ -59,6 +59,7 @@
       "scripts/",
       "app_files/",
       "dist/",
+      "functions/",
       "node_modules/",
       "app.html",
       "main.prod.js",

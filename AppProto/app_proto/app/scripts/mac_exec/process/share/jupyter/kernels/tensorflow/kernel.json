@@ -1,0 +1,11 @@
+{
+ "argv": [
+  "/Users/joonyounglee/opt/miniconda3/envs/tensorflow/bin/python",
+  "-m",
+  "ipykernel_launcher",
+  "-f",
+  "{connection_file}"
+ ],
+ "display_name": "Python 3.7 (tensorflow)",
+ "language": "python"
+}

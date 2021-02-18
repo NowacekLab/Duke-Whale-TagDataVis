@@ -42,9 +42,12 @@ const useStyles = makeStyles({
     },
     paperTreeCont: {
         outline: "none",
-        overflow: "auto",
-        maxHeight: "100%",
         width: "100%",
+    },
+    list: {
+        width: "100%", 
+        height: "50%",
+        overflow: "auto"
     },
     treeItem: {
         color: "black"
@@ -310,7 +313,9 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
 
                             :
 
-                            <List>
+                            <List
+                                className={classes.list}
+                            >
                                 {
                                     Object.keys(uploadsFinished) ?
                                     Object.keys(uploadsFinished).map((batchName) => {
@@ -320,7 +325,6 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                                         const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
                 
                                         return (
-                                            <>
                 
                                                 <ListItem
                                                     button
@@ -332,8 +336,6 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
                                                     />
 
                                                 </ListItem>
-                
-                                            </>
                                         )            
 
                                     })  
