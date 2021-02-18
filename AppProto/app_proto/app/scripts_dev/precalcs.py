@@ -309,6 +309,10 @@ def _preCalc(cmdLineArgs: dict) -> PandasDataFrame:
     csv['Jerk_X'] = j[:,0]
     csv['Jerk_Y'] = j[:,1]
     csv['Jerk_Z'] = j[:,2]
+
+    csv['Roll_Deg'] = roll*180/np.pi
+    csv['Pitch_Deg'] = pitch*180/np.pi
+    csv['Heading_Deg'] = yaw*180/np.pi
     
     return csv 
 
