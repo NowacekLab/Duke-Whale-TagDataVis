@@ -1,0 +1,118 @@
+<head>   
+<!-- Include Plotly.js -->   
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>  
+<div id="myDiv1">      
+<!-- Plotly chart will be drawn inside this DIV -->  
+</div>
+
+<script> 
+
+var dict = {
+    "Indices": [31, 32, 33, 34,35, 36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],
+    "Heading": [0,1.81010161,1.78987052,1.79474497,1.79221186327786, 1.792211863, 1.80612569, 1.805213439, 1.789011914, 1.792832567,1.826046133, 1.85796018, 1.859599565,1.899562425,1.941972915,1.973902173,2.051853421,2.106213768,2.130029517,2.15445922,2.178541169,2.207242623,2.185205897,2.202381819,2.208321189,2.221192478,2.282699399,2.345707376,2.370817771,2.315283091,2.349824803,2.396368023,2.361813554,2.390645681,2.385118221,2.412883461,2.417543861,2.362809351,2.435489382,2.46903295,2.408682905,2.449500139,2.47026043,2.495156059,2.492203582,2.425656531,2.407433135,2.450433227,2.464355228,2.495143364,2.492018914,2.486463084,2.55653994,2.507492252,2.41791214,2.463419255,2.489495292,2.453256551,2.42529282,2.457433607,2.475298494,2.459592618,2.432512868,2.440156584,2.445643275,2.45974842,2.546556769,2.51551579,2.560199643,2.542038947,2.484963758]
+};
+
+function indicesToTime(indices){
+    var i;
+    for(i = 0; i<indices.length; i++){
+        indices[i] = indices[i] * (50/3600);
+    }
+    return indices;
+}
+
+dict["Indices"] = indicesToTime(dict["Indices"]);
+
+function radiansToDegrees(orientations){
+    var i;
+    for(i = 0; i<orientations.length; i++){
+        orientations[i] = orientations[i] * (180/Math.PI);
+    }
+    return orientations
+}
+
+dict["Heading"] = radiansToDegrees(dict["Heading"]);
+
+function findTurns(data){
+    const turns = {
+        "Time" : new Array(data["Indices"].length),
+        "Heading" : new Array(data["Heading"].length)
+    }
+    var index = 0;
+    var i;
+    for(i=0; i<data["Indices"].length-1; i++){
+        if(data["Heading"][i]>340 && data["Heading"][i+1]<20 ||
+        data["Heading"][i+1]>340 && data["Heading"][i]<20){
+            turns["Time"][index] = data["Indices"][i];
+            turns["Time"][index+1] = data["Indices"][i+1];
+            turns["Heading"][index] = data["Heading"][i];
+            turns["Heading"][index+1] = data["Heading"][i+1];
+            index+=2;
+        }
+    }
+    return turns;
+}
+
+function graphTurns(data){
+    const turnPoints = findTurns(data);
+    var trace = {
+        x : data["Indices"],
+        y : data["Heading"],
+        type : 'scatter',
+        mode : 'markers',
+        name : 'Heading'
+    }
+    var poiTrace = {
+        x : turnPoints["Time"],
+        y : turnPoints["Heading"],
+        type : 'scatter',
+        mode : 'markers',
+        marker : {
+            color: 'rgb(17, 157, 255)',
+            size: 20
+        },
+        name : 'Points of Interest'
+    }
+
+    traces = [trace, poiTrace];
+
+    var plotInfo = {
+        "data" : traces,
+        "layout": {
+            font: {size: 18},
+            title: yvars.toString() + " vs. " + xvar[0],
+            xaxis: {
+                title: xvar[0],
+            },
+        }
+    }
+    return plotInfo;
+}
+
+function scatterSingleGraph(data, x, y){
+    var plotInfo = {
+        "x": data[x],
+        "y": data[y],
+        "type": "scatter",
+        "mode" : "markers"
+    }
+    
+    return plotInfo;
+}
+
+var layout = {
+    title:'Heading vs. Time',
+    xaxis: {
+        title: 'Time',
+      },
+      yaxis: {
+        title: 'Heading',
+      }
+};
+var trace1 = scatterSingleGraph(dict, "Indices", "Heading");
+var data = [trace1];
+Plotly.newPlot('myDiv1', data, layout);
+
+</script>
+</body>
