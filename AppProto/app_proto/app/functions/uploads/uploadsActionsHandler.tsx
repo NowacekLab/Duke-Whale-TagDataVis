@@ -1,7 +1,9 @@
 import {ADD_PROGRESS, REMOVE_PROGRESS,uploadProgressObjects, uploadProgressObj, uploadInfo, uploadProgress,
         UpdateProgressPayload, REMOVE_PROGRESSES, uploadFinishedObjects, REFRESH_FINISHED, uploadProgressState} from "./uploadsTypes";
 import {uploadFile, loadFinishedUploads} from "./upload";
-import {fileNameFromPath} from "../paths";
+import {fileNameFromPath, getBatchSaveDir} from "../paths";
+import {removeDirAndFiles, removeFromFileInfo} from "../files";
+import { failResponse, successResponse, throwErrIfFail } from "../responses";
 
 export const defaultUploadProgress: uploadProgress = {
     processing: "process",
@@ -87,6 +89,35 @@ export default class uploadsActionsHandler {
     //@ts-ignore
     public async startUpload(uploadInfo: uploadInfo) {
         return await uploadFile(uploadInfo);
+    }
+
+    public async deleteProgressUploadFiles(uploadInfo: uploadInfo) {
+        if (!uploadInfo.hasOwnProperty('batchName')) return;
+        const batchName = uploadInfo['batchName']; 
+        const dirPath = await getBatchSaveDir(batchName);
+        await removeDirAndFiles(dirPath);
+        await removeFromFileInfo(batchName);
+    }
+
+    public async deleteFinishedUpload(batchName: string) {
+        try {
+            const dirPath = await getBatchSaveDir(batchName);
+            const removeDirRes = await removeDirAndFiles(dirPath);
+            throwErrIfFail(removeDirRes);
+            const remFileInfo = await removeFromFileInfo(batchName);
+            throwErrIfFail(remFileInfo);
+
+            return successResponse();
+        } catch {
+            return failResponse();
+        }
+
+    }
+
+    public removeNewUploadProgress(uploadInfo: uploadInfo) {
+        if (!uploadInfo.hasOwnProperty('batchName')) return;
+        const batchName = uploadInfo['batchName'];
+        this.removeProgress(batchName);
     }
 
     public addNewUploadProgress(uploadInfo: uploadInfo) {

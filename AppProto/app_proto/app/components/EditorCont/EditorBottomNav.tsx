@@ -314,6 +314,7 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
 
                             <List>
                                 {
+                                    uploadsFinished && 
                                     Object.keys(uploadsFinished) ?
                                     Object.keys(uploadsFinished).map((batchName) => {
                                         

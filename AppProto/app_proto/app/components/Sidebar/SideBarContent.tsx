@@ -22,6 +22,7 @@ import EqualizerIcon from '@material-ui/icons/Equalizer';
 import uploadsActionsHandler from "../../functions/uploads/uploadsActionsHandler";
 import UploadAction from "../Upload/UploadAction";
 import EditIcon from '@material-ui/icons/Edit';
+import ShareIcon from '@material-ui/icons/Share';
 
 const useStyles = makeStyles({
     content: {
@@ -100,7 +101,20 @@ const SideBarContent = () => {
     //@ts-ignore
     const forceLoad = useSelector(state => state.forceLoad);
 
+    const introState = useSelector(state => state.intro);
+    const userFirstTime = introState['first'];
+
     const {pathname} = useLocation();
+
+    const isNavEnabled = () => {
+        return !userFirstTime;
+    }
+
+    const navIfEnabled = (navRoute: string) => {
+        const navEnabled = isNavEnabled();
+        if (!navEnabled) return;
+        history.push(navRoute);
+    }
 
     return(
         <SideBarComp>
@@ -122,7 +136,7 @@ const SideBarContent = () => {
                     >
                         <IconButton
                             onClick={() => {
-                                history.push(routes.HOME)
+                                navIfEnabled(routes.HOME)
                             }}
                         >
 
@@ -138,7 +152,7 @@ const SideBarContent = () => {
                     >
                         <IconButton
                             onClick={() => {
-                                history.push(routes.GRAPHS)
+                                navIfEnabled(routes.GRAPHS)
                             }}
                         >
                             <EqualizerIcon className={pathname === routes.GRAPHS ? classes.btnActive : classes.btnInactive} />
@@ -152,10 +166,37 @@ const SideBarContent = () => {
                     >
                         <IconButton
                             onClick={() => {
-                                history.push(routes.EDITOR)
+                                navIfEnabled(routes.EDITOR)
                             }}
                         >
                             <EditIcon className={pathname === routes.EDITOR ? classes.btnActive : classes.btnInactive} />
+                        </IconButton>
+
+                    </Tooltip>
+
+                    <Tooltip
+                        title="Export"
+                        placement="right"
+                        arrow 
+                    >
+
+                            <IconButton>
+                                <ShareIcon className={pathname === routes.EXPORT ? classes.btnActive : classes.btnInactive}/>
+                            </IconButton>
+
+                    </Tooltip>
+
+                    <Tooltip
+                        title="Dev Usage"
+                        placement="right"
+                        arrow
+                    >
+                        <IconButton
+                            onClick={() => {
+                                localStorage.removeItem('userFirstTime');
+                            }}
+                        >
+                            <ShareIcon className={classes.btnActive}/>
                         </IconButton>
 
                     </Tooltip>

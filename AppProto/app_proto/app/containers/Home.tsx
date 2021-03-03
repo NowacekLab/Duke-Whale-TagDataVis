@@ -15,6 +15,7 @@ import Typography from "@material-ui/core/Typography";
 import Notification from "../components/Notification";
 
 import UploadsPaper from "../components/Upload/UploadsPaper";
+import UserIntroModal from "../components/Intro/UserIntroModal";
 
 const useStyles = makeStyles({
   root: {
@@ -158,44 +159,12 @@ const useStyles = makeStyles({
 const Home = () => {
   const classes = useStyles();
 
-  // TODO: was originally -1, changed for testing
-  const [fileNum, setFileNum] = useState(0);
-
-  const isMountedRef = useIsMountedRef();
-
-  const handleLoading = () => {
-    const loaderSmaller = document.getElementById('loader-smaller');
-    const loadingTable = document.getElementById('loading-table');
-    const homeTable = document.getElementById('home-table');
-
-    if (fileNum > -1) {
-      setTimeout(() => {
-        if (isMountedRef.current) {
-          loaderSmaller ? loaderSmaller.style.display = "none" : null;
-          loadingTable ? loadingTable.style.display="none" : null;
-          homeTable ? homeTable.style.display = "block" : null;
-        }
-      }, 300)
-    }
-  }
-
-  useEffect(() => {
-    if (isMountedRef.current) {
-      handleLoading();
-    }
-  }, [fileNum]);
-
-
-  const [tabVal, setTabVal] = useState(0);
-  const handleChange = (event: any, newValue: any) => {
-    setTabVal(newValue);
-  }
-
-
   return (
     <Container className={classes.root}>
       
       <UploadsPaper />
+
+      <UserIntroModal />
 
       <Notification />
 

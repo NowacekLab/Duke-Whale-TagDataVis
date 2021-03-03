@@ -1,6 +1,6 @@
 import React, {useState} from "react"; 
 import {makeStyles} from "@material-ui/core/styles";
-import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
+import {uploadsActionsHandler, notifsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import {useDispatch, useSelector} from "react-redux";
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
@@ -19,6 +19,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from "@material-ui/core/Typography"; 
 import Paper from "@material-ui/core/Paper";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles({
     root: {
@@ -50,6 +51,8 @@ export default function FinishedUploads() {
     const uploadProgHandler = new uploadsActionsHandler(dispatch);
     const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
 
+    const notifHandler = new notifsActionsHandler(dispatch);
+
     const [infoOpen, setInfoOpen] = useState(false);
     const handleInfoToggle = () => {
         setInfoOpen(!infoOpen);
@@ -66,6 +69,16 @@ export default function FinishedUploads() {
         handleInfoToggle();
     }
 
+    async function removeFinishedUpload (batchName: string) {
+        const delRes = await uploadProgHandler.deleteFinishedUpload(batchName);
+        if (delRes.success) {
+            notifHandler.showSuccessNotif(`Successfully deleted batch '${batchName}'`);
+            uploadProgHandler.refreshAllUploads();
+        } else {
+            notifHandler.showErrorNotif(`Failed to delete batch '${batchName}'`);
+        }
+    }
+
     return (
         <div
             className={classes.root}
@@ -80,7 +93,7 @@ export default function FinishedUploads() {
                          //@ts-ignore
                         const uploadProgObj = uploadsFinished[batchName];
                         const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
-
+ 
                         return (
                             <>
                                 <ListItem
@@ -91,6 +104,15 @@ export default function FinishedUploads() {
                                     <ListItemText
                                         primary={batchName}
                                     />
+
+                                    <ListItemSecondaryAction>
+                                        <IconButton 
+                                            edge = "end"
+                                            onClick={() => {removeFinishedUpload(batchName)}}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
 
                                 </ListItem>
 

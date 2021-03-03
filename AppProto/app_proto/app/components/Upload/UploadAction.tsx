@@ -18,9 +18,17 @@ export default function UploadAction() {
     //@ts-ignore
     const uploadState = useSelector(state => state.uploads);
 
+    const introState = useSelector(state => state.intro);
+    const userFirstTime = introState['first'];
+
     const [showUploadDialog, setShowUploadDialog] = useState(false);
+
     const handleUploadDialogOpen = () => {
         setShowUploadDialog(true);
+    }
+    const handleUploadDialogOpenIfEnabled = () => {
+        if (userFirstTime) return;
+        handleUploadDialogOpen();
     }
     const handleUploadDialogClose = () => {
         setShowUploadDialog(false);
@@ -39,15 +47,14 @@ export default function UploadAction() {
             const uploadResponseObj = await uploadHandler.startUpload(uploadInfo);
             throwErrIfFail(uploadResponseObj);
             const uploadResponse = uploadResponseObj.response;
+            uploadHandler.refreshAllUploads();
             notifHandler.showSuccessNotif(uploadResponse);
-        
-            try {
-                uploadHandler.refreshAllUploads();
-            } catch {
-                throw Error("Failed to refresh `Uploads` view.")
-            }
 
         } catch (error) {
+
+            uploadHandler.removeNewUploadProgress(uploadInfo);
+            uploadHandler.deleteProgressUploadFiles(uploadInfo);
+            uploadHandler.refreshAllUploads();
             if (typeof error === "string") {
                 notifHandler.showErrorNotif(error);
             } else {
@@ -77,7 +84,7 @@ export default function UploadAction() {
                     placement="right-start"
                 >
                     <IconButton
-                        onClick={handleUploadDialogOpen}
+                        onClick={handleUploadDialogOpenIfEnabled}
                         style={{
                             color: "white"
                         }}
