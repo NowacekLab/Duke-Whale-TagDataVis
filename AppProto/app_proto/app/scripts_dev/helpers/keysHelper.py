@@ -10,6 +10,9 @@ __gpsFilePathKey = constants.GPS_FILE_PATH_KEY
 __startLatKey = constants.START_LAT_KEY
 __startLongKey = constants.START_LONG_KEY
 
+__filePathsKey = constants.FILE_PATHS 
+__targetDirectoryKey = constants.TARGET_DIRECTORY 
+
 def getOldDataFilePathKey() -> str: 
     return __oldDataFilePathKey
 
@@ -33,3 +36,9 @@ def getStartLatKey() -> str:
 
 def getStartLongKey() -> str: 
     return __startLongKey 
+
+def getFilePathsKey() -> str:
+    return __filePathsKey 
+
+def getTargetDirectoryKey() -> str:
+    return __targetDirectoryKey

@@ -485,6 +485,7 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
 
                                 <List>
                                     {
+                                        availGraphs && 
                                         Object.keys(availGraphs) ?
                                         Object.keys(availGraphs).map((graphName) => {
                                             

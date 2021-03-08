@@ -119,12 +119,18 @@ export function fileNameFromPath(filePath: string) {
     return baseFileName;
 }
 
-export function getGraphSaveDirPath(batchFileName: string) {
+export async function getGraphSaveDirPath(batchFileName: string) {
     return getAndCreateSaveDirPathGeneric(batchFileName);
 }
 
-export function getColSaveDirPath(batchFileName: string) {
+export async function getColSaveDirPath(batchFileName: string) {
     return getAndCreateSaveDirPathGeneric(batchFileName);
+}
+
+export async function getBatchSaveDir(batchFileName: string) {
+    const saveDirPath = getSaveDirPath();
+    const newDirPath = addToPath(saveDirPath, batchFileName);
+    return newDirPath;
 }
 
 export async function getAndCreateSaveDirPathGeneric(batchFileName: string) {
