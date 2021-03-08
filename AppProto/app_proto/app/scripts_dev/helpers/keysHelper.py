@@ -10,6 +10,13 @@ __gpsFilePathKey = constants.GPS_FILE_PATH_KEY
 __startLatKey = constants.START_LAT_KEY
 __startLongKey = constants.START_LONG_KEY
 
+__filePathsKey = constants.FILE_PATHS 
+__targetDirectoryKey = constants.TARGET_DIRECTORY 
+<<<<<<< Updated upstream
+=======
+__exportTypeKey = constants.EXPORT_TYPE 
+>>>>>>> Stashed changes
+
 def getOldDataFilePathKey() -> str: 
     return __oldDataFilePathKey
 
@@ -33,3 +40,16 @@ def getStartLatKey() -> str:
 
 def getStartLongKey() -> str: 
     return __startLongKey 
+
+def getFilePathsKey() -> str:
+    return __filePathsKey 
+
+def getTargetDirectoryKey() -> str:
+<<<<<<< Updated upstream
+    return __targetDirectoryKey
+=======
+    return __targetDirectoryKey
+
+def getExportTypeKey() -> str:
+    return __exportTypeKey
+>>>>>>> Stashed changes

@@ -13,7 +13,6 @@ const useStyles = makeStyles({
         padding: "20px"
     },
     uploadPaperTitle: {
-        fontSize: "2em",
         fontWeight: "bold",
         width: "100%",
         justifyContent: "flex-start",
@@ -41,7 +40,7 @@ const useStyles = makeStyles({
     mainBody: {
         width: "100%",
         height: "100%",
-        padding: "20px",
+        padding: "10px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -80,22 +79,19 @@ const GraphsPaper = (props: GraphPaperProps) => {
             elevation={3}
             className={classes.uploadPaper}
         >
-            <h1
-                className={classes.uploadPaperTitle}
-            > 
-                Graph View
-            </h1>
-
-            <div
-                className={classes.uploadTopBarContainer}
-            >
-
-            </div>
             
             <div
                 className={classes.mainBody}
             >
                 {
+                    state.data && state.data.length === 0 ?
+
+                    <h1>
+                        Select a plot to render.
+                    </h1>
+
+                    :
+
                     <Plot 
                         data={state.data}
                         layout={state.layout}
@@ -109,8 +105,6 @@ const GraphsPaper = (props: GraphPaperProps) => {
                         Failed to render plot.
                     </h1>
                 }
-
-
             </div>
 
 

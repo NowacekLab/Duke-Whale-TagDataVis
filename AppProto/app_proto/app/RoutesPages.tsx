@@ -7,10 +7,7 @@ import HomePage from './pages/HomePage';
 import AppsPage from "./pages/AppsPage";
 import Base from './pages/Base';
 import GraphsPage from './pages/GraphsPage';
-import SettingsPage from "./pages/SettingsPage";
-import InfoPage from "./pages/InfoPage";
 import EditorPage from "./pages/EditorPage";
-import UploadPage from "./pages/UploadPage";
 
 export default function Routes() {
   return (
@@ -25,16 +22,6 @@ export default function Routes() {
         <Route path={routes.GRAPHS}
         render={() => {
           return <Base Page={GraphsPage} />
-        }} />
-
-        <Route path={routes.SETTINGS}
-        render={() => {
-          return <Base Page={SettingsPage} />
-        }} />
-
-        <Route path={routes.INFO}
-        render={() => {
-          return <Base Page={InfoPage} />
         }} />
 
         <Route path={routes.EDITOR}

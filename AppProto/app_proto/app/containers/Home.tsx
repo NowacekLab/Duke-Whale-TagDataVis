@@ -1,20 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import useIsMountedRef from "../functions/useIsMountedRef";
-import Fab from "@material-ui/core/Fab";
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Skeleton from '@material-ui/lab/Skeleton';
-import ListIcon from '@material-ui/icons/List';
-import HomeTable from "../components/HomeTable";
-import Paper from "@material-ui/core/Paper";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import Notification from "../components/Notification";
 
 import UploadsPaper from "../components/Upload/UploadsPaper";
+import UserIntroModal from "../components/Intro/UserIntroModal";
 
 const useStyles = makeStyles({
   root: {
@@ -158,44 +148,12 @@ const useStyles = makeStyles({
 const Home = () => {
   const classes = useStyles();
 
-  // TODO: was originally -1, changed for testing
-  const [fileNum, setFileNum] = useState(0);
-
-  const isMountedRef = useIsMountedRef();
-
-  const handleLoading = () => {
-    const loaderSmaller = document.getElementById('loader-smaller');
-    const loadingTable = document.getElementById('loading-table');
-    const homeTable = document.getElementById('home-table');
-
-    if (fileNum > -1) {
-      setTimeout(() => {
-        if (isMountedRef.current) {
-          loaderSmaller ? loaderSmaller.style.display = "none" : null;
-          loadingTable ? loadingTable.style.display="none" : null;
-          homeTable ? homeTable.style.display = "block" : null;
-        }
-      }, 300)
-    }
-  }
-
-  useEffect(() => {
-    if (isMountedRef.current) {
-      handleLoading();
-    }
-  }, [fileNum]);
-
-
-  const [tabVal, setTabVal] = useState(0);
-  const handleChange = (event: any, newValue: any) => {
-    setTabVal(newValue);
-  }
-
-
   return (
     <Container className={classes.root}>
       
       <UploadsPaper />
+
+      <UserIntroModal />
 
       <Notification />
 

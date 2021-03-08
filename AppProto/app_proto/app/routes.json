@@ -3,8 +3,6 @@
     "APPS": "/apps",
     "FILES": "/files",
     "GRAPHS": "/graphs",
-    "SETTINGS": "/settings",
-    "INFO": "/info",
     "EDITOR": "/editor",
-    "UPLOAD": "/upload"
+    "EXPORT": "/export"
 }  

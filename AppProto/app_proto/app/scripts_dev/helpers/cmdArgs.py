@@ -1,9 +1,10 @@
 import sys 
 import logger 
-from typing import List
+from typing import List 
 
 __KEY_VAL_PAIRS_SEPARATOR = "KEYPAIRSEP"
 __KEY_VAL_JOINER = "KEYVALSEP"    
+__ARRAY_JOINER = "ARRAYSEP" 
 
 def formatCMDLineArg(cmdArgs: dict):
     argsToJoin = [] 
@@ -52,5 +53,13 @@ def getCMDLineStr() -> str:
 def getCMDLineArgs() -> dict:
     cmdLineStr = getCMDLineStr() 
     cmdLineArgs = parseCMDLineArg(cmdLineStr)
-        
+    
+    # if required:
+    #     for kwarg in required: 
+    #         if required not in cmdLineArgs:
+    #             raise Exception(f"Required kwarg {kwarg} not given.")
+
     return cmdLineArgs
+
+def getArray(val: str) -> List[str]:
+    return val.split(__ARRAY_JOINER)

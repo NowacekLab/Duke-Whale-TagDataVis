@@ -20,28 +20,10 @@ const useStyles = makeStyles({
         marginRight: "auto",
         fontSize: "36px",
     },
-    // modal: {
-    //     position: "absolute",
-    //     display: 'flex',
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     background: "rgba(0,0,0,0.8)"
-    // },
-    // selectButton: {
-    //     marginTop: "50px",
-    //     backgroundColor: "#012069",
-    //     width: "50%",
-    //     marginLeft: "auto",
-    //     marginRight: "auto",
-    // },
 });
 
 const Apps = () => {
     const classes = useStyles();
-    // const isMountedRef = useIsMountedRef();
-
-    // //TODO: Convert to Redux 
-    // const [selectedGraphFile, setSelectedGraphFile] = useState(localStorage.getItem('selectedGraphFile') || "");
 
     return (
             <Container className={classes.root}>

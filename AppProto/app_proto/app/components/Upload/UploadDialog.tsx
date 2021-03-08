@@ -1,5 +1,5 @@
 import React from "react";
-import WrapWithModal from "../WrapWithModal";
+import WrapWithDialog from "../WrapWithDialog";
 import UploadStepper from "./UploadStepper";
 
 type UploadDialogContProps = {
@@ -12,14 +12,16 @@ export default function UploadDialogCont(props: UploadDialogContProps) {
 
     return (
 
-        <WrapWithModal
+        <WrapWithDialog
             showModal={props.showUploadDialog}
             handleClose={props.handleUploadDialogClose}
+            handleBack={props.handleUploadDialogClose}
+            title={"Upload"}
         >
             <UploadStepper 
                 beginUpload={props.beginUpload}
             />
-        </WrapWithModal>
+        </WrapWithDialog>
 
     )
 

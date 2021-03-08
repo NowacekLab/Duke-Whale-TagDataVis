@@ -57,7 +57,19 @@
  [],
  False,
  False,
+<<<<<<< Updated upstream
+<<<<<<< HEAD
  1613619461,
  [('run.exe',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\run.exe',
+=======
+ 1613621952,
+ [('run',
+   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PyInstaller/bootloader/Darwin-64bit/run',
+>>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
+=======
+ 1613621952,
+ [('run',
+   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PyInstaller/bootloader/Darwin-64bit/run',
+>>>>>>> Stashed changes
    'EXECUTABLE')])

@@ -13,6 +13,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import {getNewDataFilePath, getLoggingErrorFilePath} from "../../functions/paths";
 import {fileNameFromPath} from "../../functions/paths";
 import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
+import GenericStepper from '../GenericStepper';
+import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -20,7 +22,7 @@ const useStyles = makeStyles(() => ({
     },
     step: {
         display: "flex",
-        alignContent: "center",
+        alignItems: "center",
         justifyContent: "center",
     },
     cancelBtn: {
@@ -34,7 +36,6 @@ const useStyles = makeStyles(() => ({
         }
     },
     uploadBtn: {
-        margin: "5px",
         backgroundColor: "#012069",
         color: "white",
         "&:hover": {
@@ -71,20 +72,14 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     const classes = useStyles();
 
     const dispatch = useDispatch();
+
+    const notifActionHandler = new notifsActionsHandler(dispatch);
+
     //@ts-ignore
     const uploadProgState = useSelector(state => state["uploads"]);
     const uploadProgHandler = new uploadsActionsHandler(dispatch);
     const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
     const uploadsProgress = uploadProgHandler.getUploadsProgress(uploadProgState);
-
-
-    const [activeStep, setActiveStep] = useState(0);
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    }
 
     type uploadFileObj = {
         name: string,
@@ -166,8 +161,9 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     const [latInputError, setLatInputError] = useState(false);
     const handleLatChange = (event: any) => {
         const newLat = event && event.target && event.target.value ? event.target.value : "";
+        const parsedNewLat = getParsedFloat(newLat);
 
-        if (!isPositiveFloat(newLat) && newLat !== "") {
+        if (!isPositiveFloat(parsedNewLat) && newLat !== "") {
             setLatInputError(true);
         } else {
             setLatInputError(false);
@@ -182,20 +178,33 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
     const [longitude, setLongitude] = useState("");
     const [longitudeDirection, setLongitudeDirection] = useState("N");
+    const [longInputError, setLongInputError] = useState(false);
     const handleLongChange = (event: any) => {
         const newLong = event && event.target && event.target.value ? event.target.value : "";
+        const parsedNewLong = getParsedFloat(newLong);
+
+        if (!isPositiveFloat(parsedNewLong) && newLong !== "") {
+            setLongInputError(true);
+        } else {
+            setLongInputError(false);
+        }
+
         setLongitude(newLong);
+
     }
     const handleLongDirectionChange = (event: any) => {
         const newLongDirection = event && event.target && event.target.value ? event.target.value : "";
         setLongitudeDirection(newLongDirection);
     }
 
-    function isPositiveFloat(s: string) {
-        const float = parseFloat(s);
+    function isPositiveFloat(float: any) {
         return !isNaN(float) && Number(float) >= 0;
     }
 
+    function getParsedFloat(s: string) {
+        const float = parseFloat(s);
+        return float; 
+    }
 
 
     const [batchName, setBatchName] = useState("");
@@ -297,22 +306,8 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
         if (isLatLong) {
             return (
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: "10px"
-                    }}
-                >
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "space-between"
-                        }}
-                    >
+                <div>
+                    <div>
                         {
                             latInputError ? 
     
@@ -321,7 +316,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
                                 label="Latitude"
                                 value={latitude}
                                 onChange={handleLatChange}
-                                helperText="Must be a valid number."
+                                helperText="Must be a valid positive number."
                             />
     
                             :
@@ -350,18 +345,27 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     
                         </TextField>
                     </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "space-between"
-                        }}
-                    >
-                        <TextField 
-                            label="Longitude"
-                            value={longitude}
-                            onChange={handleLongChange}
-                        />
+                    <div>
+
+                        {
+                            longInputError ? 
+    
+                            <TextField 
+                                error 
+                                label="Longitude"
+                                value={longitude}
+                                onChange={handleLongChange}
+                                helperText="Must be a valid positive number."
+                            />
+    
+                            :
+    
+                            <TextField 
+                                label="Longitude"
+                                value={longitude}  
+                                onChange={handleLongChange}  
+                            />
+                        }
     
                         <TextField
                             select 
@@ -391,7 +395,11 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         return idx < 3; 
     }
 
-    function handleNextBtnDisabled(index: number): boolean {
+    function handleBackBtnDisabled(steps: Array<any>, index: number): boolean {
+        return index === 0;
+    }
+
+    function handleNextBtnDisabled(steps: Array<any>, index: number): boolean {
 
         if (stepNeedsFileObj(index)) {
             return shouldDisableNextBtnFileStep(index);
@@ -443,7 +451,11 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             const placeholder = "No file uploaded";
             stepLabel = `${uploadText} [${getFileNameOrDefault(index, placeholder)}]`
         } else if (isLatLong) {
-            stepLabel = `${uploadText} [Lat: ${latitude} ${latitudeDirection} Longitude: ${longitude} ${longitudeDirection}]`
+
+            const parsedLatitude = getParsedFloat(latitude);
+            const parsedLongitude = getParsedFloat(longitude);
+
+            stepLabel = `${uploadText} [Lat: ${parsedLatitude} ${latitudeDirection} Longitude: ${parsedLongitude} ${longitudeDirection}]`
         } else {
             stepLabel = `${uploadText} [${batchName}]`
 
@@ -463,37 +475,21 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     function getFileObj(index: number) {
         return uploadFileObjects[index];
     }
+    async function handleUploadStart() {
 
-
-
-    const handleReset = () => {
-        setActiveStep(0);
-        resetFileObjs();
-    }
-    const resetFileObjs = () => {
-        setUploadDataFileObj(defaultFileObj);
-        setUploadLogFileObj(defaultFileObj);
-        setUploadGPSFileObj(defaultFileObj);
-        setLatitude("");
-        setLongitude("");
-        setBatchName("");
-    }
-
-
-
-    const handleUploadStart = () => {
-
-        let trueLat = latitude; 
+        let trueLat = getParsedFloat(latitude); 
         if (latitudeDirection === 'e') {
-            trueLat = "-" + latitude; 
+            trueLat = -latitude; 
         }
-        let trueLong = longitude; 
+        let trueLong = getParsedFloat(longitude); 
         if (longitudeDirection === 's') {
-            trueLong = "-" + longitude;
+            trueLong = -longitude;
         }
 
         const dataFileName = uploadDataFileObj.name; 
-        const newDataFilePath = getNewDataFilePath(batchName, dataFileName);
+
+        // Creates the new data file path as well 
+        const newDataFilePath = await getNewDataFilePath(batchName, dataFileName);
         const loggingErrorFilePath = getLoggingErrorFilePath();
 
         const uploadInfoObj = {
@@ -506,42 +502,33 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             "startLatitude": trueLat, 
             "startLongitude": trueLong 
         }
-        
-        const batchInfoArr = function infoToBatch() {
-            const arr = [
-                {
-                    title: "Data File Name",
-                    info: fileNameFromPath(uploadDataFileObj.path)
-                },
-                {
-                    title: "Log File Name",
-                    info: fileNameFromPath(uploadLogFileObj.path)
-                },
-                {
-                    title: "GPS File Name",
-                    info: fileNameFromPath(uploadGPSFileObj.path)
-                },
-                {
-                    title: "Start Lat & Long",
-                    info: `Lat (${trueLat}), Long (${trueLong})`
-                }
 
-            ];
-
-            return arr;
-        }();
+        // Extra validation
+        if (isBatchNameDup(batchName)) {
+            setBatchNameError(true);
+            notifActionHandler.showErrorNotif("Upload Failed. Batch name is a duplicate.");
+            return;
+        }
 
         beginUpload(uploadInfoObj);
-
-        resetFileObjs();
     }
 
 
-
+    const getFinalBtns = () => {
+        return (
+            <Button 
+                onClick={handleUploadStart}
+                variant="contained"
+                className={classes.containedBtn}
+            >
+                Begin upload
+            </Button>
+        )
+    }
     
     return ( 
 
-        <div className={classes.root}>
+        <>
 
             {uploadFileRefs.map((ref, index) => {
 
@@ -551,74 +538,16 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             
             })}
 
-            <Stepper
-                    activeStep={activeStep}
-                    orientation="vertical"
-                >
-
-                    {steps.map((label, index) => {
-
-                        return ( 
-                            <Step
-                                key={label}
-                            >   
-                                <StepLabel>{getStepLabel(index)}</StepLabel>
-                                <StepContent
-                                    className={classes.step}
-                                >
-                                    {getStepTextContent(index)}
-                                    <div className={classes.btnContainer}>
-                                        <Button
-                                            variant="contained"
-                                            className={classes.containedBtn}
-                                            disabled={activeStep === 0}
-                                            onClick={handleBack}
-                                        >
-                                            Back
-                                        </Button>
-                                        {getStepContent(index)}
-                                        <Button
-                                            variant="contained"
-                                            className={classes.containedBtn}
-                                            onClick={handleNext}
-                                            disabled={handleNextBtnDisabled(index)}
-                                        >
-                                            Next
-                                        </Button>
-                                    </div>
-                                </StepContent>
-
-                            </Step>
-                        )
-                    })}
-
-                </Stepper>
-                {activeStep === steps.length && (
-                    <Paper 
-                        square 
-                        elevation={0}
-                        className={classes.finalPromptContainer}
-                    >
-                        <div className={classes.btnContainer}>
-                            <Button 
-                                onClick={handleReset}
-                                variant="contained"
-                                className={classes.containedBtn}
-                            >
-                                Reselect Files
-                            </Button>
-                            <Button 
-                                onClick={handleUploadStart}
-                                variant="contained"
-                                className={classes.containedBtn}
-                            >
-                                Begin upload
-                            </Button>
-                        </div>
-                    </Paper>
-                )}
-        </div>
-
+            <GenericStepper 
+                steps={steps}
+                getStepLabel={getStepLabel}
+                getStepTextContent={getStepTextContent}
+                getStepContent={getStepContent}
+                handleBackBtnDisabled={handleBackBtnDisabled}
+                handleNextBtnDisabled={handleNextBtnDisabled}
+                getFinalBtns={getFinalBtns}
+            />
+        </>
 
     )
 

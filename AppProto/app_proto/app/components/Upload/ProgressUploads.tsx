@@ -2,23 +2,11 @@ import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import {useDispatch, useSelector} from "react-redux";
-import DoneIcon from '@material-ui/icons/Done';
-import CloseIcon from '@material-ui/icons/Close';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import WrapWithModal from "../WrapWithModal";
-import InfoIcon from '@material-ui/icons/Info';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import WrapWithDialog from "../WrapWithDialog";
 
 const useStyles = makeStyles({
     root: {
@@ -105,71 +93,15 @@ export default function ProgressUploads() {
                     })  
                     :
                     null
-                    
-                    // CAN BE USED FOR CANCELLING UPLOAD
-                    //                 {/* <ListItemSecondaryAction>
-                    //                     <IconButton 
-                    //                         onClick={() => removeProgress(idx)}
-                    //                     >
-                    //                         <CloseIcon style={{marginLeft: "5px", color: "red"}}/> 
-                    //                     </IconButton>
-                    //                 </ListItemSecondaryAction> */}
-
 
                 }
 
-                <WrapWithModal
+                <WrapWithDialog
                     showModal={infoOpen}
                     handleClose={handleCloseInfo}
+                    handleBack={() => setInfoOpen(false)}
+                    title={tempBatchName}
                 >
-                    <Paper
-                        elevation={3} 
-                        style={{
-                            outline: "none"
-                        }}
-                    >
-                        <div
-                            style={{
-                                height: "100%",
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "5px",
-                                padding: "10px"
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: "100%",
-                                }}
-                            >
-                                <IconButton
-                                    onClick={() => setInfoOpen(false)}
-                                    style={{
-                                        justifySelf: "flex-start",
-                                        alignSelf: "center"
-                                    }}
-                                >
-                                    <ArrowBackIcon 
-                                        style={{
-                                            color: "black"
-                                        }}
-                                    />
-                                </IconButton>
-                            </div>
-
-                            <div
-                                style={{
-                                    width: "100%",
-                                    display: "flex", 
-                                    justifyContent: "center",
-                                    alignItems: "center"
-                                }}
-                            >
-                                <h3>
-                                    {tempBatchName}
-                                </h3>
-                            </div>
                             <List>
                                     {
                                         currBatchInfo.map((batchInfoObj: Record<string, string>) => {
@@ -214,31 +146,9 @@ export default function ProgressUploads() {
                                             )
                                         })
                                     }
-                                </List>
-                            </div>
-                        </Paper>
-                </WrapWithModal>
-
+                            </List>
+                </WrapWithDialog>
             </List>
         </div>
     )
 }
-
-{/* <p style={{fontSize: "18px", margin:0, padding:0}}>{item['title']}</p>
-{
-    item['show'] === 'success' && 
-    <Fade in={item['show'] === 'success'} timeout={500}>
-        <DoneIcon style={{marginLeft: "5px", color: "green"}}/> 
-    </Fade>
-}
-{
-    item['show'] === 'progress' && 
-    <CircularProgress style={{width: "15px", height: "15px", marginLeft: "5px", color: "white"}} />
-}
-{
-    item['show'] === 'fail' &&
-    <Fade in={item['show'] === 'fail'} timeout={500}>
-        <CloseIcon style={{marginLeft: "5px", color: "red"}}/> 
-    </Fade>
-}
-</div> */}
