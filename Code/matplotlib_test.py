@@ -15,6 +15,7 @@ import matplotlib.widgets
 from mpl_toolkits import mplot3d
 from matplotlib.animation import FuncAnimation
 import matplotlib.animation as animation
+import multiprocess
     
 class Player(FuncAnimation):
     def __init__(self, fig, func, frames=None, init_func=None, fargs=None,
@@ -101,13 +102,22 @@ class Player(FuncAnimation):
     def update(self,i):
         self.slider.set_val(i)
 
+#%%Interactive
+def intPlot(playerInput):
+    plt.show()
 
-def trackplot(calc_file_path: str): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
-    
-    Writer = animation.writers['ffmpeg']
-    writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+#%%MP4
+def exportFig(fig, updateFunc, name, frameNum):
+    anim = FuncAnimation(fig, updateFunc,
+                              frames=frameNum, interval=50, blit=True)
 
-    dcf = 20
+    fig.set_size_inches(16, 9, True)
+    anim.save('.'.join(name.split(".")[0:-1]) + '.gif', writer = animation.PillowWriter(fps = 30))
+
+
+def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
+
+    dcf = 1000
     csv = pd.read_csv(calc_file_path)
     data = csv.to_dict(orient = 'list')    
     x = np.array(data['X Position'])
@@ -180,14 +190,10 @@ def trackplot(calc_file_path: str): #Multiple ways to do this; for now, I'm just
         ax.set_ylim(markY[i] - 400, markY[i] + 400)
         ax.set_zlim(markZ[i] - 400, markZ[i] + 400)
         return mesh, line_d, line_xy
-#%%Interactive
+    
     ani = Player(fig, update, maxi=frameNum)
-
-    plt.show()
-
-#%%MP4
-    #anim = FuncAnimation(fig, update,
-    #                           frames=frameNum, interval=50, blit=True)
-
-    #fig.set_size_inches(16, 9, True)
-    #anim.save('.'.join(calc_file_path.split(".")[0:-1]) + '.mp4', writer=writer)
+        
+    intPlot(ani)
+    exportFig(fig, update, calc_file_path, frameNum)
+    
+    return 0
