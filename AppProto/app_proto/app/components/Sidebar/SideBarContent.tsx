@@ -1,25 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import { NavLink, useLocation, useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {makeStyles} from '@material-ui/core/styles';
 import routes from '../../routes.json';
 import SideBarComp from "./SideBarComp";
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
-import AppsIcon from '@material-ui/icons/Apps';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import UploadDialog from "../Upload/UploadDialog";
 import Divider from "@material-ui/core/Divider";
-import { Typography } from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
-import HelpIcon from '@material-ui/icons/Help';
-import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from "@material-ui/core/Tooltip";
 import EqualizerIcon from '@material-ui/icons/Equalizer';
-import uploadsActionsHandler from "../../functions/uploads/uploadsActionsHandler";
 import UploadAction from "../Upload/UploadAction";
 import EditIcon from '@material-ui/icons/Edit';
 import ShareIcon from '@material-ui/icons/Share';
@@ -65,33 +54,6 @@ const useStyles = makeStyles({
         background: "white",
     }
 });
-const styles = {
-    sidebarLink: {
-        display: "block",
-        padding: "16px 16px",
-        color: "white",
-        textDecoration: "none",
-    },
-    active_upload_btn: {
-        opacity: 1,
-        display: "block",
-        padding: "16px 16px",
-        color: "white",
-        textDecoration: "none",
-    },
-    active_link_side: {
-        borderLeft: "3px solid white",
-        opacity: 1,
-        display: "block",
-        padding: "16px 16px",
-        color: "white",
-        textDecoration: "none",
-    },
-    active_link_bottom: {
-        borderBottom: "3px solid white",
-        opacity: 1,
-    },
-}
 
 const SideBarContent = () => {
 
@@ -101,13 +63,14 @@ const SideBarContent = () => {
     //@ts-ignore
     const forceLoad = useSelector(state => state.forceLoad);
 
+    //@ts-ignore
     const introState = useSelector(state => state.intro);
     const userFirstTime = introState['first'];
 
     const {pathname} = useLocation();
 
     const isNavEnabled = () => {
-        return !userFirstTime;
+        return true;
     }
 
     const navIfEnabled = (navRoute: string) => {
@@ -123,6 +86,18 @@ const SideBarContent = () => {
 
 
                     <UploadAction />
+
+                    <Tooltip
+                        title="Export"
+                        placement="right"
+                        arrow 
+                    >
+
+                            <IconButton>
+                                <ShareIcon className={classes.btnActive}/>
+                            </IconButton>
+
+                    </Tooltip>
 
                     <Divider 
                         style={{background: "white"}}

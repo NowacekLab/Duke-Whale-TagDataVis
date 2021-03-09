@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['process.py'],
-             pathex=['/Users/joonyounglee/DATA_VIS/Data-Visualization-MAPS/AppProto/app_proto/app/scripts_dev'],
+             pathex=['C:\\Users\\joonl\\Data\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\scripts_dev'],
              binaries=[],
              datas=[],
              hiddenimports=[],

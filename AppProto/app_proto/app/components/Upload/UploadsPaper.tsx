@@ -16,7 +16,6 @@ const useStyles = makeStyles({
         gap: "10px"
     },
     uploadPaperTitle: {
-        fontSize: "2em",
         fontWeight: "bold",
         width: "100%",
         justifyContent: "flex-start",

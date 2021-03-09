@@ -8,7 +8,6 @@ import AppsPage from "./pages/AppsPage";
 import Base from './pages/Base';
 import GraphsPage from './pages/GraphsPage';
 import EditorPage from "./pages/EditorPage";
-import UploadPage from "./pages/UploadPage";
 
 export default function Routes() {
   return (

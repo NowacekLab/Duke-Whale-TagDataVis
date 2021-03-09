@@ -10,13 +10,18 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd 
+<<<<<<< Updated upstream
 import mpl_toolkits.axes_grid1
 import matplotlib.widgets
+=======
+
+>>>>>>> Stashed changes
 from mpl_toolkits import mplot3d
 from matplotlib.animation import FuncAnimation
 import matplotlib.animation as animation
 import multiprocess
     
+<<<<<<< Updated upstream
 class Player(FuncAnimation):
     def __init__(self, fig, func, frames=None, init_func=None, fargs=None,
                  save_count=None, mini=0, maxi=100, pos=(0.125, 0.92), **kwargs):
@@ -106,6 +111,7 @@ class Player(FuncAnimation):
 def intPlot(playerInput):
     plt.show()
 
+<<<<<<< HEAD
 #%%MP4
 def exportFig(fig, updateFunc, name, frameNum):
     anim = FuncAnimation(fig, updateFunc,
@@ -118,6 +124,20 @@ def exportFig(fig, updateFunc, name, frameNum):
 def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
 
     dcf = 1000
+=======
+=======
+>>>>>>> Stashed changes
+def trackplot(calc_file_path: str): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
+    
+    Writer = animation.writers['ffmpeg']
+    writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+
+<<<<<<< Updated upstream
+    dcf = 20
+=======
+    dcf = 100
+>>>>>>> Stashed changes
+>>>>>>> ef796a93c36dbd36d7a749118cd47f87da61603d
     csv = pd.read_csv(calc_file_path)
     data = csv.to_dict(orient = 'list')    
     x = np.array(data['X Position'])
@@ -147,7 +167,11 @@ def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; f
     markY = data['Y Position'][::dcf]
     markZ = data['Z Position'][::dcf]
     markR = data['Roll'][::dcf]
+<<<<<<< Updated upstream
     markP = -1 * np.array(data['Pitch'][::dcf])
+=======
+    markP = data['Pitch'][::dcf]
+>>>>>>> Stashed changes
     markH = data['Heading'][::dcf]
     axisVec = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     
@@ -190,6 +214,7 @@ def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; f
         ax.set_ylim(markY[i] - 400, markY[i] + 400)
         ax.set_zlim(markZ[i] - 400, markZ[i] + 400)
         return mesh, line_d, line_xy
+<<<<<<< HEAD
     
     ani = Player(fig, update, maxi=frameNum)
         
@@ -197,3 +222,25 @@ def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; f
     exportFig(fig, update, calc_file_path, frameNum)
     
     return 0
+=======
+<<<<<<< Updated upstream
+#%%Interactive
+    ani = Player(fig, update, maxi=frameNum)
+
+    plt.show()
+
+#%%MP4
+    #anim = FuncAnimation(fig, update,
+    #                           frames=frameNum, interval=50, blit=True)
+
+    #fig.set_size_inches(16, 9, True)
+    #anim.save('.'.join(calc_file_path.split(".")[0:-1]) + '.mp4', writer=writer)
+=======
+
+    anim = FuncAnimation(fig, update,
+                               frames=frameNum, interval=50, blit=True)
+
+    fig.set_size_inches(16, 9, True)
+    anim.save('.'.join(calc_file_path.split(".")[0:-1]) + '.mp4', writer=writer)
+>>>>>>> Stashed changes
+>>>>>>> ef796a93c36dbd36d7a749118cd47f87da61603d

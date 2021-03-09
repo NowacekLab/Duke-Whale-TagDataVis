@@ -18,6 +18,7 @@ export default function UploadAction() {
     //@ts-ignore
     const uploadState = useSelector(state => state.uploads);
 
+    //@ts-ignore
     const introState = useSelector(state => state.intro);
     const userFirstTime = introState['first'];
 
@@ -27,7 +28,6 @@ export default function UploadAction() {
         setShowUploadDialog(true);
     }
     const handleUploadDialogOpenIfEnabled = () => {
-        if (userFirstTime) return;
         handleUploadDialogOpen();
     }
     const handleUploadDialogClose = () => {

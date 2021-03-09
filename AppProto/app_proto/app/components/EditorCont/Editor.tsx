@@ -5,6 +5,7 @@ import EditorBottomNav from "./EditorBottomNav";
 import {loadFileInfoArr} from "../../functions/uploads/upload";
 import {getObjFromPath} from "../../functions/files";
 import useIsMountedRef from "../../functions/useIsMountedRef";
+import Notification from "../Notification";
 
 const useStyles = makeStyles({
     root: {

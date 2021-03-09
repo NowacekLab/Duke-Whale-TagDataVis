@@ -35,7 +35,7 @@ def parseCMDLineArg(cmdLineArg: str) -> dict:
         elif len(keyValPairLst) == 1: 
             val = "" 
             key = keyValPairLst[0]
-        else: 
+        else:
             key, val = keyValPairLst
         
         cmdArgs[key] = val 

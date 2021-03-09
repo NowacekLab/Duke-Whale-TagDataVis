@@ -4,6 +4,5 @@
     "FILES": "/files",
     "GRAPHS": "/graphs",
     "EDITOR": "/editor",
-    "UPLOAD": "/upload",
     "EXPORT": "/export"
 }  

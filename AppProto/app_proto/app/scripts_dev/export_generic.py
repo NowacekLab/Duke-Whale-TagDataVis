@@ -4,7 +4,6 @@ import logger
 
 REQUIRED_KWARGS = [keysHelper.getLogFilePathKey()]
 
-
 def _getCMDLineArgs():
     cmdLineArgs = cmdArgs.getCMDLineArgs()
     
@@ -19,11 +18,21 @@ def _getLogFilePath(cmdLineArgs: dict):
     logFilePathKey = keysHelper.getLogPathKey()
     return cmdLineArgs[logFilePathKey]
 
-@logger.getLogger("export_html.py", _getLogFilePath(_getCMDLineArgs(required = REQUIRED_KWARGS)))
-def main():
-    cmdLineArgs = _getCMDLineArgs()
+def export_single_generic(exporter, *args, **kwargs):
+    return exporter(*args, **kwargs)
+
+def export_iterate_generic(exporter, mult_args, *args, **kwargs):
+    final_res = []
+    for arg in mult_args:
+        res = export_single_generic(exporter, arg, *args, **kwargs)
+        final_res.append(res)
+    return final_res 
+
+# @logger.getLogger("export_generic.py", _getLogFilePath(_getCMDLineArgs()))
+# def main():
+#     cmdLineArgs = _getCMDLineArgs()
     
-    return "SUCCESS"
+#     return "SUCCESS"
 
 if __name__ == "__main__":
     print(main())

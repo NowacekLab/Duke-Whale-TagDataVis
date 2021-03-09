@@ -1,17 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import useIsMountedRef from "../functions/useIsMountedRef";
-import Fab from "@material-ui/core/Fab";
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Skeleton from '@material-ui/lab/Skeleton';
-import ListIcon from '@material-ui/icons/List';
-import HomeTable from "../components/HomeTable";
-import Paper from "@material-ui/core/Paper";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import Notification from "../components/Notification";
 
 import UploadsPaper from "../components/Upload/UploadsPaper";

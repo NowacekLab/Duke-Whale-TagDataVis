@@ -2,22 +2,10 @@ import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import {makeStyles} from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete"; 
 import Button from "@material-ui/core/Button";
-import WrapWithModal from "../WrapWithModal";
-import TreeView from '@material-ui/lab/TreeView';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import TreeItem from '@material-ui/lab/TreeItem';
-import Paper from "@material-ui/core/Paper";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from "@material-ui/core/Typography";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import IconButton from "@material-ui/core/IconButton";
+
+import RangeSelectDialog from './RangeSelectDialog';
+import SelectBatchDialog from '../SelectBatchDialog';
 
 const useStyles = makeStyles({
     root: {
@@ -69,15 +57,12 @@ type EditorBottomNavProps = {
 export default function EditorBottomNav(props: EditorBottomNavProps) {
 
     const classes = useStyles();
-
-
     const dispatch = useDispatch();
+
     //@ts-ignore
     const uploadProgState = useSelector(state => state["uploads"]);
     const uploadProgHandler = new uploadsActionsHandler(dispatch);
     const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
-
-
 
     const [chosenColPath, setChosenColPath] = useState("");
     const [tempColPath, setTempColPath] = useState("");
@@ -104,47 +89,41 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
 
     const [infoOpen, setInfoOpen] = useState(false);
     
-    const viewCurrBatchInfo = (batchName: string, colPath: string, uploadInfoArr: any) => {
+    const viewCurrBatchInfo = (batchName: string) => {
+
+        //@ts-ignore
+        const uploadProgObj = uploadsFinished[batchName];
+        const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
+        const colPath = uploadProgObj["cols"] && uploadProgObj["cols"]["cols.json"] ? uploadProgObj["cols"]["cols.json"] : "";
+
         setTempBatchName(batchName);
         setTempColPath(colPath);
         setCurrBatchInfo(uploadInfoArr);
         setInfoOpen(true);
     }
 
-
-
-    const [inputMinRange, setInputMinRange] = useState("0");
-    const [inputMaxRange, setInputMaxRange] = useState("100");
+    const [realMinRange, setRealMinRange] = useState("0");
+    const [realMaxRange, setRealMaxRange] = useState("100");
     const [rangeConfirmed, setRangeConfirmed] = useState(false);
-    const onInputMinRange = (event: any) => {
-        const newInputMin = event && event.target && event.target.value ? event.target.value : "";
-        setInputMinRange(newInputMin);
-    }
-    const onInputMaxRange = (event: any) => {
-        const newInputMax = event && event.target && event.target.value ? event.target.value : "";
-        setInputMaxRange(newInputMax);
-    }
-    const onRangeConfirmation = () => {
+    const onRangeConfirmation = (inputMinRange: string, inputMaxRange: string) => {
         let realMinRange;
         try {
             realMinRange = Number.parseInt(inputMinRange);
         } catch {
             realMinRange = 0;
-            setInputMinRange("0");
         }
         let realMaxRange;
         try {
             realMaxRange = Number.parseInt(inputMaxRange);
         } catch {
-            realMaxRange = 1;
-            setInputMaxRange("100");
+            realMaxRange = 100;
         }
+        setRealMinRange(`${realMinRange}`);
+        setRealMaxRange(`${realMaxRange}`);
         props.onRangeConfirm(realMinRange, realMaxRange);
         handleRangeModalClose();
         setRangeConfirmed(true);
     }
-
-
     const [showRangeModal, setShowRangeModal] = useState(false);
     const handleRangeModalClose = () => {
         setShowRangeModal(false);
@@ -172,272 +151,32 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
                     className={classes.btn}
                     onClick={toggleRangeModal}
                 >
-                    {rangeConfirmed ? `${inputMinRange} : ${inputMaxRange}` : "Confirm Range"}
+                    {rangeConfirmed ? `${realMinRange} : ${realMaxRange}` : "Confirm Range"}
                 </Button>
             </div>
 
-
-            <WrapWithModal
+            <SelectBatchDialog 
                 showModal={showBatchModal}
                 handleClose={handleBatchModalClose}
-            >
-                <div
-                    className={classes.paperWrapper}
-                >
-                    <Paper
-                        elevation={3}
-                        className={classes.paperTreeCont}
-                    >   
-                        {
+                handleBack={handleBatchModalClose}
+                currBatchInfo={currBatchInfo}
+                infoOpen={infoOpen}
+                onInfoClose={() => setInfoOpen(false)}
+                displayBatchName={tempBatchName}
+                confirmDisplayBatchName={confirmTempBatchName}
+                viewBatchInfo={viewCurrBatchInfo}
+                uploads={uploadsFinished}
+            />
 
-                            infoOpen ? 
-                    
-                            <div
-                                style={{
-                                    height: "100%",
-                                    width: "100%",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "5px",
-                                    padding: "10px"
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: "100%",
-                                    }}
-                                >
-                                    <IconButton
-                                        onClick={() => setInfoOpen(false)}
-                                        style={{
-                                            justifySelf: "flex-start",
-                                            alignSelf: "center"
-                                        }}
-                                    >
-                                        <ArrowBackIcon 
-                                            style={{
-                                                color: "black"
-                                            }}
-                                        />
-                                    </IconButton>
-                                </div>
-
-                                <div
-                                    style={{
-                                        width: "100%",
-                                        display: "flex", 
-                                        justifyContent: "center",
-                                        alignItems: "center"
-                                    }}
-                                >
-                                    <h3>
-                                        {tempBatchName}
-                                    </h3>
-                                </div>
-
-                                <List>
-                                    {
-                                        currBatchInfo.map((batchInfoObj: Record<string, string>) => {
-                                            const title = batchInfoObj["title"];
-                                            const info = batchInfoObj["info"];
-
-                                            return (
-
-                                                <ListItem
-                                                    key={title}
-                                                >
-                                                    
-                                                    <ListItemText
-                                                        disableTypography
-                                                        primary={
-                                                            <Typography
-                                                                style={{
-                                                                    color: "black",
-                                                                    fontWeight: "bold"
-                                                                }}
-                                                            >
-                                                                {title}
-                                                            </Typography>
-                                                        }
-                                                        secondary={
-                                                            <Typography
-                                                                style={{
-                                                                    color: "black"
-                                                                }}
-                                                            >
-                                                                {info}
-                                                            </Typography>
-                                                        }
-                                                    >
-
-                                                    </ListItemText>
-
-
-                                                </ListItem>
-
-                                            )
-                                        })
-                                    }
-                                </List>
-
-
-
-                                {
-                                    tempBatchName === ""
-
-                                    ?
-
-                                    undefined
-
-                                    :
-
-                                    <div
-                                        style={{
-                                            width: "100%",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center"
-                                        }}
-                                    >
-                                        <Button
-                                            className={classes.btn}
-                                            onClick={confirmTempBatchName}
-                                        >
-                                            {`Select`}
-                                        </Button>
-                                    </div>
-                                }
-
-                            </div>
-
-                            :
-
-                            <List>
-                                {
-                                    uploadsFinished && 
-                                    Object.keys(uploadsFinished) ?
-                                    Object.keys(uploadsFinished).map((batchName) => {
-                                        
-                                        //@ts-ignore
-                                        const uploadProgObj = uploadsFinished[batchName];
-                                        const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
-                                        const colPath = uploadProgObj["cols"] && uploadProgObj["cols"]["cols.json"] ? uploadProgObj["cols"]["cols.json"] : "";
-                
-                                        return (
-                                            <>
-                
-                                                <ListItem
-                                                    button
-                                                    onClick={() => {viewCurrBatchInfo(batchName, colPath, uploadInfoArr)}}
-                                                    key={batchName}
-                                                >
-                                                    <ListItemText
-                                                        primary={batchName}
-                                                    />
-
-                                                </ListItem>
-                
-                                            </>
-                                        )            
-
-                                    })  
-
-                                    :
-
-                                    null
-                                }
-
-                            </List>
-                        }
-                    </Paper>
-
-
-                </div>
-            </WrapWithModal>
-
-            <WrapWithModal
+            <RangeSelectDialog 
                 showModal={showRangeModal}
                 handleClose={handleRangeModalClose}
-            >
-                <div
-                    className={classes.paperWrapper}
-                >
-                    <Paper
-                        elevation={3}
-                        className={classes.rangeFieldCont}
-                    >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    gap: "5px",
-                                }}
-                            >   
-                                {
-                                    Number.isInteger(Number.parseInt(inputMinRange)) &&
-                                    Number.parseInt(inputMinRange) >= 0 
+                handleBack={handleRangeModalClose}
+                onRangeConfirm={onRangeConfirmation}
+                currInputMinRange={realMinRange}
+                currInputMaxRange={realMaxRange}
+            />
 
-                                    ?
-
-                                    <TextField 
-                                        label="Minimum"
-                                        value={inputMinRange}
-                                        onChange={onInputMinRange}
-                                    />
-
-                                    :
-
-                                    <TextField
-                                        error
-                                        value={inputMinRange}
-                                        label="Error Minimum"
-                                        helperText="Must be an integer > 0"
-                                        onChange={onInputMinRange}
-                                    />
-
-                                }
-
-                                {
-                                    Number.isInteger(Number.parseInt(inputMaxRange)) 
-
-                                    ?
-
-                                    <TextField 
-                                        label="Maximum"
-                                        value={inputMaxRange}
-                                        onChange={onInputMaxRange}
-                                    />
-
-                                    :
-
-                                    <TextField 
-                                        error
-                                        value={inputMaxRange}
-                                        onChange={onInputMaxRange}
-                                        label="Error Maximum"
-                                        helperText="Must be an integer"
-                                    />
-
-                                }
-                            </div>
-
-                    </Paper>
-
-                    {
-                        Number.isInteger(Number.parseInt(inputMinRange)) &&
-                        Number.parseInt(inputMinRange) >= 0 &&
-                        Number.isInteger(Number.parseInt(inputMaxRange)) &&
-
-                        <Button
-                            className={classes.btn}
-                            onClick={() => onRangeConfirmation()}
-                        >
-                            {`Confirm Range?`}
-                        </Button>
-                    }
-                </div>
-
-
-            </WrapWithModal>
 
         </div>
     )

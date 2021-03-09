@@ -12,6 +12,10 @@ __startLongKey = constants.START_LONG_KEY
 
 __filePathsKey = constants.FILE_PATHS 
 __targetDirectoryKey = constants.TARGET_DIRECTORY 
+<<<<<<< Updated upstream
+=======
+__exportTypeKey = constants.EXPORT_TYPE 
+>>>>>>> Stashed changes
 
 def getOldDataFilePathKey() -> str: 
     return __oldDataFilePathKey
@@ -41,4 +45,11 @@ def getFilePathsKey() -> str:
     return __filePathsKey 
 
 def getTargetDirectoryKey() -> str:
+<<<<<<< Updated upstream
     return __targetDirectoryKey
+=======
+    return __targetDirectoryKey
+
+def getExportTypeKey() -> str:
+    return __exportTypeKey
+>>>>>>> Stashed changes

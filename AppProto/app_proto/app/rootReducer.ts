@@ -13,6 +13,5 @@ export default function createRootReducer(history: History) {
     notif: notifsReducer,
     forceLoad: forceLoadReducer,
     uploads: uploadsReducer,
-    intro: introReducer
   });
 }

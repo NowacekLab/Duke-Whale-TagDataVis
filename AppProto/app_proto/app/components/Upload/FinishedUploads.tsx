@@ -20,6 +20,7 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import DeleteIcon from '@material-ui/icons/Delete';
+import WrapWithDialog from '../WrapWithDialog';
 
 const useStyles = makeStyles({
     root: {
@@ -123,139 +124,62 @@ export default function FinishedUploads() {
                     :
                     null
                     
-                    // CAN BE USED FOR CANCELLING UPLOAD
-                    //                 {/* <ListItemSecondaryAction>
-                    //                     <IconButton 
-                    //                         onClick={() => removeProgress(idx)}
-                    //                     >
-                    //                         <CloseIcon style={{marginLeft: "5px", color: "red"}}/> 
-                    //                     </IconButton>
-                    //                 </ListItemSecondaryAction> */}
-
-
                 }
 
-                <WrapWithModal
+                <WrapWithDialog
                     showModal={infoOpen}
                     handleClose={handleCloseInfo}
+                    handleBack={() => setInfoOpen(false)}
+                    title={tempBatchName}
                 >
-                    <Paper
-                        elevation={3}
-                        style={{
-                            outline: "none"
-                        }}
-                    >
-                        <div
-                            style={{
-                                height: "100%",
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "5px",
-                                padding: "10px"
-                            }}
-                        >
+                    <List>
+                            {
+                                currBatchInfo.map((batchInfoObj: Record<string, string>) => {
+                                    const title = batchInfoObj["title"];
+                                    const info = batchInfoObj["info"];
 
-                            <div
-                                style={{
-                                    width: "100%",
-                                }}
-                            >
-                                <IconButton
-                                    onClick={() => setInfoOpen(false)}
-                                    style={{
-                                        justifySelf: "flex-start",
-                                        alignSelf: "center"
-                                    }}
-                                >
-                                    <ArrowBackIcon 
-                                        style={{
-                                            color: "black"
-                                        }}
-                                    />
-                                </IconButton>
-                            </div>
+                                    return (
 
-                            <div
-                                style={{
-                                    width: "100%",
-                                    display: "flex", 
-                                    justifyContent: "center",
-                                    alignItems: "center"
-                                }}
-                            >
-                                <h3>
-                                    {tempBatchName}
-                                </h3>
-                            </div>
-                            <List>
-                                    {
-                                        currBatchInfo.map((batchInfoObj: Record<string, string>) => {
-                                            const title = batchInfoObj["title"];
-                                            const info = batchInfoObj["info"];
-
-                                            return (
-
-                                                <ListItem
-                                                    key={title}
-                                                >
-                                                    
-                                                    <ListItemText
-                                                        disableTypography
-                                                        primary={
-                                                            <Typography
-                                                                style={{
-                                                                    color: "black",
-                                                                    fontWeight: "bold"
-                                                                }}
-                                                            >
-                                                                {title}
-                                                            </Typography>
-                                                        }
-                                                        secondary={
-                                                            <Typography
-                                                                style={{
-                                                                    color: "black"
-                                                                }}
-                                                            >
-                                                                {info}
-                                                            </Typography>
-                                                        }
+                                        <ListItem
+                                            key={title}
+                                        >
+                                            
+                                            <ListItemText
+                                                disableTypography
+                                                primary={
+                                                    <Typography
+                                                        style={{
+                                                            color: "black",
+                                                            fontWeight: "bold"
+                                                        }}
                                                     >
+                                                        {title}
+                                                    </Typography>
+                                                }
+                                                secondary={
+                                                    <Typography
+                                                        style={{
+                                                            color: "black"
+                                                        }}
+                                                    >
+                                                        {info}
+                                                    </Typography>
+                                                }
+                                            >
 
-                                                    </ListItemText>
+                                            </ListItemText>
 
 
-                                                </ListItem>
+                                        </ListItem>
 
-                                            )
-                                        })
-                                    }
-                            </List>
-                        </div>
-                    </Paper>
-                </WrapWithModal>
+                                    )
+                                })
+                            }
+                    </List>
+
+                </WrapWithDialog>
 
             </List>
         </div>
     )
 }
-
-{/* <p style={{fontSize: "18px", margin:0, padding:0}}>{item['title']}</p>
-{
-    item['show'] === 'success' && 
-    <Fade in={item['show'] === 'success'} timeout={500}>
-        <DoneIcon style={{marginLeft: "5px", color: "green"}}/> 
-    </Fade>
-}
-{
-    item['show'] === 'progress' && 
-    <CircularProgress style={{width: "15px", height: "15px", marginLeft: "5px", color: "white"}} />
-}
-{
-    item['show'] === 'fail' &&
-    <Fade in={item['show'] === 'fail'} timeout={500}>
-        <CloseIcon style={{marginLeft: "5px", color: "red"}}/> 
-    </Fade>
-}
-</div> */}
