@@ -100,7 +100,6 @@ export default function GenericStepper(props: GenericStepperProps) {
                                   style={{
                                       display: "flex",
                                       flexDirection: 'column',
-                                      justifyContent: 'center',
                                       alignItems: 'center',
                                       paddingTop: "10px",
                                       paddingBottom: "10px"

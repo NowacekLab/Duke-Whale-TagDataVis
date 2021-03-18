@@ -4,7 +4,6 @@ import { Switch, Route } from 'react-router-dom';
 import routes from './routes.json';
 import App from './pages/App';
 import HomePage from './pages/HomePage';
-import AppsPage from "./pages/AppsPage";
 import Base from './pages/Base';
 import GraphsPage from './pages/GraphsPage';
 import EditorPage from "./pages/EditorPage";
@@ -13,11 +12,6 @@ export default function Routes() {
   return (
     <App>
       <Switch>
-
-        <Route path={routes.APPS} // Base is base template, page is rendered alongside
-        render={() => {
-          return <Base Page={AppsPage} />
-        }} />
 
         <Route path={routes.GRAPHS}
         render={() => {

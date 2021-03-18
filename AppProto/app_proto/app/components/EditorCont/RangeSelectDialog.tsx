@@ -8,9 +8,10 @@ const useStyles = makeStyles({
   wrapper: {
     display: "flex",
     flexDirection: "column",
-    gap: "10px",
+    gap: "20px",
     outline: "none",
     maxHeight: "80%",
+    padding: "10px",
   },
   rangeFieldCont: {
     display: "flex",
@@ -126,6 +127,7 @@ export default function RangeSelectDialog(props: RangeSelectDialogProps) {
             <Button
                 className={classes.btn}
                 onClick={() => props.onRangeConfirm(inputMinRange, inputMaxRange)}
+                variant="outlined"
             >
                 {`Confirm Range?`}
             </Button>

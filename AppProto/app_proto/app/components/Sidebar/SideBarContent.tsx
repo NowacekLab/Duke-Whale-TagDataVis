@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {makeStyles} from '@material-ui/core/styles';
@@ -8,10 +8,17 @@ import HomeIcon from '@material-ui/icons/Home';
 import Divider from "@material-ui/core/Divider";
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from "@material-ui/core/Tooltip";
+import {useDispatch} from 'react-redux';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import UploadAction from "../Upload/UploadAction";
-import EditIcon from '@material-ui/icons/Edit';
-import ShareIcon from '@material-ui/icons/Share';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
+import AnimatedDialog from '../Animated/AnimatedDialog'; 
+import {handleVideoFileAction} from '../../functions/generators/videofile';
+import { throwErrIfFail } from '../../functions/responses';
+import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
+import AnimatedDialogWrapper from '../Animated/AnimatedDialogWrapper';
 
 const useStyles = makeStyles({
     content: {
@@ -60,12 +67,13 @@ const SideBarContent = () => {
     const classes = useStyles();
     const history = useHistory();
 
-    //@ts-ignore
-    const forceLoad = useSelector(state => state.forceLoad);
+    const dispatch = useDispatch();
+
+    // TODO: extract bottom animate action out of sidebar into own component for notif handler to get separate component name
+    const notifActionHandler = new notifsActionsHandler(dispatch, "Side Bar Action");
 
     //@ts-ignore
-    const introState = useSelector(state => state.intro);
-    const userFirstTime = introState['first'];
+    const forceLoad = useSelector(state => state.forceLoad);
 
     const {pathname} = useLocation();
 
@@ -79,6 +87,11 @@ const SideBarContent = () => {
         history.push(navRoute);
     }
 
+    const [animatedDialogOpen, setAnimatedDialogOpen] = useState(false);
+    const handleAnimatedDialogClose = () => {
+        setAnimatedDialogOpen(false);
+    }
+
     return(
         <SideBarComp>
             <div>
@@ -87,25 +100,17 @@ const SideBarContent = () => {
 
                     <UploadAction />
 
-                    <Tooltip
-                        title="Export"
-                        placement="right"
-                        arrow 
-                    >
-
-                            <IconButton>
-                                <ShareIcon className={classes.btnActive}/>
-                            </IconButton>
-
-                    </Tooltip>
-
                     <Divider 
                         style={{background: "white"}}
                         variant="middle"
                     />
 
                     <Tooltip
-                        title="Home"
+                        title={
+                            <Typography>
+                                Home
+                            </Typography>
+                        }
                         placement="right"
                         arrow
                     >
@@ -121,60 +126,110 @@ const SideBarContent = () => {
                     </Tooltip>
 
                     <Tooltip
-                        title="Graph View"
+                        title={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignContent: 'center',
+                                    gap: "10px",
+                                    padding: "5px"
+                                }}
+                            >
+                                <Typography>
+                                    Data View 
+                                </Typography>
+                                <Button
+                                    onClick={() => {
+                                        navIfEnabled(routes.GRAPHS)
+                                    }}
+                                    style={{
+                                        color: "white",
+                                        fontWeight: pathname === routes.GRAPHS ? "bolder" : "normal",
+                                        border: "1px solid white"
+                                    }}
+                                >
+                                    Created Graphs
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        navIfEnabled(routes.EDITOR)
+                                    }}
+                                    style={{
+                                        color: "white",
+                                        fontWeight: pathname === routes.EDITOR ? "bolder" : "normal",
+                                        border: "1px solid white"
+                                    }}
+                                >
+                                    Custom Graphing
+                                </Button>
+                            </div>
+                        }
+                        interactive={true}
+                        leaveDelay={300}
                         placement="right"
                         arrow 
                     >
-                        <IconButton
-                            onClick={() => {
-                                navIfEnabled(routes.GRAPHS)
-                            }}
-                        >
-                            <EqualizerIcon className={pathname === routes.GRAPHS ? classes.btnActive : classes.btnInactive} />
+                        <IconButton>
+                            <EqualizerIcon className={pathname === routes.GRAPHS || pathname === routes.EDITOR ? classes.btnActive : classes.btnInactive} />
                         </IconButton>
                     </Tooltip>
 
                     <Tooltip
-                        title="Editor"
-                        placement="right"
-                        arrow
-                    >
-                        <IconButton
-                            onClick={() => {
-                                navIfEnabled(routes.EDITOR)
-                            }}
-                        >
-                            <EditIcon className={pathname === routes.EDITOR ? classes.btnActive : classes.btnInactive} />
-                        </IconButton>
+                        title={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignContent: 'center',
+                                    gap: "10px",
+                                    padding: "5px"
+                                }}
+                            >
+                                <Typography>
+                                    Generate
+                                </Typography>
+                                <Button
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "normal",
+                                        border: "1px solid white"
+                                    }}
+                                    onClick={() => setAnimatedDialogOpen(true)}
+                                >
+                                    XYZ Animated 
+                                </Button>
+                                <Button
+                                    style={{
+                                        color: "white",
+                                        fontWeight: "normal",
+                                        border: "1px solid white"
+                                    }}
+                                    onClick={() => setAnimatedDialogOpen(true)}
+                                >
+                                    XYZ Points of Interest 
+                                </Button>
+                            </div>
 
-                    </Tooltip>
-
-                    <Tooltip
-                        title="Export"
+                        }
+                        interactive={true}
+                        leaveDelay={300}
                         placement="right"
-                        arrow 
+                        arrow  
+                        disableFocusListener
                     >
 
                             <IconButton>
-                                <ShareIcon className={pathname === routes.EXPORT ? classes.btnActive : classes.btnInactive}/>
+                                <ImportExportIcon className={pathname === routes.EXPORT ? classes.btnActive : classes.btnInactive}/>
                             </IconButton>
 
                     </Tooltip>
 
-                    <Tooltip
-                        title="Dev Usage"
-                        placement="right"
-                        arrow
-                    >
-                        <IconButton
-                            onClick={() => {
-                                localStorage.removeItem('userFirstTime');
-                            }}
-                        >
-                            <ShareIcon className={classes.btnActive}/>
-                        </IconButton>
-
-                    </Tooltip>
+                    <AnimatedDialogWrapper 
+                        showDialog={animatedDialogOpen}
+                        handleClose={handleAnimatedDialogClose}
+                        handleBack={handleAnimatedDialogClose}
+                    />
 
                 </div>
 

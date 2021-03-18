@@ -8,7 +8,6 @@ import {getObjFromPath} from "../functions/files";
 import {deepCopyObjectOnlyProps} from "../functions/object_helpers";
 import uploadsActionsHandler from "../functions/uploads/uploadsActionsHandler";
 import useIsMountedRef from "../functions/useIsMountedRef";
-import Notification from "../components/Notification";
 
 const useStyles = makeStyles({
     root: {

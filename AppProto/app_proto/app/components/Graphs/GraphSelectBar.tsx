@@ -61,7 +61,7 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
     const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
     const [currBatchInfo, setCurrBatchInfo] = useState([]);
 
-    const notifActionHandler = new notifsActionsHandler(dispatch);
+    const notifActionHandler = new notifsActionsHandler(dispatch, "Graph View");
 
     const viewCurrBatchInfo = (batchName: string, uploadInfoArr: any) => {
         setTempBatchName(batchName);
@@ -148,6 +148,7 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
             <Button
                 onClick={toggleBatchModal}
                 className={classes.btn}
+                variant="outlined"
             >
                 {batchBtnVal}
             </Button>
@@ -155,6 +156,7 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
             <Button
                 onClick={toggleGraphModal}
                 className={classes.btn}
+                variant="outlined"
             >
                 {graphBtnVal}
             </Button>

@@ -2,7 +2,7 @@ import {isDev, python3} from "../constants";
 import handlePythonExec from "../exec/python_exec";
 import {formatCMDLineArgs} from "./cmdArgs";
 import {getDevPythonScriptPath, getProdPythonScriptPath, addLoggingErrorFilePath} from "../paths";
-import {failResponse} from "../responses"
+import {failResponse, successResponse, throwErrIfFail} from "../responses"
 import {getDataFilePathKey, getNewDataFilePathKey,
         getLoggingFilePathKey, getLogFilePathKey,
         getGPSFilePathKey, getStartLatitudeKey, getStartLongitudeKey} from "../keys";
@@ -141,6 +141,41 @@ export async function handleExportFile(args: exportCMDLineArgs) {
     } catch (error) {
 
         console.log("HANDLE EXPORT FILE ERROR");
+        console.log(error);
+
+        return failResponse(error);
+    }
+}
+
+export interface videoFileCMDLineArgs {
+    [index: string]: string,
+    calcFilePath: string,
+    targetDirectory: string,
+    isExport: string,
+}
+
+async function runVideoFileProcess(cmdLineArgs: videoFileCMDLineArgs) {
+    const pythonScriptName = 'export_video.py';
+    const scriptName = 'export_video';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleProcessVideoFile(args: videoFileCMDLineArgs) {
+    try {
+        const exportResp = await runVideoFileProcess(args);
+
+        console.log("HANDLE PROCESS VIDEO FILE RESPONSE");
+        console.log(exportResp); 
+
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully processed video file action.");
+    } catch (error) {
+
+        console.log("HANDLE PROCESS VIDEO FILE ERROR");
         console.log(error);
 
         return failResponse(error);

@@ -94,6 +94,7 @@ export default function GraphViewDialog(props: GraphViewDialogProps) {
                   <Button
                       className={classes.btn}
                       onClick={props.confirmDisplayGraphName}
+                      variant="outlined"
                   >
                       {`Select`}
                   </Button>

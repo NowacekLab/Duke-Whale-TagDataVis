@@ -710,30 +710,11 @@
   ('win32com',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\win32com\\__init__.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('win32com.server.util',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\win32com\\server\\util.py',
-   'PYMODULE'),
-  ('win32com.server.dispatcher',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\win32com\\server\\dispatcher.py',
-   'PYMODULE'),
-  ('win32traceutil',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\win32\\lib\\win32traceutil.py',
-=======
   ('packaging._structures',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/_structures.py',
    'PYMODULE'),
   ('packaging.specifiers',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/specifiers.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('packaging._structures',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/_structures.py',
-   'PYMODULE'),
-  ('packaging.specifiers',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/specifiers.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('win32com.util',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\win32com\\util.py',
@@ -828,53 +809,12 @@
   ('packaging.utils',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\utils.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('packaging.specifiers',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\specifiers.py',
-   'PYMODULE'),
-  ('packaging',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\__init__.py',
-   'PYMODULE'),
-  ('packaging._compat',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\_compat.py',
-   'PYMODULE'),
-  ('packaging.__about__',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\__about__.py',
-   'PYMODULE'),
-  ('packaging.version',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\version.py',
-=======
   ('packaging.__about__',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/__about__.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('packaging.__about__',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/__about__.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('packaging.tags',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\tags.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('packaging.markers',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\markers.py',
-=======
-  ('packaging',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/__init__.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('packaging.tags',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/tags.py',
-   'PYMODULE'),
-  ('packaging.version',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/version.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('packaging._typing',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\_typing.py',
-=======
   ('packaging',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/__init__.py',
    'PYMODULE'),
@@ -886,11 +826,6 @@
    'PYMODULE'),
   ('packaging._compat',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/_compat.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('packaging._compat',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/_compat.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('packaging.requirements',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\packaging\\requirements.py',
@@ -898,11 +833,6 @@
   ('pkg_resources._vendor.packaging.version',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\packaging\\version.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pkg_resources._vendor.packaging.specifiers',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\packaging\\specifiers.py',
-=======
   ('packaging._typing',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/_typing.py',
    'PYMODULE'),
@@ -911,46 +841,10 @@
    'PYMODULE'),
   ('pkg_resources._vendor.packaging.specifiers',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/specifiers.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('packaging._typing',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/packaging/_typing.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor.pyparsing',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/pyparsing.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor.packaging.specifiers',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/specifiers.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pkg_resources._vendor.packaging._structures',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\packaging\\_structures.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pkg_resources._vendor.packaging.tags',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\packaging\\tags.py',
-=======
-  ('pkg_resources._vendor.packaging',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/__init__.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pkg_resources._vendor.appdirs',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/appdirs.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/__init__.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor.packaging._compat',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/_compat.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor.packaging.__about__',
-<<<<<<< Updated upstream
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\packaging\\__about__.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor.appdirs',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\appdirs.py',
-=======
   ('pkg_resources._vendor.packaging',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/__init__.py',
    'PYMODULE'),
@@ -965,10 +859,6 @@
    'PYMODULE'),
   ('pkg_resources._vendor.packaging.__about__',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/__about__.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/__about__.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('win32com.shell.shellcon',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\win32comext\\shell\\shellcon.py',
@@ -979,30 +869,11 @@
   ('pkg_resources._vendor.packaging._compat',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\packaging\\_compat.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pkg_resources._vendor.packaging',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\packaging\\__init__.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor.packaging.requirements',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\packaging\\requirements.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor.pyparsing',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\pyparsing.py',
-=======
   ('pkg_resources._vendor.packaging.utils',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/utils.py',
    'PYMODULE'),
   ('pkg_resources._vendor.six',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/six.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('pkg_resources._vendor.packaging.utils',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/packaging/utils.py',
-   'PYMODULE'),
-  ('pkg_resources._vendor.six',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pkg_resources/_vendor/six.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pkg_resources._vendor',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\_vendor\\__init__.py',
@@ -1011,15 +882,7 @@
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pkg_resources\\extern\\__init__.py',
    'PYMODULE'),
   ('imp',
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\imp.py',
-=======
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/imp.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/imp.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('stringprep',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\stringprep.py',
@@ -1186,27 +1049,11 @@
   ('setuptools',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\__init__.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('setuptools._vendor.packaging.markers',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\_vendor\\packaging\\markers.py',
-   'PYMODULE'),
-  ('setuptools._vendor.packaging.requirements',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\_vendor\\packaging\\requirements.py',
-=======
   ('setuptools._vendor.packaging.version',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/packaging/version.py',
    'PYMODULE'),
   ('setuptools._vendor.packaging.requirements',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/packaging/requirements.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('setuptools._vendor.packaging.version',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/packaging/version.py',
-   'PYMODULE'),
-  ('setuptools._vendor.packaging.requirements',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/packaging/requirements.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('setuptools._vendor.packaging',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\_vendor\\packaging\\__init__.py',
@@ -1217,25 +1064,6 @@
   ('setuptools._vendor.packaging._structures',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\_vendor\\packaging\\_structures.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('setuptools._vendor',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\_vendor\\__init__.py',
-   'PYMODULE'),
-  ('setuptools._vendor.ordered_set',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\_vendor\\ordered_set.py',
-=======
-  ('setuptools._vendor.packaging',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/packaging/__init__.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('setuptools._vendor.pyparsing',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/pyparsing.py',
-   'PYMODULE'),
-  ('setuptools._vendor.packaging.specifiers',
-<<<<<<< Updated upstream
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\_vendor\\packaging\\specifiers.py',
-=======
   ('setuptools._vendor.packaging',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/packaging/__init__.py',
    'PYMODULE'),
@@ -1243,8 +1071,6 @@
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/pyparsing.py',
    'PYMODULE'),
   ('setuptools._vendor.packaging.specifiers',
-=======
->>>>>>> Stashed changes
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/packaging/specifiers.py',
    'PYMODULE'),
   ('setuptools._vendor.packaging.utils',
@@ -1258,10 +1084,6 @@
    'PYMODULE'),
   ('setuptools._vendor.packaging.__about__',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/setuptools/_vendor/packaging/__about__.py',
-<<<<<<< Updated upstream
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
    'PYMODULE'),
   ('setuptools._vendor.packaging.__about__',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\setuptools\\_vendor\\packaging\\__about__.py',
@@ -1884,29 +1706,12 @@
   ('PIL.Image',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\Image.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('PIL.PcdImagePlugin',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\PcdImagePlugin.py',
-=======
   ('PIL.FitsStubImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/FitsStubImagePlugin.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('PIL.FitsStubImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/FitsStubImagePlugin.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('PIL.ImageFile',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\ImageFile.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('PIL.MpoImagePlugin',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\MpoImagePlugin.py',
-=======
-=======
->>>>>>> Stashed changes
   ('PIL.PcdImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/PcdImagePlugin.py',
    'PYMODULE'),
@@ -1915,26 +1720,12 @@
    'PYMODULE'),
   ('PIL.FpxImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/FpxImagePlugin.py',
-<<<<<<< Updated upstream
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
    'PYMODULE'),
   ('PIL.IcnsImagePlugin',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\IcnsImagePlugin.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('PIL.features',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\features.py',
-=======
   ('PIL.XVThumbImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/XVThumbImagePlugin.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('PIL.XVThumbImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/XVThumbImagePlugin.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('PIL.MicImagePlugin',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\MicImagePlugin.py',
@@ -1942,83 +1733,6 @@
   ('PIL.ImImagePlugin',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\ImImagePlugin.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-=======
-  ('PIL.XbmImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/XbmImagePlugin.py',
-   'PYMODULE'),
->>>>>>> Stashed changes
-  ('PIL.FliImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/FliImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.BufrStubImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/BufrStubImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.MspImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/MspImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.Jpeg2KImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/Jpeg2KImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.SgiImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/SgiImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.MpoImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/MpoImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.GbrImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/GbrImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.CurImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/CurImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.DcxImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/DcxImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.PalmImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/PalmImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.TgaImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/TgaImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.DdsImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/DdsImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.ImImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/ImImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.WebPImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/WebPImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.PsdImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/PsdImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.Hdf5StubImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/Hdf5StubImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.BlpImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/BlpImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.IcnsImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/IcnsImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.PdfImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/PdfImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.PdfParser',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/PdfParser.py',
-   'PYMODULE'),
-  ('PIL.ImageSequence',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/ImageSequence.py',
-   'PYMODULE'),
-  ('PIL.IptcImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/IptcImagePlugin.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('PIL.IcoImagePlugin',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\IcoImagePlugin.py',
-=======
   ('PIL.XbmImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/XbmImagePlugin.py',
    'PYMODULE'),
@@ -2088,36 +1802,17 @@
   ('PIL.IptcImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/IptcImagePlugin.py',
    'PYMODULE'),
-=======
->>>>>>> Stashed changes
   ('PIL.PixarImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/PixarImagePlugin.py',
    'PYMODULE'),
   ('PIL.XpmImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/XpmImagePlugin.py',
-<<<<<<< Updated upstream
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
    'PYMODULE'),
   ('PIL.MspImagePlugin',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\MspImagePlugin.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('PIL.Hdf5StubImagePlugin',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\Hdf5StubImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.DdsImagePlugin',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\DdsImagePlugin.py',
-=======
   ('PIL.IcoImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/IcoImagePlugin.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('PIL.IcoImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/IcoImagePlugin.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('PIL.XpmImagePlugin',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\XpmImagePlugin.py',
@@ -2137,28 +1832,6 @@
   ('PIL.PsdImagePlugin',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\PsdImagePlugin.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('PIL.MpegImagePlugin',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\MpegImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.GbrImagePlugin',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\GbrImagePlugin.py',
-=======
-  ('PIL.EpsImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/EpsImagePlugin.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('PIL.WmfImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/WmfImagePlugin.py',
-   'PYMODULE'),
-  ('PIL.ImtImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/ImtImagePlugin.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('PIL.PdfImagePlugin',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\PdfImagePlugin.py',
-=======
   ('PIL.EpsImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/EpsImagePlugin.py',
    'PYMODULE'),
@@ -2170,11 +1843,6 @@
    'PYMODULE'),
   ('PIL.FtexImagePlugin',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/FtexImagePlugin.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('PIL.FtexImagePlugin',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/PIL/FtexImagePlugin.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('PIL.PdfParser',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\PIL\\PdfParser.py',
@@ -2897,20 +2565,6 @@
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\__init__.py',
    'PYMODULE'),
   ('pygments.lexers._tsql_builtins',
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\_tsql_builtins.py',
-=======
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_tsql_builtins.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers._vbscript_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_vbscript_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers._mql_builtins',
-<<<<<<< Updated upstream
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\_mql_builtins.py',
-=======
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_tsql_builtins.py',
    'PYMODULE'),
   ('pygments.lexers._vbscript_builtins',
@@ -2918,10 +2572,6 @@
    'PYMODULE'),
   ('pygments.lexers._mql_builtins',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_mql_builtins.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_mql_builtins.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.modeline',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\modeline.py',
@@ -2932,115 +2582,13 @@
   ('pygments',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\__init__.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.styles.murphy',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\styles\\murphy.py',
-=======
   ('pygments.styles.emacs',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/emacs.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('pygments.styles.emacs',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/emacs.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.token',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\token.py',
    'PYMODULE'),
   ('pygments.style',
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\style.py',
-=======
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/style.py',
-   'PYMODULE'),
-  ('pygments.styles.murphy',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/murphy.py',
-   'PYMODULE'),
-  ('pygments.styles.sas',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/sas.py',
-   'PYMODULE'),
-  ('pygments.styles.monokai',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/monokai.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.styles.friendly',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/friendly.py',
-   'PYMODULE'),
-  ('pygments.styles.perldoc',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/perldoc.py',
-   'PYMODULE'),
-  ('pygments.styles.algol_nu',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/algol_nu.py',
-   'PYMODULE'),
-  ('pygments.styles.bw',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/bw.py',
-   'PYMODULE'),
-  ('pygments.styles.tango',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/tango.py',
-   'PYMODULE'),
-  ('pygments.styles.trac',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/trac.py',
-   'PYMODULE'),
-  ('pygments.styles.paraiso_dark',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/paraiso_dark.py',
-   'PYMODULE'),
-  ('pygments.styles.inkpot',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/inkpot.py',
-   'PYMODULE'),
-  ('pygments.styles.default',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/default.py',
-   'PYMODULE'),
-  ('pygments.styles.vim',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/vim.py',
-   'PYMODULE'),
-  ('pygments.styles.stata_dark',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/stata_dark.py',
-   'PYMODULE'),
-  ('pygments.styles.lovelace',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/lovelace.py',
-   'PYMODULE'),
-  ('pygments.styles.vs',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/vs.py',
-   'PYMODULE'),
-  ('pygments.styles.rainbow_dash',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/rainbow_dash.py',
-   'PYMODULE'),
-  ('pygments.styles.pastie',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/pastie.py',
-   'PYMODULE'),
-  ('pygments.styles.solarized',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/solarized.py',
-   'PYMODULE'),
-  ('pygments.styles.fruity',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/fruity.py',
-   'PYMODULE'),
-  ('pygments.styles.manni',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/manni.py',
-   'PYMODULE'),
-  ('pygments.styles.xcode',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/xcode.py',
-   'PYMODULE'),
-  ('pygments.styles.autumn',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/autumn.py',
-   'PYMODULE'),
-  ('pygments.styles.igor',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/igor.py',
-   'PYMODULE'),
-  ('pygments.styles',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/__init__.py',
-   'PYMODULE'),
-  ('pygments.styles.stata_light',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/stata_light.py',
-   'PYMODULE'),
-  ('pygments.styles.abap',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/abap.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.styles.trac',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\styles\\trac.py',
-=======
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/style.py',
    'PYMODULE'),
   ('pygments.styles.murphy',
@@ -3126,47 +2674,19 @@
    'PYMODULE'),
   ('pygments.styles.rrt',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/rrt.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('pygments.styles.rrt',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/rrt.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.styles.vim',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\styles\\vim.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.styles.emacs',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\styles\\emacs.py',
-=======
   ('pygments.styles.algol',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/algol.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('pygments.styles.algol',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/algol.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.styles.algol_nu',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\styles\\algol_nu.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.styles.paraiso_light',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\styles\\paraiso_light.py',
-   'PYMODULE'),
-  ('pygments.styles.vs',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\styles\\vs.py',
-=======
   ('pygments.styles.native',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/native.py',
    'PYMODULE'),
-=======
-  ('pygments.styles.native',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/native.py',
-   'PYMODULE'),
->>>>>>> Stashed changes
   ('pygments.styles.colorful',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/styles/colorful.py',
    'PYMODULE'),
@@ -3175,10 +2695,6 @@
    'PYMODULE'),
   ('pygments.lexers.diff',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/diff.py',
-<<<<<<< Updated upstream
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.styles.arduino',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\styles\\arduino.py',
@@ -3300,154 +2816,6 @@
   ('pygments.lexers._postgres_builtins',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\_postgres_builtins.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.lexers.stata',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\stata.py',
-   'PYMODULE'),
-  ('pygments.lexers.yang',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\yang.py',
-   'PYMODULE'),
-  ('pygments.lexers.csound',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\csound.py',
-=======
-  ('pygments.lexers.julia',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/julia.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers.snobol',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/snobol.py',
-   'PYMODULE'),
-  ('pygments.lexers.webidl',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/webidl.py',
-   'PYMODULE'),
-  ('pygments.lexers.j',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/j.py',
-   'PYMODULE'),
-  ('pygments.lexers.xorg',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/xorg.py',
-   'PYMODULE'),
-  ('pygments.lexers.mosel',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/mosel.py',
-   'PYMODULE'),
-  ('pygments.lexers.boa',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/boa.py',
-   'PYMODULE'),
-  ('pygments.lexers.dsls',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/dsls.py',
-   'PYMODULE'),
-  ('pygments.lexers.javascript',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/javascript.py',
-   'PYMODULE'),
-  ('pygments.lexers.webmisc',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/webmisc.py',
-   'PYMODULE'),
-  ('pygments.lexers.factor',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/factor.py',
-   'PYMODULE'),
-  ('pygments.lexers.basic',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/basic.py',
-   'PYMODULE'),
-  ('pygments.lexers.nix',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/nix.py',
-   'PYMODULE'),
-  ('pygments.lexers.roboconf',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/roboconf.py',
-   'PYMODULE'),
-  ('pygments.lexers.perl',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/perl.py',
-   'PYMODULE'),
-  ('pygments.lexers.modeling',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/modeling.py',
-   'PYMODULE'),
-  ('pygments.lexers.forth',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/forth.py',
-   'PYMODULE'),
-  ('pygments.lexers._cocoa_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_cocoa_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers._vim_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_vim_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.idl',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/idl.py',
-   'PYMODULE'),
-  ('pygments.lexers.other',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/other.py',
-   'PYMODULE'),
-  ('pygments.lexers.typoscript',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/typoscript.py',
-   'PYMODULE'),
-  ('pygments.lexers.resource',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/resource.py',
-   'PYMODULE'),
-  ('pygments.lexers.pony',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/pony.py',
-   'PYMODULE'),
-  ('pygments.lexers._php_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_php_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.inferno',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/inferno.py',
-   'PYMODULE'),
-  ('pygments.lexers._lua_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_lua_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.jvm',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/jvm.py',
-   'PYMODULE'),
-  ('pygments.lexers.capnproto',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/capnproto.py',
-   'PYMODULE'),
-  ('pygments.lexers.promql',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/promql.py',
-   'PYMODULE'),
-  ('pygments.lexers.ml',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ml.py',
-   'PYMODULE'),
-  ('pygments.lexers.chapel',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/chapel.py',
-   'PYMODULE'),
-  ('pygments.lexers.theorem',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/theorem.py',
-   'PYMODULE'),
-  ('pygments.lexers.parasail',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/parasail.py',
-   'PYMODULE'),
-  ('pygments.lexers.hexdump',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/hexdump.py',
-   'PYMODULE'),
-  ('pygments.lexers.fortran',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/fortran.py',
-   'PYMODULE'),
-  ('pygments.lexers.qvt',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/qvt.py',
-   'PYMODULE'),
-  ('pygments.lexers.graph',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/graph.py',
-   'PYMODULE'),
-  ('pygments.lexers.web',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/web.py',
-   'PYMODULE'),
-  ('pygments.lexers.hdl',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/hdl.py',
-   'PYMODULE'),
-  ('pygments.lexers.ezhil',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ezhil.py',
-   'PYMODULE'),
-  ('pygments.lexers.asm',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/asm.py',
-   'PYMODULE'),
-  ('pygments.lexers.oberon',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/oberon.py',
-   'PYMODULE'),
-  ('pygments.lexers.r',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/r.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.lexers.iolang',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\iolang.py',
-=======
   ('pygments.lexers.julia',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/julia.py',
    'PYMODULE'),
@@ -3610,55 +2978,6 @@
   ('pygments.lexers.matlab',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/matlab.py',
    'PYMODULE'),
-  ('pygments.lexers.nit',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/nit.py',
-   'PYMODULE'),
-  ('pygments.lexers.whiley',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/whiley.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('pygments.lexers.rdf',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/rdf.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers.arrow',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/arrow.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.lexers.textfmts',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\textfmts.py',
-=======
-  ('pygments.lexers.automation',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/automation.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers._lasso_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_lasso_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers._mysql_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_mysql_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.robotframework',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/robotframework.py',
-   'PYMODULE'),
-  ('pygments.lexers.gdscript',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/gdscript.py',
-   'PYMODULE'),
-  ('pygments.lexers.business',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/business.py',
-   'PYMODULE'),
-  ('pygments.lexers.solidity',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/solidity.py',
-   'PYMODULE'),
-  ('pygments.lexers.matlab',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/matlab.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.lexers.ampl',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\ampl.py',
-=======
-=======
   ('pygments.lexers.nit',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/nit.py',
    'PYMODULE'),
@@ -3668,7 +2987,6 @@
   ('pygments.lexers.nimrod',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\nimrod.py',
    'PYMODULE'),
->>>>>>> Stashed changes
   ('pygments.lexers.zig',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/zig.py',
    'PYMODULE'),
@@ -3680,48 +2998,10 @@
    'PYMODULE'),
   ('pygments.lexers.varnish',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/varnish.py',
-<<<<<<< Updated upstream
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.lexers.c_cpp',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\c_cpp.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.lexers.haskell',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\haskell.py',
-=======
-  ('pygments.lexers.data',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/data.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers.php',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/php.py',
-   'PYMODULE'),
-  ('pygments.lexers.urbi',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/urbi.py',
-   'PYMODULE'),
-  ('pygments.lexers.usd',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/usd.py',
-   'PYMODULE'),
-  ('pygments.lexers.functional',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/functional.py',
-   'PYMODULE'),
-  ('pygments.lexers.supercollider',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/supercollider.py',
-   'PYMODULE'),
-  ('pygments.lexers.email',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/email.py',
-   'PYMODULE'),
-  ('pygments.lexers.go',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/go.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.lexers.php',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\php.py',
-=======
   ('pygments.lexers.data',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/data.py',
    'PYMODULE'),
@@ -3746,8 +3026,6 @@
   ('pygments.lexers.go',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/go.py',
    'PYMODULE'),
-=======
->>>>>>> Stashed changes
   ('pygments.lexers.foxpro',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/foxpro.py',
    'PYMODULE'),
@@ -3768,81 +3046,10 @@
    'PYMODULE'),
   ('pygments.lexers.haxe',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/haxe.py',
-<<<<<<< Updated upstream
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.lexers.teraterm',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\teraterm.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.lexers.nix',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\nix.py',
-=======
-  ('pygments.lexers.shell',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/shell.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers.testing',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/testing.py',
-   'PYMODULE'),
-  ('pygments.lexers.special',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/special.py',
-   'PYMODULE'),
-  ('pygments.lexers.verification',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/verification.py',
-   'PYMODULE'),
-  ('pygments.lexers._scilab_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_scilab_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.praat',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/praat.py',
-   'PYMODULE'),
-  ('pygments.lexers.apl',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/apl.py',
-   'PYMODULE'),
-  ('pygments.lexers.grammar_notation',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/grammar_notation.py',
-   'PYMODULE'),
-  ('pygments.lexers._cl_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_cl_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.textedit',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/textedit.py',
-   'PYMODULE'),
-  ('pygments.lexers.dalvik',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/dalvik.py',
-   'PYMODULE'),
-  ('pygments.lexers._asy_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_asy_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.esoteric',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/esoteric.py',
-   'PYMODULE'),
-  ('pygments.lexers.fantom',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/fantom.py',
-   'PYMODULE'),
-  ('pygments.lexers.ecl',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ecl.py',
-   'PYMODULE'),
-  ('pygments.lexers.bibtex',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/bibtex.py',
-   'PYMODULE'),
-  ('pygments.lexers.archetype',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/archetype.py',
-   'PYMODULE'),
-  ('pygments.lexers.int_fiction',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/int_fiction.py',
-   'PYMODULE'),
-  ('pygments.lexers.sql',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/sql.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.lexers.d',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\d.py',
-=======
   ('pygments.lexers.shell',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/shell.py',
    'PYMODULE'),
@@ -3900,8 +3107,6 @@
   ('pygments.lexers.sql',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/sql.py',
    'PYMODULE'),
-=======
->>>>>>> Stashed changes
   ('pygments.lexers.pascal',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/pascal.py',
    'PYMODULE'),
@@ -3916,48 +3121,10 @@
    'PYMODULE'),
   ('pygments.lexers.unicon',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/unicon.py',
-<<<<<<< Updated upstream
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.lexers.ambient',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\ambient.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.lexers._usd_builtins',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\_usd_builtins.py',
-=======
-  ('pygments.lexers.ampl',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ampl.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers.graphics',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/graphics.py',
-   'PYMODULE'),
-  ('pygments.lexers.haskell',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/haskell.py',
-   'PYMODULE'),
-  ('pygments.lexers._csound_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_csound_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.elm',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/elm.py',
-   'PYMODULE'),
-  ('pygments.lexers.css',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/css.py',
-   'PYMODULE'),
-  ('pygments.lexers.compiled',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/compiled.py',
-   'PYMODULE'),
-  ('pygments.lexers.actionscript',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/actionscript.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.lexers.automation',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\automation.py',
-=======
   ('pygments.lexers.ampl',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ampl.py',
    'PYMODULE'),
@@ -3982,8 +3149,6 @@
   ('pygments.lexers.actionscript',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/actionscript.py',
    'PYMODULE'),
-=======
->>>>>>> Stashed changes
   ('pygments.lexers.pointless',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/pointless.py',
    'PYMODULE'),
@@ -4001,51 +3166,10 @@
    'PYMODULE'),
   ('pygments.lexers.ncl',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ncl.py',
-<<<<<<< Updated upstream
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.lexers.functional',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\functional.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.lexers.ruby',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\ruby.py',
-=======
-  ('pygments.lexers.ride',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ride.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers._usd_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_usd_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.crystal',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/crystal.py',
-   'PYMODULE'),
-  ('pygments.lexers.dylan',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/dylan.py',
-   'PYMODULE'),
-  ('pygments.lexers.smalltalk',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/smalltalk.py',
-   'PYMODULE'),
-  ('pygments.lexers._openedge_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_openedge_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.trafficscript',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/trafficscript.py',
-   'PYMODULE'),
-  ('pygments.lexers.ruby',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ruby.py',
-   'PYMODULE'),
-  ('pygments.lexers.d',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/d.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.lexers.xorg',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\xorg.py',
-=======
   ('pygments.lexers.ride',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ride.py',
    'PYMODULE'),
@@ -4075,148 +3199,10 @@
    'PYMODULE'),
   ('pygments.lexers._postgres_builtins',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_postgres_builtins.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('pygments.lexers._postgres_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_postgres_builtins.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.lexers.j',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\j.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.lexers.ml',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\ml.py',
-   'PYMODULE'),
-  ('pygments.lexers._csound_builtins',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\lexers\\_csound_builtins.py',
-=======
-  ('pygments.lexers.make',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/make.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.lexers.templates',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/templates.py',
-   'PYMODULE'),
-  ('pygments.lexers.console',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/console.py',
-   'PYMODULE'),
-  ('pygments.lexers.smv',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/smv.py',
-   'PYMODULE'),
-  ('pygments.lexers.clean',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/clean.py',
-   'PYMODULE'),
-  ('pygments.lexers._stan_builtins',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/_stan_builtins.py',
-   'PYMODULE'),
-  ('pygments.lexers.installers',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/installers.py',
-   'PYMODULE'),
-  ('pygments.lexers.csound',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/csound.py',
-   'PYMODULE'),
-  ('pygments.lexers.x10',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/x10.py',
-   'PYMODULE'),
-  ('pygments.lexers.lisp',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/lisp.py',
-   'PYMODULE'),
-  ('pygments.lexers.mime',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/mime.py',
-   'PYMODULE'),
-  ('pygments.lexers.ooc',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ooc.py',
-   'PYMODULE'),
-  ('pygments.lexers.agile',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/agile.py',
-   'PYMODULE'),
-  ('pygments.lexers.objective',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/objective.py',
-   'PYMODULE'),
-  ('pygments.lexers.freefem',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/freefem.py',
-   'PYMODULE'),
-  ('pygments.lexers.scdoc',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/scdoc.py',
-   'PYMODULE'),
-  ('pygments.lexers.tnt',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/tnt.py',
-   'PYMODULE'),
-  ('pygments.lexers.parsers',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/parsers.py',
-   'PYMODULE'),
-  ('pygments.lexers.igor',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/igor.py',
-   'PYMODULE'),
-  ('pygments.lexers.nimrod',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/nimrod.py',
-   'PYMODULE'),
-  ('pygments.lexers.tcl',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/tcl.py',
-   'PYMODULE'),
-  ('pygments.lexers.sgf',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/sgf.py',
-   'PYMODULE'),
-  ('pygments.lexers.devicetree',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/devicetree.py',
-   'PYMODULE'),
-  ('pygments.lexers.c_cpp',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/c_cpp.py',
-   'PYMODULE'),
-  ('pygments.lexers.erlang',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/erlang.py',
-   'PYMODULE'),
-  ('pygments.lexers.sieve',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/sieve.py',
-   'PYMODULE'),
-  ('pygments.lexers.sas',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/sas.py',
-   'PYMODULE'),
-  ('pygments.lexers.python',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/python.py',
-   'PYMODULE'),
-  ('pygments.unistring',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/unistring.py',
-   'PYMODULE'),
-  ('pygments.lexers.scripting',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/scripting.py',
-   'PYMODULE'),
-  ('pygments.lexers.c_like',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/c_like.py',
-   'PYMODULE'),
-  ('pygments.lexers.stata',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/stata.py',
-   'PYMODULE'),
-  ('pygments.lexers.felix',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/felix.py',
-   'PYMODULE'),
-  ('pygments.lexers.eiffel',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/eiffel.py',
-   'PYMODULE'),
-  ('pygments.lexers.modula2',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/modula2.py',
-   'PYMODULE'),
-  ('pygments.lexers.ambient',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/ambient.py',
-   'PYMODULE'),
-  ('pygments.lexers.pawn',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/pawn.py',
-   'PYMODULE'),
-  ('pygments.lexers.iolang',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/iolang.py',
-   'PYMODULE'),
-  ('pygments.lexers.textfmts',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/textfmts.py',
-   'PYMODULE'),
-  ('pygments.formatters.html',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/formatters/html.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.formatters.terminal256',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\formatters\\terminal256.py',
-=======
   ('pygments.lexers.make',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/lexers/make.py',
    'PYMODULE'),
@@ -4339,31 +3325,10 @@
    'PYMODULE'),
   ('pygments.formatter',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/formatter.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('pygments.formatter',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/formatter.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.console',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\console.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.formatter',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\formatter.py',
-=======
-  ('pygments.formatters.bbcode',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/formatters/bbcode.py',
->>>>>>> Stashed changes
-   'PYMODULE'),
-  ('pygments.formatters.rtf',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/formatters/rtf.py',
-   'PYMODULE'),
-<<<<<<< Updated upstream
-  ('pygments.formatters.img',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\formatters\\img.py',
-=======
   ('pygments.formatters.bbcode',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/formatters/bbcode.py',
    'PYMODULE'),
@@ -4372,11 +3337,6 @@
    'PYMODULE'),
   ('pygments.formatters.latex',
    '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/formatters/latex.py',
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
-  ('pygments.formatters.latex',
-   '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages/pygments/formatters/latex.py',
->>>>>>> Stashed changes
    'PYMODULE'),
   ('pygments.formatters.terminal',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\formatters\\terminal.py',
@@ -4390,18 +3350,6 @@
   ('pygments.formatters.other',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\formatters\\other.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pygments.formatters.html',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\formatters\\html.py',
-   'PYMODULE'),
-  ('pygments.formatters.bbcode',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\formatters\\bbcode.py',
-   'PYMODULE'),
-=======
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
   ('pygments.formatters.svg',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pygments\\formatters\\svg.py',
    'PYMODULE'),
@@ -7151,15 +6099,6 @@
   ('pandas',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pandas\\__init__.py',
    'PYMODULE'),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-  ('pandas._libs.window',
-   'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pandas\\_libs\\window\\__init__.py',
-   'PYMODULE'),
-=======
->>>>>>> 71a1284e377d2b00af05fbae00efb4f057fdd290
-=======
->>>>>>> Stashed changes
   ('pandas._libs.tslibs',
    'c:\\users\\joonl\\appdata\\local\\programs\\python\\python39\\lib\\site-packages\\pandas\\_libs\\tslibs\\__init__.py',
    'PYMODULE'),

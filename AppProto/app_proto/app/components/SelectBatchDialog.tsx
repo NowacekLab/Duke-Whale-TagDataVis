@@ -44,7 +44,7 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
     <WrapWithDialog
         showModal={props.showModal}
         handleClose={props.handleClose}
-        handleBack={props.infoOpen ? () => props.onInfoClose(false) : props.handleBack}
+        handleBack={props.infoOpen ? () => props.onInfoClose() : props.handleBack}
         title = {props.infoOpen ? props.displayBatchName : "Batches"}
     >
         {
@@ -129,6 +129,7 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
                         <Button
                             className={classes.btn}
                             onClick={props.confirmDisplayBatchName}
+                            variant="outlined"
                         >
                             {`Select`}
                         </Button>

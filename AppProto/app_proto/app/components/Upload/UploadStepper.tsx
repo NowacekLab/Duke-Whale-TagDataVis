@@ -73,7 +73,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
     const dispatch = useDispatch();
 
-    const notifActionHandler = new notifsActionsHandler(dispatch);
+    const notifActionHandler = new notifsActionsHandler(dispatch, "Upload");
 
     //@ts-ignore
     const uploadProgState = useSelector(state => state["uploads"]);
@@ -513,7 +513,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         beginUpload(uploadInfoObj);
     }
 
-
+    // TODO: before button 
     const getFinalBtns = () => {
         return (
             <Button 

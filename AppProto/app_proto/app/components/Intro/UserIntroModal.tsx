@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import introActionsHandler from "../../functions/intro/introActionsHandler";
 import {makeStyles} from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
@@ -46,11 +45,7 @@ export default function UserIntroModal() {
     const classes = useStyles();
 
     const dispatch = useDispatch();
-    const introHandler = new introActionsHandler(dispatch);
-    const introState = useSelector(state => state.intro);
-    const userFirstTime = introState['first'];
 
-    const [showPaper, setShowPaper] = useState(userFirstTime);
     const handlePaperClose = () => {
         setShowPaper(false);
     }

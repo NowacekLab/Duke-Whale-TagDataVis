@@ -114,7 +114,6 @@ def exportFig(fig, updateFunc, name, frameNum):
     fig.set_size_inches(16, 9, True)
     anim.save('.'.join(name.split(".")[0:-1]) + '.gif', writer = animation.PillowWriter(fps = 30))
 
-
 def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
 
     dcf = 1000

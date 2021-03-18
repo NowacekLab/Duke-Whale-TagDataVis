@@ -7,9 +7,7 @@ const Lodash = require('lodash');
 // const slayer=require('slayer');
 
 export const graphingFuncs3D = {
-    "trackplot": trackplot,
-    "trackplot_animated": trackplot_animated,
-    "sideroll_poi": Sideroll,
+    "3D Static": trackplot,
 }
 
 type DataFrame = any;

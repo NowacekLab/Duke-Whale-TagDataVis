@@ -289,9 +289,9 @@ def _preCalc(cmdLineArgs: dict) -> PandasDataFrame:
             velocityComponents[i, 1] = dx[i + 1, 1] - dx[i, 1]
         v_total = np.sqrt(velocityComponents[:, 0] ** 2 + velocityComponents[:, 1] ** 2)
         
-        csv['Latitude'] = latArray[:-1]
-        csv['Longitude'] = longArray[:-1]
-        csv['Time'] = time
+    csv['Latitude'] = latArray[:-1]
+    csv['Longitude'] = longArray[:-1]
+    csv['Time'] = time
         
         # if max(v_total) * fs > v * maxVelocityScale:
 

@@ -40,10 +40,10 @@ const useStyles = makeStyles({
     mainBody: {
         width: "100%",
         height: "100%",
-        padding: "10px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 0 
     }
 });
 
@@ -79,24 +79,21 @@ const GraphsPaper = (props: GraphPaperProps) => {
             elevation={3}
             className={classes.uploadPaper}
         >
-            
-            <div
-                className={classes.mainBody}
-            >
                 {
-                    state.data && state.data.length === 0 ?
+                    // state.data && state.data.length === 0 ?
 
-                    <h1>
-                        Select a plot to render.
-                    </h1>
+                    // <h1>
+                    //     Select a plot to render.
+                    // </h1>
 
-                    :
+                    // :
 
                     <Plot 
                         data={state.data}
                         layout={state.layout}
                         frames={state.frames}
                         config={state.config}
+                        className={classes.mainBody}
                     />
 
                     ??
@@ -105,7 +102,6 @@ const GraphsPaper = (props: GraphPaperProps) => {
                         Failed to render plot.
                     </h1>
                 }
-            </div>
 
 
         </Paper>

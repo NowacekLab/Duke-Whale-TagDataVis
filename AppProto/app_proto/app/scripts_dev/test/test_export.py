@@ -15,8 +15,9 @@ class TestExportGeneric(unittest.TestCase):
     TEST_DIRECTORY = TEST_DIR 
     TEST_FILE_NAMES = ['foo', 'bar', 'zee']
     
-    def setUp(self):
-        os.mkdir(self.TEST_DIRECTORY)
+    def setUp(self): 
+        if not os.path.exists(self.TEST_DIRECTORY):
+            os.mkdir(self.TEST_DIRECTORY)
         
     def tearDown(self):
         shutil.rmtree(self.TEST_DIRECTORY) 
@@ -51,7 +52,8 @@ class TestExportHTML(unittest.TestCase):
     TEST_FILE_PATHS = HTML_EXPORT_TEST_FILES
     
     def setUp(self):
-        os.mkdir(self.TEST_DIRECTORY)
+        if not os.path.exists(self.TEST_DIRECTORY):
+            os.mkdir(self.TEST_DIRECTORY)
 
     def tearDown(self):
         shutil.rmtree(self.TEST_DIRECTORY)
@@ -71,24 +73,24 @@ class TestExportHTML(unittest.TestCase):
     def file_names_from_paths(self, file_paths):
         return [os.path.basename(file_path) for file_path in file_paths]
 
-# class TestExportVideo(unittest.TestCase):
+class TestExportVideo(unittest.TestCase):
     
-#     TEST_DIRECTORY = TEST_DIR 
-#     TEST_FILE_PATHS = VIDEO_EXPORT_TEST_FILES
+    TEST_DIRECTORY = TEST_DIR 
+    TEST_FILE_PATHS = VIDEO_EXPORT_TEST_FILES
     
-#     def setUp(self):
-#         os.mkdir(self.TEST_DIRECTORY)
+    def setUp(self):
+        os.mkdir(self.TEST_DIRECTORY)
         
-#     def tearDown(self):
-#         print("REMOVE test/test")
+    def tearDown(self):
+        print("REMOVE test/test")
         
-#         # shutil.rmtree(self.TEST_DIRECTORY)
+        # shutil.rmtree(self.TEST_DIRECTORY)
     
-#     def test_export_video_single_one(self):
-#         export_video.export_video_single(self.TEST_FILE_PATHS[0], self.TEST_DIRECTORY)
-#         new_file_paths = [os.path.join(self.TEST_DIRECTORY, self.TEST_FILE_PATHS[0])]
-#         success = do_file_paths_exist(new_file_paths)
-#         self.assertTrue(success)
+    def test_export_video_single_one(self):
+        new_file_path = export_video.export_video_single(self.TEST_FILE_PATHS[0], self.TEST_DIRECTORY)
+        new_file_paths = [new_file_path]
+        success = do_file_paths_exist(new_file_paths)
+        self.assertTrue(success)
 
 if __name__ == "__main__":
     unittest.main()

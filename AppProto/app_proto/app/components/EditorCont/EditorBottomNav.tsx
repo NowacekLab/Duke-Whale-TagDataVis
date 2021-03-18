@@ -143,6 +143,7 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
                 <Button
                     onClick={toggleBatchModal}
                     className={classes.btn}
+                    variant="outlined"
                 >
                     {batchBtnVal}
                 </Button>
@@ -150,6 +151,7 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
                 <Button
                     className={classes.btn}
                     onClick={toggleRangeModal}
+                    variant="outlined"
                 >
                     {rangeConfirmed ? `${realMinRange} : ${realMaxRange}` : "Confirm Range"}
                 </Button>

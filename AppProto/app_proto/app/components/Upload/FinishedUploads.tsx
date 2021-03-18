@@ -52,7 +52,7 @@ export default function FinishedUploads() {
     const uploadProgHandler = new uploadsActionsHandler(dispatch);
     const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
 
-    const notifHandler = new notifsActionsHandler(dispatch);
+    const notifHandler = new notifsActionsHandler(dispatch, "Finished Uploads");
 
     const [infoOpen, setInfoOpen] = useState(false);
     const handleInfoToggle = () => {
@@ -90,11 +90,12 @@ export default function FinishedUploads() {
             >
                 {
                     Object.keys(uploadsFinished) ? 
-                    Object.keys(uploadsFinished).map((batchName) => {
+                    Object.keys(uploadsFinished).map((batchName, idx) => {
                          //@ts-ignore
                         const uploadProgObj = uploadsFinished[batchName];
                         const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
- 
+                        
+
                         return (
                             <>
                                 <ListItem
@@ -105,7 +106,6 @@ export default function FinishedUploads() {
                                     <ListItemText
                                         primary={batchName}
                                     />
-
                                     <ListItemSecondaryAction>
                                         <IconButton 
                                             edge = "end"

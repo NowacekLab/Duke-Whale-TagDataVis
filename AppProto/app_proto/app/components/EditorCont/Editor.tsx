@@ -1,11 +1,9 @@
-import React, {useState, useEffect} from 'react'; 
+import React, {useState} from 'react'; 
 import {makeStyles} from "@material-ui/core/styles";
 import CustomEditor from "./CustomEditor";
 import EditorBottomNav from "./EditorBottomNav";
-import {loadFileInfoArr} from "../../functions/uploads/upload";
 import {getObjFromPath} from "../../functions/files";
 import useIsMountedRef from "../../functions/useIsMountedRef";
-import Notification from "../Notification";
 
 const useStyles = makeStyles({
     root: {
