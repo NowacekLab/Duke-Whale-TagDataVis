@@ -112,7 +112,7 @@ def exportFig(fig, updateFunc, name, frameNum):
                               frames=frameNum, interval=50, blit=True)
 
     fig.set_size_inches(16, 9, True)
-    anim.save('.'.join(name.split(".")[0:-1]) + '.gif', writer = animation.PillowWriter(fps = 30))
+    anim.save('.'.join(name.split(".")[0:-1]) + '.gif', writer = animation.PillowWriter(fps = 10))
 
 def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
 
@@ -191,11 +191,11 @@ def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; f
         ax.set_zlim(markZ[i] - 400, markZ[i] + 400)
         return mesh, line_d, line_xy
     
-    ani = Player(fig, update, maxi=frameNum)
-        
-    intPlot(ani)
     if export == True:
         exportFig(fig, update, calc_file_path, frameNum)
-    
+        
+    ani = Player(fig, update, maxi=frameNum)
+    intPlot(ani)
+   
     return 0
 

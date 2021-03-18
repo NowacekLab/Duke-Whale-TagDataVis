@@ -1,6 +1,6 @@
 '''
 Author: Mitchell
-This code is used to find points of interest such as feeding points
+This code is used to find the mahalanobis distance between three variables and highlight points of interest
 '''
 
 import pandas as pd
@@ -9,9 +9,8 @@ import scipy as sp
 import scipy.signal as sg
 from scipy.stats import chi2
 import plotly.graph_objects as go
-import math
-# pip install ipywidgets
 from plotly.subplots import make_subplots
+import math
 
 def mahalanobis(x=None, data=None, cov=None):
     """Compute the Mahalanobis Distance between each row of x and the data  
@@ -30,85 +29,97 @@ def mahalanobis(x=None, data=None, cov=None):
     return mahal.diagonal()
 
 
-def findPOI(filename):
+def findPOI(filename, var1, var2, var3, p_limit = 0.003, windowSize = 60, groupSize = 5, depthLimit = 0):
+    """
+    This function utilizes mahalanobis distance to find points of interest. 
+    A group of points of 'groupSize' number of windows is slid across the data at 1 window intervals. 
+    Each window consists of 'windowSize' times the sampling frequency number of points. 
+    The mean mahalanobis distance of overlaping windows was then recorded.
+    Variables:
+        filename : .csv file of data (must include var1, var2, var3, and a sampling frequency 'fs')
+        var1, var2, var3 : strings of the names of the variables to calcualate mahalanobis distance between
+        p_limit : p value of mahalanobis distance must be less than this value to trigger POI
+        windowSize : length in seconds of a window of data, default 60 seconds to calculate mahalanobis distance
+        groupSize : number of instersecting windows to calucualte mean from, default 5 windows
+        depthLimit : minimum depth necessary in order for POI to trigger, default 0
+    """
     # Pull in Data
     data = pd.read_csv(filename)
 
-    # Pull Specific Variables
+    # Pull Specific Variables : 
     fs = data['fs'].tolist()[0]
-    head = data['Heading'].tolist()
-    head = [x*180/np.pi for x in head]
-    p = data['Depth'].tolist()
-    roll = data['Roll'].tolist()
-    roll = [x*180/np.pi for x in roll]
-    pitch = data['Pitch'].tolist()
-    pitch = [x*180/np.pi for x in pitch]
-    Aw_x = data['WhaleAccel_X'].tolist()
-    # print("Lenght of Aw_x: ", len(Aw_x))
+    p = np.array(data["Depth"])
+
+    # True time in datetime format
+    """commented out due to errors with marker plot and datetime"""
+    # t = data["Time"]
 
     # Calculate time 
     numData = len(p)
     t = [x/fs for x in range(numData)]
     t_hr = [x/3600 for x in t]
 
-    # Scaling Factor to reduce amount of data
-    scale = 10
+    # Pull variables of interest into one dataframe
+    df_x = data[[var1, var2, var3]]
 
-    # Reduce Data
-    sP = sg.decimate(p,scale).copy()
-    sRoll = sg.decimate(roll,scale).copy()
-    sPitch = sg.decimate(pitch,scale).copy()
-    sHead = sg.decimate(head,scale).copy()
+    # Compute index length of window
+    window = int(fs*windowSize) # Converted to int because some of fs are floats 
+    numWindows = math.floor(len(p)/window) # Number of windows in dataset
 
-    # Calculate Reduced time 
-    numData = len(sP)
-    sT = [x/(fs/scale) for x in range(numData)]
-    sT_hr = [x/3600 for x in sT]
-
-    # Find Mahalanobis Distance
-
-    df_x = data[['WhaleAccel_X', 'WhaleAccel_Y', 'WhaleAccel_Z']]
-    # print("Lenght of df_x(whaleaccel): ", len(df_x['WhaleAccel_X']))
-    # print(data[['WhaleAccel_X', 'WhaleAccel_Y', 'WhaleAccel_Z']][0:10])
-    # print(df_x['WhaleAccel_X'].head(10))
-    l_mahala = []
-    window = int(fs*60) # Converted to int because some of fs are floats 
+    # Create groups to run through
+    group = window*groupSize # GroupSize defined by function inputs
+    numGroups = math.floor(len(p)/group)
     
-    for i in range(math.floor(len(p)/window)):
-        l_mahala[(window*(i+1)-1):(window*(i+1)-1)] = mahalanobis(x=df_x[(window*i):(window*(i+1))], data=data[['WhaleAccel_X', 'WhaleAccel_Y', 'WhaleAccel_Z']][(window*i):(window*(i+1))])
-        if i == math.floor(len(p)/window)-1:
-            l_mahala[(window*(i+1)-1):(window*(i+1)-1)] = mahalanobis(x=df_x[(window*(i+1)):len(p)], data=data[['WhaleAccel_X', 'WhaleAccel_Y', 'WhaleAccel_Z']][(window*(i+1)):len(p)])
-    df_x['mahala'] = l_mahala
-    # print("Lenght of data(mahala): ", len(df_x['mahala']))
-    df_x.head()
+    # Alternate Windowing method:
+    # Create Dataframe for calculating mean mahalanobis between intersections
+    mean_df = pd.DataFrame(np.NaN, index = range(group + window*(groupSize-1)), columns = range(groupSize))
+    # Create an array to compile averaged mahalanobis distances per window
+    l_mahala = [0]*len(p)
 
-    # Compute the P-Values
+    # Loop through windows of the data
+    for i in range(numWindows):
+        # Print Status of function in console
+        print(i+1,"of", numWindows)
+        # First windows within the groupSize
+        if i < groupSize:
+            # Fill the mean dataframe
+            mean_df[i][window*i : window*i + group] = mahalanobis(x = df_x[(window*i): (window*i+group)], data = data[[var1, var2, var3]][(window*i):(window*i + group)])
+            l_mahala[window*i:window*(i+1)] = mean_df.mean(axis = 1)[window*i:window*(i+1)]
+        # Middle Windows with full overlap for mean calculation
+        elif i >= groupSize and i <= (numWindows - groupSize):
+            # Shift mean dataframe to track the next window
+            mean_df.shift(periods = -window, axis = 0)
+            mean_df.shift(periods = -1, axis = 1)
+            # Fill mean dataframe and calculate overlapping means
+            mean_df[(groupSize-1)][window*(groupSize-1):] = mahalanobis(x = df_x[(window*i): (window*i+group)], data = data[[var1, var2, var3]][(window*i):(window*i + group)])
+            l_mahala[window*i:window*(i+1)] = mean_df.mean(axis = 1)[window*(groupSize-1):window*groupSize]
+        # End of the data, must account for not full window at the end
+        else:
+            # Shift mean dataframe to track the next window
+            mean_df.shift(periods = -window, axis = 0)
+            mean_df.shift(periods = -1, axis = 1)
+            # Fill mean dataframe and calculate overlapping means
+            mean_df[(groupSize-1)][window*(groupSize-1): (window*(groupSize-1) + len(data[var1][(window*i):]))] = mahalanobis(x = df_x[(window*i):], data = data[[var1, var2, var3]][(window*i):])
+            # Fill averaged mahalanobis, if tree for final window which most likely is not full
+            if i == numWindows - 1:
+                l_mahala[window*i:] = mean_df.mean(axis = 1)[window*(groupSize-1):(window*(groupSize-1) + len(data[var1][(window*i):]))]
+            else:
+                l_mahala[window*i:window*(i+1)] = mean_df.mean(axis = 1)[window*(groupSize-1):window*groupSize]
+
+    # Insert mean mahalanobis distance list into dataframe
+    df_x['mahala'] = l_mahala
+
+    # Compute P-Values of mahalanobis distance
     df_x['p_value'] = 1 - chi2.cdf(df_x['mahala'], 2)
 
-    # Extreme values with a significance level of 0.001
-    # print(df_x['mahala'].head(10))
-    # print(df_x.loc[df_x.p_value < 0.01].head(10))
-    POIpts = df_x.loc[df_x.p_value < 0.001]
-    # print(POIpts.index)
+    # Pull indexes of points with p values smaller than the set limit
+    POIpts = df_x.loc[df_x.p_value < p_limit]
 
-    
+    # Pull and x and y for depth of POI
+    POIx = [t_hr[i] for i in POIpts.index if p[i] > depthLimit]
+    POIy = [p[i] for i in POIpts.index if p[i] > depthLimit]
 
-    # Implement Rolling Standard Deviation
-
-    # r_STD = pd.rolling_std(sPitch, fs)
-    pdPitch = pd.Series(pitch)
-    r_STD = pdPitch.rolling(int(window/scale)).std()
-
-    # Highlight POI
-    # POIx = [sT_hr[i] for i in range(len(r_STD)) if r_STD[i] < 5 and sP[i] > 50]
-    # POIy = [sPitch[i] for i in range(len(r_STD)) if r_STD[i] < 5 and sP[i] > 50]
-
-    depthLimit = 15
-    stdLimit = 7.5
-    POIx = [t_hr[i] for i in POIpts.index if p[i] > depthLimit and r_STD[i] < stdLimit]
-    POIy = [p[i] for i in POIpts.index if p[i] > depthLimit and r_STD[i] < stdLimit]
-
-    # Make Widget Figure 
+    # Make Figure 
     fig = go.Figure(
             make_subplots(
                 # Deifne dimensions of subplot
@@ -121,39 +132,63 @@ def findPOI(filename):
         )
 
     # Create traces for the data and add to figure
-    fig.add_trace(go.Scattergl(x = sT_hr, y = sP, mode = "lines", name = "Depth"), row = 1, col = 1) 
-    fig.add_trace(go.Scattergl(x = t_hr, y = df_x["WhaleAccel_X"], mode = "lines", name = "Aw X"), row = 2, col = 1)
-    fig.add_trace(go.Scattergl(x = t_hr, y = df_x["WhaleAccel_X"], mode = "lines", name = "Aw Y"), row = 2, col = 1)
-    fig.add_trace(go.Scattergl(x = t_hr, y = df_x["WhaleAccel_X"], mode = "lines", name = "Aw Z" ), row = 2, col = 1)
-    fig.add_trace(go.Scattergl(x = t_hr, y = df_x["mahala"], mode = "lines", name = "Mahalanobis" ), row = 2, col = 1)
-    fig.add_trace(go.Scattergl(x = t_hr, y = pitch, mode = "lines", name = "Pitch" ), row = 2, col = 1)
+    # fig.add_trace(go.Scattergl(x = sT_hr, y = sP, mode = "lines", name = "Depth"), row = 1, col = 1) 
+    fig.add_trace(go.Scattergl(x = t_hr, y = p, mode = "lines", name = "Depth"), row = 1, col = 1) 
     fig.add_trace(go.Scattergl(x = POIx, y = POIy, mode = "markers", name = "POI", marker = dict(color = 'green', symbol = 'square', size = 10)), row = 1, col = 1)
-
+    fig.add_trace(go.Scattergl(x = t_hr, y = df_x[var1], mode = "lines", name = var1), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = t_hr, y = df_x[var2], mode = "lines", name = var2), row = 2, col = 1)
+    fig.add_trace(go.Scattergl(x = t_hr, y = df_x[var3], mode = "lines", name = var3), row = 2, col = 1)
+   
     # Update x-axis
     fig.update_xaxes(title = "Time (hr)", rangeslider = dict(visible = True), row = 2, col = 1)
     # Update y-axis
     fig.update_yaxes(title = "Depth (m)", autorange = "reversed", row = 1, col = 1)
 
-    fig.update_layout(title = filename)
+    # Code to add windowing button - 
+    """commented out until x axis is in datetime format"""
+    # fig.update_layout(
+    #     title = filename.split('/')[-1],
+    #     width = 1200,
+    #     height = 800,
+    #     xaxis=dict(
+    #         rangeselector=dict(
+    #             buttons=list([
+    #                 dict(count=1,
+    #                     label="1 hr",
+    #                     step="hour",
+    #                     stepmode="backward"),
+    #                 dict(count=30,
+    #                     label="30 min",
+    #                     step="minute",
+    #                     stepmode="backward"),
+    #                 dict(count=10,
+    #                     label="10 min",
+    #                     step="minute",
+    #                     stepmode="backward"),
+    #                 dict(count=1,
+    #                     label="1 min",
+    #                     step="minute",
+    #                     stepmode="backward"),
+    #                 dict(count=30,
+    #                     label="30 sec",
+    #                     step="second",
+    #                     stepmode="backward"),
+    #                 dict(step="all")
+    #             ])
+    #         ),
+    #         type="date"
+    #     )
+    # )
+    
     # Show figure and save as an HTML
     fig.show()
-    fig.write_html('.'.join(filename.split('.')[0:-1]) + '_findPOI_v1.html')
-
-    # # X = fft(pitch)/L*2; X(1) = X(1)/2;
-    # # f = [0:L-1]'/L*fs;
-    # Lseg = fs*120
-    # Nseg = int(len(p)/Lseg)
-    # remainder = len(p)%Lseg
-    # f = [x*fs/Lseg for x in range(Lseg-1)]
-    # segF = []
-    # segFinds = []
-
-    # for i in range(Nseg):
-    #     X = np.fft.fft(pitch[i*Lseg:i*(Lseg-1)])/Lseg*2
-    #     ind = X.index(max(X))
-    #     segF.append(f[ind])
-    #     segFinds.append(Lseg*i)
+    fig.write_html('.'.join(filename.split('.')[0:-1]) + '_findPOI_mahalGroup.html')
 
 if __name__ == '__main__':
-    findPOI('gm12_172aprh.csv')
+    csvFile = '/Users/mitchellfrisch/Documents/Whale Tag/pm19_136/Pm19_136aprh_calculations.csv'
+    var1 = 'WhaleAccel_X'
+    var2 = 'WhaleAccel_Y'
+    var3 = 'WhaleAccel_Z'
+
+    findPOI(csvFile, var1, var2, var3, depthLimit = 10)
         
