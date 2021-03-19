@@ -1,5 +1,7 @@
 import {successResponseAny, failResponse} from "./responses";
 import {getFileContents} from "./files";
+
+//@ts-ignore
 export const neatCsv = require('neat-csv');
 
 export type dataFrame = any;

@@ -104,18 +104,18 @@ def intPlot(playerInput):
     plt.show()
 
 #%%MP4
-def exportFig(fig, updateFunc, calc_file_path, frameNum, target_dir):
+def exportFig(fig, updateFunc, frameNum, target_dir, new_file_name):
     anim = FuncAnimation(fig, updateFunc,
                         frames=frameNum, interval=50, blit=True)
 
-    new_name = f"{os.path.basename(calc_file_path)}_animated.gif"
+    new_name = f"{new_file_name}.gif"
     new_path = os.path.join(target_dir, new_name)
     fig.set_size_inches(16, 9, True)
     anim.save(new_path, writer = animation.PillowWriter(fps = 30))
 
     return new_path 
     
-def video_exporter(calc_file_path: str, target_dir: str, export = False): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
+def video_exporter(calc_file_path: str, target_dir: str, new_file_name: str, export = False): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
 
     dcf = 1000
 
@@ -194,7 +194,7 @@ def video_exporter(calc_file_path: str, target_dir: str, export = False): #Multi
         
     # intPlot(ani)
     if export == True:
-        return exportFig(fig, update, calc_file_path, frameNum, target_dir)
+        return exportFig(fig, update, frameNum, target_dir, new_file_name)
     else:
         intPlot(ani)
     
@@ -207,11 +207,12 @@ def main():
     cmdLineArgs = _getCMDLineArgs() 
     calc_file_path = cmdLineArgs['calcFilePath']
     target_dir = cmdLineArgs['targetDirectory']
+    new_file_name = cmdLineArgs['newFileName']
     is_export = cmdLineArgs['isExport']
     
     is_export = True if is_export == "True" else False  
     
-    video_exporter(calc_file_path, target_dir, is_export)
+    video_exporter(calc_file_path, target_dir, new_file_name, is_export)
     
     return "SUCCESS"
 

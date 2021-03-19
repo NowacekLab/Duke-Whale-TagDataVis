@@ -3,7 +3,9 @@ import {getLoggingFilePathKey} from "./keys";
 import {createDirIfNotExist} from "./files";
 import { createReducer } from "@reduxjs/toolkit";
 
+//@ts-ignore
 export const path = require('path');
+//@ts-ignore
 export const remote = require('electron').remote;
 const BASE_DIR_PATH = remote.app.getAppPath();
 const LOGS_DIR_PATH = remote.app.getPath('logs');

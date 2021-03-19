@@ -6,6 +6,7 @@ import List from "@material-ui/core/List";
 import ListItem from '@material-ui/core/ListItem';
 import { useSelector, useDispatch } from 'react-redux';
 import FadeNotif from './FadeNotif';
+import Typography from '@material-ui/core/Typography';
 
 type ListNotificationsProps = {
   show: boolean,
@@ -49,6 +50,21 @@ export default function ListNotifications(props: ListNotificationsProps) {
             maxHeight: '500px',
           }}
         >
+            {
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
+                {
+                  listNotifs.length === 0 &&
+                  <Typography>
+                    No Notifications
+                  </Typography>
+                }
+              </div>
+            }
             {
                 listNotifs.map((singleNotifState, idx) => {
                     

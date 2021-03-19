@@ -131,6 +131,9 @@ export default function FinishedUploads() {
                     handleClose={handleCloseInfo}
                     handleBack={() => setInfoOpen(false)}
                     title={tempBatchName}
+                    bodyStyle={{
+                        minWidth: '500px'
+                    }}
                 >
                     <List>
                             {

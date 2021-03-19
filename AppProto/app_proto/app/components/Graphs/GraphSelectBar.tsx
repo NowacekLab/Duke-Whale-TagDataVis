@@ -135,8 +135,8 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
     const onConfirmChosenGraph = () => { 
         setChosenGraph(tempChosenGraph);
         setChosenGraphPath(tempChosenGraphPath);
-        props.onGraphSelect(tempChosenGraph, tempChosenGraphPath);
         setShowGraphModal(false);
+        props.onGraphSelect(tempChosenGraph, tempChosenGraphPath);
     }
 
     const graphBtnVal = chosenGraph === "" ? "No graph chosen" : chosenGraph;

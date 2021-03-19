@@ -6,10 +6,12 @@ import './app.global.css';
 
 const store = configuredStore();
 
+//@ts-ignore
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 
 document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line global-require
+  //@ts-ignore
   const Root = require('./pages/Root').default;
   render(
     <AppContainer>

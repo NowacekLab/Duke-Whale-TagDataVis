@@ -3,6 +3,7 @@ import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
 import Backdrop from "@material-ui/core/Backdrop";
 import {makeStyles} from "@material-ui/core/styles";
+import { PinDropSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles({
     modal: {
@@ -24,10 +25,11 @@ const useStyles = makeStyles({
 type WrapWithModalProps = {
     showModal: boolean, 
     handleClose: any, // callback
-    children: any
+    children: any,
+    style?: any,
 }
 
-export default function WrapWithModal({showModal, handleClose, children}: WrapWithModalProps) {
+export default function WrapWithModal({showModal, handleClose, children, style}: WrapWithModalProps) {
 
     const classes = useStyles();
 
@@ -39,7 +41,9 @@ export default function WrapWithModal({showModal, handleClose, children}: WrapWi
 
         <Modal
             className={classes.modal}
-            style={{left: "50px", outline:"none"}} 
+            style={
+                {...style, left: "50px", outline:"none"}
+            } 
             open={showModal}
             onClose={handleClose}
             closeAfterTransition

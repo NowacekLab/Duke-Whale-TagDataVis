@@ -2,7 +2,9 @@ import {successResponse, failResponse} from "./responses";
 import {getFileInfoPath, getSaveDirPath} from "./paths";
 import {mergeObjs} from "./object_helpers";
 
+//@ts-ignore
 export const fs = window.require('fs');
+//@ts-ignore
 const path = require('path');
 
 export function writeToPathSync(filePath: string, content: any) {
@@ -43,6 +45,10 @@ export async function getFileContents(filePath: string) {
 export function getFileContentsSync(filePath: string) {
     const content = fs.readFileSync(filePath);
     return content;
+}
+
+export function pathGivenDir(dirPath: string, name: string) {
+    return path.join(dirPath, name);
 }
 
 export async function pathExists(checkPath: string) {

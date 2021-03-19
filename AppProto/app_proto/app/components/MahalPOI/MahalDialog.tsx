@@ -1,13 +1,13 @@
 import React from 'react';
 import WrapWithDialog from '../WrapWithDialog';
-import AnimatedStepper from './AnimatedStepper';
+import MahalStepper from './MahalStepper';
 
 interface AnimatedDialogProps {
   showModal: boolean,
   handleClose: any,
   handleBack: Function,
   title: string,
-  onAnimateStart: Function,
+  onMahalPOIStart: Function,
 }
 
 export default function AnimatedDialog(props: AnimatedDialogProps) {
@@ -20,12 +20,12 @@ export default function AnimatedDialog(props: AnimatedDialogProps) {
       handleBack={props.handleBack}
       title={props.title}
       bodyStyle={{
-        minWidth: '500px'
+        minWidth: "700px"
       }}
     >
       
-      <AnimatedStepper 
-        onAnimateStart={props.onAnimateStart}
+      <MahalStepper 
+        onMahalPOIStart={props.onMahalPOIStart}
       />
 
     </WrapWithDialog>

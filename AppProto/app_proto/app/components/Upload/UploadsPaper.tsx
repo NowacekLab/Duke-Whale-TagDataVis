@@ -80,47 +80,13 @@ const Home = () => {
             <h1
                 className={classes.uploadPaperTitle}
             > 
-                Uploads
+                Batches
             </h1>
-
-            <div
-                className={classes.uploadTopBarContainer}
-            >
-                <div
-                    className={classes.uploadTabsContainer}
-                >
-
-                    <Button
-                        className={finishedTabActive ? classes.uploadTabActive : classes.uploadTabInactive}
-                        onClick={changeToFinishedTab}
-                    >
-                        Finished 
-                    </Button>
-
-                    <Button
-                        className={progressTabActive ? classes.uploadTabActive : classes.uploadTabInactive}
-                        onClick={changeToProgressTab}
-                    >
-                        In Progress
-                    </Button>
-
-                </div>
-            </div>
             
             <div
                 className={classes.mainBody}
             >
-                {
-                    finishedTabActive &&
-                    <FinishedUploads />
-                }
-
-                {
-                    progressTabActive &&
-                    <ProgressUploads />
-                }
-
-
+                <FinishedUploads />
             </div>
 
 

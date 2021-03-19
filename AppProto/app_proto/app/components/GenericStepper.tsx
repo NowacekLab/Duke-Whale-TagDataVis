@@ -15,6 +15,7 @@ const useStyles = makeStyles(() => ({
       display: "flex",
       alignContent: "center",
       justifyContent: "center",
+      paddingRight: "20px"
   },
   cancelBtn: {
       position: 'absolute',
@@ -35,7 +36,8 @@ const useStyles = makeStyles(() => ({
       }
   },
   btnContainer: {
-      margin: "5px",
+      display: 'flex',
+      justifyContent: 'space-around'
   },
   containedBtn: {
       marginLeft: "2px",
@@ -101,6 +103,7 @@ export default function GenericStepper(props: GenericStepperProps) {
                                       display: "flex",
                                       flexDirection: 'column',
                                       alignItems: 'center',
+                                      justifyContent: 'center',
                                       paddingTop: "10px",
                                       paddingBottom: "10px"
                                   }}

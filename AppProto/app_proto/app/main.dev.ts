@@ -111,6 +111,20 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
+  mainWindow.on('close', (e: any) => {
+    const choice = require('electron').dialog.showMessageBoxSync({
+      type: 'question',
+      buttons: ['Yes', 'No'],
+      title: 'Confirm',
+      message: 'Quitting during an action may corrupt the app. You can check for actions with the alert button. Are you sure no actions are running?'
+    });
+    if (choice === 1) {
+      e.preventDefault();
+      return;
+    }
+    mainWindow = null;
+  });
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 

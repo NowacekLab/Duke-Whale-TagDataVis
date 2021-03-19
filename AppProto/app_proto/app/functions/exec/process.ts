@@ -150,6 +150,7 @@ export async function handleExportFile(args: exportCMDLineArgs) {
 export interface videoFileCMDLineArgs {
     [index: string]: string,
     calcFilePath: string,
+    newFileName: string,
     targetDirectory: string,
     isExport: string,
 }
@@ -176,6 +177,57 @@ export async function handleProcessVideoFile(args: videoFileCMDLineArgs) {
     } catch (error) {
 
         console.log("HANDLE PROCESS VIDEO FILE ERROR");
+        console.log(error);
+
+        return failResponse(error);
+    }
+}
+
+export interface mahalPOICMDArgs {
+    [index: string]: string,
+    calcFilePath: string,
+    newFileName: string,
+    targetDirectory: string,
+    isExport: string,
+    variableOne: string,
+    variableTwo: string,
+    variableThree: string,
+    pLimit: string,
+    windowSize: string,
+    groupSize: string,
+    depthLimit: string 
+}
+
+export interface mahalPOIParams {
+    [index: string]: any,
+    pLimit: string,
+    windowSize: string,
+    groupSize: string,
+    depthLimit: string 
+}
+
+async function runMahalPOIProcess(cmdLineArgs: mahalPOICMDArgs) {
+    const pythonScriptName = 'mahalanobis.py';
+    const scriptName = 'mahalanobis';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleProcessMahalPOI(args: mahalPOICMDArgs) {
+    try {
+        const exportResp = await runMahalPOIProcess(args);
+
+        console.log("HANDLE PROCESS MAHAL POI RESPONSE");
+        console.log(exportResp); 
+
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully processed mahal poi action.");
+    } catch (error) {
+
+        console.log("HANDLE PROCESS MAHAL POI ERROR");
         console.log(error);
 
         return failResponse(error);

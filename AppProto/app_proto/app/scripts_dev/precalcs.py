@@ -85,6 +85,8 @@ def _xmlLogFileProcessor(logFilePath: str) -> datetime:
     collection = DOMTree.documentElement
     collection.getElementsByTagName("EVENT")
     dateStr = collection.getElementsByTagName("EVENT")[0].getAttribute('TIME')
+    
+    # DATETIME --> YEAR, MONTH, DATE, HOURS, MINUTES, SECONDS 
     startTime = datetime.strptime(dateStr, '%Y,%m,%d,%H,%M,%S')
     return startTime 
 
@@ -180,7 +182,12 @@ def _preCalc(cmdLineArgs: dict) -> PandasDataFrame:
     latArray[0] = startLatitude
     longArray[0] = startLongitude
     
+    
+    
+    # TODO: start time change 
     startTime = _logProcessStartTime(logFilePath)
+    
+    
     time = np.array([startTime + timedelta(seconds = i * ts) for i in range(length)])
     
     #%% GPS File Not Included, Calculate Manually

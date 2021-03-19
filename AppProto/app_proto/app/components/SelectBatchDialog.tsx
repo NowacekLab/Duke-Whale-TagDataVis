@@ -46,6 +46,9 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
         handleClose={props.handleClose}
         handleBack={props.infoOpen ? () => props.onInfoClose() : props.handleBack}
         title = {props.infoOpen ? props.displayBatchName : "Batches"}
+        bodyStyle={{
+            minWidth: '500px'
+        }}
     >
         {
 

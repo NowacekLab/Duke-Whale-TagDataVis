@@ -19,6 +19,7 @@ import {handleVideoFileAction} from '../../functions/generators/videofile';
 import { throwErrIfFail } from '../../functions/responses';
 import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
 import AnimatedDialogWrapper from '../Animated/AnimatedDialogWrapper';
+import MahalDialogWrapper from '../MahalPOI/MahalDialogWrapper';
 
 const useStyles = makeStyles({
     content: {
@@ -90,6 +91,10 @@ const SideBarContent = () => {
     const [animatedDialogOpen, setAnimatedDialogOpen] = useState(false);
     const handleAnimatedDialogClose = () => {
         setAnimatedDialogOpen(false);
+    }
+    const [mahalDialogOpen, setMahalDialogOpen] = useState(false);
+    const handleMahalDialogClose = () => {
+        setMahalDialogOpen(false);
     }
 
     return(
@@ -197,7 +202,7 @@ const SideBarContent = () => {
                                     }}
                                     onClick={() => setAnimatedDialogOpen(true)}
                                 >
-                                    XYZ Animated 
+                                    3D Animation 
                                 </Button>
                                 <Button
                                     style={{
@@ -205,9 +210,9 @@ const SideBarContent = () => {
                                         fontWeight: "normal",
                                         border: "1px solid white"
                                     }}
-                                    onClick={() => setAnimatedDialogOpen(true)}
+                                    onClick={() => setMahalDialogOpen(true)}
                                 >
-                                    XYZ Points of Interest 
+                                    Mahal POI
                                 </Button>
                             </div>
 
@@ -229,6 +234,12 @@ const SideBarContent = () => {
                         showDialog={animatedDialogOpen}
                         handleClose={handleAnimatedDialogClose}
                         handleBack={handleAnimatedDialogClose}
+                    />
+
+                    <MahalDialogWrapper 
+                        showDialog={mahalDialogOpen}
+                        handleClose={handleMahalDialogClose}
+                        handleBack={handleMahalDialogClose}
                     />
 
                 </div>

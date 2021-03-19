@@ -4,6 +4,9 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Plot from "react-plotly.js";
 import {deepCopyObjectOnlyProps} from "../../functions/object_helpers";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import useIsMountedRef from '../../functions/useIsMountedRef';
+import Fade from '@material-ui/core/Fade';
 
 const useStyles = makeStyles({
     uploadPaper: {
@@ -55,12 +58,16 @@ interface GraphState {
 }
 
 type GraphPaperProps = {
+    loading: boolean,
+    progress: number,
     state: GraphState,
     onUpdate: any
 }
 
 const GraphsPaper = (props: GraphPaperProps) => {
     const classes = useStyles();
+
+    const isMountedRef = useIsMountedRef();
 
     const defaultGraphState = {
         data: [],
@@ -80,30 +87,38 @@ const GraphsPaper = (props: GraphPaperProps) => {
             className={classes.uploadPaper}
         >
                 {
-                    // state.data && state.data.length === 0 ?
+                    props.loading ? 
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '100%',
+                            height: '100%',
+                        }}
+                    >
+                        <CircularProgress 
+                            variant="determinate"
+                            value={props.progress}
+                        />
+                    </div>
+                    :
+                    <Fade
+                        in={!props.loading}
+                    >
+                        <Plot 
+                            data={state.data}
+                            layout={state.layout}
+                            frames={state.frames}
+                            config={state.config}
+                            className={classes.mainBody}
+                        />
+                    </Fade>
 
                     // <h1>
-                    //     Select a plot to render.
+                    //     Failed to render plot.
                     // </h1>
-
-                    // :
-
-                    <Plot 
-                        data={state.data}
-                        layout={state.layout}
-                        frames={state.frames}
-                        config={state.config}
-                        className={classes.mainBody}
-                    />
-
-                    ??
-
-                    <h1>
-                        Failed to render plot.
-                    </h1>
                 }
-
-
         </Paper>
 
     );

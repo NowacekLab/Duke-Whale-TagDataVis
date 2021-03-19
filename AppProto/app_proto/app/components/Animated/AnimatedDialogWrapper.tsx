@@ -18,11 +18,12 @@ export default function AnimatedDialogWrapper(props: AnimatedDialogWrapperProps)
   // TODO: extract bottom animate action out of sidebar into own component for notif handler to get separate component name
   const notifActionHandler = new notifsActionsHandler(dispatch, "Animate");
 
-  async function onAnimateStart (calcFilePath: string, dirPath: string, isExport: boolean) {
+  async function onAnimateStart (calcFilePath: string, dirPath: string, newFileName: string, isExport: boolean) {
     props.handleClose();
     const animArgs = {
         calcFilePath: calcFilePath,
         targetDirectory: dirPath,
+        newFileName: newFileName, 
         isExport: isExport ? "True" : "False",
     } 
     try {

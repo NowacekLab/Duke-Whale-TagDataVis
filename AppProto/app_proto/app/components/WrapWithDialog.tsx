@@ -3,6 +3,7 @@ import WrapWithModal from './WrapWithModal';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Typography from '@material-ui/core/Typography';
 
 type WrapWithDialogProps = {
   showModal: boolean,
@@ -10,6 +11,8 @@ type WrapWithDialogProps = {
   handleBack: Function,
   title: string,
   children: any,
+  modalStyle?: any,
+  bodyStyle?: any,
 }
 
 export default function WrapWithDialog(props: WrapWithDialogProps) {
@@ -19,11 +22,13 @@ export default function WrapWithDialog(props: WrapWithDialogProps) {
     <WrapWithModal
       showModal={props.showModal}
       handleClose={props.handleClose}
+      style={props.modalStyle}
   >
       <Paper
           elevation={3}
           style={{
-              outline: "none"
+              ...props.bodyStyle,
+              outline: "none",
           }}
       >
           <div
@@ -59,15 +64,16 @@ export default function WrapWithDialog(props: WrapWithDialogProps) {
               <div
                   style={{
                       width: "100%",
-                      maxHeight: "40px",
                       display: "flex", 
                       justifyContent: "center",
                       alignItems: "center"
                   }}
               >
-                  <h3>
+                  <Typography
+                    variant={'h4'}
+                  >
                       {props.title}
-                  </h3>
+                  </Typography>
               </div>
                 
               {props.children}

@@ -43,6 +43,9 @@ export default function GraphViewDialog(props: GraphViewDialogProps) {
       handleClose={props.handleClose}
       handleBack={props.infoOpen ? () => props.onInfoClose(false) : props.handleBack}
       title={props.infoOpen ? props.displayGraphName : "Graphs"}
+      bodyStyle={{
+          minWidth: '500px'
+      }}
     >
       {
 

@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import AnimateSelectAction from './AnimateSelectAction';
+import SelectAction from '../SelectAction';
 import SelectBatchBtn from '../SelectBatchBtn';
 import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
 
@@ -65,6 +65,25 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
     setBatchName(batchName);
     setCalcFilePath(calcFilePath);
   }
+
+  const [exportFileName, setExportFileName] = useState("");
+  const [exportFileNameError, setExportFileNameError] = useState(false);
+  const onExportFileNameChange = (e: any) => {
+    setExportFileName(e.target.value ?? "");
+  }
+  const onExportFileErrorChange = (error: boolean) => {
+    setExportFileNameError(error);
+  } 
+
+  const [fileExists, setFileExists] = useState(false);
+  const onFileExistsChange = (exists: boolean) => {
+    setFileExists(exists);
+  }
+  const [fileExistCheck, setFileExistCheck] = useState(false);
+  const onFileExistCheckChange = (exists: boolean) => {
+    setFileExistCheck(exists);
+  }
+
   const getStepContent = (idx: number) => {
     switch (idx) {
       case 0:
@@ -73,11 +92,21 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
                   onBatchSelect={onBatchSelect}
               />)
       case 1:
-        return (<AnimateSelectAction 
+        return (<SelectAction 
                   action = {action}
                   onActionChange={onActionSelect}
                   fileObj={fileObj}
                   onFileChange={onFileChange}
+                  onFileNameChange={onExportFileNameChange}
+                  fileNameExt={".gif"}
+                  fileName={exportFileName}
+                  onFileNameErrorChange={onExportFileErrorChange}
+                  fileNameError={exportFileNameError}
+                  exportLabel={"Export GIF"}
+                  fileExistCheck={fileExistCheck}
+                  onFileExistCheckChange={onFileExistCheckChange}
+                  fileExists={fileExists}
+                  onFileExistsChange={onFileExistsChange}
                 />)
       default:
         return null;
@@ -93,8 +122,11 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
         if (batchName === "" || calcFilePath === "") return true;
         return false;
       case 1:
-        if (action === "export" && (!fileObj || !fileObj['path'] || fileObj['path'] === "")) return true;
-        return false; 
+        const exportInvalid = (action === "export" && (!fileObj || !fileObj['path'] || fileObj['path'] === ""));
+        const exportNameInvalid = (action === "export" && exportFileNameError);
+        const fileExistError = (action === "export" && fileExists);
+        const fileExistCheckError = (action === "export" && !fileExistCheck);
+        return exportInvalid || exportNameInvalid || fileExistError || fileExistCheckError; 
       default:
         return true;
     }
@@ -120,7 +152,7 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
 
     const isExport = action === "export";
     
-    props.onAnimateStart(calcFilePath, dirPath, isExport);
+    props.onAnimateStart(calcFilePath, dirPath, exportFileName, isExport);
   }
 
   const getFinalBtns = () => {

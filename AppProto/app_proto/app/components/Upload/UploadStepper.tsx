@@ -15,6 +15,8 @@ import {fileNameFromPath} from "../../functions/paths";
 import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import GenericStepper from '../GenericStepper';
 import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
+import {DateTimePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -91,28 +93,22 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }
     const uploadDataFileRef = useRef(null);
     const [uploadDataFileObj, setUploadDataFileObj] = useState<uploadFileObj>(defaultFileObj);
-    const uploadLogFileRef = useRef(null);
-    const [uploadLogFileObj, setUploadLogFileObj] = useState<uploadFileObj>(defaultFileObj);
     const uploadGPSFileRef = useRef(null);
     const [uploadGPSFileObj, setUploadGPSFileObj] = useState<uploadFileObj>(defaultFileObj);
-    const uploadFileObjects = [uploadDataFileObj, uploadLogFileObj, uploadGPSFileObj];
-    const uploadFileObjectSetters = [setUploadDataFileObj, setUploadLogFileObj, setUploadGPSFileObj];
+    const uploadFileObjects = [uploadDataFileObj, uploadGPSFileObj];
+    const uploadFileObjectSetters = [setUploadDataFileObj, setUploadGPSFileObj];
 
     const uploadDataFileEndingsArr = [".csv", ".mat"];
     const uploadDataFileEndings = uploadDataFileEndingsArr.join(",");
-    const uploadLogFileEndingsArr = [".txt", ".xml"];
-    const uploadLogFileEndings = uploadLogFileEndingsArr.join(",");
 
     // pulled from pandas website (python file uses pandas.read_csv)
     const uploadGPSFileEndingsArr = [".xls", ".xlsx", ".xlsm", '.xlsb', '.odf', '.ods', '.odt'];
     const uploadGPSFileEndings = uploadGPSFileEndingsArr.join(",");
-    const uploadFileEndings = [uploadDataFileEndings, uploadLogFileEndings, uploadGPSFileEndings];
+    const uploadFileEndings = [uploadDataFileEndings, uploadGPSFileEndings];
 
-
-    const uploadFileRefs = [uploadDataFileRef, uploadLogFileRef, uploadGPSFileRef];
+    const uploadFileRefs = [uploadDataFileRef, uploadGPSFileRef];
 
     const handleUploadBtnClick = (index: number) => {
-
         const ref = uploadFileRefs[index];
         clickRef(ref);
     }
@@ -215,6 +211,11 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         setBatchName(newBatchName);
     }
 
+    const [date, setDate] = useState(new Date());
+    const onDateChange = (sth: any) => {
+        console.log(sth);
+    }
+
     useEffect(() => {
         handleBatchErrorNext(batchName);
     }, [batchName])
@@ -273,7 +274,22 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             )
         }
 
+        const isDate = index === 2; 
         const isLatLong = index === 3;
+        if (isDate) {
+            return (
+            <MuiPickersUtilsProvider
+                utils={DateFnsUtils}
+            >
+                <DateTimePicker 
+                    disableFuture
+                    value={date}
+                    onChange={onDateChange}
+                />
+            </MuiPickersUtilsProvider>
+            )
+        }
+
         if (!isLatLong) {
 
             return (
@@ -392,7 +408,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
 
     const stepNeedsFileObj = (idx: number) => {
-        return idx < 3; 
+        return idx < 2; 
     }
 
     function handleBackBtnDisabled(steps: Array<any>, index: number): boolean {
@@ -404,8 +420,11 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         if (stepNeedsFileObj(index)) {
             return shouldDisableNextBtnFileStep(index);
         }
-
+        const isDate = index === 2;
         const latLongStep = index === 3;
+        if (isDate) {
+            return false;
+        }
         if (!latLongStep) {
             return shouldDisableNextBtnBatchName();
         }  
@@ -437,19 +456,22 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }
 
     function isFileRequired(index: number) {
-        const isGraphFile = index === 2; 
+        const isGraphFile = index === 1; 
         return !isGraphFile;
     }
 
-    const steps = ['Upload the data file', 'Upload the log file', 'Upload the GPS file', 'Enter starting lat and long', 'Enter a unique name for this upload'];
+    const steps = ['Upload the data file', 'Upload the GPS file', 'Enter starting date of tag', 'Enter starting lat and long', 'Enter a unique name for this upload'];
     function getStepLabel(index: number) {
         const uploadText = steps[index];
         let stepLabel;
+        const isDate = index === 2;
         const isLatLong = index === 3;
 
         if (stepNeedsFileObj(index)) {
             const placeholder = "No file uploaded";
             stepLabel = `${uploadText} [${getFileNameOrDefault(index, placeholder)}]`
+        } else if (isDate) {
+            stepLabel = `${date}`
         } else if (isLatLong) {
 
             const parsedLatitude = getParsedFloat(latitude);
@@ -458,7 +480,6 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             stepLabel = `${uploadText} [Lat: ${parsedLatitude} ${latitudeDirection} Longitude: ${parsedLongitude} ${longitudeDirection}]`
         } else {
             stepLabel = `${uploadText} [${batchName}]`
-
         }
 
         return stepLabel;
@@ -492,12 +513,14 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         const newDataFilePath = await getNewDataFilePath(batchName, dataFileName);
         const loggingErrorFilePath = getLoggingErrorFilePath();
 
+
+        //TODO: date must be converted to useful format 
         const uploadInfoObj = {
             "batchName": batchName,
             "dataFilePath": uploadDataFileObj.path, 
             "newDataFilePath": newDataFilePath,
             "loggingFilePath": loggingErrorFilePath,
-            "logFilePath": uploadLogFileObj.path, 
+            "startingDate": date,
             "gpsFilePath": uploadGPSFileObj.path, 
             "startLatitude": trueLat, 
             "startLongitude": trueLong 

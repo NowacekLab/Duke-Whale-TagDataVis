@@ -2,7 +2,7 @@ import {isEmptyObj} from "./object_helpers";
 
 type respObj = {
     success: boolean, 
-    response: string
+    response: any
 }
 
 export function successResponse(response?: any): respObj {

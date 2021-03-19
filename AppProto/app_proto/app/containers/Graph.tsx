@@ -39,28 +39,27 @@ export default function Graph() {
     //@ts-ignore
     const uploadProgState = useSelector(state => state["uploads"]);
     const uploadProgHandler = new uploadsActionsHandler(dispatch);
-    const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
-
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
     const [graphState, setGraphState] = useState(defaultGraphState)
     const onGraphUpdate = (figure: any) => {
         const newData = figure['data'] ?? [];
         const newLayout = figure['layout'] ?? {};
         const newFrames = figure['frames'] ?? [];
-
-        const newGraphState = deepCopyObjectOnlyProps(graphState);
-        newGraphState['data'] = newData;
-        newGraphState['layout'] = newLayout;
-        newGraphState['frames'] = newFrames;
-
-        console.log("I SET THE NEW GRAPH STATE: ");
-        console.log(newGraphState);
-        setGraphState(newGraphState);
+        setGraphState({
+            ...graphState,
+            'data': newData,
+            'layout': newLayout,
+            'frames': newFrames,
+        });
     }
     const onGraphSelect = (graphName: string, graphPath: string) => {
-        console.log("GRAPH SELECTED");
-        console.log(graphPath);
-        isMounted && getObjFromPath(graphPath).then((obj) => {
 
+        setLoading(true);
+        setProgress(10);
+
+        isMounted && getObjFromPath(graphPath).then((obj) => {
+            
             if (!isMounted) return;
 
             console.log("OBJECT FROM PATH: ");
@@ -84,22 +83,36 @@ export default function Graph() {
                 console.log(newGraphState);
 
 
-                onGraphUpdate(newGraphState);
-
+                onGraphUpdate(newGraphState); 
+                
+                endProgress();
             }
 
+        }).catch(() => {
+            endProgress();
         })
-
     }
+
+    const endProgress = () => {
+        setProgress(100);
+        if (isMounted) {
+          setTimeout(
+            () => {
+              if (isMounted) {
+                setLoading(false);
+              }
+            }, 500)
+        }
+      }
 
     return (
 
         <Container
             className={classes.root}
         >
-
-
             <GraphsPaper
+                loading={loading}
+                progress={progress}
                 state={graphState}
                 onUpdate={onGraphUpdate}
             />
