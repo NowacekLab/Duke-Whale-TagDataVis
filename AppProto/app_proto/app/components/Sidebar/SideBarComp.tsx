@@ -4,18 +4,11 @@ import {getDukeImgPath} from "../../functions/paths";
 
 const useStyles = makeStyles({
     root: {
-        fontFamily: "HelveticaNeue-Light",
-        fontWeight: 300,
         height: "100%",
-        backgroundColor: "#012069",
+        backgroundColor: "var(--primary-color)",
         position: "relative",
         width: 50
     },
-    logo: {
-        width: "12em",
-        height: "6em",
-        display: "block",
-    }
 });
 
 type SideBarCompProps = {
@@ -24,8 +17,6 @@ type SideBarCompProps = {
 
 const SideBarComp = (props: SideBarCompProps) => {
     const classes = useStyles();
-
-    const dukeImgPath = getDukeImgPath();
 
     return (
         <div className={classes.root}>

@@ -1,81 +1,27 @@
-2021-02-18 12:27:55,029 - ERROR - csvmat.py:main method exception. Detailed: ImportError("Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.")
+2021-03-20 21:31:10,592 - ERROR - csvmat.py:main method exception. Detailed: FileNotFoundError(2, 'No such file or directory')
 Traceback (most recent call last):
   File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\logger.py", line 36, in wrapper
     return func(*args, **kwargs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 163, in main
+  File ".\process.py", line 163, in main
     processFile(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 157, in processFile
+  File ".\process.py", line 157, in processFile
     _handlePreCalculate(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 136, in _handlePreCalculate
+  File ".\process.py", line 136, in _handlePreCalculate
     return precalcs.handlePreCalculate(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 320, in handlePreCalculate
+  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 334, in handlePreCalculate
     preCalcDataPath = _preCalcAndSave(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 316, in _preCalcAndSave
-    dataFrame = _preCalc(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 207, in _preCalc
-    gps = pd.read_excel(gpsFilePath, engine='openpyxl')
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\util\_decorators.py", line 296, in wrapper
-    return func(*args, **kwargs)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_base.py", line 304, in read_excel
-    io = ExcelFile(io, engine=engine)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_base.py", line 867, in __init__
-    self._reader = self._engines[engine](self._io)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_openpyxl.py", line 479, in __init__
-    import_optional_dependency("openpyxl")
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\compat\_optional.py", line 110, in import_optional_dependency
-    raise ImportError(msg) from None
-ImportError: Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.
-2021-02-18 12:29:42,148 - ERROR - csvmat.py:main method exception. Detailed: ImportError("Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.")
-Traceback (most recent call last):
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\logger.py", line 36, in wrapper
-    return func(*args, **kwargs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 163, in main
-    processFile(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 157, in processFile
-    _handlePreCalculate(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 136, in _handlePreCalculate
-    return precalcs.handlePreCalculate(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 320, in handlePreCalculate
-    preCalcDataPath = _preCalcAndSave(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 316, in _preCalcAndSave
-    dataFrame = _preCalc(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 207, in _preCalc
-    gps = pd.read_excel(gpsFilePath, engine='openpyxl')
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\util\_decorators.py", line 296, in wrapper
-    return func(*args, **kwargs)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_base.py", line 304, in read_excel
-    io = ExcelFile(io, engine=engine)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_base.py", line 867, in __init__
-    self._reader = self._engines[engine](self._io)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_openpyxl.py", line 479, in __init__
-    import_optional_dependency("openpyxl")
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\compat\_optional.py", line 110, in import_optional_dependency
-    raise ImportError(msg) from None
-ImportError: Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.
-2021-02-18 12:31:34,588 - ERROR - csvmat.py:main method exception. Detailed: ImportError("Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.")
-Traceback (most recent call last):
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\logger.py", line 36, in wrapper
-    return func(*args, **kwargs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 163, in main
-    processFile(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 157, in processFile
-    _handlePreCalculate(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\process.py", line 136, in _handlePreCalculate
-    return precalcs.handlePreCalculate(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 320, in handlePreCalculate
-    preCalcDataPath = _preCalcAndSave(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 316, in _preCalcAndSave
-    dataFrame = _preCalc(cmdLineArgs)
-  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 207, in _preCalc
-    gps = pd.read_excel(gpsFilePath, engine='openpyxl')
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\util\_decorators.py", line 296, in wrapper
-    return func(*args, **kwargs)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_base.py", line 304, in read_excel
-    io = ExcelFile(io, engine=engine)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_base.py", line 867, in __init__
-    self._reader = self._engines[engine](self._io)
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\excel\_openpyxl.py", line 479, in __init__
-    import_optional_dependency("openpyxl")
-  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\compat\_optional.py", line 110, in import_optional_dependency
-    raise ImportError(msg) from None
-ImportError: Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.
+  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 331, in _preCalcAndSave
+    _savePreCalcDataFrame(dataFrame, cmdLineArgs)
+  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 24, in _savePreCalcDataFrame
+    _savePandasDataFrame(preProcessDataFrame, newDataFilePath)
+  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\precalcs.py", line 16, in _savePandasDataFrame
+    pandasHelper.savePandasDataFrame(dataFrame, newDataFilePath)
+  File "C:\Users\joonl\Data\Data-Visualization-MAPS\AppProto\app_proto\app\scripts_dev\helpers\pandasHelper.py", line 26, in savePandasDataFrame
+    df.to_csv(filePath)
+  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\core\generic.py", line 3170, in to_csv
+    formatter.save()
+  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\formats\csvs.py", line 185, in save
+    f, handles = get_handle(
+  File "C:\Users\joonl\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\site-packages\pandas\io\common.py", line 493, in get_handle
+    f = open(path_or_buf, mode, encoding=encoding, errors=errors, newline="")
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\joonl\\AppData\\Roaming\\Electron\\save_files\\test2\\gm14_167aprhcalcs.csv'

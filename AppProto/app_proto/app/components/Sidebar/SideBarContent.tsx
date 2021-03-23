@@ -14,16 +14,17 @@ import UploadAction from "../Upload/UploadAction";
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
-import AnimatedDialog from '../Animated/AnimatedDialog'; 
-import {handleVideoFileAction} from '../../functions/generators/videofile';
-import { throwErrIfFail } from '../../functions/responses';
 import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
 import AnimatedDialogWrapper from '../Animated/AnimatedDialogWrapper';
 import MahalDialogWrapper from '../MahalPOI/MahalDialogWrapper';
+import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsWrapper from '../Settings/SettingsWrapper';
 
 const useStyles = makeStyles({
     content: {
         height: "100%",
+        display: 'flex',
+        flexDirection: 'column'
     },
     text: {
         fontFamily: "HelveticaNeue-Light",
@@ -96,10 +97,30 @@ const SideBarContent = () => {
     const handleMahalDialogClose = () => {
         setMahalDialogOpen(false);
     }
+    const [settingsOpen, setSettingsOpen] = useState(false);
+    const handleSettingsClose = () => {
+        setSettingsOpen(false);
+    }
+
+    const [darkMode, setDarkMode] = useState(false);
+    const testing = () => {
+        // console.log(screen);
+        // console.log(screen.getPrimaryDisplay().workAreaSize);
+        // console.log(remote.getCurrentWindow().getSize());
+        // if (!darkMode) {
+        //     document.body.setAttribute('data-theme', 'dark');
+        //     setDarkMode(true);
+        // } else {
+        //     document.body.removeAttribute('data-theme');
+        //     setDarkMode(false);
+        // }
+    }
 
     return(
         <SideBarComp>
-            <div>
+            <div style={{
+                height: '100%'
+            }}>
                 <div className={classes.content}>
 
 
@@ -240,6 +261,33 @@ const SideBarContent = () => {
                         showDialog={mahalDialogOpen}
                         handleClose={handleMahalDialogClose}
                         handleBack={handleMahalDialogClose}
+                    />
+
+                    <Tooltip
+                        title={
+                            <Typography>
+                                Settings
+                            </Typography>
+                        }
+                        placement="right"
+                        arrow
+                    >
+                        <IconButton
+                            onClick={() => setSettingsOpen(true)}
+                            style={{
+                                marginTop: 'auto'
+                            }}
+                        >
+
+                            <SettingsIcon className={settingsOpen ? classes.btnActive : classes.btnInactive} />
+
+                        </IconButton>
+                    </Tooltip>
+
+                    <SettingsWrapper 
+                        showDialog={settingsOpen}
+                        handleClose={handleSettingsClose}
+                        handleBack={handleSettingsClose}
                     />
 
                 </div>

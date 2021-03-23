@@ -1,26 +1,10 @@
 import React from "react";
-import {makeStyles} from '@material-ui/core/styles';
 import WrapWithDialog from "./WrapWithDialog";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
-
-const useStyles = makeStyles({
-    list: {
-        overflow: "auto",
-        minWidth: "500px"
-    },
-    btn: {
-        backgroundColor: "#012069",
-        color: "white",
-        "&:hover": {
-            backgroundColor: "#012069",
-            opacity: 0.8
-        }
-    }
-})
 
 type SelectBatchDialogProps = {
     showModal: boolean,
@@ -36,8 +20,6 @@ type SelectBatchDialogProps = {
 }
 
 export default function SelectBatchDialog(props: SelectBatchDialogProps) {
-
-    const classes = useStyles();
 
     return (
 
@@ -55,14 +37,8 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
             props.infoOpen ? 
 
             <div
-                style={{
-                    height: "100%",
-                    minWidth: "500px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "5px",
-                    padding: "10px"
-                }}
+                id="batches"
+                className="list"
             >
 
                 <List>
@@ -130,7 +106,8 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
                         }}
                     >
                         <Button
-                            className={classes.btn}
+                            id="color-themed"
+                            className="btn"
                             onClick={props.confirmDisplayBatchName}
                             variant="outlined"
                         >
@@ -144,7 +121,7 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
             :
 
             <List
-                className={classes.list}
+                className="list"
             >
                 {
                     Object.keys(props.uploads) ?

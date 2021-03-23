@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {makeStyles} from "@material-ui/core/styles";
 import Fab from '@material-ui/core/Fab';
 import NotificationsIcon from '@material-ui/icons/Notifications'; 
 import ListNotifications from './ListNotifications';
@@ -7,20 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import List from "@material-ui/core/List";
 
-const useStyles = makeStyles({
-  btn: {
-      backgroundColor: "#012069",
-      color: "white",
-      "&:hover": {
-          backgroundColor: "#012069",
-          opacity: 0.8
-      }
-  }
-});
-
 export default function NotifBtn() {
-
-    const classes = useStyles();
 
     const [showNotifs, setShowNotifs] = useState(false);
     const handleCloseNotifs = () => {
@@ -88,7 +74,8 @@ export default function NotifBtn() {
             right: 10,
             bottom: 10,
           }} 
-          className={classes.btn}
+          id="color-themed"
+          className="btn"
           onClick={handleOpenNotifs}>
             <div style={{
                 position: "relative"}}

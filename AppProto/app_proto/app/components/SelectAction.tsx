@@ -1,8 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect} from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from "@material-ui/core/Button";
@@ -16,16 +15,6 @@ const {dialog} = require('electron').remote;
 const useStyles = makeStyles({
   actionSelectDropdown: {
     minWidth: 200,
-  },
-  containedBtn: {
-    marginLeft: "2px",
-    marginRight: "2px",
-    fontSize: "12px",
-    backgroundColor: "#012069",
-    color: "white",
-    "&:hover": {
-        backgroundColor: "rgba(1,32,105,0.5)"
-    }
   },
 })
 
@@ -52,7 +41,7 @@ export default function SelectAction(props: SelectActionProps) {
 
   const handleUploadClick = () => {
     // clickRef(uploadFileRef);
-    dialog.showOpenDialog({properties: ['openDirectory']}).then(result => {
+    dialog.showOpenDialog({properties: ['openDirectory']}).then((result: any) => {
       if (result.canceled) return;
       const filePath = result.filePaths[0];
       handleUploadValChange(filePath);
@@ -142,7 +131,8 @@ export default function SelectAction(props: SelectActionProps) {
           props.action === "export" &&
           <Button
               variant="contained"
-              className={classes.containedBtn}
+              id="color-themed"
+              className="containedBtn"
               onClick={() => handleUploadClick()}
           >
               {
@@ -157,7 +147,9 @@ export default function SelectAction(props: SelectActionProps) {
         <div
           style={{
             display: 'flex',
-            gap: '10px'
+            gap: '10px',
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
           {
@@ -170,7 +162,7 @@ export default function SelectAction(props: SelectActionProps) {
               validateInput = {validateFileNameInput}
               value = {props.fileName}
               label = {"Export File Name"}
-              errorHelperText = {getTextInputErrorText()}
+              errorHelperText = {getTextInputErrorText() ?? "Error!"}
               regHelperText = {`File will be exported with ${props.fileNameExt} extension`}
             />
           }
@@ -179,6 +171,8 @@ export default function SelectAction(props: SelectActionProps) {
             validFileObj &&
             !props.fileNameError && 
             <Button
+              id="color-themed"
+              className="btn"
               onClick={() => fileExists(props.fileObj['path'], props.fileName)}
             >
               File Exists?

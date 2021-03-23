@@ -13,6 +13,7 @@ type WrapWithDialogProps = {
   children: any,
   modalStyle?: any,
   bodyStyle?: any,
+  innerBodyStyle?: any,
 }
 
 export default function WrapWithDialog(props: WrapWithDialogProps) {
@@ -33,6 +34,7 @@ export default function WrapWithDialog(props: WrapWithDialogProps) {
       >
           <div
               style={{
+                  ...props.innerBodyStyle,
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",

@@ -5,7 +5,6 @@ __oldDataFilePathKey = constants.OLD_DATA_FILE_PATH_KEY
 __oldDataFileDataFrameKey = constants.OLD_DATA_FILE_DATAFRAME_KEY
 __newDataFilePathKey = constants.NEW_DATA_FILE_PATH_KEY
 __logPathKey = constants.LOG_PATH_KEY
-__logFilePathKey = constants.LOG_FILE_PATH_KEY
 __gpsFilePathKey = constants.GPS_FILE_PATH_KEY
 __startLatKey = constants.START_LAT_KEY
 __startLongKey = constants.START_LONG_KEY
@@ -25,9 +24,6 @@ def getNewDataFilePathKey() -> str:
 
 def getLogPathKey() -> str: 
     return __logPathKey
-
-def getLogFilePathKey() -> str: 
-    return __logFilePathKey
 
 def getGPSFilePathKey() -> str: 
     return __gpsFilePathKey

@@ -6,7 +6,7 @@ export function formatCMDLineArgs(cmdArgs: any) {
     const keyPairs = [];
     for (let key in cmdArgs) {
         if (!cmdArgs.hasOwnProperty(key)) continue; 
-        const val = cmdArgs[key];
+        const val = cmdArgs[key].toString();
         const keySpaceSep = key.split(" ").join(spaceJoiner);
         const valSpaceSep = val.split(" ").join(spaceJoiner);
 

@@ -1,58 +1,16 @@
 import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
-import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import GraphViewDialog from "./GraphViewDialog";
 import SelectBatchDialog from "../SelectBatchDialog";
 import {notifsActionsHandler} from "../../functions/reduxHandlers/handlers";
-
-const useStyles = makeStyles({
-    root: {
-        width: "100%",
-        height: "20%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "10px",
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0
-    },
-    paperWrapper: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        outline: "none",
-        maxHeight: "80%",
-        width: "50%"
-    },
-    paperTreeCont: {
-        outline: "none",
-        width: "100%",
-    },
-    list: {
-        overflow: "auto",
-        minWidth: "500px"
-    },
-    btn: {
-        backgroundColor: "#012069",
-        color: "white",
-        "&:hover": {
-            backgroundColor: "#012069",
-            opacity: 0.8
-        }
-    }
-})
 
 type GraphSelectBarProps = {
     onGraphSelect: any,
 }
 
 export default function GraphSelectButtons(props: GraphSelectBarProps) {
-
-    const classes = useStyles();
 
     const dispatch = useDispatch();
     //@ts-ignore
@@ -143,19 +101,21 @@ export default function GraphSelectButtons(props: GraphSelectBarProps) {
 
     return (
         <div
-            className={classes.root}
+            className = "btnContainer"
         >   
             <Button
                 onClick={toggleBatchModal}
-                className={classes.btn}
+                id="color-themed"
+                className="btn"
                 variant="outlined"
             >
                 {batchBtnVal}
             </Button>
 
             <Button
-                onClick={toggleGraphModal}
-                className={classes.btn}
+                onClick={toggleGraphModal} 
+                id="color-themed"
+                className="btn"
                 variant="outlined"
             >
                 {graphBtnVal}

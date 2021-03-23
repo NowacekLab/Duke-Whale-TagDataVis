@@ -1,30 +1,11 @@
-import React, {useState, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {makeStyles} from "@material-ui/core/styles";
-import Container from '@material-ui/core/Container';
+import React, {useState} from "react";
+import {useSelector} from "react-redux";
 import GraphSelectBar from "../components/Graphs/GraphSelectBar";
 import GraphsPaper from "../components/Graphs/GraphsPaper";
 import {getObjFromPath} from "../functions/files";
-import {deepCopyObjectOnlyProps} from "../functions/object_helpers";
-import uploadsActionsHandler from "../functions/uploads/uploadsActionsHandler";
 import useIsMountedRef from "../functions/useIsMountedRef";
 
-const useStyles = makeStyles({
-    root: {
-        fontFamily: "HelveticaNeue-Light",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "20px",
-        position: "relative"
-    },
-})
-
 export default function Graph() {
-
-    const classes = useStyles();
 
     const defaultGraphState = {
         data: [],
@@ -34,11 +15,8 @@ export default function Graph() {
     }
 
     const isMounted = useIsMountedRef();
-
-    const dispatch = useDispatch();
     //@ts-ignore
     const uploadProgState = useSelector(state => state["uploads"]);
-    const uploadProgHandler = new uploadsActionsHandler(dispatch);
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [graphState, setGraphState] = useState(defaultGraphState)
@@ -107,8 +85,8 @@ export default function Graph() {
 
     return (
 
-        <Container
-            className={classes.root}
+        <div
+            className="container"
         >
             <GraphsPaper
                 loading={loading}
@@ -121,7 +99,7 @@ export default function Graph() {
                 onGraphSelect={onGraphSelect}
             />
 
-        </Container>
+        </div>
 
     )
 

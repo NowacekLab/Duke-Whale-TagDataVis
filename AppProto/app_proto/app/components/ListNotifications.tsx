@@ -1,5 +1,4 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
 import WrapWithDialog from './WrapWithDialog';
 import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
 import List from "@material-ui/core/List";
@@ -54,7 +53,8 @@ export default function ListNotifications(props: ListNotificationsProps) {
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  color: 'black'
                 }}
               >
                 {

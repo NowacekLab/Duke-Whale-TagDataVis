@@ -70,8 +70,8 @@ export default class uploadsActionsHandler {
                 info: fileNameFromPath(uploadInfo["dataFilePath"])
             },
             {   
-                title: "Log File Name",
-                info: fileNameFromPath(uploadInfo["loggingFilePath"])
+                title: "Starting Date",
+                info: `Date: ${uploadInfo['startingDate']}`
             },
             {
                 title: "GPS File Name",
@@ -111,7 +111,6 @@ export default class uploadsActionsHandler {
         } catch {
             return failResponse();
         }
-
     }
 
     public removeNewUploadProgress(uploadInfo: uploadInfo) {

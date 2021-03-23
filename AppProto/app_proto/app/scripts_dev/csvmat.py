@@ -136,10 +136,6 @@ def _verifyProcessSuccess(newDataFilePath: str):
     if not successful: 
         raise Exception("File conversion failed. File was not found at its new path.")
 
-def _getLogFilePath(cmdLineArgs: dict):
-    logFilePathKey = keysHelper.getLogPathKey()
-    return cmdLineArgs[logFilePathKey]
-
 def getPandasDataFrame():
     cmdLineArgs = _getCMDLineArgs()
     origDataFilePath = _getOrigDataFilePath(cmdLineArgs)

@@ -2,20 +2,7 @@ import React, {useState} from "react";
 import SelectBatchDialog from './SelectBatchDialog';
 import {useDispatch, useSelector} from "react-redux";
 import {uploadsActionsHandler} from "../functions/reduxHandlers/handlers";
-import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import { PinDropSharp } from "@material-ui/icons";
-
-const useStyles = makeStyles({
-  btn: {
-      backgroundColor: "#012069",
-      color: "white",
-      "&:hover": {
-          backgroundColor: "#012069",
-          opacity: 0.8
-      }
-  }
-})
 
 interface SelectBatchBtnProps {
   batchName: string,
@@ -23,8 +10,6 @@ interface SelectBatchBtnProps {
 }
 
 export default function SelectBatchBtn(props: SelectBatchBtnProps) { 
-
-  const classes = useStyles();
 
   const dispatch = useDispatch();
 
@@ -87,7 +72,8 @@ export default function SelectBatchBtn(props: SelectBatchBtnProps) {
       <>
             <Button
                 onClick={toggleBatchModal}
-                className={classes.btn}
+                id="color-themed"
+                className="btn"
                 variant="outlined"
             >
                 {batchBtnVal}

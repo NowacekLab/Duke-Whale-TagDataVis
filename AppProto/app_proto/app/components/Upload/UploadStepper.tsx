@@ -1,17 +1,11 @@
 import React, {useState, useRef, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {getNewDataFilePath, getLoggingErrorFilePath} from "../../functions/paths";
-import {fileNameFromPath} from "../../functions/paths";
 import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import GenericStepper from '../GenericStepper';
 import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
@@ -67,7 +61,7 @@ const useStyles = makeStyles(() => ({
 
 type UploadStepperProps = {
     beginUpload: Function,
-}
+}         
 
 export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
@@ -212,8 +206,8 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }
 
     const [date, setDate] = useState(new Date());
-    const onDateChange = (sth: any) => {
-        console.log(sth);
+    const onDateChange = (newDate: any) => {
+        setDate(newDate);
     }
 
     useEffect(() => {
@@ -471,7 +465,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             const placeholder = "No file uploaded";
             stepLabel = `${uploadText} [${getFileNameOrDefault(index, placeholder)}]`
         } else if (isDate) {
-            stepLabel = `${date}`
+            stepLabel = `Starting Date: ${date}`
         } else if (isLatLong) {
 
             const parsedLatitude = getParsedFloat(latitude);
@@ -513,17 +507,16 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         const newDataFilePath = await getNewDataFilePath(batchName, dataFileName);
         const loggingErrorFilePath = getLoggingErrorFilePath();
 
-
         //TODO: date must be converted to useful format 
         const uploadInfoObj = {
             "batchName": batchName,
             "dataFilePath": uploadDataFileObj.path, 
             "newDataFilePath": newDataFilePath,
             "loggingFilePath": loggingErrorFilePath,
-            "startingDate": date,
+            "startingDate": date.toISOString(),
             "gpsFilePath": uploadGPSFileObj.path, 
-            "startLatitude": trueLat, 
-            "startLongitude": trueLong 
+            "startLatitude": trueLat.toString(), 
+            "startLongitude": trueLong.toString(), 
         }
 
         // Extra validation

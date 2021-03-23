@@ -17,7 +17,7 @@ export interface uploadInfo {
     dataFilePath: string, 
     newDataFilePath: string,
     loggingFilePath: string, 
-    logFilePath: string,
+    startingDate: string,
     gpsFilePath: string, 
     startLatitude: string, 
     startLongitude: string, 

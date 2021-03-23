@@ -9,25 +9,149 @@
   font-family: -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue !important;
 }
 
+:root {
+  --primary-color: hsl(222, 98%, 21%);
+  --secondary-color: hsl(0, 0%, 100%);
+  --critical-color: hsl(343, 72%, 48%);
+  --bg-color: hsl(228, 33%, 97%);
+  --primary-font-color: hsl(0, 0%, 0%);
+  --secondary-font-color: hsl(0, 0%, 100%);
+  --heading-color: hsl(0, 0%, 0%);
+  --flex-column: {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  };
+  --reg-font-size: 0.875rem;
+}
+
+[data-theme='dark'] {
+  --primary-color: hsl(222, 98%, 11%);
+  --secondary-color: hsl(0, 0%, 90%);
+  --bg-color: hsl(228, 33%, 57%);
+  --primary-font-color: hsl(0, 0%, 35%);
+  --secondary-font-color: hsl(0, 0%, 90%);
+  --heading-color: hsl(0, 0%, 35%);
+}
+
+h1, h2, h3 {
+  color: var(--primary-font-color);
+}
+
 body {
   position: relative;
-  color: white;
   height: 100vh;
-  background-color: #232c39;
-  background-image: linear-gradient(
-    45deg,
-    rgba(0, 216, 255, 0.5) 10%,
-    rgba(0, 1, 127, 0.7)
-  );
+  background-color: var(--bg-color);
   overflow-y: hidden;
+  box-sizing: border-box;
 }
+
+.titlebar {
+  background-color: var(--primary-color) !important;
+}
+
+.flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-row-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alertContainer {
+  width: 500px;
+  align-items: center;
+  justify-content: center;
+  animation: all 1s ease-in;
+  background: none;
+  position: relative;
+}
+
+.container {
+  background-color: var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.sidebar {
+  background-color: var(--primary-color);
+}
+
+.btnContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: flex-end;
+  gap: 10px;
+}
+
+.containedBtn#color-themed {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  margin-left: 2px;
+  margin-right: 20px;
+  font-size: 12px; 
+} 
+
+.btn#error-color-themed {
+  background-color: var(--critical-color);
+  color: var(--secondary-color);
+}
+
+.btn#color-themed {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.btn:hover, .containedBtn:hover {
+  background-color: var(--primary-color);
+  opacity: 0.8;
+}
+
+.list {
+  overflow: auto;
+  min-width: 500px;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.list#batches {
+  min-height: 0px;
+}
+
+.modal {
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+}
+
 
 ::-webkit-scrollbar {
   display: none;
 }
 
 p {
-  font-size: 12px;
+  color: var(--primary-font-color);
+}
+
+.MuiTooltip-popper p {
+  color: inherit;
+}
+
+.plotly_editor p {
+  color: inherit;
 }
 
 li {
@@ -35,7 +159,7 @@ li {
 }
 
 a {
-  color: white;
+  color: var(--primary-color);
   opacity: 0.75;
   text-decoration: none;
 }

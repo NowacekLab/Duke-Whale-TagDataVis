@@ -33,22 +33,32 @@ export async function loadFileInfoArr() {
 }
 
 function getUploadInfoArr(uploadInfo: uploadInfo) {
+
+    const ISOStartingDate = uploadInfo['startingDate'];
+    const dateObj = new Date(ISOStartingDate);
+    const startingDate = dateObj ?? ISOStartingDate;
+
+    const DataOrNA = (data: string) => {
+        let realData = data ?? "";
+        return realData === "" ? "Not Available" : data;
+    }
+
     const uploadInfoArr = [
         {
             title: "Data File Name",
-            info: uploadInfo["dataFileName"]
+            info: DataOrNA(uploadInfo["dataFileName"])
         },
         {   
-            title: "Log File Name",
-            info: uploadInfo["logFileName"]
+            title: "Starting Date",
+            info: `${startingDate}`,
         },
         {
             title: "GPS File Name",
-            info: uploadInfo["gpsFileName"]
+            info: DataOrNA(uploadInfo["gpsFileName"])
         },
         {
             title: "Starting Latitude and Longitude",
-            info: `Lat (${uploadInfo["startLatitude"]}), Long (${uploadInfo["startLongitude"]})`
+            info: `Lat: (${DataOrNA(uploadInfo["startLatitude"])}), Long: (${DataOrNA(uploadInfo["startLongitude"])})`
         }
     ];
 

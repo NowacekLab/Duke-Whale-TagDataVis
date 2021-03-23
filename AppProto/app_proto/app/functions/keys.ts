@@ -4,7 +4,6 @@ import {getKeyFromObj, addValToObj} from "./object_helpers";
 const dataFilePathKey = 'dataFilePath';
 const newDataFilePathKey = 'newDataFilePath';
 const loggingFilePathKey = 'loggingFilePath';
-const logFilePathKey = 'logFilePath';
 const gpsFilePathKey = 'gpsFilePath';
 const startLatitudeKey = 'startLatitude';
 const startLongitudeKey = 'startLongitude';
@@ -30,13 +29,6 @@ export function getLoggingFilePathKey() {
 }
 export function getLoggingFilePathFromObj(obj: Object) {
     return getKeyFromObj(obj, getLoggingFilePathKey());
-}
-
-export function getLogFilePathKey() {
-    return logFilePathKey;
-}
-export function getLogFilePathFromObj(obj: Object) {
-    return getKeyFromObj(obj, getLogFilePathKey());
 }
 
 export function getGPSFilePathKey() {

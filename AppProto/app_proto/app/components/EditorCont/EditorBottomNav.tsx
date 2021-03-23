@@ -39,14 +39,6 @@ const useStyles = makeStyles({
         display: "flex",
         gap: "10px"
     },
-    btn: {
-        backgroundColor: "#012069",
-        color: "white",
-        "&:hover": {
-            backgroundColor: "#012069",
-            opacity: 0.8
-        }
-    }
 })
 
 type EditorBottomNavProps = {
@@ -142,14 +134,16 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
             >
                 <Button
                     onClick={toggleBatchModal}
-                    className={classes.btn}
+                    id="color-themed"
+                    className="btn"
                     variant="outlined"
                 >
                     {batchBtnVal}
                 </Button>
 
                 <Button
-                    className={classes.btn}
+                    id="color-themed"
+                    className="btn"
                     onClick={toggleRangeModal}
                     variant="outlined"
                 >

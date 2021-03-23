@@ -4,7 +4,7 @@ import {formatCMDLineArgs} from "./cmdArgs";
 import {getDevPythonScriptPath, getProdPythonScriptPath, addLoggingErrorFilePath} from "../paths";
 import {failResponse, successResponse, throwErrIfFail} from "../responses"
 import {getDataFilePathKey, getNewDataFilePathKey,
-        getLoggingFilePathKey, getLogFilePathKey,
+        getLoggingFilePathKey,
         getGPSFilePathKey, getStartLatitudeKey, getStartLongitudeKey} from "../keys";
 
 export type cmdLineArgs = any;
@@ -39,14 +39,14 @@ export async function processGeneric(pythonScriptName: string, scriptName: strin
 const dataFilePathKey = getDataFilePathKey();
 const newDataFilePathKey = getNewDataFilePathKey();
 const loggingFilePathKey = getLoggingFilePathKey();
-const logFilePathKey = getLogFilePathKey();
+const startingDateKey = 'startingDate';
 const gpsFilePathKey = getGPSFilePathKey();
 const startLatitudeKey = getStartLatitudeKey();
 const startLongitudeKey = getStartLongitudeKey();
 
 export type processFileKey = string;
 export const processFileKeys: Array<processFileKey> = ["batchName", dataFilePathKey, newDataFilePathKey,
-                                loggingFilePathKey, logFilePathKey,
+                                loggingFilePathKey, startingDateKey,
                                 gpsFilePathKey, startLatitudeKey,
                                 startLongitudeKey]
 interface processFileCMDLineArgs {
@@ -55,7 +55,7 @@ interface processFileCMDLineArgs {
     dataFilePathKey: string, 
     newDataFilePathKey: string, 
     loggingFilePathKey: string, 
-    logFilePathKey: string, 
+    startingDateKey: string, 
     gpsFilePathKey: string, 
     startLatitudeKey: string, 
     startLongitudeKey: string
