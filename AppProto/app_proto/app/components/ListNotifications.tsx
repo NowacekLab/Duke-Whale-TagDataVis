@@ -6,6 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import { useSelector, useDispatch } from 'react-redux';
 import FadeNotif from './FadeNotif';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 type ListNotificationsProps = {
   show: boolean,
@@ -73,7 +74,9 @@ export default function ListNotifications(props: ListNotificationsProps) {
                     const title = notifActionHandler.getNotifTitle(singleNotifState);
 
                     return (
-                        <ListItem>
+                        <ListItem
+                          key={`${title}`}
+                        >
                           <FadeNotif 
                             status = {status}
                             title = {title}
@@ -85,6 +88,23 @@ export default function ListNotifications(props: ListNotificationsProps) {
 
                     )
                 })
+            }
+            {
+              listNotifs.length > 0 && 
+              <div
+                className="flex-col-center"
+                style={{
+                  margin: "5px"
+                }}
+              >                
+                <Button
+                  id="color-themed"
+                  className="btn"
+                  onClick={() => notifActionHandler.clearNotifs()}
+                >
+                  Clear All 
+                </Button>
+              </div>
             }
           </List>
 

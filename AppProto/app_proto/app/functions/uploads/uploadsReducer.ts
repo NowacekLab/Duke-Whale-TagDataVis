@@ -22,25 +22,11 @@ const initialState = {
 
 export default function uploadProgressReducer(state = initialState, action: GenericUpdateProgress): uploadProgressState {
 
-
-    console.log("UPLOAD PROGRESS REDUCER");
-    console.log("STATE")
-    console.log(state);
-    console.log("ACTION")
-    console.log(action);
-
     switch (action.type) {
         case ADD_PROGRESS: 
             const progObj = action.payload;
-
-            console.log("ADD PROGRESS");
-            console.log(progObj);
-
             const addUploadInfo = progObj["uploadInfo"];
             const addBatchName = addUploadInfo["batchName"];
-
-            console.log("ADDITIONAL BATCH NAME");
-            console.log(addBatchName);
 
             if (!addBatchName) return state;
 

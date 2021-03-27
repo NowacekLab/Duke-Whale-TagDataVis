@@ -32,12 +32,10 @@ def mahalanobis(x=None, data=None, cov=None):
     # print("Ended mahalanobis Function")
     return mahal.diagonal()
   
-def exportFig(fig, target_dir, new_file_name):
-    new_name = f"{new_file_name}.html"
-    new_path = os.path.join(target_dir, new_name)
-    fig.write_html(new_path)
+def exportFig(fig, new_file_path):
+    fig.write_html(new_file_path)
 
-def findPOI(calc_file_path, target_dir, new_file_name, is_export, var1, var2, var3, 
+def findPOI(calc_file_path, new_file_path, is_export, var1, var2, var3, 
             p_limit = 0.003, windowSize = 60, groupSize = 5, depthLimit = 0):
     """
     This function utilizes mahalanobis distance to find points of interest. 
@@ -194,7 +192,7 @@ def findPOI(calc_file_path, target_dir, new_file_name, is_export, var1, var2, va
     # Show figure and save as an HTML
     
     if is_export:
-      exportFig(fig, target_dir, new_file_name)
+      exportFig(fig, new_file_path)
     else:
       fig.show()
 
@@ -204,8 +202,7 @@ def _getCMDLineArgs():
 def main():
     cmdLineArgs = _getCMDLineArgs() 
     calc_file_path = cmdLineArgs['calcFilePath']
-    target_dir = cmdLineArgs['targetDirectory']
-    new_file_name = cmdLineArgs['newFileName']
+    new_file_path = cmdLineArgs['newFilePath']
     is_export = cmdLineArgs['isExport']
     var1 = cmdLineArgs['variableOne']
     var2 = cmdLineArgs['variableTwo']
@@ -221,7 +218,7 @@ def main():
         
     is_export = True if is_export == "True" else False  
     
-    findPOI(calc_file_path, target_dir, new_file_name, is_export, var1, var2, var3,
+    findPOI(calc_file_path, new_file_path, is_export, var1, var2, var3,
             p_limit, window_size, group_size, depth_limit)
     
     return "SUCCESS"  

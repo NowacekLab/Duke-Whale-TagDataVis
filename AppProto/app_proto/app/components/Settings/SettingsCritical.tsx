@@ -5,8 +5,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import SettingsCriticalExec from './SettingsCriticalExec';
+import { showUserSaveFilesInFileManager } from '../../functions/files';
+import {reset} from '../../functions/reset';
 
-export default function SettingsCritical() {
+interface SettingsCriticalProps {
+  onClose: Function,
+}
+
+export default function SettingsCritical(props: SettingsCriticalProps) {
 
   const [action, setAction] = useState("user");
 
@@ -22,6 +28,19 @@ export default function SettingsCritical() {
         return "reset-everything"
       default:
         return "invalid-action"
+    }
+  }
+
+  const onActionExec = () => {
+    switch (action) {
+      case "user":
+        showUserSaveFilesInFileManager();
+        break;
+      case "reset":
+        reset();
+        break;
+      default:
+        break;
     }
   }
 
@@ -63,7 +82,8 @@ export default function SettingsCritical() {
 
       <SettingsCriticalExec 
         verifyUserText={getVerificationText()}
-        onActionExec={() => console.log(action)}
+        onActionExec={onActionExec}
+        onClose={props.onClose}
       />
       
     </div>

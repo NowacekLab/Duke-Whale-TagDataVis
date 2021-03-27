@@ -3,9 +3,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-
-import RangeSelectDialog from './RangeSelectDialog';
-import SelectBatchDialog from '../SelectBatchDialog';
+import SelectBatchBtn from '../SelectBatchBtn';
+import SelectRangeBtn from '../SelectRangeBtn';
 
 const useStyles = makeStyles({
     root: {
@@ -56,42 +55,23 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
     const uploadProgHandler = new uploadsActionsHandler(dispatch);
     const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
 
-    const [chosenColPath, setChosenColPath] = useState("");
-    const [tempColPath, setTempColPath] = useState("");
-
-    const [tempBatchName, setTempBatchName] = useState("");
-    const [chosenBatchName, setChosenBatchName] = useState("");
-    const confirmTempBatchName = () => {
-        setChosenBatchName(tempBatchName);
-        setChosenColPath(tempColPath);
-        handleBatchModalClose();
-        props.onBatchSelect(tempBatchName, tempColPath);
-    }
-    const batchBtnVal = chosenBatchName === "" ? "No batch chosen" : chosenBatchName;
-
-
-    const [currBatchInfo, setCurrBatchInfo] = useState([]);
-    const [showBatchModal, setShowBatchModal] = useState(false);
-    const handleBatchModalClose = () => {
-        setShowBatchModal(false);
-    }
-    const toggleBatchModal = () => {
-        setShowBatchModal(!showBatchModal);
-    }
-
-    const [infoOpen, setInfoOpen] = useState(false);
-    
-    const viewCurrBatchInfo = (batchName: string) => {
-
+    const [batchName, setBatchName] = useState(""); 
+    const [colPath, setColPath] = useState("");
+    const onBatchNameSelect = (batchName: string) => {
         //@ts-ignore
         const uploadProgObj = uploadsFinished[batchName];
-        const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
         const colPath = uploadProgObj["cols"] && uploadProgObj["cols"]["cols.json"] ? uploadProgObj["cols"]["cols.json"] : "";
+        setColPath(colPath);
+        setBatchName(batchName);
+        setRangeConfirmed(false);
+        resetRangeSelection();
+        props.onBatchSelect(batchName, colPath);
+    }
 
-        setTempBatchName(batchName);
-        setTempColPath(colPath);
-        setCurrBatchInfo(uploadInfoArr);
-        setInfoOpen(true);
+    const resetRangeSelection = () => {
+        setRangeConfirmed(false);
+        setRealMinRange("0");
+        setRealMaxRange("100");
     }
 
     const [realMinRange, setRealMinRange] = useState("0");
@@ -113,15 +93,7 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
         setRealMinRange(`${realMinRange}`);
         setRealMaxRange(`${realMaxRange}`);
         props.onRangeConfirm(realMinRange, realMaxRange);
-        handleRangeModalClose();
         setRangeConfirmed(true);
-    }
-    const [showRangeModal, setShowRangeModal] = useState(false);
-    const handleRangeModalClose = () => {
-        setShowRangeModal(false);
-    }
-    const toggleRangeModal = () => {
-        setShowRangeModal(!showRangeModal);
     }
 
 
@@ -129,50 +101,39 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
         <div
             className={classes.root}
         >   
+
             <div
-                className={classes.btnContainer}
+                className="flex-col-center"
+                style={{
+                    gap: "10px"
+                }}
             >
-                <Button
-                    onClick={toggleBatchModal}
-                    id="color-themed"
-                    className="btn"
-                    variant="outlined"
-                >
-                    {batchBtnVal}
-                </Button>
 
                 <Button
                     id="color-themed"
                     className="btn"
-                    onClick={toggleRangeModal}
-                    variant="outlined"
+                    disabled={true}
                 >
-                    {rangeConfirmed ? `${realMinRange} : ${realMaxRange}` : "Confirm Range"}
+                    Save
                 </Button>
+
+                <div
+                    className={classes.btnContainer}
+                >
+                    <SelectBatchBtn 
+                        batchName={batchName}
+                        onBatchSelect={onBatchNameSelect}
+                    />
+
+                    <SelectRangeBtn     
+                        batchName={batchName}
+                        realMinRange={realMinRange}
+                        realMaxRange={realMaxRange}
+                        rangeConfirmed={rangeConfirmed}
+                        onRangeConfirmation={onRangeConfirmation}
+                    />
+                </div>
             </div>
-
-            <SelectBatchDialog 
-                showModal={showBatchModal}
-                handleClose={handleBatchModalClose}
-                handleBack={handleBatchModalClose}
-                currBatchInfo={currBatchInfo}
-                infoOpen={infoOpen}
-                onInfoClose={() => setInfoOpen(false)}
-                displayBatchName={tempBatchName}
-                confirmDisplayBatchName={confirmTempBatchName}
-                viewBatchInfo={viewCurrBatchInfo}
-                uploads={uploadsFinished}
-            />
-
-            <RangeSelectDialog 
-                showModal={showRangeModal}
-                handleClose={handleRangeModalClose}
-                handleBack={handleRangeModalClose}
-                onRangeConfirm={onRangeConfirmation}
-                currInputMinRange={realMinRange}
-                currInputMaxRange={realMaxRange}
-            />
-
 
         </div>
     )

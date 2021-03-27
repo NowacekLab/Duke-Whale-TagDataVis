@@ -13,8 +13,6 @@ export default function NotifBtn() {
       setShowNotifs(false);
     } 
     const handleOpenNotifs = () => {
-      console.log("hello");
-      console.log(showNotifs);
       setShowNotifs(true);
     }
 
@@ -41,15 +39,9 @@ export default function NotifBtn() {
           <List>
             {
                 listNotifs.map((singleNotifState, idx) => {
-
-                    console.log("List Notifs map");
-                    console.log(singleNotifState);
                     
                     const status = notifActionHandler.getNotifStatus(singleNotifState);
                     const msg = notifActionHandler.getNotifMsg(singleNotifState);
-
-                    console.log(status);
-                    console.log(msg);
 
                     return (
 
@@ -73,6 +65,7 @@ export default function NotifBtn() {
             position: "absolute",
             right: 10,
             bottom: 10,
+            zIndex: 99999999,
           }} 
           id="color-themed"
           className="btn"
@@ -93,7 +86,7 @@ export default function NotifBtn() {
                         backgroundColor: "red",
                         height: "5px",
                         width: "5px",
-                        fontSize: "12px"
+                        fontSize: "12px",
                     }}
                   />
                 }

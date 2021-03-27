@@ -6,7 +6,8 @@ import Paper from '@material-ui/core/Paper';
 
 interface SettingsCriticalExecProps {
   verifyUserText: string, 
-  onActionExec: Function,
+  onActionExec: Function, 
+  onClose: Function,
 }
 
 export default function SettingsCriticalExec(props: SettingsCriticalExecProps) {
@@ -15,6 +16,11 @@ export default function SettingsCriticalExec(props: SettingsCriticalExecProps) {
   const [textVal, setTextVal] = useState("");
   const onTextChange = (e: any) => {
     setTextVal(e.target.value ?? "");
+  }
+
+  const onActionExec = () => {
+    props.onClose();
+    props.onActionExec();
   }
 
   return (
@@ -34,7 +40,6 @@ export default function SettingsCriticalExec(props: SettingsCriticalExecProps) {
         title={"Confirm"}
         bodyStyle={{
           minWidth: "500px",
-          minHeight: "500px",
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -65,7 +70,7 @@ export default function SettingsCriticalExec(props: SettingsCriticalExecProps) {
             id="error-color-themed"
             className="btn"
             disabled={textVal !== props.verifyUserText}
-            onClick={() => props.onActionExec()}
+            onClick={onActionExec}
             style={{
               opacity: textVal !== props.verifyUserText ? 0.5 : 1
             }}

@@ -33,15 +33,17 @@ export default function Graph() {
     }
     const onGraphSelect = (graphName: string, graphPath: string) => {
 
+        if (graphName === "" || graphPath === "") {
+            setGraphState(defaultGraphState);
+            return;
+        }
+
         setLoading(true);
         setProgress(10);
 
         isMounted && getObjFromPath(graphPath).then((obj) => {
             
             if (!isMounted) return;
-
-            console.log("OBJECT FROM PATH: ");
-            console.log(obj);
 
             if (obj) {
                 let data = [];
@@ -56,18 +58,12 @@ export default function Graph() {
                     data: data,
                     layout: layout 
                 }
-                
-                console.log("NEW GRAPH STATE: ");
-                console.log(newGraphState);
-
 
                 onGraphUpdate(newGraphState); 
-                
-                endProgress();
             }
 
         }).catch(() => {
-            endProgress();
+            
         })
     }
 
@@ -93,6 +89,7 @@ export default function Graph() {
                 progress={progress}
                 state={graphState}
                 onUpdate={onGraphUpdate}
+                onFinishLoading={endProgress}
             />
 
             <GraphSelectBar 

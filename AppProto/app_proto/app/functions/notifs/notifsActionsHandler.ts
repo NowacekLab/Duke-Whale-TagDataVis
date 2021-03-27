@@ -1,4 +1,5 @@
-import {NotifState, SingleNotifState, UPDATE_NOTIF_ALL, UPDATE_NOTIF_VISIBILITY, ADD_NOTIF_LIST, REMOVE_NOTIF_LIST} from "./notifsTypes";
+import {NotifState, SingleNotifState, UPDATE_NOTIF_ALL, UPDATE_NOTIF_VISIBILITY, ADD_NOTIF_LIST, REMOVE_NOTIF_LIST, UPDATE_NOTIF_STATE} from "./notifsTypes";
+import {initialSingleNotifState} from './notifsReducer';
 
 export default class notifsActionsHandler {
     
@@ -54,6 +55,16 @@ export default class notifsActionsHandler {
 
     public showErrorNotif(msg: string) {
         this.handleDispatchAllNotif("error", msg);
+    }
+
+    public clearNotifs() {
+        this.dispatch({
+            type: UPDATE_NOTIF_STATE,
+            payload: {
+                singleNotif: initialSingleNotifState,
+                listNotif: []
+            }
+        })
     }
 
     private handleDispatchAllNotif(status: string, msg: string) {

@@ -7,9 +7,10 @@ import {
     UPDATE_NOTIF_MSG, 
     UPDATE_NOTIF_STATUS,
     REMOVE_NOTIF_LIST,
+    UPDATE_NOTIF_STATE,
     ADD_NOTIF_LIST,} from "./notifsTypes";
 
-const initialSingleNotifState: SingleNotifState = {
+export const initialSingleNotifState: SingleNotifState = {
     status: "error",
     title: "Generic Error",
     msg: "An error has occurred.",
@@ -17,11 +18,15 @@ const initialSingleNotifState: SingleNotifState = {
 }
 
 const initialListNotifStateStr = localStorage.getItem('listNotif') || '[]';
-const initialListNotifState = JSON.parse(initialListNotifStateStr) || [];
-
-console.log("NOTIFS REDUCER STORE");
-console.log(initialListNotifStateStr);
-console.log(initialListNotifState);
+const initialListNotifState = function() {
+    try {
+        return JSON.parse(initialListNotifStateStr) || [];
+    } catch (error) {
+        console.log(error);
+        localStorage.setItem('listNotif', JSON.stringify([]));
+        return [];
+    }
+}();
 
 const initialState: NotifState = {
     singleNotif: initialSingleNotifState,
@@ -30,7 +35,16 @@ const initialState: NotifState = {
 
 export default function notifsReducer(state = initialState, action: GenericUpdateNotif): NotifState {
     switch(action.type) {
+        case UPDATE_NOTIF_STATE:
+            return { 
+                ...state,
+                ...action.payload
+            }
         case UPDATE_NOTIF_ALL:
+
+            let newListNotif = action.payload.listNotif ?? [];
+            localStorage.setItem('listNotif', JSON.stringify(newListNotif));
+
             return {
                 ...state, 
                 singleNotif: {

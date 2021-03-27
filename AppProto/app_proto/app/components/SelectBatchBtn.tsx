@@ -24,6 +24,7 @@ export default function SelectBatchBtn(props: SelectBatchBtnProps) {
     setShowBatchModal(false);
   }
   const toggleBatchModal = () => {
+      console.log(uploadsFinished);
       setShowBatchModal(!showBatchModal);
   }
   const [infoOpen, setInfoOpen] = useState(false);
@@ -45,12 +46,6 @@ export default function SelectBatchBtn(props: SelectBatchBtnProps) {
     return uploadsFinished[batchName]['calcPath'];
   }
   const onBatchNameSelect = (batchName: string) => {
-
-    console.log("Select Batch Button - On Batch Name Select");
-    console.log("BATCH NAME: ");
-    console.log(batchName);
-    console.log("UPLOADS FINISHED: ");
-    console.log(uploadsFinished);
 
     const calcFilePath = getCalcFilePath(batchName);
     props.onBatchSelect(batchName, calcFilePath);

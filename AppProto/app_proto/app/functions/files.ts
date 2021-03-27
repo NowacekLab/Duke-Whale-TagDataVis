@@ -2,6 +2,9 @@ import {successResponse, failResponse} from "./responses";
 import {getFileInfoPath, getSaveDirPath} from "./paths";
 import {mergeObjs} from "./object_helpers";
 
+const remote = require('electron').remote;
+const shell = remote.shell;
+
 //@ts-ignore
 export const fs = window.require('fs');
 //@ts-ignore
@@ -65,12 +68,7 @@ export async function createPath(path: string) {
 
 export async function createPathIfNotExist(path: string) {
 
-    console.log("CREATE PATH IF NOT EXISTS")
-    console.log(path);
-
     const pathExists_ = await pathExists(path);
-
-    console.log(pathExists_)
 
     if (!pathExists_) {
         await createPath(path);
@@ -83,12 +81,7 @@ export async function createDir(dirPath: string) {
 
 export async function createDirIfNotExist(dirPath: string) {
 
-    console.log("CREATE DIR IF NOT EXISTS")
-    console.log(dirPath);
-
     const pathExists = await dirExists(dirPath);
-
-    console.log(pathExists);
 
     if (!pathExists) {
         await createDir(dirPath);
@@ -102,15 +95,9 @@ export async function removeDir(dirPath: string) {
 
 export async function removeDirAndFiles(dirPath: string) {
 
-    console.log("IN REMOVE FILES AND DIR");
-    console.log(dirPath);
-
     async function removeAllFiles(files: any) {
 
         if (!files) return;
-
-        console.log("IN REMOVE ALL FILES");
-        console.log(files);
 
         for (let idx in files) {
             const fileName = files[idx];
@@ -126,17 +113,11 @@ export async function removeDirAndFiles(dirPath: string) {
     
         return successResponse("Successfully removed all files.");
     } catch (e) {
-
-        console.log("REMOVE DIR AND FILES ERROR:");
-        console.log(e);
-
         return failResponse();
     }
 }
 
 export async function removeFromFileInfo(primaryKey: string) {
-
-    console.log("IN REMOVE FROM FILE INFO");
 
     const fileInfo = await getFileInfo();
 
@@ -168,14 +149,16 @@ export async function saveFileInfo(saveObj: any) {
 
 export async function createFileInfoIfNotExist() {
 
-    console.log("CREATE DIR IF NOT EXIST")
-
     const saveDir = getSaveDirPath();
-    console.log(saveDir);
     await createDirIfNotExist(saveDir);
-
-    console.log("CREATE PATH IF NOT EXIST")
     const savePath = getFileInfoPath();
-    console.log(savePath);
     await createPathIfNotExist(savePath);
+}
+
+export function showPathInFileManager(path: string) {
+    shell.showItemInFolder(path);
+}
+
+export function showUserSaveFilesInFileManager() {
+    showPathInFileManager(getSaveDirPath());
 }

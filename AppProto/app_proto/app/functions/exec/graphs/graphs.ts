@@ -50,9 +50,7 @@ function generateGraphs(graphGenerators: graphGenerators, dataFrame: dataFrame) 
             if (isEmptyObj(graphJSON)) throw new Error(`Failed to generate ${graphName}`);
             generatedGraphs[graphName] = graphJSON;
         } catch (error) {
-            // TODO: remove console error  
-            console.log("GRAPHING ERROR")
-            console.log(error);
+
         }
 
     }
@@ -63,12 +61,6 @@ function generateGraphs(graphGenerators: graphGenerators, dataFrame: dataFrame) 
 
 export async function handleSaveGeneratedGraphs(generatedGraphs: generatedGraphs, saveArgs: saveArgs) {
     const graphSaveDir = saveArgs['graphSaveDir'];
-
-    console.log("GRAPH SAVE DIR: ");
-    console.log(graphSaveDir);
-    console.log("GENERATED GRAPHS: ");
-    console.log(generatedGraphs);
-
 
     return await saveGeneratedGraphsToPaths(generatedGraphs, graphSaveDir);
 }

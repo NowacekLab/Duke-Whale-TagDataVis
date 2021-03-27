@@ -18,7 +18,13 @@ import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
 import AnimatedDialogWrapper from '../Animated/AnimatedDialogWrapper';
 import MahalDialogWrapper from '../MahalPOI/MahalDialogWrapper';
 import SettingsIcon from '@material-ui/icons/Settings';
-import SettingsWrapper from '../Settings/SettingsWrapper';
+import ExportHTMLWrapper from '../ExportHTML/ExportHTMLDialogWrapper';
+import SettingSizeDialog from '../Settings/SettingSizeDialog';
+import SettingCriticalDialog from '../Settings/SettingCriticalDialog';
+
+//@ts-ignore
+const remote = require('electron').remote;
+const shell = remote.shell;
 
 const useStyles = makeStyles({
     content: {
@@ -38,7 +44,7 @@ const useStyles = makeStyles({
         justifyContent: "space-between"
     },
     bannerSuperCont: {
-        zIndex: 999998,
+        zIndex: 100,
         bottom: 20,
         left: 200,
         right: 0,
@@ -97,12 +103,22 @@ const SideBarContent = () => {
     const handleMahalDialogClose = () => {
         setMahalDialogOpen(false);
     }
-    const [settingsOpen, setSettingsOpen] = useState(false);
-    const handleSettingsClose = () => {
-        setSettingsOpen(false);
+    const [exportHTMLOpen, setExportHTMLOpen] = useState(false);
+    const handleExportHTMLClose = () => {
+        setExportHTMLOpen(false);
+    }
+    const [critSettingsOpen, setCritSettingsOpen] = useState(false);
+    const handleCritSettingsClose = () => {
+        setCritSettingsOpen(false);
+    }
+    const [sizeSettingsOpen, setSizeSettingsOpen] = useState(false);
+    const handleSizeSettingsClose = () => {
+        setSizeSettingsOpen(false);
     }
 
     const [darkMode, setDarkMode] = useState(false);
+
+
     const testing = () => {
         // console.log(screen);
         // console.log(screen.getPrimaryDisplay().workAreaSize);
@@ -114,6 +130,11 @@ const SideBarContent = () => {
         //     document.body.removeAttribute('data-theme');
         //     setDarkMode(false);
         // }
+        try {
+            const tempPath = "C:\\Users\\joonl\\AppData\\Roaming\\Electron";
+            shell.showItemInFolder(tempPath);
+        } catch(error) {
+        }
     }
 
     return(
@@ -206,8 +227,9 @@ const SideBarContent = () => {
                             <div
                                 style={{
                                     display: 'flex',
-                                    flexDirection: 'column',
-                                    alignContent: 'center',
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    flexDirection: "column",
                                     gap: "10px",
                                     padding: "5px"
                                 }}
@@ -215,26 +237,47 @@ const SideBarContent = () => {
                                 <Typography>
                                     Generate
                                 </Typography>
-                                <Button
+                                <div
                                     style={{
-                                        color: "white",
-                                        fontWeight: "normal",
-                                        border: "1px solid white"
+                                        display: 'grid',
+                                        gridTemplateColumns: "repeat(2, 1fr)",
+                                        gridTemplateRows: "repeat(2, 1fr)",
                                     }}
-                                    onClick={() => setAnimatedDialogOpen(true)}
                                 >
-                                    3D Animation 
-                                </Button>
-                                <Button
-                                    style={{
-                                        color: "white",
-                                        fontWeight: "normal",
-                                        border: "1px solid white"
-                                    }}
-                                    onClick={() => setMahalDialogOpen(true)}
-                                >
-                                    Mahal POI
-                                </Button>
+                                    <Button
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "normal",
+                                            border: "1px solid white",
+                                            margin: "5px"
+                                        }}
+                                        onClick={() => setAnimatedDialogOpen(true)}
+                                    >
+                                        3D Animation 
+                                    </Button>
+                                    <Button
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "normal",
+                                            border: "1px solid white",
+                                            margin: "5px"
+                                        }}
+                                        onClick={() => setMahalDialogOpen(true)}
+                                    >
+                                        Mahal POI
+                                    </Button>
+                                    <Button
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "normal",
+                                            border: "1px solid white",
+                                            margin: "5px"
+                                        }}
+                                        onClick={() => setExportHTMLOpen(true)}
+                                    >
+                                        Export HTML  
+                                    </Button>
+                                </div>
                             </div>
 
                         }
@@ -263,32 +306,87 @@ const SideBarContent = () => {
                         handleBack={handleMahalDialogClose}
                     />
 
+                    <ExportHTMLWrapper 
+                        showDialog={exportHTMLOpen}
+                        handleClose={handleExportHTMLClose}
+                        handleBack={handleExportHTMLClose}
+                    />
+
                     <Tooltip
                         title={
-                            <Typography>
-                                Settings
-                            </Typography>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    flexDirection: "column",
+                                    gap: "10px",
+                                    padding: "5px",
+                                }}
+                            >
+                                <Typography>
+                                    Settings
+                                </Typography>
+                                <div
+                                    style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: "repeat(2, 1fr)",
+                                        gridTemplateRows: "auto",
+                                    }}
+                                >
+                                    <Button
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "normal",
+                                            border: "1px solid white",
+                                            margin: "5px"
+                                        }}
+                                        onClick={() => setSizeSettingsOpen(true)}
+                                    >
+                                        Window Size 
+                                    </Button>
+                                    <Button
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "normal",
+                                            border: "1px solid white",
+                                            margin: "5px"
+                                        }}
+                                        onClick={() => setCritSettingsOpen(true)}
+                                    >
+                                        Critical
+                                    </Button>
+                                </div>
+                            </div>
+
                         }
+                        interactive={true}
+                        leaveDelay={300}
                         placement="right"
-                        arrow
+                        arrow  
+                        disableFocusListener
                     >
-                        <IconButton
-                            onClick={() => setSettingsOpen(true)}
-                            style={{
-                                marginTop: 'auto'
-                            }}
-                        >
+                            <IconButton
+                                style={{
+                                    marginTop: "auto"
+                                }}
+                            >
+                                <SettingsIcon className={sizeSettingsOpen || critSettingsOpen ? classes.btnActive : classes.btnInactive}/>
+                            </IconButton>
 
-                            <SettingsIcon className={settingsOpen ? classes.btnActive : classes.btnInactive} />
-
-                        </IconButton>
                     </Tooltip>
 
-                    <SettingsWrapper 
-                        showDialog={settingsOpen}
-                        handleClose={handleSettingsClose}
-                        handleBack={handleSettingsClose}
-                    />
+                    <SettingSizeDialog 
+                        showModal={sizeSettingsOpen}
+                        handleClose={handleSizeSettingsClose}
+                        handleBack={handleSizeSettingsClose}
+                    /> 
+
+                    <SettingCriticalDialog 
+                        showModal={critSettingsOpen}
+                        handleClose={handleCritSettingsClose}
+                        handleBack={handleCritSettingsClose}
+                    /> 
 
                 </div>
 

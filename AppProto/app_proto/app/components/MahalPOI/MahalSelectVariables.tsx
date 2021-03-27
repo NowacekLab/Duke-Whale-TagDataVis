@@ -60,15 +60,8 @@ export default function MahalSelectVariables(props: MultiSelectVariablesProps) {
 
   async function getAvailBatchVars() {
     try {
-
-      console.log("GET AVAIL BATCH VARS");
-      console.log("CURRENT BATCH NAME: ");
-      console.log(props.chosenBatchName);
-
       //@ts-ignore
       const batchVarsRes = await getBatchVars(uploadsFinished, props.chosenBatchName);
-      console.log("RESULT OF GETTING AVAIL BATCH VARS: ");
-      console.log(batchVarsRes);
       throwErrIfFail(batchVarsRes);
       const batchVars = batchVarsRes.response;
       return batchVars;

@@ -29,8 +29,11 @@ interface SelectActionProps {
   onFileNameErrorChange: Function,
   fileNameError: boolean,
   exportLabel: string,
+  exportOnly?: boolean,
   fileExistCheck: boolean,
   onFileExistCheckChange: Function,
+  filePath: string,
+  onFilePathChange: Function,
   fileExists: boolean,
   onFileExistsChange: Function,
 }
@@ -83,6 +86,7 @@ export default function SelectAction(props: SelectActionProps) {
       props.onFileExistCheckChange(true);
     }
     const path = pathGivenDir(dirPath, `${fileName}${props.fileNameExt}`);
+    props.onFilePathChange(path);
     pathExists(path).then((exists) => {
       props.onFileExistsChange(exists);
       props.onFileExistCheckChange(true);
@@ -106,6 +110,8 @@ export default function SelectAction(props: SelectActionProps) {
     props.onFileExistCheckChange(false);
   }, [props.fileName])
 
+  const exportOnly = props.exportOnly ?? false;
+
   return (
     <div
       style={{
@@ -122,7 +128,10 @@ export default function SelectAction(props: SelectActionProps) {
             value={props.action ?? "temp"}
             onChange={handleActionValChange}
           >
-            <MenuItem value={"temp"}>Temporary View</MenuItem>
+            {
+              !exportOnly && 
+              <MenuItem value={"temp"}>Temporary View</MenuItem>
+            }
             <MenuItem value={"export"}>{props.exportLabel}</MenuItem>
           </Select>
         </FormControl>

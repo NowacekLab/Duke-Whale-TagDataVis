@@ -12,8 +12,6 @@ export function formatCMDLineArgs(cmdArgs: any) {
 
         const keyPair = `${keySpaceSep}${keyPairJoiner}${valSpaceSep}`;
 
-        console.log(keyPair);
-
         keyPairs.push(keyPair);
     }
 

@@ -12,7 +12,7 @@ export interface SingleNotifState {
     visibility: boolean,
 }
 
-export type GenericUpdateNotif = RemoveNotifFromList | AddNotifToList | UpdateNotifAll | UpdateNotifStatus | UpdateNotifMsg | UpdateNotifVis; 
+export type GenericUpdateNotif = RemoveNotifFromList | AddNotifToList | UpdateNotifAll | UpdateNotifStatus | UpdateNotifMsg | UpdateNotifVis | UpdateNotifState; 
 
 // List Notif 
 interface RemoveNotifFromList {
@@ -46,9 +46,14 @@ interface UpdateNotifVis {
     payload: boolean,
 }
 
+interface UpdateNotifState {
+    type: typeof UPDATE_NOTIF_STATE,
+    payload: NotifState,
+}
+
 export const ADD_NOTIF_LIST = 'ADD_NOTIF_LIST';
 export const REMOVE_NOTIF_LIST = 'REMOVE_NOTIF_LIST';
-
+export const UPDATE_NOTIF_STATE = 'UPDATE_NOTIF_STATE';
 export const UPDATE_NOTIF_ALL = 'UPDATE_NOTIF_ALL';
 export const UPDATE_NOTIF_STATUS = 'UPDATE_NOTIF_STATUS';
 export const UPDATE_NOTIF_MSG = 'UPDATE_NOTIF_MSG';

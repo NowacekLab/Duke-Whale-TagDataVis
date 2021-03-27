@@ -48,13 +48,8 @@ export async function handleGenSave(genRes: any, initSaveArgs: initSaveArgs) {
     
         await addToFileInfo(saveObj);
 
-        console.log("Handle gen past saving")
-
         return successResponse("Successfully executed post-generation save.");
     } catch (error) {
-
-        console.log("Handle gen save error")
-        console.log(error)
 
         return failResponse(error);
     }
@@ -116,9 +111,6 @@ function formatSaveJSON(existingObj: any, saveArgs: saveArgs) {
 
     const batchName = saveArgs["batchName"];
     saveObj[batchName] = existingObj;
-
-    console.log("format save json")
-    console.log(saveObj);
 
     return saveObj;
 }

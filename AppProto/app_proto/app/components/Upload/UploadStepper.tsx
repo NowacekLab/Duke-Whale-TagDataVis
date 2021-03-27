@@ -146,7 +146,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         } 
     }
 
-    const [latitude, setLatitude] = useState("");
+    const [latitude, setLatitude] = useState("0");
     const [latitudeDirection, setLatitudeDirection] = useState("W");
     const [latInputError, setLatInputError] = useState(false);
     const handleLatChange = (event: any) => {
@@ -166,7 +166,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         setLatitudeDirection(newLatDirection);
     }
 
-    const [longitude, setLongitude] = useState("");
+    const [longitude, setLongitude] = useState("0");
     const [longitudeDirection, setLongitudeDirection] = useState("N");
     const [longInputError, setLongInputError] = useState(false);
     const handleLongChange = (event: any) => {
@@ -214,18 +214,14 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         handleBatchErrorNext(batchName);
     }, [batchName])
     const handleBatchErrorNext = (newBatchName: string) => {
-        console.log("new batch name");
-        console.log(newBatchName);
 
         const batchNameDup = isBatchNameDup(newBatchName);
         if (batchNameDup || batchName === "") {
 
-            console.log("batcherrornext 1")
             setBatchNextEnabled(false);
             setBatchNameError(true);
         } else {
 
-            console.log("batcherrornext 2")
             setBatchNextEnabled(true);
             setBatchNameError(false);
         }
@@ -247,10 +243,6 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }();
 
     const isBatchNameDup = (newBatchName: string): boolean => {
-        console.log("BATCH NAMES");
-        console.log(batchNames);
-        console.log(batchNames.has(newBatchName));
-
         return batchNames.has(newBatchName);
     }
 
@@ -468,8 +460,10 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             stepLabel = `Starting Date: ${date}`
         } else if (isLatLong) {
 
-            const parsedLatitude = getParsedFloat(latitude);
-            const parsedLongitude = getParsedFloat(longitude);
+            let parsedLatitude = getParsedFloat(latitude);
+            parsedLatitude = parsedLatitude ? parsedLatitude : 0;
+            let parsedLongitude = getParsedFloat(longitude);
+            parsedLongitude = parsedLongitude ? parsedLongitude : 0;
 
             stepLabel = `${uploadText} [Lat: ${parsedLatitude} ${latitudeDirection} Longitude: ${parsedLongitude} ${longitudeDirection}]`
         } else {
@@ -493,10 +487,12 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     async function handleUploadStart() {
 
         let trueLat = getParsedFloat(latitude); 
+        trueLat = trueLat ? trueLat : 0;
         if (latitudeDirection === 'e') {
             trueLat = -latitude; 
         }
         let trueLong = getParsedFloat(longitude); 
+        trueLong = trueLong ? trueLong : 0;
         if (longitudeDirection === 's') {
             trueLong = -longitude;
         }

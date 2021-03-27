@@ -120,10 +120,6 @@ export default class uploadsActionsHandler {
     }
 
     public addNewUploadProgress(uploadInfo: uploadInfo) {
-
-        console.log("ADD NEW UPLOAD PROGFRESS");
-        console.log(uploadInfo);
-
         const uploadProgObj = {} as uploadProgressObj;
         const uploadInfoArr = this.getUploadInfoArr(uploadInfo);
 
@@ -134,19 +130,13 @@ export default class uploadsActionsHandler {
 
     public async refreshAllUploads() {
 
-        console.log("REFRESH ALL UPLOADS");
-
         const finishedUploads = await loadFinishedUploads();
-
-        console.log(finishedUploads);
 
         const finishedUploadBatchNames = function() {
             let batchNamesArr = Object.keys(finishedUploads);
             batchNamesArr = batchNamesArr ? batchNamesArr : [];
             return batchNamesArr;
         }();
-
-        console.log(finishedUploadBatchNames);
 
         this.removeProgresses(finishedUploadBatchNames);
         this.changeFinished(finishedUploads);

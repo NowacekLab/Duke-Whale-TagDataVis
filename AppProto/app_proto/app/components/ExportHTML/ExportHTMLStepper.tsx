@@ -1,17 +1,12 @@
-import React, {useState, useRef} from 'react'; 
+import React, {useState} from 'react'; 
 import {useDispatch} from "react-redux";
-import SelectBatchDialog from '../SelectBatchDialog';
 import GenericStepper from '../GenericStepper';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import SelectAction from '../SelectAction';
 import SelectBatchBtn from '../SelectBatchBtn';
 import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
+import SelectAction from '../SelectAction';
+import SelectGraphBtn from '../SelectGraphBtn';
 
 const useStyles = makeStyles({
   actionSelectDropdown: {
@@ -27,27 +22,28 @@ const useStyles = makeStyles({
         backgroundColor: "rgba(1,32,105,0.5)"
     }
   },
-})
+});
 
-interface AnimatedStepperProps {
-  onAnimateStart: any,
-}
+interface exportHTMLProps {
+  onExportStart: any,
+};
 
-export default function AnimatedStepper(props: AnimatedStepperProps) {
+export default function ExportHTMLStepper(props: exportHTMLProps) {
 
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const notifActionHandler = new notifsActionsHandler(dispatch, "Animate");
+  const notifActionHandler = new notifsActionsHandler(dispatch, "Export HTML");
 
-  const steps = ['Select a batch', 'Select an action'];
+  const steps = ['Select a batch', 'Select a graph', 'Export'];
+
   const getStepLabel = (idx: number) => {
     return steps[idx];
   }
   const getStepTextContent = (idx: number) => {
     return null;
   }
-  const [action, setAction] = useState("temp");
+  const [action, setAction] = useState("export");
   function onActionSelect(val: string) {
     setAction(val);
   }
@@ -57,13 +53,6 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
   function onFileChange(fileObj: any) {
     setFileObj(fileObj);
   }
-  const [batchName, setBatchName] = useState("");
-  const [calcFilePath, setCalcFilePath] = useState("");
-  const onBatchSelect = (batchName: string, calcFilePath: string) => {
-    setBatchName(batchName);
-    setCalcFilePath(calcFilePath);
-  }
-
   const [exportFileName, setExportFileName] = useState("");
   const [exportFileNameError, setExportFileNameError] = useState(false);
   const onExportFileNameChange = (e: any) => {
@@ -73,14 +62,29 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
     setExportFileNameError(error);
   } 
 
-  const [fileExists, setFileExists] = useState(false);
-  const onFileExistsChange = (exists: boolean) => {
-    setFileExists(exists);
+  const [batchName, setBatchName] = useState("");
+  const [calcFilePath, setCalcFilePath] = useState("");
+  const onBatchSelect = (batchName: string, calcFilePath: string) => {
+    setBatchName(batchName);
+    setCalcFilePath(calcFilePath);
   }
+
+  const [graphName, setGraphName] = useState("");
+  const [graphPath, setGraphPath] = useState("");
+  const onGraphSelect = (graphName: string, graphPath: string) => {
+    setGraphName(graphName);
+    setGraphPath(graphPath);
+  }
+
   const [fileExistCheck, setFileExistCheck] = useState(false);
   const onFileExistCheckChange = (exists: boolean) => {
     setFileExistCheck(exists);
   }
+  const [fileExists, setFileExists] = useState(false);
+  const onFileExistsChange = (exists: boolean) => {
+    setFileExists(exists);
+  }
+
   const [filePath, setFilePath] = useState("");
   const onFilePathChange = (filePath: string) => {
     setFilePath(filePath);
@@ -89,29 +93,45 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
   const getStepContent = (idx: number) => {
     switch (idx) {
       case 0:
-        return (<SelectBatchBtn 
-                  batchName={batchName}
-                  onBatchSelect={onBatchSelect}
-              />)
+        return (
+          <SelectBatchBtn 
+            key={"Select Batch"}
+            batchName={batchName}
+            onBatchSelect={onBatchSelect}
+          />
+        )
       case 1:
+        return (
+          <SelectGraphBtn 
+            key = {"Select Graph"}
+            batchName={batchName}
+            onToggleError={(error: string) => notifActionHandler.showErrorNotif(error)}
+            graphName={graphName}
+            graphPath={graphPath}
+            onGraphSelect={onGraphSelect}
+          />
+        )
+      case 2:
         return (<SelectAction 
-                  action = {action}
-                  onActionChange={onActionSelect}
-                  fileObj={fileObj}
-                  onFileChange={onFileChange}
-                  onFileNameChange={onExportFileNameChange}
-                  fileNameExt={".gif"}
-                  fileName={exportFileName}
-                  onFileNameErrorChange={onExportFileErrorChange}
-                  fileNameError={exportFileNameError}
-                  exportLabel={"Export GIF"}
-                  fileExistCheck={fileExistCheck}
-                  onFileExistCheckChange={onFileExistCheckChange}
-                  filePath={filePath} 
-                  onFilePathChange={onFilePathChange}
-                  fileExists={fileExists}
-                  onFileExistsChange={onFileExistsChange}
-                />)
+            key = {"Select Action"}
+            action = {action}
+            onActionChange={onActionSelect}
+            fileObj={fileObj}
+            onFileChange={onFileChange}
+            onFileNameChange={onExportFileNameChange}
+            fileNameExt={".html"}
+            fileName={exportFileName}
+            onFileNameErrorChange={onExportFileErrorChange}
+            fileNameError={exportFileNameError}
+            exportOnly={true}
+            exportLabel={"Export HTML"}
+            fileExistCheck={fileExistCheck}
+            onFileExistCheckChange={onFileExistCheckChange}
+            filePath={filePath} 
+            onFilePathChange={onFilePathChange}
+            fileExists={fileExists}
+            onFileExistsChange={onFileExistsChange}
+        />) 
       default:
         return null;
     }
@@ -126,7 +146,10 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
         if (batchName === "" || calcFilePath === "") return true;
         return false;
       case 1:
-        const exportInvalid = (action === "export" && (!fileObj || !fileObj['path'] || fileObj['path'] === ""));
+        if (graphName === "" || graphPath === "") return true;
+        return false;
+      case 2:
+        const exportInvalid =  (action === "export" && (!fileObj || !fileObj['path'] || fileObj['path'] === ""));
         const exportNameInvalid = (action === "export" && exportFileNameError);
         const fileExistError = (action === "export" && fileExists);
         const fileExistCheckError = (action === "export" && !fileExistCheck);
@@ -138,18 +161,14 @@ export default function AnimatedStepper(props: AnimatedStepperProps) {
 
   async function handleActionStart() {
     let dirPath = fileObj['path'];
+
     if (action === "export" && (!dirPath || dirPath === "")) {
       notifActionHandler.showErrorNotif("Valid directory path not chosen.");
       return;
     }
-    if (!calcFilePath || calcFilePath === "") {
-      notifActionHandler.showErrorNotif("Valid file path for chosen batch not found.");
-      return;
-    }
 
-    const isExport = action === "export";
-    
-    props.onAnimateStart(calcFilePath, filePath, isExport);
+    props.onExportStart(graphPath, filePath);
+
   }
 
   const getFinalBtns = () => {

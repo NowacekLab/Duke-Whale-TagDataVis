@@ -1,30 +1,28 @@
 import React from 'react';
-import SettingsBody from './SettingsBody';
 import WrapWithDialog from '../WrapWithDialog';
+import SettingsSize from './SettingsSize';
 
-interface SettingsDialogProps {
+interface SettingsCriticalDialogProps {
   showModal: boolean,
   handleClose: any,
   handleBack: Function,
-  title: string,
 }
 
-export default function SettingsDialog(props: SettingsDialogProps) {
-
+export default function SettingCriticalDialog(props: SettingsCriticalDialogProps) {
 
   return (
     <WrapWithDialog
       showModal={props.showModal}
       handleClose={props.handleClose}
       handleBack={props.handleBack}
-      title={props.title}
+      title={"Window Size"}
       bodyStyle={{
         minWidth: "500px",
         padding: "10px",
         gap: "10px"
       }}
     >
-      <SettingsBody 
+      <SettingsSize 
         onClose={props.handleClose}
       />
     </WrapWithDialog>

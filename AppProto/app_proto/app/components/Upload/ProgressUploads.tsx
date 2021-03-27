@@ -67,10 +67,6 @@ export default function ProgressUploads() {
                         const uploadProgObj = uploadsProgress[batchName];
                         const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
 
-                        console.log("UPLOAD PROGRESS");
-                        console.log(batchName);
-                        console.log(uploadInfoArr);
-
                         return (
                             <>
 

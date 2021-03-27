@@ -67,8 +67,6 @@ export default function MahalPOI(props: MahalPOIProps) {
     "path": "",
   })
   function onFileChange(fileObj: any) {
-    console.log("On File Change");
-    console.log(fileObj);
     setFileObj(fileObj);
   }
   const [exportFileName, setExportFileName] = useState("");
@@ -120,6 +118,10 @@ export default function MahalPOI(props: MahalPOIProps) {
   const [fileExists, setFileExists] = useState(false);
   const onFileExistsChange = (exists: boolean) => {
     setFileExists(exists);
+  } 
+  const [filePath, setFilePath] = useState("");
+  const onFilePathChange = (path: string) => {
+    setFilePath(path);
   }
 
   const getStepContent = (idx: number) => {
@@ -167,6 +169,8 @@ export default function MahalPOI(props: MahalPOIProps) {
           exportLabel={"Export HTML"}
           fileExistCheck={fileExistCheck}
           onFileExistCheckChange={onFileExistCheckChange}
+          filePath={filePath} 
+          onFilePathChange={onFilePathChange}
           fileExists={fileExists}
           onFileExistsChange={onFileExistsChange}
         />) 
@@ -219,7 +223,7 @@ export default function MahalPOI(props: MahalPOIProps) {
     const isExport = action === "export";
 
     props.onMahalPOIStart(
-      calcFilePath, dirPath, exportFileName, isExport, 
+      calcFilePath, filePath, isExport, 
       chosenBatchVars, mahalParamsObj,
     )
 

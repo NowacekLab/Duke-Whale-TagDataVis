@@ -16,16 +16,7 @@ export async function processGeneric(pythonScriptName: string, scriptName: strin
     const executor = isDev ? python3 : prodPythonScriptPath;
     const args = isDev ? [devPythonScriptPath, cmdLineString] : [cmdLineString];
 
-    console.log("PROCESS GENERIC")
-    console.log(python3);
-    console.log(isDev);
-    console.log(`EXECUTOR: ${executor}`)
-
     const res = await handlePythonExec(executor, args).catch((err) => {
-        console.log("PYTHON EXEC ERROR");
-        console.log(python3);
-        console.log(isDev);
-        console.log(err);
         return {
             success: false,
             response: err 
@@ -99,14 +90,8 @@ export async function handleProcessFile(args: processFileCMDLineArgs) {
         const processFileArgs = getProcessFileArgs(args);
         const processResp = await processFile(processFileArgs);
 
-        console.log("HANDLE PROCESS FILE RESPONSE")
-        console.log(processResp)
-
         return processResp;
     } catch (error) {
-
-        console.log("HANDLE PROCESS FILE ERROR");
-        console.log(error);
 
         return failResponse(error);
     }
@@ -134,14 +119,8 @@ export async function handleExportFile(args: exportCMDLineArgs) {
     try {
         const exportResp = await exportFile(args);
 
-        console.log("HANDLE EXPORT FILE RESPONSE");
-        console.log(exportResp);
-
         return exportResp;
     } catch (error) {
-
-        console.log("HANDLE EXPORT FILE ERROR");
-        console.log(error);
 
         return failResponse(error);
     }
@@ -150,8 +129,7 @@ export async function handleExportFile(args: exportCMDLineArgs) {
 export interface videoFileCMDLineArgs {
     [index: string]: string,
     calcFilePath: string,
-    newFileName: string,
-    targetDirectory: string,
+    newFilePath: string,
     isExport: string,
 }
 
@@ -167,18 +145,10 @@ async function runVideoFileProcess(cmdLineArgs: videoFileCMDLineArgs) {
 export async function handleProcessVideoFile(args: videoFileCMDLineArgs) {
     try {
         const exportResp = await runVideoFileProcess(args);
-
-        console.log("HANDLE PROCESS VIDEO FILE RESPONSE");
-        console.log(exportResp); 
-
         throwErrIfFail(exportResp);
 
         return successResponse("Successfully processed video file action.");
     } catch (error) {
-
-        console.log("HANDLE PROCESS VIDEO FILE ERROR");
-        console.log(error);
-
         return failResponse(error);
     }
 }
@@ -186,8 +156,7 @@ export async function handleProcessVideoFile(args: videoFileCMDLineArgs) {
 export interface mahalPOICMDArgs {
     [index: string]: string,
     calcFilePath: string,
-    newFileName: string,
-    targetDirectory: string,
+    newFilePath: string,
     isExport: string,
     variableOne: string,
     variableTwo: string,
@@ -218,18 +187,36 @@ async function runMahalPOIProcess(cmdLineArgs: mahalPOICMDArgs) {
 export async function handleProcessMahalPOI(args: mahalPOICMDArgs) {
     try {
         const exportResp = await runMahalPOIProcess(args);
-
-        console.log("HANDLE PROCESS MAHAL POI RESPONSE");
-        console.log(exportResp); 
-
         throwErrIfFail(exportResp);
 
         return successResponse("Successfully processed mahal poi action.");
     } catch (error) {
+        return failResponse(error);
+    }
+}
 
-        console.log("HANDLE PROCESS MAHAL POI ERROR");
-        console.log(error);
+export interface exportHTMLCMDLineArgs {
+    [index: string]: string,
+    graphFilePath: string,
+    newFilePath: string,
+}
 
+async function exportHTML(cmdLineArgs: exportHTMLCMDLineArgs) {
+    const pythonScriptName = 'export_html.py';
+    const scriptName = 'export_html';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleExportHTML(args: exportHTMLCMDLineArgs) {
+    try {
+        const exportResp = await exportHTML(args);
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully finished export HTML.");
+    } catch (error) {
         return failResponse(error);
     }
 }

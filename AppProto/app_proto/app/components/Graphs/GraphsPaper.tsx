@@ -61,7 +61,8 @@ type GraphPaperProps = {
     loading: boolean,
     progress: number,
     state: GraphState,
-    onUpdate: any
+    onUpdate: any,
+    onFinishLoading: Function,
 }
 
 const GraphsPaper = (props: GraphPaperProps) => {
@@ -81,14 +82,21 @@ const GraphsPaper = (props: GraphPaperProps) => {
         setState(props.state)
     }, [props.state])
 
+    const onPlotUpdate = (figure: any) => {
+        setState(figure);
+    }
+
+    const onAfterPlot = () => {
+        props.onFinishLoading();
+    }
+
     return (        
         <Paper
             elevation={3}
             className={classes.uploadPaper}
-        >
-                {
-                    props.loading ? 
-                    <div
+        >           {
+                        props.loading && 
+                        <div
                         style={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -102,23 +110,20 @@ const GraphsPaper = (props: GraphPaperProps) => {
                             value={props.progress}
                         />
                     </div>
-                    :
-                    <Fade
-                        in={!props.loading}
-                    >
-                        <Plot 
-                            data={state.data}
-                            layout={state.layout}
-                            frames={state.frames}
-                            config={state.config}
-                            className={classes.mainBody}
-                        />
-                    </Fade>
+                     }
 
-                    // <h1>
-                    //     Failed to render plot.
-                    // </h1>
-                }
+                    <Plot 
+                        data={state.data}
+                        layout={state.layout}
+                        frames={state.frames}
+                        config={state.config}
+                        className={classes.mainBody}
+                        onUpdate={onPlotUpdate}
+                        onAfterPlot={onAfterPlot}
+                        style={{
+                            display: props.loading ? "none" : ""
+                        }}
+                    />
         </Paper>
 
     );

@@ -21,6 +21,7 @@ import Paper from "@material-ui/core/Paper";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import DeleteIcon from '@material-ui/icons/Delete';
 import WrapWithDialog from '../WrapWithDialog';
+import FinishedUpload from './FinishedUpload';
 
 const useStyles = makeStyles({
     root: {
@@ -97,27 +98,12 @@ export default function FinishedUploads() {
                         
 
                         return (
-                            <>
-                                <ListItem
-                                    button
-                                    onClick={() => {handleCurrUploadInfoArr(batchName, uploadInfoArr)}}
-                                    key={batchName}
-                                >
-                                    <ListItemText
-                                        primary={batchName}
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <IconButton 
-                                            edge = "end"
-                                            onClick={() => {removeFinishedUpload(batchName)}}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-
-                                </ListItem>
-
-                            </>
+                            <FinishedUpload 
+                                batchName={batchName}
+                                handleCurrUploadInfo={handleCurrUploadInfoArr}
+                                uploadInfoArray={uploadInfoArr}
+                                removeUpload={removeFinishedUpload}
+                            />
                         )
 
                     })  

@@ -28,14 +28,11 @@ export default function App(props: AppProps) {
     }
 
     try {
-      const strSettings = localStorage.getItem('settings');
+      const strSettings = localStorage.getItem('settings') ?? "";
       const settings = JSON.parse(strSettings);
-      return settings;
-
+      return !settings || settings === "" ? defaultSettings : settings;
+      
     } catch(error) {
-      console.log("SETTINGS ERROR");
-      console.log(error);
-
       return defaultSettings;
     }
   }();

@@ -79,6 +79,8 @@
   --env: $ENV; }
 
 .plotly-editor--theme-provider {
+  --duke-color: hsl(222, 98%, 21%);
+  --duke-color-shade: hsl(222, 98%, 11%);
   --color-white: #ffffff;
   --color-rhino-core: #2a3f5f;
   --color-rhino-dark: #506784;
@@ -100,9 +102,9 @@
   --color-cornflower: #636efa;
   --color-emerald: #00cc96;
   --color-sienna: #ef553b;
-  --color-accent: var(--color-dodger);
-  --color-accent-shade: var(--color-dodger-shade);
-  --color-accent-shade-mid: var(--color-dodger-shade-mid);
+  --color-accent: var(--duke-color);
+  --color-accent-shade: var(--duke-color-shade);
+  --color-accent-shade-mid: var(--duke-color-shade);
   --color-brand: var(--color-dodger);
   --color-hightlight-darker: var(--color-gray-blue-pale);
   --color-text-base: var(--color-rhino-dark);

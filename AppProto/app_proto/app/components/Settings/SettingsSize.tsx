@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+//@ts-ignore
 const remote = require('electron').remote;
 
 interface SettingsSizeProps {
@@ -23,8 +24,6 @@ export default function SettingsSize(props: SettingsSizeProps) {
   const onSave = () => {
     try {
       let stringSettings = localStorage.getItem('settings') ?? '';
-      console.log("CURRENT STRING SETTINGS");
-      console.log(stringSettings);
   
       const settings = stringSettings === '' ? {} : JSON.parse(stringSettings);
       const newSettings = {
@@ -35,18 +34,13 @@ export default function SettingsSize(props: SettingsSizeProps) {
         }
       }
   
-      console.log("NEW STRING SETTINGS");
-      console.log(newSettings);
-  
       stringSettings = JSON.stringify(newSettings);
       localStorage.setItem('settings', stringSettings);
 
       notifActionHandler.showSuccessNotif("New window size saved");
       props.onClose();
     } catch (error) {
-      console.log("Settings Size ERROR");
       notifActionHandler.showErrorNotif("Failed to save window size");
-      console.log(error);
     }
   }
 

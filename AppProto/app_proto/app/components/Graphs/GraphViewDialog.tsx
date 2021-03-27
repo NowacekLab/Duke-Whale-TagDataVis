@@ -104,7 +104,9 @@ export default function GraphViewDialog(props: GraphViewDialogProps) {
               const graphPath = props.graphs[graphName];
 
               return (
-                  <>
+                  <React.Fragment
+                    key={`${graphName}-fragment`}
+                  >
 
                       <ListItem
                           button
@@ -117,7 +119,7 @@ export default function GraphViewDialog(props: GraphViewDialogProps) {
 
                       </ListItem>
 
-                  </>
+                  </React.Fragment>
               )            
 
           })  

@@ -15,7 +15,6 @@ export async function getBatchVars(finishedUploads: uploadFinishedObjects,
 
     return successResponseAny(batchVars); 
   } catch (err) {
-    console.log(err);
     return failResponse(err);
   }
   

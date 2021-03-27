@@ -124,6 +124,22 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
                 className="list"
             >
                 {
+                    <div
+                        style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        color: 'black'
+                        }}
+                    >
+                        {
+                            Object.keys(props.uploads).length === 0 &&
+                            <Typography>
+                                No Batches
+                            </Typography>
+                        }
+                    </div>
+                }
+                {
                     Object.keys(props.uploads) ?
                     Object.keys(props.uploads).map((batchName) => {
                         
