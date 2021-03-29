@@ -1,4 +1,4 @@
-import {successResponse, failResponse} from "./responses";
+import {successResponse, failResponse, failResponseAny} from "./responses";
 import {getFileInfoPath, getSaveDirPath} from "./paths";
 import {mergeObjs} from "./object_helpers";
 
@@ -51,7 +51,7 @@ export function getFileContentsSync(filePath: string) {
 }
 
 export function pathGivenDir(dirPath: string, name: string) {
-    return path.join(dirPath, name);
+    return path.join(dirPath, name ?? "");
 }
 
 export async function pathExists(checkPath: string) {
@@ -135,6 +135,36 @@ export async function addToFileInfo(addInfo: any) {
     const existingFileInfo = await getFileInfo();
     const mergedInfo = mergeObjs(existingFileInfo, addInfo);
     await saveFileInfo(mergedInfo);
+}
+
+export async function addToFileInfoAttr(addInfo: any, attr: any) {
+    const existingFileInfo = await getFileInfo();
+    if (!existingFileInfo.hasOwnProperty(attr)) {
+        existingFileInfo[attr] = {};
+    }
+    existingFileInfo[attr] = {
+        ...existingFileInfo[attr],
+        ...addInfo,
+    }
+    await saveFileInfo(existingFileInfo);
+}
+
+export async function editBatchInfoAttr(batchName: string, attr: any, addInfo: any) {
+    try {
+        const existingFileInfo = await getFileInfo();
+        existingFileInfo[batchName] = {
+            ...existingFileInfo[batchName],
+            [attr]: {
+                ...existingFileInfo[batchName][attr],
+                ...addInfo
+            }
+        }
+        await saveFileInfo(existingFileInfo);
+        return successResponse("edit batch info");
+    } catch (error) {
+        return failResponseAny(error);
+    }
+
 }
 
 export async function getFileInfo() {

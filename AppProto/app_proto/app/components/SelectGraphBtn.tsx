@@ -63,7 +63,7 @@ export default function SelectGraphBtn(props: SelectGraphBtnProps) {
       props.onGraphSelect(tempChosenGraph, tempChosenGraphPath);
   }
   
-  const graphBtnVal = props.graphName === "" ? "No graph chosen" : props.graphName;
+  const graphBtnVal = props.graphName === "" ? "Select Graph" : props.graphName;
 
   const btnDisabled = props.disabled ?? false;
 

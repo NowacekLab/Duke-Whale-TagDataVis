@@ -60,7 +60,7 @@ export default function SelectBatchBtn(props: SelectBatchBtnProps) {
     handleInfoToggle();
   }
 
-  const batchBtnVal = props.batchName === "" ? "No batch chosen" : props.batchName;
+  const batchBtnVal = props.batchName === "" ? "Select Batch" : props.batchName;
 
     return (
 

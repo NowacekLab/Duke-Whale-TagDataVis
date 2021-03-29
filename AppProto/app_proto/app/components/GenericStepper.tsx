@@ -13,7 +13,8 @@ const useStyles = makeStyles(() => ({
   },
   btnContainer: {
       display: 'flex',
-      justifyContent: 'space-around'
+      justifyContent: 'space-around',
+      gap: "10px"
   },
 }))
 

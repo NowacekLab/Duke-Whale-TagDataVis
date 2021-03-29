@@ -5,14 +5,15 @@ import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import SelectBatchBtn from '../SelectBatchBtn';
 import SelectRangeBtn from '../SelectRangeBtn';
+import WrapWithDialog from "../WrapWithDialog";
 
 const useStyles = makeStyles({
     root: {
         width: "100%",
-        height: "20%",
+        height: "10%",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     paperWrapper: {
         display: "flex",
@@ -36,7 +37,9 @@ const useStyles = makeStyles({
     },
     btnContainer: {
         display: "flex",
-        gap: "10px"
+        justifyContent: "center",
+        gap: "10px",
+        width: "100%",
     },
 })
 
@@ -103,22 +106,13 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
         >   
 
             <div
-                className="flex-col-center"
-                style={{
-                    gap: "10px"
-                }}
+                className={classes.btnContainer}
             >
-
-                <Button
-                    id="color-themed"
-                    className="btn"
-                    disabled={true}
-                >
-                    Save
-                </Button>
-
                 <div
-                    className={classes.btnContainer}
+                    style={{
+                        display: 'flex',
+                        gap: "10px"
+                    }}
                 >
                     <SelectBatchBtn 
                         batchName={batchName}
@@ -133,6 +127,7 @@ export default function EditorBottomNav(props: EditorBottomNavProps) {
                         onRangeConfirmation={onRangeConfirmation}
                     />
                 </div>
+
             </div>
 
         </div>

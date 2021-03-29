@@ -45,7 +45,7 @@ export default function SelectRangeBtn(props: SelectRangeBtnProps) {
           variant="outlined"
           disabled={btnDisabled}
       >
-          {props.rangeConfirmed ? `${props.realMinRange} : ${props.realMaxRange}` : "Confirm Range"}
+          {props.rangeConfirmed ? `${props.realMinRange} : ${props.realMaxRange}` : "Set Range"}
       </Button>
 
       <RangeSelectDialog 
