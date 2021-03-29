@@ -56,6 +56,7 @@ def getCMDLineStr() -> str:
 
 def getCMDLineArgs() -> dict:
     cmdLineStr = getCMDLineStr() 
+    cmdLineStr = cmdLineStr[1:-1]
     cmdLineArgs = parseCMDLineArg(cmdLineStr)
 
     return cmdLineArgs

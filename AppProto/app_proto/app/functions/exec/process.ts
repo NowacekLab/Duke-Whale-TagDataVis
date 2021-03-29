@@ -10,18 +10,19 @@ import {getDataFilePathKey, getNewDataFilePathKey,
 export type cmdLineArgs = any;
 export async function processGeneric(pythonScriptName: string, scriptName: string, cmdLineArgs: cmdLineArgs) {
 
-    const cmdLineString = formatCMDLineArgs(cmdLineArgs);
+    const cmdLineString = `"${formatCMDLineArgs(cmdLineArgs)}"`;
+
     const devPythonScriptPath = getDevPythonScriptPath(pythonScriptName);
     const prodPythonScriptPath = getProdPythonScriptPath(scriptName);
     const executor = isDev ? python3 : prodPythonScriptPath;
     const args = isDev ? [devPythonScriptPath, cmdLineString] : [cmdLineString];
-
     const res = await handlePythonExec(executor, args).catch((err) => {
         return {
             success: false,
             response: err 
         }
     });
+
     const responseObj = res ?? {success: false, response: "handlePythonExec() did not return valid response object"};
 
     return responseObj;

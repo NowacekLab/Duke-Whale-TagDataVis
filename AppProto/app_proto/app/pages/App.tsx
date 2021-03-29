@@ -7,7 +7,7 @@ const path = require('path');
 // Custom titlebar here
 const titlebar = new Titlebar({
   backgroundColor: Color.fromHex('#012069'),
-  titleHorizontalAlignment: 'left'
+  titleHorizontalAlignment: 'center'
 });
 const menu = new Menu();
 titlebar.updateMenu(menu);

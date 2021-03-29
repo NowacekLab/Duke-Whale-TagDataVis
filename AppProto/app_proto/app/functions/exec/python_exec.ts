@@ -3,8 +3,9 @@ import {isWindows} from "../constants";
 
 export const spawn = require("child_process").spawn; 
 
-
 export default async function handlePythonExec(executor: string, args: Array<string>) {
+
+    console.log(args);
     
     return new Promise<{success:boolean, response:string}>((resolve, reject) => {
             try {
@@ -32,12 +33,14 @@ export default async function handlePythonExec(executor: string, args: Array<str
                 pythonProcess && pythonProcess.on("exit", (code: any, signal: any) => {
 
                     const errorText = pythonProcess.stderr.toString().trim();
+
                     if (code || signal) {
                         reject(failResponse("Error in Python process, check errors.log."))
                     }
                 })
 
             } catch (error) {
+
                 reject(failResponse("Error in Python process, check errors.log."))
 
             }

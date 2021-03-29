@@ -159,6 +159,9 @@ export function uploadArgKeyToInfo(key: string, info: string) {
 }
 
 export async function uploadFile(uploadInfo: uploadInfo) {
+
+    console.log(uploadInfo);
+
     const batchName = uploadInfo["batchName"];
     try {
         await createPreRequFileAndDirs();
