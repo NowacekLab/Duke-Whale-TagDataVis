@@ -336,7 +336,7 @@ def handlePreCalculate(cmdLineArgs: dict) -> dict:
 def _getCMDLineArgs() -> dict: 
     return cmdArgs.getCMDLineArgs()
     
-@logger.getLogger("precalcs.py", _getLogFilePath(_getCMDLineArgs()))
-def main():
-    cmdLineArgs = _getCMDLineArgs()
-    handlePreCalculate(cmdLineArgs)
+# @logger.getLogger("precalcs.py", _getLogFilePath(_getCMDLineArgs()))
+# def main():
+#     cmdLineArgs = _getCMDLineArgs()
+#     handlePreCalculate(cmdLineArgs)

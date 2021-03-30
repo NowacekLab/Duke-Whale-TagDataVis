@@ -35,11 +35,11 @@ def export(cmdLineArgs: dict):
   exporter = _getExporter(cmdLineArgs)
   return exporter(file_paths, target_dir)
 
-@logger.getLogger("export.py", _getLogFilePath(_getCMDLineArgs()))
-def main():
-    cmdLineArgs = _getCMDLineArgs()
-    export(cmdLineArgs)
-    return "SUCCESS" 
+# @logger.getLogger("export.py", _getLogFilePath(_getCMDLineArgs()))
+# def main():
+#     cmdLineArgs = _getCMDLineArgs()
+#     export(cmdLineArgs)
+#     return "SUCCESS" 
   
 if __name__ == "__main__":
   print(main())

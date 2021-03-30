@@ -4,10 +4,10 @@ block_cipher = None
 
 
 a = Analysis(['process.py'],
-             pathex=['C:\\Users\\joonl\\Data\\Data-Visualization-MAPS\\AppProto\\app_proto\\app\\scripts_dev'],
+             pathex=['/Users/joonyounglee/Code/Data-Visualization-MAPS/AppProto/app_proto/app/scripts_dev'],
              binaries=[],
              datas=[],
-             hiddenimports=[],
+             hiddenimports=["cmath"],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],

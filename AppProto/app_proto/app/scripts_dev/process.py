@@ -156,16 +156,20 @@ def _getLogFilePath(cmdLineArgs: dict):
     logFilePathKey = keysHelper.getLogPathKey()
     return cmdLineArgs[logFilePathKey]
 
-def processFile(cmdLineArgs: dict):
-    cmdLineArgs = _addOrigFilePandasDataFrame(cmdLineArgs)    
-    _handlePreCalculate(cmdLineArgs)
-    _verifyProcessSuccess(cmdLineArgs)
+def main(cmdLineArgs: dict):
+    try: 
+        cmdLineArgs = _addOrigFilePandasDataFrame(cmdLineArgs)    
+        _handlePreCalculate(cmdLineArgs)
+        _verifyProcessSuccess(cmdLineArgs)
+        return "SUCCESS"
+    except Exception as e:
+        return e 
 
-@logger.getLogger("csvmat.py", _getLogFilePath(_getCMDLineArgs()))
-def main():
-    cmdLineArgs = _getCMDLineArgs()
-    processFile(cmdLineArgs)
-    return "SUCCESS"
+# @logger.getLogger("csvmat.py", _getLogFilePath(_getCMDLineArgs()))
+# def main():
+#     cmdLineArgs = _getCMDLineArgs()
+#     processFile(cmdLineArgs)
+#     return "SUCCESS"
 
 if __name__ == "__main__":
     print(main())

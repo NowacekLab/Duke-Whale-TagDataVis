@@ -56,7 +56,7 @@
     "appId": "",
     "asar": false,
     "files": [
-      "scripts/",
+      "scripts_dev",
       "app_files/",
       "dist/",
       "functions/",

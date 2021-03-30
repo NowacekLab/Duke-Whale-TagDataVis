@@ -195,33 +195,32 @@ def findPOI(calc_file_path, new_file_path, is_export, var1, var2, var3,
       exportFig(fig, new_file_path)
     else:
       fig.show()
-
-def _getCMDLineArgs():
-    return cmdArgs.getCMDLineArgs() 
     
-def main():
-    cmdLineArgs = _getCMDLineArgs() 
-    calc_file_path = cmdLineArgs['calcFilePath']
-    new_file_path = cmdLineArgs['newFilePath']
-    is_export = cmdLineArgs['isExport']
-    var1 = cmdLineArgs['variableOne']
-    var2 = cmdLineArgs['variableTwo']
-    var3 = cmdLineArgs['variableThree']
-    p_limit = cmdLineArgs['pLimit']
-    p_limit = float(p_limit)
-    window_size = cmdLineArgs['windowSize']
-    window_size = float(window_size)
-    group_size = cmdLineArgs['groupSize']
-    group_size = int(group_size)
-    depth_limit = cmdLineArgs['depthLimit']
-    depth_limit = float(depth_limit)
+def main(cmdLineArgs: dict):
+    try: 
+        calc_file_path = cmdLineArgs['calcFilePath']
+        new_file_path = cmdLineArgs['newFilePath']
+        is_export = cmdLineArgs['isExport']
+        var1 = cmdLineArgs['variableOne']
+        var2 = cmdLineArgs['variableTwo']
+        var3 = cmdLineArgs['variableThree']
+        p_limit = cmdLineArgs['pLimit']
+        p_limit = float(p_limit)
+        window_size = cmdLineArgs['windowSize']
+        window_size = float(window_size)
+        group_size = cmdLineArgs['groupSize']
+        group_size = int(group_size)
+        depth_limit = cmdLineArgs['depthLimit']
+        depth_limit = float(depth_limit)
+            
+        is_export = True if is_export == "True" else False  
         
-    is_export = True if is_export == "True" else False  
-    
-    findPOI(calc_file_path, new_file_path, is_export, var1, var2, var3,
-            p_limit, window_size, group_size, depth_limit)
-    
-    return "SUCCESS"  
+        findPOI(calc_file_path, new_file_path, is_export, var1, var2, var3,
+                p_limit, window_size, group_size, depth_limit)
+        
+        return "SUCCESS"  
+    except Exception as e:
+        return e 
   
 if __name__ == "__main__":
     print(main())

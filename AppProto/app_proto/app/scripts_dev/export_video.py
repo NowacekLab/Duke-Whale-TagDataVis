@@ -201,18 +201,19 @@ def video_exporter(calc_file_path: str, new_file_path: str, export = False): #Mu
 def _getCMDLineArgs():
     return cmdArgs.getCMDLineArgs() 
     
-def main():
-    cmdLineArgs = _getCMDLineArgs() 
-    calc_file_path = cmdLineArgs['calcFilePath']
-    new_file_path = cmdLineArgs['newFilePath']
-    is_export = cmdLineArgs['isExport']
-    
-    is_export = True if is_export == "True" else False  
-    
-    video_exporter(calc_file_path, new_file_path, is_export)
-    
-    return "SUCCESS"
-
+def main(cmdLineArgs: dict):
+    try:
+        calc_file_path = cmdLineArgs['calcFilePath']
+        new_file_path = cmdLineArgs['newFilePath']
+        is_export = cmdLineArgs['isExport']
+        
+        is_export = True if is_export == "True" else False  
+        
+        video_exporter(calc_file_path, new_file_path, is_export)
+        
+        return "SUCCESS"
+    except Exception as e:
+        return e 
     
 
 if __name__ == "__main__":

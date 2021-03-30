@@ -10,14 +10,16 @@ def html_exporter(file_path: str, new_file_path: str):
 def _getCMDLineArgs():
     return cmdArgs.getCMDLineArgs()
 
-def main():
+def main(cmdLineArgs: dict):
+  try:
     cmdLineArgs = _getCMDLineArgs() 
     graph_file_path = cmdLineArgs['graphFilePath']
-    new_file_path = cmdLineArgs['newFilePath']
-    
+    new_file_path = cmdLineArgs['newFilePath']    
     html_exporter(graph_file_path, new_file_path)
     
-    return "SUCCESS"  
+    return "SUCCESS" 
+  except Exception as e:
+    return e 
   
 if __name__ == "__main__":
   print(main())
