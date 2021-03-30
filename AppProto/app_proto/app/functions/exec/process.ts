@@ -1,4 +1,4 @@
-import {isDev, python3} from "../constants";
+import {isDev, python3, isWindows} from "../constants";
 import handlePythonExec from "../exec/python_exec";
 import {formatCMDLineArgs} from "./cmdArgs";
 import {getDevPythonScriptPath, getProdPythonScriptPath, addLoggingErrorFilePath} from "../paths";
@@ -11,7 +11,9 @@ export type cmdLineArgs = any;
 export async function processGeneric(pythonScriptName: string, scriptName: string, cmdLineArgs: cmdLineArgs) {
 
     cmdLineArgs['scriptName'] = scriptName;
-    const cmdLineString = `"${formatCMDLineArgs(cmdLineArgs)}"`;
+
+    // Windows treats """" differently than Mac (Mac will include "" in string at python end, Windows will not, so pad with Z to treat the same)
+    const cmdLineString = isWindows ? `Z${formatCMDLineArgs(cmdLineArgs)}Z`: `"${formatCMDLineArgs(cmdLineArgs)}"`;
 
     const devPythonScriptPath = getDevPythonScriptPath("main.py");
     const prodPythonScriptPath = getProdPythonScriptPath("main");

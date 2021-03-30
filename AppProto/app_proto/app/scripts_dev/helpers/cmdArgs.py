@@ -56,6 +56,9 @@ def getCMDLineStr() -> str:
 
 def getCMDLineArgs() -> dict:
     cmdLineStr = getCMDLineStr() 
+    
+    sys.stdout.flush()
+    
     cmdLineStr = cmdLineStr[1:-1]
     cmdLineArgs = parseCMDLineArg(cmdLineStr)
 
