@@ -4,6 +4,9 @@
 
 #Vincent Note:
     #Make the decimate parameter an input rather than hardcoded as 10? (Lines 29-31-ish)
+    #Increase resolution near graph, reduce resolution outside of visible range to decrease lag
+    #Preload Quaternion math?
+    #Individual and Global COlor Scales (Higher Priority)
 
 from pyquaternion import Quaternion
 from datetime import datetime
@@ -29,7 +32,7 @@ class Player(FuncAnimation):
         self.func = func
         self.setup(pos)
         FuncAnimation.__init__(self,self.fig, self.update, frames=self.play(), 
-                                           init_func=init_func, interval=40, fargs=fargs,
+                                           init_func=init_func, interval=1, fargs=fargs,
                                            save_count=save_count, **kwargs )    
 
     def play(self):
@@ -117,7 +120,7 @@ def exportFig(fig, updateFunc, name, frameNum):
 
 def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
 
-    dcf = 1000
+    dcf = 100
 
     csv = pd.read_csv(calc_file_path)
     data = csv.to_dict(orient = 'list')    
@@ -182,7 +185,6 @@ def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; f
         rotatedVec = np.array([rotateq.rotate(n) for n in axisVec])
         rotatedPt = np.array([rotatedVec[0] * 200, -rotatedVec[1] * 70 - rotatedVec[0] * 200, rotatedVec[1] * 70 - rotatedVec[0] * 200])
         finalPt = np.array([n + np.array([markY[i], markX[i], markZ[i]]) for n in rotatedPt])
-        #ax.view_init(30,np.random.randint(0, 360))
         line_d.set_data(seconds[i * dcf], markZ[i])
         line_xy.set_data(markX[i], markY[i])
         mesh = ax.plot_trisurf(finalPt[:,1], finalPt[:,0], finalPt[:,2], color = 'red')
