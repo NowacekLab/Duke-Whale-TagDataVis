@@ -23,22 +23,23 @@ def _getLogFilePath(cmdLineArgs: dict):
 
 def _getExporter(cmdLineArgs: dict):
   exporters = {
-    'html': export_html.export_html_multiple
+    'html': export_html.export_html_multiple,
+    'video': export_video.export_video_multiple, 
   }
   export_type = _getExportType(cmdLineArgs) 
   return exporters[export_type]
 
 def export(cmdLineArgs: dict):
   file_paths = _getFilePaths(cmdLineArgs)
-  target_dir = _getTargetDir(cmdLineArgs)
+  target_dir = _getTargetDir(cmdLineArgs) # CHANGE TO GET NEW FILE PATHS FROM CMD LINE 
   exporter = _getExporter(cmdLineArgs)
   return exporter(file_paths, target_dir)
 
-@logger.getLogger("export.py", _getLogFilePath(_getCMDLineArgs()))
-def main():
-    cmdLineArgs = _getCMDLineArgs()
-    export(cmdLineArgs)
-    return "SUCCESS" 
+# @logger.getLogger("export.py", _getLogFilePath(_getCMDLineArgs()))
+# def main():
+#     cmdLineArgs = _getCMDLineArgs()
+#     export(cmdLineArgs)
+#     return "SUCCESS" 
   
 if __name__ == "__main__":
   print(main())

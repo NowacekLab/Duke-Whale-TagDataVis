@@ -1,14 +1,16 @@
 export function formatCMDLineArgs(cmdArgs: any) {
     const keyValArgSeparator = "KEYPAIRSEP";
     const keyPairJoiner = "KEYVALSEP";
+    const spaceJoiner = "SPACESEP";
 
     const keyPairs = [];
     for (let key in cmdArgs) {
         if (!cmdArgs.hasOwnProperty(key)) continue; 
-        const val = cmdArgs[key];
-        const keyPair = `${key}${keyPairJoiner}${val}`;
+        const val = cmdArgs[key].toString();
+        const keySpaceSep = key.split(" ").join(spaceJoiner);
+        const valSpaceSep = val.split(" ").join(spaceJoiner);
 
-        console.log(keyPair);
+        const keyPair = `${keySpaceSep}${keyPairJoiner}${valSpaceSep}`;
 
         keyPairs.push(keyPair);
     }

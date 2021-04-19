@@ -7,20 +7,13 @@ import {getFileInfoPath, getSaveDirPath} from "../paths";
 import {pathExists, getObjFromPath, createDirIfNotExist, createPathIfNotExist} from "../files";
 
 export async function loadFileInfoArr() {
-    console.log("Load File Info Array");
-
     const fileInfoPath = getFileInfoPath();
     const fileInfoExists = await pathExists(fileInfoPath);
     if (!fileInfoExists) {
-        console.log("NO FILE INFO OBJECT FOUND.")
         return {};
     }
 
     const fileInfoObj = await getObjFromPath(fileInfoPath);
-
-    console.log("FILE INFO OBJECT: ");
-    console.log(fileInfoObj);
-
     const arr = [];
 
     for (let batchName in fileInfoObj) {
@@ -33,22 +26,32 @@ export async function loadFileInfoArr() {
 }
 
 function getUploadInfoArr(uploadInfo: uploadInfo) {
+
+    const ISOStartingDate = uploadInfo['startingDate'];
+    const dateObj = new Date(ISOStartingDate);
+    const startingDate = dateObj ?? ISOStartingDate;
+
+    const DataOrNA = (data: string) => {
+        let realData = data ?? "";
+        return realData === "" ? "Not Available" : data;
+    }
+
     const uploadInfoArr = [
         {
             title: "Data File Name",
-            info: uploadInfo["dataFileName"]
+            info: DataOrNA(uploadInfo["dataFileName"])
         },
         {   
-            title: "Log File Name",
-            info: uploadInfo["logFileName"]
+            title: "Starting Date",
+            info: `${startingDate}`,
         },
         {
             title: "GPS File Name",
-            info: uploadInfo["gpsFileName"]
+            info: DataOrNA(uploadInfo["gpsFileName"])
         },
         {
             title: "Starting Latitude and Longitude",
-            info: `Lat (${uploadInfo["startLatitude"]}), Long (${uploadInfo["startLongitude"]})`
+            info: `Lat: (${DataOrNA(uploadInfo["startLatitude"])}), Long: (${DataOrNA(uploadInfo["startLongitude"])})`
         }
     ];
 
@@ -58,14 +61,9 @@ function getUploadInfoArr(uploadInfo: uploadInfo) {
 export async function loadFinishedUploads() {
 
     const fileInfoObj = await getFileInfo();
-    console.log("FILE INFO OBJ");
-    console.log(fileInfoObj);
     const finishedUploads = {} as uploadFinishedObjects;
 
     for (let batchName in fileInfoObj) {
-
-        console.log("batchname: ");
-        console.log(batchName);
 
         let fileInfo = fileInfoObj[batchName];
         if (!fileInfo) {
@@ -87,9 +85,6 @@ export async function loadFinishedUploads() {
 
         finishedUploads[batchName] = finishedUpload;
     }
-
-    console.log("FINISHED UPLOADS OBJ");
-    console.log(finishedUploads);
 
     return finishedUploads;
 }
@@ -134,8 +129,6 @@ export async function loadUploadsForEditor() {
 async function getFileInfo() {
     const fileInfoPath = getFileInfoPath();
 
-    console.log(`FILE INFO PATH: ${fileInfoPath}`);
-
     const fileInfoExists = await pathExists(fileInfoPath);
     if (!fileInfoExists) {
         return {};
@@ -166,54 +159,29 @@ export function uploadArgKeyToInfo(key: string, info: string) {
 }
 
 export async function uploadFile(uploadInfo: uploadInfo) {
+
+    console.log(uploadInfo);
+
     const batchName = uploadInfo["batchName"];
     try {
-        console.log("Upload Info");
-        console.log(uploadInfo);
-
         await createPreRequFileAndDirs();
 
         //@ts-ignore
         const procResult = await handleProcStep(uploadInfo);
-
-        console.log("Process result");
-        console.log(procResult);
-
         const genResult = await handleGenStep(uploadInfo);
-
-        console.log("Generate result");
-        console.log(genResult);
-
         const saveResult = await handleSaveStep(uploadInfo, genResult);
-
-        console.log("Save result");
-        console.log(saveResult);
 
         return successResponse(`Successfully uploaded batch ${batchName}`);
 
     } catch (error) {
-        console.log(error);
         return failResponse(`Failed to upload batch ${batchName}`);
     }
 }
 
 async function createPreRequFileAndDirs() {
-
-    // TODO: This can be refactored. Read below to understand what really happens.
-    // Creates... 
-        // This is EXTRA insurance
-            // In paths.tsx, save directory & new batch directory within are created when new batch file is retrieved
-            // Files.JSON is created here
-
-    console.log("CREATE DIR IF NOT EXIST")
-
     const saveDir = getSaveDirPath();
-    console.log(saveDir);
     await createDirIfNotExist(saveDir);
-
-    console.log("CREATE PATH IF NOT EXIST")
     const savePath = getFileInfoPath();
-    console.log(savePath);
     await createPathIfNotExist(savePath);
 }
 

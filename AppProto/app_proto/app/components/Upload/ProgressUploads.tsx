@@ -67,10 +67,6 @@ export default function ProgressUploads() {
                         const uploadProgObj = uploadsProgress[batchName];
                         const uploadInfoArr = uploadProgObj ? uploadProgObj["uploadInfoArr"] : [];
 
-                        console.log("UPLOAD PROGRESS");
-                        console.log(batchName);
-                        console.log(uploadInfoArr);
-
                         return (
                             <>
 
@@ -101,6 +97,9 @@ export default function ProgressUploads() {
                     handleClose={handleCloseInfo}
                     handleBack={() => setInfoOpen(false)}
                     title={tempBatchName}
+                    bodyStyle={{
+                        minWidth: '500px'
+                    }}
                 >
                             <List>
                                     {

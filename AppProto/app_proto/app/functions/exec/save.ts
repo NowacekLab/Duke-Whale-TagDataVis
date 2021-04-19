@@ -17,8 +17,8 @@ export type initSaveArgs = {
     batchName: string,
     dataFilePath: string, 
     newDataFilePath: string,
+    startingDate: string,
     loggingFilePath: string, 
-    logFilePath: string,
     gpsFilePath: string, 
     startLatitude: string, 
     startLongitude: string, 
@@ -29,7 +29,7 @@ export type saveArgs = {
     dataFileName: string, 
     newDataFilePath: string,
     newDataFileName: string,
-    logFilePath: string,
+    startingDate: string,
     gpsFilePath: string,
     startLatitude: string, 
     startLongitude: string,
@@ -48,13 +48,8 @@ export async function handleGenSave(genRes: any, initSaveArgs: initSaveArgs) {
     
         await addToFileInfo(saveObj);
 
-        console.log("Handle gen past saving")
-
         return successResponse("Successfully executed post-generation save.");
     } catch (error) {
-
-        console.log("Handle gen save error")
-        console.log(error)
 
         return failResponse(error);
     }
@@ -93,8 +88,8 @@ function formatSaveJSON(existingObj: any, saveArgs: saveArgs) {
     throwErrIfFail(newDataFilePathResp);
     const newDataFilePath = newDataFilePathResp.response; 
     const dataFileName = saveArgs['dataFileName'];
-    const logFileName = fileNameFromPath(saveArgs['logFilePath']);
     const gpsFileName = fileNameFromPath(saveArgs['gpsFilePath']);
+    const startingDate = saveArgs['startingDate'];
 
     existingObj['calcFilePath'] = newDataFilePath;
 
@@ -103,12 +98,11 @@ function formatSaveJSON(existingObj: any, saveArgs: saveArgs) {
         batchInfo: {
             dataFilePath: saveArgs["dataFilePath"],
             dataFileName: dataFileName,
-            logFilePath: saveArgs["logFilePath"],
-            logFileName: logFileName,
+            startingDate: startingDate,
             gpsFilePath: saveArgs["gpsFilePath"],
             gpsFileName: gpsFileName,
             startLatitude: saveArgs["startLatitude"],
-            startLongitude: saveArgs["startLongitude"]
+            startLongitude: saveArgs["startLongitude"],
         }
     }
     existingObj["uploadInfo"] = batchInfo;
@@ -117,9 +111,6 @@ function formatSaveJSON(existingObj: any, saveArgs: saveArgs) {
 
     const batchName = saveArgs["batchName"];
     saveObj[batchName] = existingObj;
-
-    console.log("format save json")
-    console.log(saveObj);
 
     return saveObj;
 }

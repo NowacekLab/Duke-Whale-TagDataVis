@@ -17,6 +17,9 @@ export default function UploadDialogCont(props: UploadDialogContProps) {
             handleClose={props.handleUploadDialogClose}
             handleBack={props.handleUploadDialogClose}
             title={"Upload"}
+            bodyStyle={{
+                minWidth: '500px'
+            }}
         >
             <UploadStepper 
                 beginUpload={props.beginUpload}

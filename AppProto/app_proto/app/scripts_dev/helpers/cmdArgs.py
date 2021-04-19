@@ -5,6 +5,7 @@ from typing import List
 __KEY_VAL_PAIRS_SEPARATOR = "KEYPAIRSEP"
 __KEY_VAL_JOINER = "KEYVALSEP"    
 __ARRAY_JOINER = "ARRAYSEP" 
+__SPACE_JOINER = "SPACESEP"
 
 def formatCMDLineArg(cmdArgs: dict):
     argsToJoin = [] 
@@ -34,9 +35,12 @@ def parseCMDLineArg(cmdLineArg: str) -> dict:
             pass 
         elif len(keyValPairLst) == 1: 
             val = "" 
-            key = keyValPairLst[0]
+            key_space_sep = keyValPairLst[0]
+            key = ' '.join(key_space_sep.split(__SPACE_JOINER))
         else:
-            key, val = keyValPairLst
+            key_space_sep, val_space_sep = keyValPairLst
+            key = ' '.join(key_space_sep.split(__SPACE_JOINER))
+            val = ' '.join(val_space_sep.split(__SPACE_JOINER))        
         
         cmdArgs[key] = val 
     
@@ -52,12 +56,11 @@ def getCMDLineStr() -> str:
 
 def getCMDLineArgs() -> dict:
     cmdLineStr = getCMDLineStr() 
-    cmdLineArgs = parseCMDLineArg(cmdLineStr)
     
-    # if required:
-    #     for kwarg in required: 
-    #         if required not in cmdLineArgs:
-    #             raise Exception(f"Required kwarg {kwarg} not given.")
+    sys.stdout.flush()
+    
+    cmdLineStr = cmdLineStr[1:-1]
+    cmdLineArgs = parseCMDLineArg(cmdLineStr)
 
     return cmdLineArgs
 

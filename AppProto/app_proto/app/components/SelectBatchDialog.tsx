@@ -1,26 +1,10 @@
 import React from "react";
-import {makeStyles} from '@material-ui/core/styles';
 import WrapWithDialog from "./WrapWithDialog";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
-
-const useStyles = makeStyles({
-    list: {
-        overflow: "auto",
-        minWidth: "500px"
-    },
-    btn: {
-        backgroundColor: "#012069",
-        color: "white",
-        "&:hover": {
-            backgroundColor: "#012069",
-            opacity: 0.8
-        }
-    }
-})
 
 type SelectBatchDialogProps = {
     showModal: boolean,
@@ -37,29 +21,24 @@ type SelectBatchDialogProps = {
 
 export default function SelectBatchDialog(props: SelectBatchDialogProps) {
 
-    const classes = useStyles();
-
     return (
 
     <WrapWithDialog
         showModal={props.showModal}
         handleClose={props.handleClose}
-        handleBack={props.infoOpen ? () => props.onInfoClose(false) : props.handleBack}
+        handleBack={props.infoOpen ? () => props.onInfoClose() : props.handleBack}
         title = {props.infoOpen ? props.displayBatchName : "Batches"}
+        bodyStyle={{
+            minWidth: '500px'
+        }}
     >
         {
 
             props.infoOpen ? 
 
             <div
-                style={{
-                    height: "100%",
-                    minWidth: "500px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "5px",
-                    padding: "10px"
-                }}
+                id="batches"
+                className="list"
             >
 
                 <List>
@@ -127,8 +106,10 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
                         }}
                     >
                         <Button
-                            className={classes.btn}
+                            id="color-themed"
+                            className="btn"
                             onClick={props.confirmDisplayBatchName}
+                            variant="outlined"
                         >
                             {`Select`}
                         </Button>
@@ -140,8 +121,24 @@ export default function SelectBatchDialog(props: SelectBatchDialogProps) {
             :
 
             <List
-                className={classes.list}
+                className="list"
             >
+                {
+                    <div
+                        style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        color: 'black'
+                        }}
+                    >
+                        {
+                            Object.keys(props.uploads).length === 0 &&
+                            <Typography>
+                                No Batches
+                            </Typography>
+                        }
+                    </div>
+                }
                 {
                     Object.keys(props.uploads) ?
                     Object.keys(props.uploads).map((batchName) => {

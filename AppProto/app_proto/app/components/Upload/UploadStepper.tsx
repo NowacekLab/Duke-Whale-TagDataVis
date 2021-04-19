@@ -1,20 +1,16 @@
 import React, {useState, useRef, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import {getNewDataFilePath, getLoggingErrorFilePath} from "../../functions/paths";
-import {fileNameFromPath} from "../../functions/paths";
 import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import GenericStepper from '../GenericStepper';
 import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
+import {DateTimePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -65,7 +61,7 @@ const useStyles = makeStyles(() => ({
 
 type UploadStepperProps = {
     beginUpload: Function,
-}
+}         
 
 export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
@@ -73,7 +69,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
     const dispatch = useDispatch();
 
-    const notifActionHandler = new notifsActionsHandler(dispatch);
+    const notifActionHandler = new notifsActionsHandler(dispatch, "Upload");
 
     //@ts-ignore
     const uploadProgState = useSelector(state => state["uploads"]);
@@ -91,28 +87,22 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }
     const uploadDataFileRef = useRef(null);
     const [uploadDataFileObj, setUploadDataFileObj] = useState<uploadFileObj>(defaultFileObj);
-    const uploadLogFileRef = useRef(null);
-    const [uploadLogFileObj, setUploadLogFileObj] = useState<uploadFileObj>(defaultFileObj);
     const uploadGPSFileRef = useRef(null);
     const [uploadGPSFileObj, setUploadGPSFileObj] = useState<uploadFileObj>(defaultFileObj);
-    const uploadFileObjects = [uploadDataFileObj, uploadLogFileObj, uploadGPSFileObj];
-    const uploadFileObjectSetters = [setUploadDataFileObj, setUploadLogFileObj, setUploadGPSFileObj];
+    const uploadFileObjects = [uploadDataFileObj, uploadGPSFileObj];
+    const uploadFileObjectSetters = [setUploadDataFileObj, setUploadGPSFileObj];
 
     const uploadDataFileEndingsArr = [".csv", ".mat"];
     const uploadDataFileEndings = uploadDataFileEndingsArr.join(",");
-    const uploadLogFileEndingsArr = [".txt", ".xml"];
-    const uploadLogFileEndings = uploadLogFileEndingsArr.join(",");
 
     // pulled from pandas website (python file uses pandas.read_csv)
     const uploadGPSFileEndingsArr = [".xls", ".xlsx", ".xlsm", '.xlsb', '.odf', '.ods', '.odt'];
     const uploadGPSFileEndings = uploadGPSFileEndingsArr.join(",");
-    const uploadFileEndings = [uploadDataFileEndings, uploadLogFileEndings, uploadGPSFileEndings];
+    const uploadFileEndings = [uploadDataFileEndings, uploadGPSFileEndings];
 
-
-    const uploadFileRefs = [uploadDataFileRef, uploadLogFileRef, uploadGPSFileRef];
+    const uploadFileRefs = [uploadDataFileRef, uploadGPSFileRef];
 
     const handleUploadBtnClick = (index: number) => {
-
         const ref = uploadFileRefs[index];
         clickRef(ref);
     }
@@ -156,7 +146,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         } 
     }
 
-    const [latitude, setLatitude] = useState("");
+    const [latitude, setLatitude] = useState("0");
     const [latitudeDirection, setLatitudeDirection] = useState("W");
     const [latInputError, setLatInputError] = useState(false);
     const handleLatChange = (event: any) => {
@@ -176,7 +166,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         setLatitudeDirection(newLatDirection);
     }
 
-    const [longitude, setLongitude] = useState("");
+    const [longitude, setLongitude] = useState("0");
     const [longitudeDirection, setLongitudeDirection] = useState("N");
     const [longInputError, setLongInputError] = useState(false);
     const handleLongChange = (event: any) => {
@@ -215,22 +205,23 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         setBatchName(newBatchName);
     }
 
+    const [date, setDate] = useState(new Date());
+    const onDateChange = (newDate: any) => {
+        setDate(newDate);
+    }
+
     useEffect(() => {
         handleBatchErrorNext(batchName);
     }, [batchName])
     const handleBatchErrorNext = (newBatchName: string) => {
-        console.log("new batch name");
-        console.log(newBatchName);
 
         const batchNameDup = isBatchNameDup(newBatchName);
         if (batchNameDup || batchName === "") {
 
-            console.log("batcherrornext 1")
             setBatchNextEnabled(false);
             setBatchNameError(true);
         } else {
 
-            console.log("batcherrornext 2")
             setBatchNextEnabled(true);
             setBatchNameError(false);
         }
@@ -252,10 +243,6 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }();
 
     const isBatchNameDup = (newBatchName: string): boolean => {
-        console.log("BATCH NAMES");
-        console.log(batchNames);
-        console.log(batchNames.has(newBatchName));
-
         return batchNames.has(newBatchName);
     }
 
@@ -273,7 +260,22 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
             )
         }
 
+        const isDate = index === 2; 
         const isLatLong = index === 3;
+        if (isDate) {
+            return (
+            <MuiPickersUtilsProvider
+                utils={DateFnsUtils}
+            >
+                <DateTimePicker 
+                    disableFuture
+                    value={date}
+                    onChange={onDateChange}
+                />
+            </MuiPickersUtilsProvider>
+            )
+        }
+
         if (!isLatLong) {
 
             return (
@@ -392,7 +394,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
 
     const stepNeedsFileObj = (idx: number) => {
-        return idx < 3; 
+        return idx < 2; 
     }
 
     function handleBackBtnDisabled(steps: Array<any>, index: number): boolean {
@@ -404,8 +406,11 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         if (stepNeedsFileObj(index)) {
             return shouldDisableNextBtnFileStep(index);
         }
-
+        const isDate = index === 2;
         const latLongStep = index === 3;
+        if (isDate) {
+            return false;
+        }
         if (!latLongStep) {
             return shouldDisableNextBtnBatchName();
         }  
@@ -437,28 +442,32 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }
 
     function isFileRequired(index: number) {
-        const isGraphFile = index === 2; 
+        const isGraphFile = index === 1; 
         return !isGraphFile;
     }
 
-    const steps = ['Upload the data file', 'Upload the log file', 'Upload the GPS file', 'Enter starting lat and long', 'Enter a unique name for this upload'];
+    const steps = ['Upload the data file', 'Upload the GPS file', 'Enter starting date of tag', 'Enter starting lat and long', 'Enter a unique name for this upload'];
     function getStepLabel(index: number) {
         const uploadText = steps[index];
         let stepLabel;
+        const isDate = index === 2;
         const isLatLong = index === 3;
 
         if (stepNeedsFileObj(index)) {
             const placeholder = "No file uploaded";
             stepLabel = `${uploadText} [${getFileNameOrDefault(index, placeholder)}]`
+        } else if (isDate) {
+            stepLabel = `Starting Date: ${date}`
         } else if (isLatLong) {
 
-            const parsedLatitude = getParsedFloat(latitude);
-            const parsedLongitude = getParsedFloat(longitude);
+            let parsedLatitude = getParsedFloat(latitude);
+            parsedLatitude = parsedLatitude ? parsedLatitude : 0;
+            let parsedLongitude = getParsedFloat(longitude);
+            parsedLongitude = parsedLongitude ? parsedLongitude : 0;
 
             stepLabel = `${uploadText} [Lat: ${parsedLatitude} ${latitudeDirection} Longitude: ${parsedLongitude} ${longitudeDirection}]`
         } else {
             stepLabel = `${uploadText} [${batchName}]`
-
         }
 
         return stepLabel;
@@ -478,10 +487,12 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     async function handleUploadStart() {
 
         let trueLat = getParsedFloat(latitude); 
+        trueLat = trueLat ? trueLat : 0;
         if (latitudeDirection === 'e') {
             trueLat = -latitude; 
         }
         let trueLong = getParsedFloat(longitude); 
+        trueLong = trueLong ? trueLong : 0;
         if (longitudeDirection === 's') {
             trueLong = -longitude;
         }
@@ -492,15 +503,16 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         const newDataFilePath = await getNewDataFilePath(batchName, dataFileName);
         const loggingErrorFilePath = getLoggingErrorFilePath();
 
+        //TODO: date must be converted to useful format 
         const uploadInfoObj = {
             "batchName": batchName,
             "dataFilePath": uploadDataFileObj.path, 
             "newDataFilePath": newDataFilePath,
             "loggingFilePath": loggingErrorFilePath,
-            "logFilePath": uploadLogFileObj.path, 
+            "startingDate": date.toISOString(),
             "gpsFilePath": uploadGPSFileObj.path, 
-            "startLatitude": trueLat, 
-            "startLongitude": trueLong 
+            "startLatitude": trueLat.toString(), 
+            "startLongitude": trueLong.toString(), 
         }
 
         // Extra validation
@@ -513,7 +525,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
         beginUpload(uploadInfoObj);
     }
 
-
+    // TODO: before button 
     const getFinalBtns = () => {
         return (
             <Button 

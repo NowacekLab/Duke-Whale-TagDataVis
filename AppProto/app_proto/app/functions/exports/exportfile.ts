@@ -8,7 +8,6 @@ export async function exportFile(args: exportCMDLineArgs) {
 
     return successResponse("Successfully exported files");
   } catch (error) {
-    console.log(error);
     return failResponse("Failed to export files");
   }
 }

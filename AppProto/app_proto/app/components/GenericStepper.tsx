@@ -11,48 +11,11 @@ const useStyles = makeStyles(() => ({
   root: {
       position: 'relative',
   },
-  step: {
-      display: "flex",
-      alignContent: "center",
-      justifyContent: "center",
-  },
-  cancelBtn: {
-      position: 'absolute',
-      top: '5px',
-      right: '5px',
-      backgroundColor: "#012069",
-      color: "white",
-      "&:hover": {
-          backgroundColor: "rgba(1,32,105,0.5)"
-      }
-  },
-  uploadBtn: {
-      margin: "5px",
-      backgroundColor: "#012069",
-      color: "white",
-      "&:hover": {
-          backgroundColor: "rgba(1,32,105,0.5)"
-      }
-  },
   btnContainer: {
-      margin: "5px",
+      display: 'flex',
+      justifyContent: 'space-around',
+      gap: "10px"
   },
-  containedBtn: {
-      marginLeft: "2px",
-      marginRight: "2px",
-      fontSize: "12px",
-      backgroundColor: "#012069",
-      color: "white",
-      "&:hover": {
-          backgroundColor: "rgba(1,32,105,0.5)"
-      }
-  },
-  finalPromptContainer: {
-      display: "flex",
-      justifyContent: "center",
-      alignContent: "center",
-      flexDirection: "column"
-  }
 }))
 
 type GenericStepperProps = {
@@ -94,14 +57,17 @@ export default function GenericStepper(props: GenericStepperProps) {
                       >   
                           <StepLabel>{props.getStepLabel(index)}</StepLabel>
                           <StepContent
-                              className={classes.step}
+                              className="flex-col-center"
+                              style={{
+                                  paddingRight: "20px",
+                              }}
                           >
                               <div
                                   style={{
                                       display: "flex",
                                       flexDirection: 'column',
-                                      justifyContent: 'center',
                                       alignItems: 'center',
+                                      justifyContent: 'center',
                                       paddingTop: "10px",
                                       paddingBottom: "10px"
                                   }}
@@ -112,7 +78,8 @@ export default function GenericStepper(props: GenericStepperProps) {
                               <div className={classes.btnContainer}>
                                   <Button
                                       variant="contained"
-                                      className={classes.containedBtn}
+                                      id="color-themed"
+                                      className="containedBtn"
                                       disabled={props.handleBackBtnDisabled(props.steps, index)}
                                       onClick={handleBack}
                                   >
@@ -120,7 +87,8 @@ export default function GenericStepper(props: GenericStepperProps) {
                                   </Button>
                                   <Button
                                       variant="contained"
-                                      className={classes.containedBtn}
+                                      id="color-themed"
+                                      className="containedBtn"
                                       onClick={handleNext}
                                       disabled={props.handleNextBtnDisabled(props.steps, index)}
                                   >
@@ -138,7 +106,7 @@ export default function GenericStepper(props: GenericStepperProps) {
             <Paper 
                 square 
                 elevation={0}
-                className={classes.finalPromptContainer}
+                className="flex-col-center"
             > 
               <div
                 className={classes.btnContainer}

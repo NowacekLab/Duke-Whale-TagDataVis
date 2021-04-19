@@ -1,36 +1,31 @@
-import {isDev, python3} from "../constants";
+import {isDev, python3, isWindows} from "../constants";
 import handlePythonExec from "../exec/python_exec";
 import {formatCMDLineArgs} from "./cmdArgs";
 import {getDevPythonScriptPath, getProdPythonScriptPath, addLoggingErrorFilePath} from "../paths";
-import {failResponse} from "../responses"
+import {failResponse, successResponse, throwErrIfFail} from "../responses"
 import {getDataFilePathKey, getNewDataFilePathKey,
-        getLoggingFilePathKey, getLogFilePathKey,
+        getLoggingFilePathKey,
         getGPSFilePathKey, getStartLatitudeKey, getStartLongitudeKey} from "../keys";
 
 export type cmdLineArgs = any;
 export async function processGeneric(pythonScriptName: string, scriptName: string, cmdLineArgs: cmdLineArgs) {
 
-    const cmdLineString = formatCMDLineArgs(cmdLineArgs);
-    const devPythonScriptPath = getDevPythonScriptPath(pythonScriptName);
-    const prodPythonScriptPath = getProdPythonScriptPath(scriptName);
+    cmdLineArgs['scriptName'] = scriptName;
+
+    // Windows treats """" differently than Mac (Mac will include "" in string at python end, Windows will not, so pad with Z to treat the same)
+    const cmdLineString = isWindows ? `Z${formatCMDLineArgs(cmdLineArgs)}Z`: `"${formatCMDLineArgs(cmdLineArgs)}"`;
+
+    const devPythonScriptPath = getDevPythonScriptPath("main.py");
+    const prodPythonScriptPath = getProdPythonScriptPath("main");
     const executor = isDev ? python3 : prodPythonScriptPath;
     const args = isDev ? [devPythonScriptPath, cmdLineString] : [cmdLineString];
-
-    console.log("PROCESS GENERIC")
-    console.log(python3);
-    console.log(isDev);
-    console.log(`EXECUTOR: ${executor}`)
-
     const res = await handlePythonExec(executor, args).catch((err) => {
-        console.log("PYTHON EXEC ERROR");
-        console.log(python3);
-        console.log(isDev);
-        console.log(err);
         return {
             success: false,
             response: err 
         }
     });
+
     const responseObj = res ?? {success: false, response: "handlePythonExec() did not return valid response object"};
 
     return responseObj;
@@ -39,14 +34,14 @@ export async function processGeneric(pythonScriptName: string, scriptName: strin
 const dataFilePathKey = getDataFilePathKey();
 const newDataFilePathKey = getNewDataFilePathKey();
 const loggingFilePathKey = getLoggingFilePathKey();
-const logFilePathKey = getLogFilePathKey();
+const startingDateKey = 'startingDate';
 const gpsFilePathKey = getGPSFilePathKey();
 const startLatitudeKey = getStartLatitudeKey();
 const startLongitudeKey = getStartLongitudeKey();
 
 export type processFileKey = string;
 export const processFileKeys: Array<processFileKey> = ["batchName", dataFilePathKey, newDataFilePathKey,
-                                loggingFilePathKey, logFilePathKey,
+                                loggingFilePathKey, startingDateKey,
                                 gpsFilePathKey, startLatitudeKey,
                                 startLongitudeKey]
 interface processFileCMDLineArgs {
@@ -55,7 +50,7 @@ interface processFileCMDLineArgs {
     dataFilePathKey: string, 
     newDataFilePathKey: string, 
     loggingFilePathKey: string, 
-    logFilePathKey: string, 
+    startingDateKey: string, 
     gpsFilePathKey: string, 
     startLatitudeKey: string, 
     startLongitudeKey: string
@@ -99,14 +94,8 @@ export async function handleProcessFile(args: processFileCMDLineArgs) {
         const processFileArgs = getProcessFileArgs(args);
         const processResp = await processFile(processFileArgs);
 
-        console.log("HANDLE PROCESS FILE RESPONSE")
-        console.log(processResp)
-
         return processResp;
     } catch (error) {
-
-        console.log("HANDLE PROCESS FILE ERROR");
-        console.log(error);
 
         return failResponse(error);
     }
@@ -134,15 +123,104 @@ export async function handleExportFile(args: exportCMDLineArgs) {
     try {
         const exportResp = await exportFile(args);
 
-        console.log("HANDLE EXPORT FILE RESPONSE");
-        console.log(exportResp);
-
         return exportResp;
     } catch (error) {
 
-        console.log("HANDLE EXPORT FILE ERROR");
-        console.log(error);
+        return failResponse(error);
+    }
+}
 
+export interface videoFileCMDLineArgs {
+    [index: string]: string,
+    calcFilePath: string,
+    newFilePath: string,
+    isExport: string,
+}
+
+async function runVideoFileProcess(cmdLineArgs: videoFileCMDLineArgs) {
+    const pythonScriptName = 'export_video.py';
+    const scriptName = 'export_video';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleProcessVideoFile(args: videoFileCMDLineArgs) {
+    try {
+        const exportResp = await runVideoFileProcess(args);
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully processed video file action.");
+    } catch (error) {
+        return failResponse(error);
+    }
+}
+
+export interface mahalPOICMDArgs {
+    [index: string]: string,
+    calcFilePath: string,
+    newFilePath: string,
+    isExport: string,
+    variableOne: string,
+    variableTwo: string,
+    variableThree: string,
+    pLimit: string,
+    windowSize: string,
+    groupSize: string,
+    depthLimit: string 
+}
+
+export interface mahalPOIParams {
+    [index: string]: any,
+    pLimit: string,
+    windowSize: string,
+    groupSize: string,
+    depthLimit: string 
+}
+
+async function runMahalPOIProcess(cmdLineArgs: mahalPOICMDArgs) {
+    const pythonScriptName = 'mahalanobis.py';
+    const scriptName = 'mahalanobis';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleProcessMahalPOI(args: mahalPOICMDArgs) {
+    try {
+        const exportResp = await runMahalPOIProcess(args);
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully processed mahal poi action.");
+    } catch (error) {
+        return failResponse(error);
+    }
+}
+
+export interface exportHTMLCMDLineArgs {
+    [index: string]: string,
+    graphFilePath: string,
+    newFilePath: string,
+}
+
+async function exportHTML(cmdLineArgs: exportHTMLCMDLineArgs) {
+    const pythonScriptName = 'export_html.py';
+    const scriptName = 'export_html';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleExportHTML(args: exportHTMLCMDLineArgs) {
+    try {
+        const exportResp = await exportHTML(args);
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully finished export HTML.");
+    } catch (error) {
         return failResponse(error);
     }
 }

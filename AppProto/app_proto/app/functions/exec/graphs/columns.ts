@@ -49,9 +49,6 @@ export type generatedCols = Record<varName, varValues>;
 export async function handleSaveGeneratedColumns(generatedCols: generatedCols, saveArgs: saveArgs) {
     const colSaveDir = saveArgs['colSaveDir'];
 
-    console.log("Column Save Dir: ");
-    console.log(colSaveDir);
-
     return await saveGeneratedColumns(generatedCols, colSaveDir);
 }
 

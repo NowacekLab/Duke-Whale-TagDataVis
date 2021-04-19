@@ -1,94 +1,37 @@
-import React, { useEffect } from "react"; 
-import {makeStyles} from '@material-ui/core/styles';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
 import Alert from "@material-ui/lab/Alert";
-import Fade from "@material-ui/core/Fade";
-import useIsMountedRef from "../functions/useIsMountedRef";
-import notifsActionsHandler from "../functions/notifs/notifsActionsHandler";
+import AlertTitle from '@material-ui/lab/AlertTitle';
 
-const useStyles = makeStyles({
-    bannerSuperCont: {
-        zIndex: 999998,
-        bottom: 20,
-        left: 50,
-        right: 0,
-        position: "fixed",
-        display: "flex",
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: "none"
-    },
-    bannerCont: {
-        width: "500px",
-        alignItems: "center",
-        justifyContent: "center",
-        animation: "all 1s ease-in",
-        background: "none"
-    },
-});
-
-const Notification = () => {
-
-    const classes = useStyles();
-
-    const dispatch = useDispatch();
-    const notifActionHandler = new notifsActionsHandler(dispatch);
-
-    //@ts-ignore
-    const notif = useSelector(state => state.notif);
-
-    const handleHideNotification = () => {
-        setTimeout(() => { // there was a memory leak here that this fixed (I hope)
-            if (isMountedRef.current) {
-                notifActionHandler.hideNotification();
-            }
-        }, 3000)
-    }
-
-    const isMountedRef = useIsMountedRef();
-
-    useEffect(() => { // this might unnecessarily re-render multiple times 
-        if (notif.visibility && isMountedRef.current) {
-            handleHideNotification();
-        }
-    }, [notif.visibility])
-    
-    const getMessage = () => {
-        if (notif.status === 'error') {
-            return notif.msg ?? "An error has occurred."
-        } else if (notif.status === 'success') {
-            return notif.msg ?? "Successfully executed."
-        }
-        return "Fatal Error";
-    }
-
-    return (
-        <div className={classes.bannerSuperCont}>
-            {
-                notif.visibility && 
-                <div className={classes.bannerCont}>
-                    {
-                        notif.status === "error" &&
-                        <Fade in={notif.status==="error"} timeout={500}>
-                            <Alert severity="error"> 
-                                {getMessage()}
-                            </Alert>
-                        </Fade>
-                    }
-                    {
-                        notif.status === "success" &&
-                        <Fade in={notif.status==="success"} timeout={500}>
-                            <Alert severity="success">
-                                {getMessage()}
-                            </Alert>
-                        </Fade>
-                    }
-                </div>
-            }
-        </div>
-    )
-
+type NotificationProps = {
+  status: string,
+  onCloseNotif: any,
+  message: string,
+  title: string,
 }
 
-export default Notification; 
-//Graphs.tsx
+export default function Notification(props: NotificationProps) {
+
+  return (
+    <div className="alertContainer">
+        {
+            props.status === "error" &&
+            <Alert severity="error" onClose={props.onCloseNotif}> 
+                <AlertTitle>
+                  {props.title}
+                </AlertTitle>
+                {props.message}
+            </Alert>
+        }
+        {
+            props.status === "success" &&
+            <Alert severity="success" onClose={props.onCloseNotif}>
+              <AlertTitle>
+                {props.title}
+              </AlertTitle>
+                {props.message}
+            </Alert>
+        }
+    </div>
+  )
+
+}

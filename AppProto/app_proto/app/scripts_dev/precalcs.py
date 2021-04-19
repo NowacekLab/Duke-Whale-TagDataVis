@@ -85,6 +85,8 @@ def _xmlLogFileProcessor(logFilePath: str) -> datetime:
     collection = DOMTree.documentElement
     collection.getElementsByTagName("EVENT")
     dateStr = collection.getElementsByTagName("EVENT")[0].getAttribute('TIME')
+    
+    # DATETIME --> YEAR, MONTH, DATE, HOURS, MINUTES, SECONDS 
     startTime = datetime.strptime(dateStr, '%Y,%m,%d,%H,%M,%S')
     return startTime 
 
@@ -139,21 +141,30 @@ def _getGPSFilePath(cmdLineArgs: dict) -> str:
     return cmdLineArgs[gpsFilePathKey]
     
 def _getLogFilePath(cmdLineArgs: dict) -> str:
-    logFilePathKey = keysHelper.getLogFilePathKey()
+    logFilePathKey = keysHelper.getLogPathKey()
     return cmdLineArgs[logFilePathKey]
 
 def _getOrigDataFilePandasDataFrame(cmdLineArgs: dict) -> str:
     origDataFileDataFrameKey = keysHelper.getOldDataFileDataFrameKey()
     return cmdLineArgs[origDataFileDataFrameKey]
 
+def _processStartTime(startingDate: str):
+    start_time = datetime.strptime(startingDate, '%Y-%m-%dT%H:%M:%S.%fZ')
+    return start_time
+
 #Reminder, requires startLat and startLong with convention of N-W as positive (rather than N-E)
 def _preCalc(cmdLineArgs: dict) -> PandasDataFrame:   
 
     dataFrame = _getOrigDataFilePandasDataFrame(cmdLineArgs)
-    logFilePath = _getLogFilePath(cmdLineArgs) 
+    
+    # TODO: convert this 
+    startingDate = cmdLineArgs['startingDate']
+    startTime = _processStartTime(startingDate)
     gpsFilePath = _getGPSFilePath(cmdLineArgs)
     startLatLong = _getStartLatLong(cmdLineArgs)    
-    startLatitude, startLongitude = startLatLong
+    startLatitude, startLongitude = startLatLong 
+    startLatitude = float(startLatitude)
+    startLongitude = float(startLongitude)
     
     # ! csv is a pandasDataFrame, assigned it here to not have to change everything 
     csv = dataFrame
@@ -180,7 +191,6 @@ def _preCalc(cmdLineArgs: dict) -> PandasDataFrame:
     latArray[0] = startLatitude
     longArray[0] = startLongitude
     
-    startTime = _logProcessStartTime(logFilePath)
     time = np.array([startTime + timedelta(seconds = i * ts) for i in range(length)])
     
     #%% GPS File Not Included, Calculate Manually
@@ -289,9 +299,9 @@ def _preCalc(cmdLineArgs: dict) -> PandasDataFrame:
             velocityComponents[i, 1] = dx[i + 1, 1] - dx[i, 1]
         v_total = np.sqrt(velocityComponents[:, 0] ** 2 + velocityComponents[:, 1] ** 2)
         
-        csv['Latitude'] = latArray[:-1]
-        csv['Longitude'] = longArray[:-1]
-        csv['Time'] = time
+    csv['Latitude'] = latArray[:-1]
+    csv['Longitude'] = longArray[:-1]
+    csv['Time'] = time
         
         # if max(v_total) * fs > v * maxVelocityScale:
 
@@ -326,7 +336,7 @@ def handlePreCalculate(cmdLineArgs: dict) -> dict:
 def _getCMDLineArgs() -> dict: 
     return cmdArgs.getCMDLineArgs()
     
-@logger.getLogger("precalcs.py", _getLogFilePath(_getCMDLineArgs()))
-def main():
-    cmdLineArgs = _getCMDLineArgs()
-    handlePreCalculate(cmdLineArgs)
+# @logger.getLogger("precalcs.py", _getLogFilePath(_getCMDLineArgs()))
+# def main():
+#     cmdLineArgs = _getCMDLineArgs()
+#     handlePreCalculate(cmdLineArgs)

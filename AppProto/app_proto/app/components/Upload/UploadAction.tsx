@@ -8,19 +8,16 @@ import UploadDialog from "./UploadDialog";
 import {notifsActionsHandler, uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
 import {uploadInfo} from "../../functions/uploads/uploadsTypes";
 import {throwErrIfFail} from "../../functions/responses";
+import Typography from '@material-ui/core/Typography';
 
 export default function UploadAction() {
 
     const dispatch = useDispatch();
     const uploadHandler = new uploadsActionsHandler(dispatch);
-    const notifHandler = new notifsActionsHandler(dispatch);
+    const notifHandler = new notifsActionsHandler(dispatch, "Upload");
 
     //@ts-ignore
     const uploadState = useSelector(state => state.uploads);
-
-    //@ts-ignore
-    const introState = useSelector(state => state.intro);
-    const userFirstTime = introState['first'];
 
     const [showUploadDialog, setShowUploadDialog] = useState(false);
 
@@ -79,9 +76,13 @@ export default function UploadAction() {
                 />
 
                 <Tooltip
-                    title={"Upload"}
+                    title={
+                        <Typography>
+                            Upload 
+                        </Typography>
+                    }
                     arrow
-                    placement="right-start"
+                    placement="right"
                 >
                     <IconButton
                         onClick={handleUploadDialogOpenIfEnabled}

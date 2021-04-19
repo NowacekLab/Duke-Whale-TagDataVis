@@ -37,31 +37,35 @@ def _parseMatFileData(data: MatFileData) -> dict:
     sub_headers=['_X','_Y','_Z']
     d={}
     for header in headers:
-        key=csv_header[header]
-        values='null'
-        shape=data[header].shape
+        try: 
+            
+            key=csv_header[header]
+            values='null'
+            shape=data[header].shape
 
-        is3D=False
-        if header=='fs':
-            values=data[header][0,0]
-            d[key]=values
-        else:
-            ds=data[header]
-            if shape==(1,1):
-                #a struct
-                ds=data[header]['data'][0][0]
-                is3D=True
-            if shape[1]==3:
-                is3D=True
-
-            if is3D==True:
-
-                for i in range(3):
-                    key=csv_header[header]+sub_headers[i]
-                    values=ds[:,i]
-                    d[key]=values
+            is3D=False
+            if header=='fs':
+                values=data[header][0,0]
+                d[key]=values
             else:
-                d[key]=ds[:,0]
+                ds=data[header]
+                if shape==(1,1):
+                    #a struct
+                    ds=data[header]['data'][0][0]
+                    is3D=True
+                if shape[1]==3:
+                    is3D=True
+
+                if is3D==True:
+
+                    for i in range(3):
+                        key=csv_header[header]+sub_headers[i]
+                        values=ds[:,i]
+                        d[key]=values
+                else:
+                    d[key]=ds[:,0]
+        except Exception: 
+            pass 
 
     return d 
 
@@ -152,16 +156,20 @@ def _getLogFilePath(cmdLineArgs: dict):
     logFilePathKey = keysHelper.getLogPathKey()
     return cmdLineArgs[logFilePathKey]
 
-def processFile(cmdLineArgs: dict):
-    cmdLineArgs = _addOrigFilePandasDataFrame(cmdLineArgs)    
-    _handlePreCalculate(cmdLineArgs)
-    _verifyProcessSuccess(cmdLineArgs)
+def main(cmdLineArgs: dict):
+    try: 
+        cmdLineArgs = _addOrigFilePandasDataFrame(cmdLineArgs)    
+        _handlePreCalculate(cmdLineArgs)
+        _verifyProcessSuccess(cmdLineArgs)
+        return "SUCCESS"
+    except Exception as e:
+        return e 
 
-@logger.getLogger("csvmat.py", _getLogFilePath(_getCMDLineArgs()))
-def main():
-    cmdLineArgs = _getCMDLineArgs()
-    processFile(cmdLineArgs)
-    return "SUCCESS"
+# @logger.getLogger("csvmat.py", _getLogFilePath(_getCMDLineArgs()))
+# def main():
+#     cmdLineArgs = _getCMDLineArgs()
+#     processFile(cmdLineArgs)
+#     return "SUCCESS"
 
 if __name__ == "__main__":
     print(main())
