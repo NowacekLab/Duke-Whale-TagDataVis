@@ -4,6 +4,9 @@
 
 #Vincent Note:
     #Make the decimate parameter an input rather than hardcoded as 10? (Lines 29-31-ish)
+    #Increase resolution near graph, reduce resolution outside of visible range to decrease lag
+    #Preload Quaternion math?
+    #Individual and Global COlor Scales (Higher Priority)
 
 from pyquaternion import Quaternion
 from datetime import datetime
@@ -21,6 +24,7 @@ class Player(FuncAnimation):
     def __init__(self, fig, func, frames=None, init_func=None, fargs=None,
                  save_count=None, mini=0, maxi=100, pos=(0.125, 0.92), **kwargs):
         self.i = 0
+        self.color = None
         self.min=mini
         self.max=maxi
         self.runs = True
@@ -29,7 +33,7 @@ class Player(FuncAnimation):
         self.func = func
         self.setup(pos)
         FuncAnimation.__init__(self,self.fig, self.update, frames=self.play(), 
-                                           init_func=init_func, interval=40, fargs=fargs,
+                                           init_func=init_func, interval=1, fargs=fargs,
                                            save_count=save_count, **kwargs )    
 
     def play(self):
@@ -72,6 +76,8 @@ class Player(FuncAnimation):
         self.func(self.i)
         self.slider.set_val(self.i)
         self.fig.canvas.draw_idle()
+    
+
 
     def setup(self, pos):
         playerax = self.fig.add_axes([pos[0],pos[1], 0.64, 0.04])
@@ -86,6 +92,7 @@ class Player(FuncAnimation):
         self.button_stop = matplotlib.widgets.Button(sax, label='$\u25A0$')
         self.button_forward = matplotlib.widgets.Button(fax, label='$\u25B6$')
         self.button_oneforward = matplotlib.widgets.Button(ofax, label='$\u29D0$')
+        self.color_select = matplotlib.widgets.RadioButtons(ofax, activecolor = 'blue', labels = ['Depth', 'Roll'])
         self.button_oneback.on_clicked(self.onebackward)
         self.button_back.on_clicked(self.backward)
         self.button_stop.on_clicked(self.stop)
@@ -94,12 +101,17 @@ class Player(FuncAnimation):
         self.slider = matplotlib.widgets.Slider(sliderax, '', 
                                                 self.min, self.max, valinit=self.i)
         self.slider.on_changed(self.set_pos)
+        self.color_select.on_clicked(self.colorChange)
 
     def set_pos(self,i):
         self.i = int(self.slider.val)
         self.func(self.i)
-
-    def update(self,i):
+        
+    def colorChange(self,i, color):
+        self.color = self.color_select.value_selected
+        self.func(self.i, self.color)
+        
+    def update(self, i, color):
         self.slider.set_val(i)
 
 #%%Interactive
@@ -116,8 +128,8 @@ def exportFig(fig, updateFunc, name, frameNum):
 
 def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; for now, I'm just using two inputs because it's easier for testing.
 
-    dcf = 1000
-
+    dcf = 100
+    color = None
     csv = pd.read_csv(calc_file_path)
     data = csv.to_dict(orient = 'list')    
     x = np.array(data['X Position'])
@@ -169,7 +181,7 @@ def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; f
     
     mesh = None
     
-    def update(i: int):
+    def update(i , color = None):
         print(i)
         nonlocal mesh
         if mesh:
@@ -181,7 +193,6 @@ def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; f
         rotatedVec = np.array([rotateq.rotate(n) for n in axisVec])
         rotatedPt = np.array([rotatedVec[0] * 200, -rotatedVec[1] * 70 - rotatedVec[0] * 200, rotatedVec[1] * 70 - rotatedVec[0] * 200])
         finalPt = np.array([n + np.array([markY[i], markX[i], markZ[i]]) for n in rotatedPt])
-        #ax.view_init(30,np.random.randint(0, 360))
         line_d.set_data(seconds[i * dcf], markZ[i])
         line_xy.set_data(markX[i], markY[i])
         mesh = ax.plot_trisurf(finalPt[:,1], finalPt[:,0], finalPt[:,2], color = 'red')
@@ -194,7 +205,7 @@ def trackplot(calc_file_path: str, export = False): #Multiple ways to do this; f
     if export == True:
         exportFig(fig, update, calc_file_path, frameNum)
         
-    ani = Player(fig, update, maxi=frameNum)
+    ani = Player(fig, update, maxi=frameNum, fargs=(color,))
     intPlot(ani)
    
     return 0
