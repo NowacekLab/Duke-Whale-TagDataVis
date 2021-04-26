@@ -12,10 +12,6 @@ __startLongKey = constants.START_LONG_KEY
 __filePathsKey = constants.FILE_PATHS 
 __targetDirectoryKey = constants.TARGET_DIRECTORY 
 __exportTypeKey = constants.EXPORT_TYPE 
-<<<<<<< HEAD
-
-=======
->>>>>>> acc82fbbc35fa6b2539e6407bc9e97d5a18d6970
 
 def getOldDataFilePathKey() -> str: 
     return __oldDataFilePathKey

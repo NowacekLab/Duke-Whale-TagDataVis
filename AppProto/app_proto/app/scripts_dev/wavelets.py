@@ -256,7 +256,7 @@ def plotWavelets(calc_file_path, new_file_path_one, new_file_path_two, is_export
     fig.update_xaxes(title = "Time (hr)", rangeslider = dict(visible = True), row = 2, col = 1)
 
     fig.update_layout(
-        title = filename.split('/')[-1] + " Wavelets: " + wavelet,
+        title = "Base Wavelets Plot",
     )
 
     # Show figure 1 and save as an HTML
@@ -316,7 +316,7 @@ def plotWavelets(calc_file_path, new_file_path_one, new_file_path_two, is_export
         
         # Change title of plot
         fig2.update_layout(
-            title = filename.split('/')[-1] + " Wavelet Levels for " + wavelet,
+            title = "Wavelets Levels Plot",
         )
 
         # Open Figure in a new screen
@@ -337,18 +337,14 @@ def main(cmdLineArgs: dict):
         depth_limit = float(depth_limit)
         color_by_var = cmdLineArgs['colorByVar']
         showLevels = cmdLineArgs['showLevels']
-        
-        #        Inputs:
-        # calcFilePath, newFilePathOne, newFilePathTwo, isExportOne, isExportTwo
-        # var : string that is the name of the variable data on which you would like to perform MODWT
-        # depthLimit : float of depth that must be reached before POI are recorded (Default set to 0)
-        # colorByVar : boolean, determines whether to shade depth plot based on 'var'
-        # showLevels : boolean, creates a second plot of all levels of MODWT and their respective points of interest
             
-        is_export = True if is_export == "True" else False  
+        is_export_one = True if is_export_one == "True" else False  
+        is_export_two = True if is_export_two == "True" else False  
+        color_by_var = True if color_by_var == "True" else False 
+        showLevels = True if showLevels == "True" else False 
         
-        plotWavelets(calc_file_path, new_file_path_one, new_file_path_two, is_export_one, is_export_two, var, depth_limit = depth_limit, colorByVar = color_by_var, showLevels = showLevels)
+        plotWavelets(calc_file_path, new_file_path_one, new_file_path_two, is_export_one, is_export_two, var, depthLimit = depth_limit, colorByVar = color_by_var, showLevels = showLevels)
         
         return "SUCCESS"  
     except Exception as e:
-        return e 
+        raise Exception(e)

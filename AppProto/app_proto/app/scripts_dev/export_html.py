@@ -19,7 +19,7 @@ def main(cmdLineArgs: dict):
     
     return "SUCCESS" 
   except Exception as e:
-    return e 
+    raise Exception(e)
   
 if __name__ == "__main__":
   print(main())

@@ -240,10 +240,8 @@ export interface waveletsCMDLineArgs {
 
 export interface wavesParams {
     [index: string]: any,
-    variable: string,
     depthLimit: string,
-    colorByVar: string,
-    showLevels: string,
+    colorByVar: any,
 }
 
 async function processWavelets(cmdLineArgs: waveletsCMDLineArgs) {

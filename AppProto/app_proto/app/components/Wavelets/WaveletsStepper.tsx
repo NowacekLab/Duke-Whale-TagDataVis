@@ -11,10 +11,11 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import SelectBatchBtn from '../SelectBatchBtn';
 import {notifsActionsHandler} from '../../functions/reduxHandlers/handlers';
-import DiveSelectVariables from './DivesSelectVariables';
+import WaveletsSelectVariables from './WaveletsSelectVariables';
 import SelectAction from '../SelectAction';
-import DiveParams from './DivesParams';
-import {divesParams} from '../../functions/exec/process';
+import WaveletsParams from './WaveletsParams';
+import {waveletsCMDLineArgs, wavesParams} from '../../functions/exec/process';
+import WaveletsShowLevels, {defaultWaveletsLevels, WaveletsLevelsValue} from './WaveletsShowLevels';
 
 const useStyles = makeStyles({
   actionSelectDropdown: {
@@ -32,25 +33,26 @@ const useStyles = makeStyles({
   },
 });
 
-interface divesParamErrors {
+interface wavesParamErrors {
   [index: string]: boolean,
-  minLength: boolean,
-  requiredDepth: boolean,
-  maxDepth: boolean,
+  depthLimit: boolean,
+  colorByVar: boolean,
 };
 
-interface DivesStepperProps {
-  onDivesStart: any,
+interface WaveletsStepperProps {
+  onWaveletsStart: any,
 };
 
-export default function DivesStepper(props: DivesStepperProps) {
+export default function WaveletsStepper(props: WaveletsStepperProps) {
 
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const notifActionHandler = new notifsActionsHandler(dispatch, "Dives");
+  const [waveletsLevelsVal, setWaveletsLevelsVal] = useState<WaveletsLevelsValue>(defaultWaveletsLevels);
 
-  const steps = ['Select a batch', 'Select interest variables', 'Check the parameters', 'Select an action'];
+  const notifActionHandler = new notifsActionsHandler(dispatch, "Wavelets");
+
+  const steps = ['Select a batch', 'Select interest variable', 'Check the parameters', 'Select an action', 'Select another action'];
 
   const getStepLabel = (idx: number) => {
     return steps[idx];
@@ -87,26 +89,24 @@ export default function DivesStepper(props: DivesStepperProps) {
   const onChosenBatchVarsChange = (newChosenBatchVars: Array<string>) => {
     setChosenBatchVars(newChosenBatchVars);
   }
-  const chosenBatchVarsRequired = 0;
+  const chosenBatchVarsRequired = 1;
 
-  const [divesParamsObj, setDivesParamsObj] = useState<divesParams>({
-    minLength: '60',
-    requiredDepth: 'None',
-    maxDepth: 'None',
+  const [waveletsParamsObj, setWaveletsParamsObj] = useState<wavesParams>({
+    depthLimit: '0',
+    colorByVar: false,
   });
 
-  const [divesParamsErrors, setDivesParamsErrors] = useState<divesParamErrors>({
-    minLength: false,
-    requiredDepth: false,
-    maxDepth: false,
+  const [wavesParamsErrors, setWaveletsParamsErrors] = useState<wavesParamErrors>({
+    depthLimit: false,
+    colorByVar: false,
   });
 
-  const onDivesParamsChange = (newParamsObj: divesParams) => {
-    setDivesParamsObj(newParamsObj);
+  const onWaveletsParamsChange = (newParamsObj: wavesParams) => {
+    setWaveletsParamsObj(newParamsObj);
   };
 
-  const onDivesErrorsChange = (newParamsError: divesParamErrors) => {
-    setDivesParamsErrors(newParamsError);
+  const onWaveletsErrorsChange = (newParamsError: wavesParamErrors) => {
+    setWaveletsParamsErrors(newParamsError);
   };
   const [fileExistCheck, setFileExistCheck] = useState(false);
   const onFileExistCheckChange = (exists: boolean) => {
@@ -121,6 +121,11 @@ export default function DivesStepper(props: DivesStepperProps) {
     setFilePath(path);
   }
 
+  const [levelsError, setLevelsError] = useState(false);
+  const onLevelsErrorChange = (error: boolean) => {
+    setLevelsError(error);
+  }
+
   const getStepContent = (idx: number) => {
     switch (idx) {
       case 0:
@@ -133,8 +138,8 @@ export default function DivesStepper(props: DivesStepperProps) {
         )
       case 1:
         return (
-          <DiveSelectVariables 
-            key = {"Dive Select Vars"}
+          <WaveletsSelectVariables 
+            key = {"Wavelets Select Variable"}
             chosenBatchName={batchName}
             onChosenBatchVarsChange={onChosenBatchVarsChange}
             chosenBatchVarLimit={chosenBatchVarsRequired}
@@ -143,12 +148,12 @@ export default function DivesStepper(props: DivesStepperProps) {
         )
       case 2:
           return (
-            <DiveParams
-              key = {"Dive Params"}
-              onParamsChange = {onDivesParamsChange}
-              onErrorsChange = {onDivesErrorsChange}
-              divesParamsObj={divesParamsObj}
-              divesParamsErrors={divesParamsErrors}
+            <WaveletsParams
+              key = {"Wavelets Params"}
+              onParamsChange = {onWaveletsParamsChange}
+              onErrorsChange = {onWaveletsErrorsChange}
+              waveletsParamsObj={waveletsParamsObj}
+              waveletsParamsErrors={wavesParamsErrors}
             />
           )
       case 3:
@@ -171,6 +176,15 @@ export default function DivesStepper(props: DivesStepperProps) {
           fileExists={fileExists}
           onFileExistsChange={onFileExistsChange}
         />) 
+      case 4:
+        return (
+          <WaveletsShowLevels 
+            value={waveletsLevelsVal}
+            onInputChange={(waveletsLevelsVal: any) => setWaveletsLevelsVal(waveletsLevelsVal)}
+            error={levelsError}
+            onErrorChange={onLevelsErrorChange}
+          />
+        )
       default:
         return null;
     }
@@ -188,7 +202,7 @@ export default function DivesStepper(props: DivesStepperProps) {
         if (chosenBatchVars.length < chosenBatchVarsRequired) return true;
         return false;
       case 2:
-        const errorVals = Object.keys(divesParamsErrors).map(key => divesParamsErrors[key]) ?? [];
+        const errorVals = Object.keys(wavesParamsErrors).map(key => wavesParamsErrors[key]) ?? [];
         const paramError = errorVals.reduce((prev: boolean, curr: boolean, currIdx: number, array: Array<boolean>) => {
           return prev && curr;
         });
@@ -199,6 +213,25 @@ export default function DivesStepper(props: DivesStepperProps) {
         const fileExistError = (action === "export" && fileExists);
         const fileExistCheckError = (action === "export" && !fileExistCheck);
         return exportInvalid || exportNameInvalid || fileExistError || fileExistCheckError; 
+      case 4:
+        const isExportTwo = waveletsLevelsVal['action'] === 'export'; 
+
+        console.log("Export two");
+        console.log(isExportTwo);
+        const dirPathTwo = waveletsLevelsVal['dirPath'];
+
+        console.log("DIR PATH TWO");
+        console.log(dirPathTwo);
+        const exportInvalidTwo =  (isExportTwo && (!dirPathTwo || dirPathTwo === ""));
+
+        console.log("EXPORT INVALID TWO:");
+        console.log(exportInvalidTwo);
+
+        console.log("LEVELS ERROR: ");
+        console.log(levelsError); 
+
+        console.log(exportInvalidTwo || (isExportTwo && levelsError));
+        return exportInvalidTwo || (isExportTwo && levelsError);
       default:
         return true;
     }
@@ -206,8 +239,9 @@ export default function DivesStepper(props: DivesStepperProps) {
 
   async function handleActionStart() {
     let dirPath = fileObj['path'];
+    let dirPathTwo = waveletsLevelsVal['dirPath'];
 
-    if (action === "export" && (!dirPath || dirPath === "")) {
+    if (action === "export" && (!dirPath || dirPath === "") && (!dirPathTwo || dirPathTwo === "")) {
       notifActionHandler.showErrorNotif("Valid directory path not chosen.");
       return;
     }
@@ -217,15 +251,22 @@ export default function DivesStepper(props: DivesStepperProps) {
       return;
     }
 
-    const isExport = action === "export";
+    const isExportOne = action === "export" ? "True" : "False";
+    const isExportTwo = waveletsLevelsVal['action'] === 'export' ? "True" : "False";
+    const newFilePathOne = filePath;
+    const newFilePathTwo = waveletsLevelsVal['newFilePath'];
+    const showLevels = waveletsLevelsVal['showLevels'] ? "True" : "False";
+    const waveletsObj = {
+      ...waveletsParamsObj,
+      'colorByVar': waveletsParamsObj['colorByVar'] ? "True" : "False",
+    }
+    const variable = chosenBatchVars[0];
 
-    props.onDivesStart(
-      calcFilePath, filePath, isExport, 
-      chosenBatchVars, divesParamsObj,
+    props.onWaveletsStart(
+      calcFilePath, newFilePathOne, newFilePathTwo,
+      isExportOne, isExportTwo,
+      variable, showLevels, waveletsObj,
     )
-
-    // props.onMahalPOIStart(calcFilePath, dirPath, isExport, varOne, varTwo, varThree,
-    //                       pLimit, windowSize, groupSize, depthLimit);
   }
 
   const getFinalBtns = () => {

@@ -163,7 +163,7 @@ def main(cmdLineArgs: dict):
         _verifyProcessSuccess(cmdLineArgs)
         return "SUCCESS"
     except Exception as e:
-        return e 
+        raise Exception(e)
 
 # @logger.getLogger("csvmat.py", _getLogFilePath(_getCMDLineArgs()))
 # def main():

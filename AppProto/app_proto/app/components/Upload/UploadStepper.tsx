@@ -147,7 +147,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }
 
     const [latitude, setLatitude] = useState("0");
-    const [latitudeDirection, setLatitudeDirection] = useState("W");
+    const [latitudeDirection, setLatitudeDirection] = useState("N");
     const [latInputError, setLatInputError] = useState(false);
     const handleLatChange = (event: any) => {
         const newLat = event && event.target && event.target.value ? event.target.value : "";
@@ -167,7 +167,7 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
     }
 
     const [longitude, setLongitude] = useState("0");
-    const [longitudeDirection, setLongitudeDirection] = useState("N");
+    const [longitudeDirection, setLongitudeDirection] = useState("W");
     const [longInputError, setLongInputError] = useState(false);
     const handleLongChange = (event: any) => {
         const newLong = event && event.target && event.target.value ? event.target.value : "";
@@ -337,12 +337,12 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
                             onChange={handleLatDirectionChange}
                         >
     
-                            <MenuItem key={"W"} value={"W"}>
-                                W
+                            <MenuItem key={"N"} value={"N"}>
+                                N
                             </MenuItem>
     
-                            <MenuItem key={"E"} value={"E"}>
-                                E
+                            <MenuItem key={"S"} value={"S"}>
+                                S
                             </MenuItem>
     
                         </TextField>
@@ -375,12 +375,12 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
                             value={longitudeDirection}
                             onChange={handleLongDirectionChange}
                         >
-                            <MenuItem key={"N"} value={"N"}>
-                                N
+                            <MenuItem key={"W"} value={"W"}>
+                                W
                             </MenuItem>
     
-                            <MenuItem key={"S"} value={"S"}>
-                                S
+                            <MenuItem key={"E"} value={"E"}>
+                                E
                             </MenuItem>
     
                         </TextField>
@@ -488,12 +488,12 @@ export default function UploadStepper({beginUpload} : UploadStepperProps) {
 
         let trueLat = getParsedFloat(latitude); 
         trueLat = trueLat ? trueLat : 0;
-        if (latitudeDirection === 'e') {
+        if (latitudeDirection === 's') {
             trueLat = -latitude; 
         }
         let trueLong = getParsedFloat(longitude); 
         trueLong = trueLong ? trueLong : 0;
-        if (longitudeDirection === 's') {
+        if (longitudeDirection === 'e') {
             trueLong = -longitude;
         }
 

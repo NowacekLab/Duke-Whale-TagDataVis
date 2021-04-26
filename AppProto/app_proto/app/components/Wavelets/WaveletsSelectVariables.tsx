@@ -12,14 +12,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 
 
-interface DivesSelectVariablesProps {
+interface MultiSelectVariablesProps {
   chosenBatchName: string,
   onChosenBatchVarsChange: Function,
   chosenBatchVarLimit: number, 
   chosenBatchVars: Array<string>,
 }
 
-export default function DivesSelectVariables(props: DivesSelectVariablesProps) {
+export default function MahalSelectVariables(props: MultiSelectVariablesProps) {
   const dispatch = useDispatch();
 
   const isMountedRef = useIsMountedRef();
@@ -33,6 +33,7 @@ export default function DivesSelectVariables(props: DivesSelectVariablesProps) {
 
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
     setProgress(30);
@@ -74,6 +75,10 @@ export default function DivesSelectVariables(props: DivesSelectVariablesProps) {
     props.onChosenBatchVarsChange(val);
   }
 
+  useEffect(() => {
+    setDisabled(!(props.chosenBatchVars.length < props.chosenBatchVarLimit))
+  }, [props.chosenBatchVars])
+
   return (
       <>
       {
@@ -88,7 +93,8 @@ export default function DivesSelectVariables(props: DivesSelectVariablesProps) {
           in={!loading}
         >
           <Autocomplete 
-            key={"Dive Select Vars"}
+            key={"Wavelets Select Vars"}
+            disabled={disabled}
             value={props.chosenBatchVars ?? []}
             multiple 
             options={availBatchVars}
@@ -98,7 +104,7 @@ export default function DivesSelectVariables(props: DivesSelectVariablesProps) {
                 {...params}
                 variant="standard"
                 label="Variables"
-                placeholder="Select Variables Of Interest"
+                placeholder="Select a variable of interest"
               />
             )} 
             renderTags={(tagValues, getTagProps) =>

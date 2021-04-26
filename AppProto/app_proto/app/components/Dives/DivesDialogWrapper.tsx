@@ -13,7 +13,7 @@ interface DivesDialogWrapperProps {
   handleBack: Function,
 }
 
-export default function MahalDialogWrapper(props: DivesDialogWrapperProps) {
+export default function DivesDialogWrapper(props: DivesDialogWrapperProps) {
 
   const dispatch = useDispatch();
 
