@@ -46,3 +46,51 @@ The first step is pulling in the depth data. Then a surface is defined. The stan
 A dive dictionary is then created to attach extra data to each dive. The list of dive indexes are then processed and recorded in the dictionary if they meet the criteria defined by the user. The extra information recorded with each dive includes name, depth data, time data, and the corresponding idex values. This information is primarily for ease of plotting. A subfigure is created for each interest variable, and if there are no interest variables one figure without subplots is created. Each dive was plotted with a colorscale based on all interest variables. The legendgroup and showlegend features of Plotly's Scattergl() were used to control all subplots with one set of legend keys. The colorbar feature of the marker option of Scattergl() was also defined, providing locations to prevent overlap of colorbars and align colorbars with their corresponding subplot. 
 
 An error is outputed if no dives are found at the end of the function. 
+
+# acoustic.py
+Script for plotting .wav format acoustic data, designed to work with two channel audio
+
+### acousticPlot()
+The method takes in a file path string to the wav file for import. The function uses a two-way sliding viewport method to plot the data without crashing due to memory, as each wav file is usually massive in size. The default framesize is defined in method as 100. The data is first plotted in both time and frequency domains, before allowing for plot updating.
+
+At the bottom, sliderDist and sliderRange are used to control the beginning data index and the amount of data viewed on the graph respectively (the latter is upper bounded by 1,000,000 by experiment as the lowest value that prevents high lag).
+
+### update()
+Helper function that is called to update the graph based on slider input. It uses the same plotting functions as in acousticPlot(), but has variable inputs based on the sliders that control the number of plotted points and location of plotting.
+
+# precalcs.py
+Main function that processes the raw data (after converted from mat to csv). Calculates values of interest, such as time points, lat/long (if provided GPS data), X/Y position, and jerk values.
+
+### _xydistance()
+Takes in two lat/long pairs and returns the distance in meters between them based on an average haversine function
+
+### _haversine()
+Takes in two lat/long pairs and applies the haversine function to return an absolute distance between the two points in meters. Assumes N and W as positive, unlike N E convention for lat/long
+
+### _inverseHaversine
+Opposite of haversine function--takes in a latitude, longitude, distance, and bearing, then calculates the corresponding latitude and longitude from it. Taken from http://www.edwilliams.org/avform.htm#LL
+
+### _preCalc()
+Takes in a list of command line arguments that require the raw data, a starting time, and optional GPS file and start long/lat. Roll and Acceleration data is pulled from the raw data file. The variables v and maxVelocityScale represent an assumed constant velocity if no GPS file is provided, and a maximum expected velocity for checking the accuracy of the GPS fit respectively.
+
+dx is the displacement array, j is the jerk array, and t is the time array. Latitude and longitude arrays are also created as latArray and longArray. Afterwards, there are two possible paths depending if a GPS file was created:
+
+-No GPS:
+Use the RPY angles to create a quaternion that represents direction, and use that to rotate the whale. The v constant described above represents absolute velocity, so project_vec and angle are used to get dv, the velocity in the XY plane specifically. This velocity is then used to populate the displacement array, dx, and jerk is calculated with a simple derivative.
+
+-With GPS:
+If the GPS is included, the gps must be read and parsed by stripping the time of all GPS entries and converting them to seconds since tag start. The GPS data is also filtered to visual sightings only. Afterwards, latitude and longitude data for the boat are stripped from the GPS file and used to get the latitude/longitude of the whale based on the measured bearing and range. These numbers are converted to displacement in meters using  _xydistance(), based on the haversine function. Afterwards, the code proceeds very much like the no-GPS case with the exception that every cycle of the loop, the code will check whether it has hit one of the GPS time markers. If it has, it will attempt to scale all data points since the last GPS point by a common scaling factor to force the data to line up with the current GPS point at the current time. After parsing all the data, the code finally calculates the lat/long of each point and populates them into latArray and longArray, as well as calculating the total velocity at each point to ensure that the GPS fitting has not done any weird stretching to produce odd results.
+
+At the end, all data is written to a pandas dataframe, and exported to csv. 
+
+# trackplot.py
+Function to plot a 3d dashboard of whale movement data, along with X/Y movement track and depth plot with interactive slider and play.
+
+### trackplot()
+Takes input as a string to a csv file produced/in the format of precalcs.py. Uses a player model based on a player created by ImportanceOfBeingErnest [https://stackoverflow.com/questions/46325447/animated-interactive-plot-using-matplotlib], modified slightly to incorporate color changes. The code starts by defining a dcf decimation factor to cut down the data to reduce lag. The csv is then read into a dataframe and XYZ data is pulled from it, as well as time. The figure is then split into ax (3d plot), ax_xy (X-Y displacement plot), and ax_d (depth vs. time plot). Initial plots are made of the three plots described using XYZ data. An update function is provided to update the graph by using RPY data to rotate a triangle representing the whale to a proper location and orientation, which is then moved along the 3d plot along with the camera. The depth and XY plots are also updated with a point on the graph. At the end, an option is given to export the graph as gif using exportFig(), as well as to show the plot after creating an animation object.
+
+### intPlot()
+Plot show method incorporated into a function for future use with multithreading of gif export and interactive figure.
+
+### exportFig()
+Figure export as gif using Pillow, incorporated into a function for future use with multithreading of gif export and interactive figure.
