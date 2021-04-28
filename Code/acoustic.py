@@ -50,7 +50,6 @@ def acousticPlot(calc_file_path):
         ax_freq.plot(abs(fft_out1[0:int(len(fft_out1)/2)]))
         ax_freq.plot(abs(fft_out2[0:int(len(fft_out2)/2)]))
         fig.canvas.draw_idle()
-        print(min(time[idx:idx + frameSize]))
     
     # Sliders
     
