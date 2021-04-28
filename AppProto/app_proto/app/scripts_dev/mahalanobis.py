@@ -31,7 +31,7 @@ def mahalanobis(x=None, data=None, cov=None):
     mahal = np.dot(left_term, x_minus_mu.T)
     # print("Ended mahalanobis Function")
     return mahal.diagonal()
-  
+
 def exportFig(fig, new_file_path):
     fig.write_html(new_file_path)
 
@@ -220,7 +220,7 @@ def main(cmdLineArgs: dict):
         
         return "SUCCESS"  
     except Exception as e:
-        return e 
+        raise Exception(e)
   
 if __name__ == "__main__":
     print(main())

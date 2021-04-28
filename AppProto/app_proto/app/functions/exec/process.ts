@@ -224,3 +224,80 @@ export async function handleExportHTML(args: exportHTMLCMDLineArgs) {
         return failResponse(error);
     }
 }
+
+export interface waveletsCMDLineArgs {
+    [index: string]: string,
+    calcFilePath: string,
+    newFilePathOne: string,
+    newFilePathTwo: string,
+    isExportOne: string,
+    isExportTwo: string,
+    variable: string,
+    depthLimit: string,
+    colorByVar: string,
+    showLevels: string,
+}
+
+export interface wavesParams {
+    [index: string]: any,
+    depthLimit: string,
+    colorByVar: any,
+}
+
+async function processWavelets(cmdLineArgs: waveletsCMDLineArgs) {
+    const pythonScriptName = 'wavelets.py';
+    const scriptName = 'wavelets';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleProcessWavelets(args: waveletsCMDLineArgs) {
+    try {
+        const exportResp = await processWavelets(args);
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully processed wavelets.");
+    } catch (error) {
+        return failResponse(error);
+    }
+}
+
+export interface divesCMDLineArgs {
+    [index: string]: string,
+    calcFilePath: string,
+    newFilePath: string,
+    isExport: string,
+    minLength: string,
+    requiredDepth: string,
+    maxDepth: string,
+    interestVars: string,
+}
+
+export interface divesParams {
+    [index: string]: any,
+    minLength: string,
+    requiredDepth: string,
+    maxDepth: string,
+}
+
+async function processDives(cmdLineArgs: divesCMDLineArgs) {
+    const pythonScriptName = 'dives.py';
+    const scriptName = 'dives';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleProcessDives(args: divesCMDLineArgs) {
+    try {
+        const exportResp = await processDives(args);
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully processed dives.");
+    } catch (error) {
+        return failResponse(error);
+    }
+}

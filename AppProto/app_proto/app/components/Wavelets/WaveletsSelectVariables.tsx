@@ -1,0 +1,134 @@
+import React, {useEffect, useState} from 'react';
+import Paper from '@material-ui/core/Paper'; 
+import {useDispatch, useSelector} from "react-redux";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import {uploadsActionsHandler} from "../../functions/reduxHandlers/handlers";
+import {getBatchVars} from '../../functions/batches/getBatchAttrs';
+import {throwErrIfFail} from '../../functions/responses';
+import useIsMountedRef from '../../functions/useIsMountedRef';
+import TextField from '@material-ui/core/TextField';
+import Chip from '@material-ui/core/Chip';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
+
+
+interface MultiSelectVariablesProps {
+  chosenBatchName: string,
+  onChosenBatchVarsChange: Function,
+  chosenBatchVarLimit: number, 
+  chosenBatchVars: Array<string>,
+}
+
+export default function MahalSelectVariables(props: MultiSelectVariablesProps) {
+  const dispatch = useDispatch();
+
+  const isMountedRef = useIsMountedRef();
+
+  //@ts-ignore
+  const uploadProgState = useSelector(state => state["uploads"]);
+  const uploadProgHandler = new uploadsActionsHandler(dispatch);
+  const uploadsFinished = uploadProgHandler.getUploadsFinished(uploadProgState);
+
+  const [availBatchVars, setAvailBatchVars] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    setProgress(30);
+    if (isMountedRef.current) {
+      getAvailBatchVars().then((res) => {
+        setAvailBatchVars(res);
+        endProgress();
+      }).catch(() => {
+        endProgress();
+      }) 
+    }
+  }, [props.chosenBatchName])
+
+  const endProgress = () => {
+    setProgress(100);
+    if (isMountedRef.current) {
+      setTimeout(
+        () => {
+          if (isMountedRef.current) {
+            setLoading(false);
+          }
+        }, 500)
+    }
+  }
+
+  async function getAvailBatchVars() {
+    try {
+      //@ts-ignore
+      const batchVarsRes = await getBatchVars(uploadsFinished, props.chosenBatchName);
+      throwErrIfFail(batchVarsRes);
+      const batchVars = batchVarsRes.response;
+      return batchVars;
+    } catch (err) {
+        return [];
+    }
+  };
+
+  function onInputChange(e: any, val: any, reason: string) {
+    props.onChosenBatchVarsChange(val);
+  }
+
+  useEffect(() => {
+    setDisabled(!(props.chosenBatchVars.length < props.chosenBatchVarLimit))
+  }, [props.chosenBatchVars])
+
+  return (
+      <>
+      {
+        loading ?
+        <CircularProgress 
+          variant="determinate"
+          value={progress}
+        />
+        :
+
+        <Fade
+          in={!loading}
+        >
+          <Autocomplete 
+            key={"Wavelets Select Vars"}
+            disabled={disabled}
+            value={props.chosenBatchVars ?? []}
+            multiple 
+            options={availBatchVars}
+            getOptionLabel={(option) => option}
+            renderInput={(params) => (
+              <TextField  
+                {...params}
+                variant="standard"
+                label="Variables"
+                placeholder="Select a variable of interest"
+              />
+            )} 
+            renderTags={(tagValues, getTagProps) =>
+              tagValues.map((option, index) => {
+                return (
+                  <Chip
+                    key={index}
+                    label={option}
+                    {...getTagProps({ index })}
+                    // Set disable explicitly after getTagProps
+                    disabled={false}
+                  />
+                );
+              })
+            }
+            onChange={onInputChange}
+            style={{
+              minWidth: "500px"
+            }}
+          />
+        </Fade>
+      }
+
+      </>
+
+  )
+}

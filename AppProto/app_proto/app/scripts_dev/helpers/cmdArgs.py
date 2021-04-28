@@ -61,7 +61,7 @@ def getCMDLineArgs() -> dict:
     
     cmdLineStr = cmdLineStr[1:-1]
     cmdLineArgs = parseCMDLineArg(cmdLineStr)
-
+    
     return cmdLineArgs
 
 def getArray(val: str) -> List[str]:

@@ -21,6 +21,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ExportHTMLWrapper from '../ExportHTML/ExportHTMLDialogWrapper';
 import SettingSizeDialog from '../Settings/SettingSizeDialog';
 import SettingCriticalDialog from '../Settings/SettingCriticalDialog';
+import DivesDialogWrapper from '../Dives/DivesDialogWrapper';
+import WaveletsDialogWrapper from '../Wavelets/WaveletsDialogWrapper';
 
 //@ts-ignore
 const remote = require('electron').remote;
@@ -106,6 +108,14 @@ const SideBarContent = () => {
     const [exportHTMLOpen, setExportHTMLOpen] = useState(false);
     const handleExportHTMLClose = () => {
         setExportHTMLOpen(false);
+    }
+    const [diveDialogOpen, setDiveDialogOpen] = useState(false);
+    const handleDiveDialogClose = () => {
+        setDiveDialogOpen(false);
+    }
+    const [waveletsDialogOpen, setWaveletsDialogOpen] = useState(false);
+    const handleWaveletsDialogClose = () => {
+        setWaveletsDialogOpen(false);
     }
     const [critSettingsOpen, setCritSettingsOpen] = useState(false);
     const handleCritSettingsClose = () => {
@@ -277,6 +287,29 @@ const SideBarContent = () => {
                                     >
                                         Export HTML  
                                     </Button>
+                                    <Button
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "normal",
+                                            border: "1px solid white",
+                                            margin: "5px"
+                                        }}
+                                        onClick={() => setDiveDialogOpen(true)}
+                                    >
+                                        Dives
+                                    </Button>
+
+                                    <Button
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "normal",
+                                            border: "1px solid white",
+                                            margin: "5px"
+                                        }}
+                                        onClick={() => setWaveletsDialogOpen(true)}
+                                    >
+                                        Wavelets
+                                    </Button>
                                 </div>
                             </div>
 
@@ -310,6 +343,18 @@ const SideBarContent = () => {
                         showDialog={exportHTMLOpen}
                         handleClose={handleExportHTMLClose}
                         handleBack={handleExportHTMLClose}
+                    />
+
+                    <DivesDialogWrapper 
+                        showDialog={diveDialogOpen}
+                        handleClose={handleDiveDialogClose}
+                        handleBack={handleDiveDialogClose}
+                    />
+
+                    <WaveletsDialogWrapper 
+                        showDialog={waveletsDialogOpen}
+                        handleClose={handleWaveletsDialogClose}
+                        handleBack={handleWaveletsDialogClose}
                     />
 
                     <Tooltip

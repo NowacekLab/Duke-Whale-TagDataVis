@@ -63,3 +63,4 @@ def acousticPlot(calc_file_path):
     sliderRange.on_changed(update)
     
     plt.show()
+    #plt.savefig()
