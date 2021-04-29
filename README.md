@@ -169,3 +169,5 @@ If one of them do not respond, then please try contacting another.
 	* Worked on critical python action scripts, including mahalanobis distance, wavelets, and depth 
 * Vincent Wang, vincent.y.wang@duke.edu
 	* Worked on critical python action scripts, including 3D animations, and expanded file processing support 
+* Delaney Demark, delaney.demark@duke.edu
+	* Worked on python graphing scripts, including 2D graphs 
