@@ -34,6 +34,8 @@ Raw python scripts that are unpackaged. Only suitable for development environmen
 `src/app/scripts`
 Packaged versions of scripts_dev python scripts. Suitable for deployment when packaging the application.
 
+**Look at [scripts documentation](scripts.md) to see information on the primary scripts developed so far.**
+
 # How to... 
 ## Develop
 #### Setup Instructions: 
@@ -59,6 +61,8 @@ Firstly, *all* scripts go through main.py. This is to reduce packaging time (see
 Second, the existing convention is to make an entirely separate script named its functionality (i.e. mahalanobis.py for mahalanobis distance). There *must* be a main() function inside that follows the conventions of the other scripts that main.py uses. That is, it gets arguments from the CMD line and pulls them out to do with them as it will. 
 
 Third, once you have tested that script, then add it to main.py. The string key you give it in the dictionary is the string key that the JavaScript scripts will have to pass when calling main.py. 
+
+Fourth, once that script has been approved and added, its information must be added to scripts.md. If you made any changes to other scripts in scripts.md, or see scripts that are missing from it, then **please update the information!** 
 
 #### Writing JavaScript Code 
 Firstly, make sure you understand generally what the files do, where they are located, and what you have available to you. You do not want to ideally reinvent the wheel with the code (don’t fix it if it ain’t broke) unless it is, well, broken or that change could yield significant benefits. 
