@@ -13,10 +13,9 @@ export async function processGeneric(pythonScriptName: string, scriptName: strin
 
     cmdLineArgs['scriptName'] = scriptName;
     
-    // Pythonargspath hard-coded due to possibility of error in child process with weird paths that can occur 
+    // pythonArgsPath hard-coded to SCRIPT_DIRECTORY/python.json due to possibility of error in child process with weird paths that can occur 
     const savePythonArgsRes = await savePythonArgs(cmdLineArgs);
     throwErrIfFail(savePythonArgsRes);
-    const pythonArgsPath = savePythonArgsRes['response'];
 
     const devPythonScriptPath = getDevPythonScriptPath("main.py");
     const prodPythonScriptPath = getProdPythonScriptPath("main");
