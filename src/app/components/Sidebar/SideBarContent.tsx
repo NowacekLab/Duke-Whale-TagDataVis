@@ -23,6 +23,7 @@ import SettingSizeDialog from '../Settings/SettingSizeDialog';
 import SettingCriticalDialog from '../Settings/SettingCriticalDialog';
 import DivesDialogWrapper from '../Dives/DivesDialogWrapper';
 import WaveletsDialogWrapper from '../Wavelets/WaveletsDialogWrapper';
+import AcousticsDialogWrapper from '../Acoustics/AcousticsDialogWrapper';
 
 //@ts-ignore
 const remote = require('electron').remote;
@@ -117,6 +118,11 @@ const SideBarContent = () => {
     const handleWaveletsDialogClose = () => {
         setWaveletsDialogOpen(false);
     }
+    const [acousticsDialogOpen, setAcousticsDialogOpen] = useState(false);
+    const handleAcousticsDialogClose = () => {
+        setAcousticsDialogOpen(false);
+    }
+
     const [critSettingsOpen, setCritSettingsOpen] = useState(false);
     const handleCritSettingsClose = () => {
         setCritSettingsOpen(false);
@@ -125,7 +131,6 @@ const SideBarContent = () => {
     const handleSizeSettingsClose = () => {
         setSizeSettingsOpen(false);
     }
-
     const [darkMode, setDarkMode] = useState(false);
 
 
@@ -310,6 +315,18 @@ const SideBarContent = () => {
                                     >
                                         Wavelets
                                     </Button>
+
+                                    <Button
+                                        style={{
+                                            color: "white",
+                                            fontWeight: "normal",
+                                            border: "1px solid white",
+                                            margin: "5px"
+                                        }}
+                                        onClick={() => setAcousticsDialogOpen(true)}
+                                    >
+                                        Acoustics
+                                    </Button>
                                 </div>
                             </div>
 
@@ -355,6 +372,12 @@ const SideBarContent = () => {
                         showDialog={waveletsDialogOpen}
                         handleClose={handleWaveletsDialogClose}
                         handleBack={handleWaveletsDialogClose}
+                    />
+
+                    <AcousticsDialogWrapper 
+                        showDialog={acousticsDialogOpen}
+                        handleClose={handleAcousticsDialogClose}
+                        handleBack={handleAcousticsDialogClose}
                     />
 
                     <Tooltip

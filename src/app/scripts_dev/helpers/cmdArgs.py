@@ -1,6 +1,8 @@
 import sys 
 import logger 
 from typing import List 
+import json 
+import os 
 
 __KEY_VAL_PAIRS_SEPARATOR = "KEYPAIRSEP"
 __KEY_VAL_JOINER = "KEYVALSEP"    
@@ -46,23 +48,19 @@ def parseCMDLineArg(cmdLineArg: str) -> dict:
     
     return cmdArgs 
 
-def getCMDLineStr() -> str: 
-    if not len(sys.argv) == 2: 
-        raise Exception(f"There must be exactly 2 cmd line args given. Was given {len(sys.argv)} = {' '.join(sys.argv)}. Check conventions.md")
-
-    cmdLineStr = sys.argv[1]
+def getPythonArgsPath(currDirectory) -> str: 
+    
+    argsPath = os.path.join(currDirectory, 'python.json')
         
-    return cmdLineStr
+    return argsPath
 
-def getCMDLineArgs() -> dict:
-    cmdLineStr = getCMDLineStr() 
+def getCMDLineArgs(currDirectory) -> dict:
+    pythonArgsPath = getPythonArgsPath(currDirectory)
     
     sys.stdout.flush()
     
-    cmdLineStr = cmdLineStr[1:-1]
-    cmdLineArgs = parseCMDLineArg(cmdLineStr)
+    with open(pythonArgsPath) as python_args_file:
+        raw_python_args = python_args_file.read()
+        python_args = json.loads(raw_python_args)
     
-    return cmdLineArgs
-
-def getArray(val: str) -> List[str]:
-    return val.split(__ARRAY_JOINER)
+    return python_args

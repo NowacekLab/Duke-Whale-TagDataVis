@@ -43,7 +43,6 @@ def acousticPlot(wav_file_path, new_file_path, is_export):
         ax_freq.plot(abs(fft_out1[0:int(len(fft_out1)/2)]))
         ax_freq.plot(abs(fft_out2[0:int(len(fft_out2)/2)]))
         fig.canvas.draw_idle()
-        print(min(time[idx:idx + frameSize]))
     
     # Sliders
     
@@ -72,7 +71,7 @@ def main(cmdLineArgs: dict):
         
         is_export = True if is_export == "True" else False  
         
-        video_exporter(wav_file_path, new_file_path, is_export)
+        acousticPlot(wav_file_path, new_file_path, is_export)
         
         return "SUCCESS"
     except Exception as e:

@@ -96,13 +96,27 @@ export function getSettingsFilePath() {
     return SETTINGS_FILE_PATH;
 }
 
+
+// TODO: the below is hard-coded, where dev/prod/args_path all know each other's dirs. 
+    // Can refactor this. 
+export function getPythonArgsPath(pythonScriptName: string) {
+
+    const directory = isDev ? SCRIPTS_PATH : getProdPythonScriptDirPath(pythonScriptName);
+
+    return path.resolve(path.join(directory, "python.json"));
+}
+
 export function getDevPythonScriptPath(pythonScriptName: string) {
     const devPythonScriptPath = path.resolve(path.join(SCRIPTS_PATH, pythonScriptName));
     return devPythonScriptPath; 
 }
 
+export function getProdPythonScriptDirPath(pythonScriptName: string) {
+    return path.resolve(path.join(EXEC_DIR_PATH, pythonScriptName));
+}
+
 export function getProdPythonScriptPath(pythonScriptName: string) {
-    const prodPythonScriptDirPath = path.resolve(path.join(EXEC_DIR_PATH, pythonScriptName));
+    const prodPythonScriptDirPath = getProdPythonScriptDirPath(pythonScriptName);
 
     // it is usually mac or win_exec/script_name/script_name
     const prodPythonScriptPath = path.resolve(path.join(prodPythonScriptDirPath, pythonScriptName));

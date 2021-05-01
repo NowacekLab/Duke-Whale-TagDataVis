@@ -1,24 +1,27 @@
 import {isDev, python3, isWindows} from "../constants";
 import handlePythonExec from "../exec/python_exec";
 import {formatCMDLineArgs} from "./cmdArgs";
-import {getDevPythonScriptPath, getProdPythonScriptPath, addLoggingErrorFilePath} from "../paths";
-import {failResponse, successResponse, throwErrIfFail} from "../responses"
+import {getDevPythonScriptPath, getProdPythonScriptPath, addLoggingErrorFilePath, getPythonArgsPath} from "../paths";
+import {failResponse, failResponseAny, successResponse, throwErrIfFail} from "../responses"
 import {getDataFilePathKey, getNewDataFilePathKey,
         getLoggingFilePathKey,
         getGPSFilePathKey, getStartLatitudeKey, getStartLongitudeKey} from "../keys";
+import {createPathIfNotExist, writeObjToPath} from '../files';
 
 export type cmdLineArgs = any;
 export async function processGeneric(pythonScriptName: string, scriptName: string, cmdLineArgs: cmdLineArgs) {
 
     cmdLineArgs['scriptName'] = scriptName;
-
-    // Windows treats """" differently than Mac (Mac will include "" in string at python end, Windows will not, so pad with Z to treat the same)
-    const cmdLineString = isWindows ? `Z${formatCMDLineArgs(cmdLineArgs)}Z`: `"${formatCMDLineArgs(cmdLineArgs)}"`;
+    
+    // Pythonargspath hard-coded due to possibility of error in child process with weird paths that can occur 
+    const savePythonArgsRes = await savePythonArgs(cmdLineArgs);
+    throwErrIfFail(savePythonArgsRes);
+    const pythonArgsPath = savePythonArgsRes['response'];
 
     const devPythonScriptPath = getDevPythonScriptPath("main.py");
     const prodPythonScriptPath = getProdPythonScriptPath("main");
     const executor = isDev ? python3 : prodPythonScriptPath;
-    const args = isDev ? [devPythonScriptPath, cmdLineString] : [cmdLineString];
+    const args = isDev ? [devPythonScriptPath] : [];
     const res = await handlePythonExec(executor, args).catch((err) => {
         return {
             success: false,
@@ -30,6 +33,19 @@ export async function processGeneric(pythonScriptName: string, scriptName: strin
 
     return responseObj;
 }
+
+async function savePythonArgs(pythonArgs: cmdLineArgs) {
+    try {
+        const pythonArgsPath = getPythonArgsPath("main");
+        console.log(pythonArgsPath);
+        await createPathIfNotExist(pythonArgsPath);
+        await writeObjToPath(pythonArgsPath, pythonArgs);
+        return successResponse(pythonArgsPath);
+    } catch (error) {
+        return failResponseAny(error);
+    }
+}
+
 
 const dataFilePathKey = getDataFilePathKey();
 const newDataFilePathKey = getNewDataFilePathKey();
@@ -297,6 +313,33 @@ export async function handleProcessDives(args: divesCMDLineArgs) {
         throwErrIfFail(exportResp);
 
         return successResponse("Successfully processed dives.");
+    } catch (error) {
+        return failResponse(error);
+    }
+}
+
+export interface acousticsCMDLineArgs {
+    [index: string]: string,
+    wavFilePath: string,
+    newFilePath: string,
+    isExport: string,
+}
+
+async function processAcoustics(cmdLineArgs: acousticsCMDLineArgs) {
+    const pythonScriptName = 'acoustics.py';
+    const scriptName = 'acoustics';
+
+    const processResp = await processGeneric(pythonScriptName, scriptName, cmdLineArgs);
+    
+    return processResp;
+}
+
+export async function handleProcessAcoustics(args: acousticsCMDLineArgs) {
+    try {
+        const exportResp = await processAcoustics(args);
+        throwErrIfFail(exportResp);
+
+        return successResponse("Successfully processed acoustics.");
     } catch (error) {
         return failResponse(error);
     }
