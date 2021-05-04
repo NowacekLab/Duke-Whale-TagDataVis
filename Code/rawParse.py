@@ -1,5 +1,6 @@
 #OUTPUT: fs Depth Heading Pitch Roll WhaleAccel_XYZ Accel_XYZ WhaleMag_XYZ Mag_XYZ
 #Where is NanChecking?
+#MAT 7.3 Not Yet Implemented
 
 import numpy as np
 from scipy.io import loadmat
@@ -7,7 +8,7 @@ import pandas as pd
 import datetime as dt
 
 def matParse(fileString):
-    #DTAG3
+    #DTAG3/DTAG2
     try:
         df = loadmat(fileString)
         fileLength = len(df['A']) #Import Error Checking Here for mismatched lengths
@@ -29,7 +30,9 @@ def matParse(fileString):
                                    'Mag_Y': df['M'][:,1],
                                    'Mag_Z': df['M'][:,2]})
         csvConvert.to_csv('.'.join(fileString.split('.')[0:-1] + ['csv']), index = False)
+        print("D3 Success")
     except:
+
         pass
     #DTAG4
     try:
@@ -53,7 +56,9 @@ def matParse(fileString):
                                    'Mag_Y': df['M'][0][0][0][:,1],
                                    'Mag_Z': df['M'][0][0][0][:,2]})
         csvConvert.to_csv('.'.join(fileString.split('.')[0:-1] + ['csv']), index = False)
+        print("D4 Success")
     except:
         pass
+    
 
     
