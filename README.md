@@ -4,6 +4,7 @@ Welcome to Whale! This project began with a group of undergraduate Duke Universi
 Though originally stemming from a desire to have a software able to process data files and create a 3D visualization of a whale swimming, it has evolved to have much more functionality and capabilities, including processing support for many common data tag files, graph creation and editing and exports, complex calculations and plots (i.e. Wavelets), and much more!
 
 # Project Structure
+
 The project’s underlying structure is largely derived from [electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate). 
 
 As an overview, the project’s user interface is built primarily with JavaScript using Electron, React, Redux, and Material UI React. The majority of the project’s processing and graphing is done using Python scripts executed as child processes by the JavaScript. 
@@ -35,6 +36,20 @@ Raw python scripts that are unpackaged. Only suitable for development environmen
 Packaged versions of scripts_dev python scripts. Suitable for deployment when packaging the application.
 
 **Look at [scripts documentation](scripts.md) to see information on the primary scripts developed so far.**
+
+
+
+# Sample Images
+
+![image1](/Users/joonyounglee/Code/Whale/images/image1.png)
+
+![image2](/Users/joonyounglee/Code/Whale/images/image2.png)
+
+![image3](/Users/joonyounglee/Code/Whale/images/image3.png)
+
+![image4](/Users/joonyounglee/Code/Whale/images/image4.png)
+
+![image5](/Users/joonyounglee/Code/Whale/images/image5.png)
 
 # How to... 
 ## Develop
